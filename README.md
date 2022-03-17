@@ -12,25 +12,46 @@ The stack expression or language of YaNNX is easily to been implemented, it just
 This is a simple YaNNX model files, the constant weight is spelated with a msgpack format file.
 
 ```
-;
-;  A simple MLP example
-;
+def FullConnect
+    "out_size" set
+    "in_size"  set
 
-3.14 "VERSION" set
-"Lupu Mucic" "AUTHOR" set
-"f32"   "DEFAULT_TYPE" set
+    "out_size" @ "in_size" @ 2 .new_constant~
+    "out_size" @ 1 .new_constant~ 
+    
+    ; now stack = x, w, b
+    1.0 1.0 onnx.gemm
+end
 
-[1 32] ("DEFAULT_TYPE" @) new_tensor "x" set       ; created a 2D tensor named with 'x' in global
+def MLP
+    128 FullConnect
+    0.1 onnx.LeakyRelu
+    128 64 FullConnect
+    0.1 onnx.LeakyRelu
+    64 32 FullConnect
+end
 
-"x" @ 32 128 fullconnect    ; first layer fullconnect with [1 128] output 
-dup                         ; dup output from first layer in stack
-128 64 fullconnect          ; [1 128] as input, output [1 64]
-1 concat2                   ; there is two tensor in stack, do concat so output is [1 192]
-logsoftmax                  ; just do logosftmax 
+def Network
+    80 MLP
+    swap 
+    40 MLP
+    1 2 onnx.concat 
+end
 
-"y" set                     ; set output to "y" 
+; define input
+[1 40] .new_tensor~ 
+dup "x1" set
 
+[1 80] .new_tensor~
+dup "x2" set
+
+; run network
+swap Network 
+
+; define output
+"y" set
 ```
+
 
 ## The base syntax of YaNNX model file
 
@@ -50,6 +71,12 @@ The parameter tensor is used for training in the future.
 
 We removed built-in control operators, such as `if`, `for loop` etc, so why we called YaNNX is semi-dynammic, it is not full programed. 
 We also don't provided basic operator for number, string or tuple, YaNNX is not a language is just a exprssion for nerual network. 
+
+## User define wrod/function
+
+YaNNX support user defined word, every word appreas in the code will has it's own hashmap, which give us a closure mechanism. 
+Like the example, we can define a `FullConnect` user defined word based on basic operator 'onnx.gemm', the constants were created when `FullConnect` is first invoked.
+All the word name end with '~' means this operator only run once, and from second invoke it just pop input and push last output.
 
 ## The runtime of YaNNX
 
