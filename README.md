@@ -4,22 +4,26 @@ Yet Another Neural Network Exchange (YaNNX) is an open source format for AI mode
 ## 1.Intrduction
 
 YaNNX uses a stack expression to create DAG of neural network some likes Forth language, it is a semi-dynamic DSL for describing nerual network.
-YaNNX supports user defined word (UDW for short, just like functions) to expressing sub DAG, so YaNNX's model has a hierarchical structure and is easy readable for users, 
-and these hierarchical structure is important for subsequent optimization in diffrent platfrom.
+YaNNX supports user defined word (UDW for short, just like functions) to expressing sub DAG, so YaNNX's model has a hierarchical or modular structure and is easy readable for users.
+Keeping these hierarchical structure is important for subsequent optimization in diffrent platfrom. 
+
+Most morden neural network models have modular structure , for example, typical ResNet has layer-1 to layer-3 which shared same structure. 
+The ONNX's solution is based on a long tiled node list which losts the modular structure, and it is difficult resotre the original structure also. 
+So we create a new solution YaNNX based on stack machine which don't need naming every link between nodes, and intrduce user defined word which will give us the ablilty of keep modular structure.
 
 The data type and the operator schemas are all inherited from ONNX project, the type and shape infrence functions are also used in the YaNNX's tools.
 The YaNNX's runtime includes a global and local hash map (for every UDW) to storing or naming tensor，which give us more flexibility to descripting complex network.
 The stack expression or language of YaNNX is easily to been implemented, it just is a few stack operators like `pop`, `swap`, `rot` etc, and hash operator `set` and `get`.
 
-This is a simple YaNNX model file, the constant weights is another msgpack format file which not show here.
+There is a simple YaNNX model file, the constant weights is another msgpack format file which not show here.
 
 ```
 def FullConnect
     "out_size" set
     "in_size"  set
 
-    "out_size" @ "in_size" @ 2 .new_constant~
-    "out_size" @ 1 .new_constant~ 
+    ("out_size" @ "in_size" @ 2 tuple) .new_constant~
+    ("out_size" @ 1 tuple) .new_constant~ 
     
     ; now stack = x, w, b
     1.0 1.0 onnx.Gemm           ; call built-in onnx operator
