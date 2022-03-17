@@ -1,7 +1,7 @@
 # YaNNX
 Yet Another Neural Network Exchange (YaNNX) is an open source format for AI models. 
 
-## Intrduction
+## 1.Intrduction
 
 YaNNX uses a stack expression to create DAG of neural network some likes Forth language, it is a semi-dynamic DSL for describing nerual network.
 YaNNX supports user defined word (UDW for short, just like functions) to expressing sub DAG, so YaNNX's model has a hierarchical structure and is easy readable for users, 
@@ -75,7 +75,7 @@ We removed built-in control operators (which are included in Forth language), su
 We only provided limited operators for `value`, YaNNX is not a language is just a exprssion for nerual network. 
 But adding these function into YaNNX is easy, you can do it in your project's enviroment.
 
-### User define wrod
+### User define word
 
 YaNNX supports user defined word ( by using `def` and `end`), every word appreas in the code will has it's own hashmap, which give us a closure mechanism to hidden some local tensors .
 In a morden deep learning framework, we creates a neural network by python code, hierarchical structure and repeated modules is obviously, keep this structure is exchange mode is also important.
@@ -95,4 +95,4 @@ Thess API includs: adding a new built-in operator, accessing the global hashmap 
 We provides a REPL tool with a dummy backend, a onnx convert tool and others, these tools are developed all based on `yaonnx.hpp` certainly. 
 At last, we provides a YaNNX model zoo also, all the models in zoo are readable and well structured.
 
-## Building YaNNX's tools
+## 2. Building YaNNX's tools
