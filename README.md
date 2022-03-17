@@ -22,9 +22,9 @@ This is a simple YaNNX model files, the constant weight is spelated with a msgpa
 
 [1 32] ("DEFAULT_TYPE" @) new_tensor "x" set       ; created a 2D tensor named with 'x' in global
 
-"x" @ 128 fullconnect       ; first layer fullconnect with [1 128] output 
+"x" @ 32 128 fullconnect    ; first layer fullconnect with [1 128] output 
 dup                         ; dup output from first layer in stack
-64 fullconnect              ; [1 128] as input, output [1 64]
+128 64 fullconnect          ; [1 128] as input, output [1 64]
 1 concat2                   ; there is two tensor in stack, do concat so output is [1 192]
 logsoftmax                  ; just do logosftmax 
 
@@ -43,11 +43,20 @@ The quare brackets is used for create tuple value, such as number tuple, is only
 
 We provided a REPL ( Read, Evaluate, Print and Loop ) tool for just debug or testing YaNNX model files.
 
-
-## Tensor tyoe in YaNNX
-
 The tensor's data type is followed with ONNX, and high level type is variable tensor, constant tensor, parameter tensor. The constant tensor's data is stored in a msgpack file. 
+The built-in operator creates constant tensors when they are first executed, the created constant tensor will registered in runtime.
+The list of all constant tensors can be accessed by runtime's API, the order in this list is same as executing code. 
 The parameter tensor is used for training in the future.
 
+We removed built-in control operators, such as `if`, `for loop` etc, so why we called YaNNX is semi-dynammic, it is not full programed. 
+We also don't provided basic operator for number, string or tuple, YaNNX is not a language is just a exprssion for nerual network. 
+
+## The runtime of YaNNX
+
+We provided public API in runtime of YaNNX, these API is the external interfaces for outside world of YaNNX. 
+Thess API includs: adding a new built-in operator, accessing the global hashmap or list of constant tensor.
+`yannx.hpp` is all-in-one c++ head file for extenstion in your project, is a already parser, checker and base c++ runtime classes for writing your own backend or tools.
+
+We provides a REPL with dummy backend, a onnx convert and others, these tools are developed all based on `yaonnx.hpp` certainly. We provides a YaNNX model zoo also.
 
 
