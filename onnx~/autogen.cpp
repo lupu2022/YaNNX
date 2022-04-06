@@ -19,7 +19,6 @@ int main(int argc, char* argv[]) {
         }
 
         auto op = schemas[i];
-
     }
 }
 

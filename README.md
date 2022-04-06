@@ -9,7 +9,7 @@ Keeping these hierarchical structure is important for subsequent optimization in
 
 Most morden neural network models have modular structure , for example, typical ResNet has layer-1 to layer-3 which shared same structure. 
 The ONNX's solution is based on a long tiled node list which losts the modular structure, and it is difficult resotre the original structure also. 
-So we create a new solution YaNNX based on stack machine which don't need naming every link between nodes, and intrduce user defined word which will give us the ablilty of keep modular structure.
+So we create a new solution YaNNX based on stack machine which don't need naming every link between nodes, and introduce user defined word which will give us the ablilty of keep modular structure.
 
 The data type and the operator schemas are all inherited from ONNX project, the type and shape infrence functions are also used in the YaNNX's tools.
 The YaNNX's runtime includes a global and local hash map (for every UDW) to storing or naming tensor，which give us more flexibility to descripting complex network.
