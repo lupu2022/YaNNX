@@ -9,8 +9,9 @@ namespace yannx {
 
 using YNumber = double;
 
-template<class YTensor>
+template<class YT>
 struct Value {
+using YTensor = std::shared_ptr<YT>;
 public:
     Value() : t(T_Number) {
         v._number = 0.0;
@@ -44,8 +45,9 @@ public:
     ValueType t;
 };
 
-template <class YTensor>
+template <class YT>
 struct ValueStack {
+using YTensor = std::shared_ptr<YT>;
 public:
     // basic operating
     virtual void drop() = 0;
@@ -63,30 +65,23 @@ public:
     virtual const char* pop_string() = 0;
     virtual const char* top_string() = 0;
 
-    virtual void push_tuple(const std::vector<Value<YTensor> >& v) = 0;
-    virtual const std::vector<Value<YTensor> > pop_tuple() = 0;
-    virtual const std::vector<Value<YTensor> > top_tuple() = 0;
+    virtual void push_tuple(const std::vector<Value<YT> >& v) = 0;
+    virtual const std::vector<Value<YT> > pop_tuple() = 0;
+    virtual const std::vector<Value<YT> > top_tuple() = 0;
 
     virtual void push_tensor(YTensor* v) = 0;
     virtual YTensor* pop_tensor() = 0;
     virtual YTensor* top_tensor() = 0;
 };
 
-#if 0
-template<struct YTensor> struct Runtime;
-struct NativeWord;
-struct UserWord;
-struct SyntaxElement;
 
-using UserCode = std::vector<SyntaxElement>;        // parsed
-using UserBinary = std::vector<SyntaxElement>;      // compiled
-
-using nword_t = std::shared_ptr<NativeWord>;
-using uword_t = std::shared_ptr<UserWord>;
-using vhash_t = std::map<std::string, Value>;
+template<class YT> struct NativeWord;
+template<class YT> struct UserWord;
 
 // txt -> tokens ->  SyntaxElement (parsed) -> SyntaxElement (linked)
+template<class YT>
 struct SyntaxElement {
+using YTensor = std::shared_ptr<YT>;
     enum SyntaxType {
         // parsed value,
         T_Number,
@@ -103,20 +98,30 @@ struct SyntaxElement {
 
     YNumber v_number;
     std::string v_string;
-    nword_t v_nword;
-    uword_t v_uword;
+    std::shared_ptr< NativeWord<YT> > v_nword;
+    std::shared_ptr< UserWord<YT> > v_uword;
 
-    std::vector<SyntaxElement> v_tuple;
+    std::vector< mpark::variant<YNumber, std::string> > v_tuple;
 };
 
+#if 0
+template <class YT>
 struct UserHash {
+using YTensor = std::shared_ptr<YT>;
+    struct HashItem {
+        enum HashType {
+            T_Number,
+            T_Tensor,
+        }
+    };
+
 public:
     UserHash(vhash_t* g, vhash_t* l) {
         global_ = g;
         local_ = l;
     }
     void set(const char* name, Value<YTensor> item) {
-        yannx_assert(item.t != Value::T_Tuple, "hash's item don't support tuple!");
+        yannx_assert(item.t != Value<YTensor>::T_Tuple, "hash's item don't support tuple!");
         if ( local_->find(name) != local_->end() ) {
             yannx_panic("Hash only support write once!");
         }
@@ -140,7 +145,6 @@ private:
     vhash_t* global_;
     vhash_t* local_;
 };
-
 
 // buit-in word implement in c++ code
 struct NativeWord {
@@ -235,8 +239,9 @@ private:
 using nword_creator_t = std::shared_ptr<NativeWord> (*) (Runtime&);
 #endif
 
-template<class YTensor>
-struct Runtime : public ValueStack<YTensor>  {
+template<class YT>
+struct Runtime : public ValueStack<YT>  {
+using YTensor = std::shared_ptr<YT>;
 public:
     Runtime() {
     }
@@ -285,7 +290,7 @@ public:
     }
 
     virtual void push_number(YNumber n) {
-        Value<YTensor> v(n);
+        Value<YT> v(n);
         stack_.push_back(v);
     }
     virtual YNumber pop_number() {
@@ -295,14 +300,14 @@ public:
     }
     virtual YNumber top_number() {
         yannx_assert(stack_.size() >= 1, "top_number: stack out of size!");
-        yannx_assert(stack_.back().t != Value<YTensor>::T_Number, "top_number: value's type error!");
+        yannx_assert(stack_.back().t != Value<YT>::T_Number, "top_number: value's type error!");
 
-        Value<YTensor> c = stack_.back();
+        Value<YT> c = stack_.back();
         return c.v._number;
     }
 
     virtual void push_string(const char* s) {
-        Value<YTensor> v(s);
+        Value<YT> v(s);
         stack_.push_back(v);
     }
     virtual const char* pop_string() {
@@ -312,14 +317,14 @@ public:
     }
     virtual const char* top_string() {
         yannx_assert(stack_.size() >= 1, "top_string: stack out of size!");
-        yannx_assert(stack_.back().t != Value<YTensor>::T_String, "top_string: value's type error!");
+        yannx_assert(stack_.back().t != Value<YT>::T_String, "top_string: value's type error!");
 
-        Value<YTensor> c = stack_.back();
+        Value<YT> c = stack_.back();
         return c.v._string;
     }
 
     virtual void push_tensor(YTensor* t) {
-        Value<YTensor> v(t);
+        Value<YT> v(t);
         stack_.push_back(v);
     }
     virtual YTensor* pop_tensor() {
@@ -335,22 +340,22 @@ public:
         return c.v._tensor;
     }
 
-    virtual void push_tuple(const std::vector<Value<YTensor> >& v) = 0;
-    virtual const std::vector<Value<YTensor> > pop_tuple() {
+    virtual void push_tuple(const std::vector<Value<YT> >& v) = 0;
+    virtual const std::vector<Value<YT> > pop_tuple() {
         auto ret = top_tuple();
         for (size_t i = 0; i < ret.size(); i++) {
             stack_.pop_back();
         }
         return ret;
     }
-    virtual const std::vector<Value<YTensor> > top_tuple() {
+    virtual const std::vector<Value<YT> > top_tuple() {
         yannx_assert(stack_.size() >= 1, "top_tuple: stack out of size!");
         yannx_assert(stack_.back().t == Value<YTensor>::T_Tuple, "top_tuple: value's type error!");
 
         size_t len = stack_.back().v._size;
         yannx_assert(stack_.size() >= (len + 1), "top_tuple: stack out of size!");
 
-        std::vector<Value<YTensor> > ret;
+        std::vector<Value<YT> > ret;
         ret.push_back( stack_.back() );
         for (size_t i = stack_.size() - len - 1; i < stack_.size() - 1; i++) {
             yannx_assert(stack_[i].t != Value<YTensor>::T_Tuple, "top_tuple: tuple can't including tuple!");
@@ -360,17 +365,17 @@ public:
     }
 
 private:
-    void push(std::vector<Value<YTensor> >& v) {
+    void push(std::vector<Value<YT> >& v) {
         if ( v.size() == 1) {
             stack_.push_back(v[0]);
         } else {
             push_tuple(v);
         }
     }
-    std::vector<Value<YTensor> > pop() {
+    std::vector<Value<YT> > pop() {
         yannx_assert(stack_.size() >= 1, "pop: stack out of size!");
 
-        std::vector<Value<YTensor> > v;
+        std::vector<Value<YT> > v;
         v.push_back(stack_.back()); stack_.pop_back();
         if ( v.back().t != Value<YTensor>::T_Tuple) {
             return v;
@@ -388,7 +393,7 @@ private:
     std::unique_ptr<UserWord> executor_;
 #endif
 
-    std::vector<Value<YTensor> > stack_;
+    std::vector<Value<YT> > stack_;
 };
 
 }
