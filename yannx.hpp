@@ -1,6 +1,8 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <sstream>
+
 #include <math.h>
 
 #include <opt/variant.hpp>
@@ -16,7 +18,6 @@ struct Value {
     using _Value = mpark::variant<const YNumber, const std::string, YTensor>;
 
 public:
-
     Value() : cell_((YNumber)0.0) {}
     Value(YNumber n): cell_(n) {}
     Value(const std::string& s): cell_(s) {}
@@ -303,13 +304,21 @@ private:
 
 template<class YT>
 struct Runtime : public ValueStack<YT>  {
-    using YTensor = std::shared_ptr<YT>;
-
+    using nword_creator_t = std::shared_ptr<NativeWord<YT> > (*) (Runtime&);
+    using UserCode = std::vector<SyntaxElement<YT> >;        // parsed
 public:
     Runtime() {
+        register_builtin_native_words();
     }
     ~Runtime() {
     }
+
+    ValueStack<YT>& stack() {
+        return *this;
+    }
+
+
+
 protected:
     virtual void push(Value<YT>  v) {
         stack_.push(v);
@@ -325,9 +334,287 @@ protected:
         auto c = stack_.back();
         return c;
     }
+private:
+    // help functions
+    void register_builtin_native_words();
+    UserCode parse(const std::string& txt) {
+        struct _ {
+            static bool parse_number(const std::string& token, YNumber& value) {
+                if (isdigit(token.at(0)) || (token.at(0) == '-' && token.length() >= 2 && isdigit(token.at(1)))) {
+                    if (token.find('.') != std::string::npos || token.find('e') != std::string::npos) { // double
+                        value = atof(token.c_str());
+                    } else {
+                        value = atol(token.c_str());
+                    }
+                    return true;
+                }
+                return false;
+            }
+            static void tokenize(const std::string &str, const char delim, std::vector<std::string> &out) {
+
+                size_t start;
+                size_t end = 0;
+
+                while ((start = str.find_first_not_of(delim, end)) != std::string::npos) {
+                    end = str.find(delim, start);
+                    out.push_back(str.substr(start, end - start));
+                }
+            }
+
+            static void tokenize_line(std::string const &str_line, std::vector<std::string> &out) {
+                std::string state = "SYMBOL";
+                std::string current_str = "";
+
+                int tuple_flag = -1;
+                for (size_t i = 0; i < str_line.size(); i++) {
+                    char cur = str_line[i];
+                    if ( state == "SYMBOL") {
+                        if ( cur == ' ' || cur == '('  || cur == ')' || cur == '{' || cur == '}' ) {
+                            // ending of a symbol
+                            if (current_str != "") {
+                                out.push_back(current_str);
+                                current_str = "";
+                            }
+                            continue;
+                        }
+                        if ( cur == '"' ) {
+                            if (current_str != "") {
+                                yannx_panic("tokenize_line error!");
+                            }
+
+                            state = "STRING";
+                            current_str.push_back('"');
+                            continue;
+                        }
+                        if ( cur == '\'' ) {
+                            if (current_str != "") {
+                                yannx_panic("tokenize_line error!");
+                            }
+
+                            state = "STRING";
+                            current_str.push_back('\'');
+                            continue;
+                        }
+
+                        if ( cur == '[' ) {
+                            // ending of a symbol
+                            if (current_str != "") {
+                                out.push_back(current_str);
+                                current_str = "";
+                            }
+
+                            if ( tuple_flag != -1 ) {
+                                yannx_panic("tokenize_line error!");
+                            }
+                            tuple_flag = out.size();
+                            continue;
+                        }
+
+                        if ( cur == ']' ) {
+                            // ending of a symbol
+                            if (current_str != "") {
+                                out.push_back(current_str);
+                                current_str = "";
+                            }
+
+                            if ( tuple_flag == -1 ) {
+                                yannx_panic("tokenize_line error!");
+                            }
+                            int tuple_num = out.size() - tuple_flag;
+                            if ( tuple_num <= 0 ) {
+                                yannx_panic("tokenize_line error!");
+                            }
+                            std::ostringstream convert;
+                            convert << tuple_num;
+                            out.push_back( convert.str() );
+                            tuple_flag = -1;
+
+                            continue;
+                        }
+
+                        if ( cur == ';' ) {
+                            if (current_str != "") {
+                                out.push_back(current_str);
+                            }
+                            return;
+                        }
+
+                        current_str.push_back(cur);
+                        continue;
+                    }
+                    if ( state == "STRING" ) {
+                        if ( cur == '"' && current_str.at(0) == '"') {
+                            current_str.push_back('"');
+                            out.push_back(current_str);
+                            current_str = "";
+                            state = "SYMBOL";
+                            continue;
+                        }
+                        if ( cur == '\'' && current_str.at(0) == '\'') {
+                            current_str.push_back('\'');
+                            out.push_back(current_str);
+                            current_str = "";
+                            state = "SYMBOL";
+                            continue;
+                        }
+                        current_str.push_back(cur);
+                    }
+                }
+                if ( state == "STRING" ) {
+                    yannx_panic("tokenize_line error, string must end in one line!");
+                }
+                if ( tuple_flag != -1 ) {
+                    yannx_panic("tokenize_line error, tuple must end in one line!");
+                }
+                if (current_str != "") {
+                    out.push_back(current_str);
+                }
+            }
+        };
+
+        // 0. removed comments
+        std::vector<std::string> tokens;
+        std::istringstream code_stream(txt);
+        std::string line;
+        while (std::getline(code_stream, line)) {
+            _::tokenize_line(line,  tokens);
+        }
+
+        // 1. begin parsing all
+        UserCode main_code;
+        UserCode* target_code = &main_code;
+        std::string target_name = "";
+        size_t i = 0;
+        while (i < tokens.size()) {
+            if ( tokens[i] == "def" ) {
+                // don't support word define nested
+                if ( target_name != "" ) {
+                    yannx_panic("Find nested word definement !");
+                }
+
+                // enter a new user word define
+                bool find_end = false;
+                size_t j = i + 1;
+                for (; j < tokens.size(); j++) {
+                    if ( tokens[j] == "end" ) {
+                        find_end = true;
+                        break;
+                    }
+                }
+
+                if ( find_end == false ) {
+                    yannx_panic("Incompleted word. can't find 'end' !");
+                }
+                if ( tokens[i+1] == "end" ) {
+                    yannx_panic("Incompleted word, can't find def _name_!");
+                }
+
+                target_name = tokens[i+1];
+                if ( ndict_.find(target_name) != ndict_.end() ) {
+                    yannx_panic("Can't define user word same name with native word!");
+                }
+                if ( udict_.find(target_name) != udict_.end() ) {
+                    yannx_panic("Can't define user word same name with a user word defined already!");
+                }
+
+                target_code = new UserCode;
+                i = i + 2;
+                continue;
+            }
+            if ( tokens[i] == "end" ) {
+                if (target_name == "") {
+                    yannx_panic("find 'end' token without matched def!");
+                }
+
+                // create an new user defined word.
+                udict_[target_name] = *target_code;
+
+                delete target_code;
+                target_code = &main_code;
+                target_name = "";
+
+                i = i + 1;
+                continue;
+            }
+
+            SyntaxElement<YT> nobj;
+            auto token = tokens[i];
+
+            // check token is number
+            YNumber num_value;
+            if ( _::parse_number(token, num_value) ) {
+                nobj.type_ = SyntaxElement<YT>::T_Number;
+                nobj.v_number = num_value;
+                target_code->push_back(nobj);
+
+                i = i + 1;
+                continue;
+            }
+
+            // check token is string
+            if ( token.at(0) == '$' ) {
+                nobj.type_ = SyntaxElement<YT>::T_String;
+                nobj.v_string = token;
+                target_code->push_back(nobj);
+
+                i = i + 1;
+                continue;
+            }
+            if ( token.at(0) == '"' ) {
+                if ( token.size() >= 2 && token.back() == '"') {
+                    nobj.type_ = SyntaxElement<YT>::T_String;
+                    nobj.v_string = token.substr(1, token.size() - 2);
+                    target_code->push_back(nobj);
+
+                    i = i + 1;
+                    continue;
+                }
+            }
+            if ( token.at(0) == '\'' ) {
+                if ( token.size() >= 2 && token.back() == '\'') {
+                    nobj.type_ = SyntaxElement<YT>::T_String;
+                    nobj.v_string = token.substr(1, token.size() - 2);
+                    target_code->push_back(nobj);
+
+                    i = i + 1;
+                    continue;
+                }
+            }
+
+            // query words in dictionary
+            if ( ndict_.find(token) != ndict_.end() ) {
+                nobj.type_ = SyntaxElement<YT>::T_NativeSymbol;
+                nobj.v_string = token;
+                target_code->push_back(nobj);
+
+                i = i + 1;
+                continue;
+            }
+            if ( udict_.find(token) != udict_.end() ) {
+                nobj.type_ = SyntaxElement<YT>::T_UserSymbol;
+                nobj.v_string = token;
+                target_code->push_back(nobj);
+
+                i = i + 1;
+                continue;
+            }
+
+            std::string msg = "Can't find matched word in dictionary for " + token;
+            yannx_panic(msg.c_str());
+        }
+
+        return main_code;
+    }
 
 private:
+    // Native and User dictionary
+    std::map<std::string, nword_creator_t> ndict_;
+    std::map<std::string, UserCode > udict_;
+
+    // runtime stuff
+    std::unique_ptr<UserWord<YT>> executor_;
     std::vector<Value<YT> > stack_;
+
 };
 
 }
