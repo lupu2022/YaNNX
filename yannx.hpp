@@ -306,6 +306,7 @@ template<class YT>
 struct Runtime : public ValueStack<YT>  {
     using nword_creator_t = std::shared_ptr<NativeWord<YT> > (*) (Runtime&);
     using UserCode = std::vector<SyntaxElement<YT> >;        // parsed
+    using UserBinary = std::vector<SyntaxElement<YT> >;      // linked
 public:
     Runtime() {
         register_builtin_native_words();
@@ -317,7 +318,8 @@ public:
         return *this;
     }
 
-
+    void boot(const std::string& txt);
+    void run();
 
 protected:
     virtual void push(Value<YT>  v) {
@@ -336,7 +338,6 @@ protected:
     }
 private:
     // help functions
-    void register_builtin_native_words();
     UserCode parse(const std::string& txt) {
         struct _ {
             static bool parse_number(const std::string& token, YNumber& value) {
@@ -606,13 +607,61 @@ private:
         return main_code;
     }
 
+    void build(const UserCode& code, UserBinary& binary) {
+        for (size_t i = 0; i < code.size(); i++) {
+            if ( code[i].type_ == SyntaxElement<YT>::T_Number ) {
+                binary.push_back(code[i]);
+                continue;
+            }
+            if ( code[i].type_ == SyntaxElement<YT>::T_String ) {
+                binary.push_back(code[i]);
+                continue;
+            }
+            if ( code[i].type_ == SyntaxElement<YT>::T_Tuple ) {
+                binary.push_back(code[i]);
+                continue;
+            }
+
+            if ( code[i].type_ == SyntaxElement<YT>::T_NativeSymbol ) {
+                if ( ndict_.find( code[i].v_str ) == ndict_.end() ) {
+                    yannx_panic("Can't find native word");
+                }
+
+                SyntaxElement<YT> nobj;
+                nobj.type_ = SyntaxElement<YT>::T_NativeWord;
+                nobj.v_nword = ndict_[code[i].v_str](*this);
+
+                binary.push_back(nobj);
+                continue;
+            }
+            if ( code[i].type_ == SyntaxElement<YT>::T_UserSymbol ) {
+                if ( udict_.find( code[i].v_str ) == udict_.end() ) {
+                    yannx_panic("Can't find user word");
+                }
+
+                SyntaxElement<YT> nobj;
+                nobj.type_ = SyntaxElement<YT>::T_UserWord;
+                nobj.v_uword = std::make_shared<UserWord<YT> >();
+                build( udict_[code[i].v_str] , nobj.v_uword->bin());
+
+                binary.push_back(nobj);
+                continue;
+            }
+            yannx_panic("FIXME: Can't be here");
+        }
+    }
+
+    void register_builtin_native_words() {
+
+    }
+
 private:
     // Native and User dictionary
     std::map<std::string, nword_creator_t> ndict_;
     std::map<std::string, UserCode > udict_;
 
     // runtime stuff
-    std::unique_ptr<UserWord<YT>> executor_;
+    std::unique_ptr<UserWord<YT> > executor_;
     std::vector<Value<YT> > stack_;
 
 };
