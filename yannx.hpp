@@ -1,12 +1,37 @@
-#include <string>
-#include <vector>
+#ifndef _YANNX_HPP_
+#define _YANXX_HPP_
+
+#include <iostream>
 #include <map>
+#include <memory>
+#include <variant>
+#include <vector>
 #include <sstream>
+#include <string>
 
 #include <math.h>
 
-#include <opt/variant.hpp>
-#include <opt/debug.hpp>
+#define yannx_assert(Expr, Msg) \
+    __M_Assert(#Expr, Expr, __FILE__, __LINE__, Msg)
+
+#define yannx_panic(Msg) \
+    __M_Panic(__FILE__, __LINE__, Msg)
+
+
+inline void __M_Assert(const char* expr_str, bool expr, const char* file, int line, const char* msg) {
+    if (!expr) {
+        std::cerr << "Assert failed:\t" << msg << "\n"
+            << "Expected:\t" << expr_str << "\n"
+            << "Source:\t\t" << file << ", line " << line << "\n";
+        abort();
+    }
+}
+
+inline void __M_Panic(const char* file, int line, const char* msg) {
+    std::cerr << "Assert failed:\t" << msg << "\n"
+        << "Source:\t\t" << file << ", line " << line << "\n";
+    abort();
+}
 
 namespace yannx {
 
@@ -15,7 +40,7 @@ using YNumber = float;
 template<class YT>
 struct Value {
     using YTensor = std::shared_ptr<YT>;
-    using _Value = mpark::variant<const YNumber, const std::string, YTensor>;
+    using _Value = std::variant<const YNumber, const std::string, YTensor>;
 
 public:
     Value() : cell_((YNumber)0.0) {}
@@ -28,7 +53,7 @@ public:
             yannx_panic("Value type error!");
         }
 
-        return mpark::get<YNumber>(cell_);
+        return std::get<YNumber>(cell_);
     }
 
     const std::string& string() {
@@ -36,7 +61,7 @@ public:
             yannx_panic("Value type error!");
         }
 
-        return mpark::get<const std::string>(cell_);
+        return std::get<const std::string>(cell_);
     }
 
     YTensor tensor() {
@@ -44,8 +69,20 @@ public:
             yannx_panic("Value type error!");
         }
 
-        return mpark::get<YTensor>(cell_);
+        return std::get<YTensor>(cell_);
     }
+
+    std::string to_string() {
+        std::ostringstream ss;
+        if ( cell_.index() == ValueType::T_Number ) {
+            ss << std::get<YNumber>(cell_) ;
+        } else if ( cell_.index() == ValueType::T_String ) {
+            ss << std::get<std::string>(cell_);
+        } else {
+            ss << "<tensor>";
+        }
+        return ss.str();
+   }
 
 private:
     enum ValueType{
@@ -682,12 +719,12 @@ private:
 };
 
 #define NWORD_CREATOR_DEFINE(CLS)               \
-    static std::shared_ptr<NativeWord<YT> >   creator(Runtime<YT>& rt) {   \
+    static std::shared_ptr<NativeWord<YT> >   creator(Runtime<YT>& rt ) {   \
         std::shared_ptr<NativeWord<YT> > wd(new CLS<YT> ());             \
         return wd;                              \
     }
 
-namespace lang {
+namespace builtin {
 
 template<class YT>
 struct Get : NativeWord<YT> {
@@ -706,7 +743,6 @@ struct Get : NativeWord<YT> {
 
 template<class YT>
 struct Set : NativeWord<YT> {
-    Value<YT> value;
     virtual void boot(ValueStack<YT>& stack, WordHash<YT>& hash) {
         auto var = stack.pop_string();
         auto value = stack.pop();
@@ -719,16 +755,89 @@ struct Set : NativeWord<YT> {
     NWORD_CREATOR_DEFINE(Set)
 };
 
+template<class YT>
+struct Print1 : NativeWord<YT> {
+    virtual void boot(ValueStack<YT>& stack, WordHash<YT>& hash) {
+        auto v = stack.top();
+        std::cout << v.to_string() << std::endl;
+    }
+    virtual void run(ValueStack<YT>& stack) {
+    }
+    NWORD_CREATOR_DEFINE(Print1)
+};
 
-}
+template<class YT>
+struct Print2 : NativeWord<YT> {
+    virtual void boot(ValueStack<YT>& stack, WordHash<YT>& hash) {
+    }
+    virtual void run(ValueStack<YT>& stack) {
+        auto v = stack.top();
+        std::cout << v.to_string() << std::endl;
+    }
+    NWORD_CREATOR_DEFINE(Print2)
+};
+
+template<class YT>
+struct Drop : NativeWord<YT> {
+    virtual void run(ValueStack<YT>& stack) {
+        stack.drop();
+    }
+
+    NWORD_CREATOR_DEFINE(Drop)
+};
+
+template<class YT>
+struct Rot : NativeWord<YT> {
+    virtual void run(ValueStack<YT>& stack) {
+        stack.rot();
+    }
+
+    NWORD_CREATOR_DEFINE(Rot)
+};
+
+template<class YT>
+struct Dup : NativeWord<YT> {
+    virtual void run(ValueStack<YT>& stack) {
+        stack.dup();
+    }
+
+    NWORD_CREATOR_DEFINE(Dup)
+};
+
+template<class YT>
+struct Dup2 : NativeWord<YT> {
+    virtual void run(ValueStack<YT>& stack) {
+        stack.dup2();
+    }
+
+    NWORD_CREATOR_DEFINE(Dup2)
+};
+
+template<class YT>
+struct Swap : NativeWord<YT> {
+    virtual void run(ValueStack<YT>& stack) {
+        stack.swap();
+    }
+
+    NWORD_CREATOR_DEFINE(Swap)
+};
+
+}   // namespace builtin
 
 template<class YT>
 void Runtime<YT>::register_builtin_native_words() {
-    new_nword("@", lang::Get<YT>::creator);
-    new_nword("!", lang::Set<YT>::creator);
+    new_nword("@", builtin::Get<YT>::creator);
+    new_nword("!", builtin::Set<YT>::creator);
+    new_nword("?", builtin::Print1<YT>::creator);
+    new_nword("??", builtin::Print2<YT>::creator);
+
+    new_nword("drop", builtin::Drop<YT>::creator);
+    new_nword("dup", builtin::Dup<YT>::creator);
+    new_nword("dup2", builtin::Dup2<YT>::creator);
+    new_nword("swap", builtin::Swap<YT>::creator);
+    new_nword("rot", builtin::Rot<YT>::creator);
 }
 
+}   // namespace yannx
 
-
-
-}
+#endif
