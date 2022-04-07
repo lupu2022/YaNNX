@@ -318,8 +318,20 @@ public:
         return *this;
     }
 
-    void boot(const std::string& txt);
-    void run();
+    void boot(const std::string& txt) {
+        yannx_assert(executor_ == nullptr, "Can't call compile more than once!");
+        executor_ = std::make_unique<UserWord<YT>>();
+
+        UserCode main_code = parse(txt);
+        build(main_code, executor_->bin());
+        executor_->boot(*this, nullptr);
+    }
+    void run() {
+        if ( executor_ == nullptr) {
+            yannx_panic("Can't run in uncompiled mode");
+        }
+        executor_->run(*this);
+    }
 
 protected:
     virtual void push(Value<YT>  v) {
@@ -663,7 +675,6 @@ private:
     // runtime stuff
     std::unique_ptr<UserWord<YT> > executor_;
     std::vector<Value<YT> > stack_;
-
 };
 
 }
