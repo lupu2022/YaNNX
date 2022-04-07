@@ -61,12 +61,10 @@ template <class YT>
 struct ValueStack {
     using YTensor = std::shared_ptr<YT>;
 
-protected:
     virtual Value<YT> top() = 0;
     virtual Value<YT> pop() = 0;
     virtual void push( Value<YT> v) = 0;
 
-public:
     // main control
     void drop() {
         pop();
@@ -304,9 +302,11 @@ private:
 
 template<class YT>
 struct Runtime : public ValueStack<YT>  {
-    using nword_creator_t = std::shared_ptr<NativeWord<YT> > (*) (Runtime&);
+    using nword_t = std::shared_ptr<NativeWord<YT> >;
+    using nword_creator_t = nword_t (*) (Runtime<YT>&);
     using UserCode = std::vector<SyntaxElement<YT> >;        // parsed
     using UserBinary = std::vector<SyntaxElement<YT> >;      // linked
+
 public:
     Runtime() {
         register_builtin_native_words();
@@ -316,6 +316,13 @@ public:
 
     ValueStack<YT>& stack() {
         return *this;
+    }
+
+    void new_nword(const char* name, nword_creator_t f) {
+        if ( ndict_.find(name) != ndict_.end() ) {
+            yannx_panic("Can't define native word same name!");
+        }
+        ndict_[name] = f;
     }
 
     void boot(const std::string& txt) {
@@ -333,7 +340,6 @@ public:
         executor_->run(*this);
     }
 
-protected:
     virtual void push(Value<YT>  v) {
         stack_.push(v);
     }
@@ -663,9 +669,7 @@ private:
         }
     }
 
-    void register_builtin_native_words() {
-
-    }
+    void register_builtin_native_words();
 
 private:
     // Native and User dictionary
@@ -676,5 +680,55 @@ private:
     std::unique_ptr<UserWord<YT> > executor_;
     std::vector<Value<YT> > stack_;
 };
+
+#define NWORD_CREATOR_DEFINE(CLS)               \
+    static std::shared_ptr<NativeWord<YT> >   creator(Runtime<YT>& rt) {   \
+        std::shared_ptr<NativeWord<YT> > wd(new CLS<YT> ());             \
+        return wd;                              \
+    }
+
+namespace lang {
+
+template<class YT>
+struct Get : NativeWord<YT> {
+    Value<YT> value;
+    virtual void boot(ValueStack<YT>& stack, WordHash<YT>& hash) {
+        auto var = stack.pop_string();
+        value = hash.get(var);
+        stack.push( value );
+    }
+    virtual void run(ValueStack<YT>& stack) {
+        stack.pop();
+        stack.push( value );
+    }
+    NWORD_CREATOR_DEFINE(Get)
+};
+
+template<class YT>
+struct Set : NativeWord<YT> {
+    Value<YT> value;
+    virtual void boot(ValueStack<YT>& stack, WordHash<YT>& hash) {
+        auto var = stack.pop_string();
+        auto value = stack.pop();
+        hash.set(var, value);
+    }
+    virtual void run(ValueStack<YT>& stack) {
+        stack.pop();
+        stack.pop();
+    }
+    NWORD_CREATOR_DEFINE(Set)
+};
+
+
+}
+
+template<class YT>
+void Runtime<YT>::register_builtin_native_words() {
+    new_nword("@", lang::Get<YT>::creator);
+    new_nword("!", lang::Set<YT>::creator);
+}
+
+
+
 
 }
