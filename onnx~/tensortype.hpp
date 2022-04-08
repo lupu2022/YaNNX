@@ -50,19 +50,19 @@ enum OperatorReturnType {
 
 /*
  *  https://github.com/onnx/onnx/blob/main/docs/IR.md#tensor-definition
+ *  null:           an empty shape with a undefined data type, used as optional tensor
  *  scalar:         an empty shape with a defined data type
  *  tensor:         shape dimention > 0
- *
  */
 
 struct TensorType {
     TensorDataType dtype_;
     std::vector<size_t> shape_;
-
     TensorType(TensorElementType dtype, std::vector<size_t>& shape) {
         dtype_ = dtype;
         shape_ = shape;
     }
+
     using tensor_t = std::shared_ptr<TensorType>;
 
 #include "onnx_def.hpp"

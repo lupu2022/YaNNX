@@ -29,9 +29,9 @@ static const char* TensorDataType[] = {
 };
 
 static const char* ParameterType[] = {
-    "tensor_t",                             // Signal
-    "std::variant<void *, tensor_t>",       // Optional
-    "std::vector<tensor_t>&"                // Variadic
+    "tensor_t",                     // Signal
+    "tensor_t",                     // Optional, shape = 0 & undefined
+    "std::vector<tensor_t>&"        // Variadic
 };
 
 /*
@@ -159,8 +159,20 @@ std::string api_generate(const OpSchema& op) {
     return oss.str();
 }
 
+const char* impl_template =  R"~~(
+    struct #WORDNAME# : NativeWord<TensorType> {
+        virtual void boot(ValueStack<TensorType>& stack, WordHash<TensorType>& hash) {
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+        }
+        NWORD_CREATOR_DEFINE(#WORDNAME#);
+    }
+)~~";
+
 std::string impl_generate(const OpSchema& op) {
-    return "";
+    return impl_template;
 }
 
 int main(int argc, char* argv[]) {
@@ -213,6 +225,7 @@ int main(int argc, char* argv[]) {
         ofs << "namespace " << i->first << " {" << std::endl;
         for (size_t ii = 0; ii < i->second.size(); ii++) {
             std::string api_code = impl_generate( schemas[ i->second[ii] ] );
+            ofs << api_code << std::endl;
         }
         ofs << "}" << std::endl;
     }
