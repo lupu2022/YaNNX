@@ -1,3 +1,5 @@
 .vscode
 tools/repl/repl
 onnx~/autogen
+onnx~/onnx_def.hpp
+onnx~/onnx_impl.hpp

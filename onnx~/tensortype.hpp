@@ -48,14 +48,11 @@ enum OperatorReturnType {
 };
 
 
-
-
 /*
- *  null tensor:    an empty shape with a undefined data type
+ *  https://github.com/onnx/onnx/blob/main/docs/IR.md#tensor-definition
  *  scalar:         an empty shape with a defined data type
  *  tensor:         shape dimention > 0
  *
- *  https://github.com/onnx/onnx/blob/main/docs/IR.md#tensor-definition
  */
 
 struct TensorType {

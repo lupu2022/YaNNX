@@ -16,3 +16,5 @@ run: $(TARGET)
 
 clean:
 	rm -f $(TARGET)
+	rm -f onnx_def.hpp
+	rm -f onxx_impl.hpp

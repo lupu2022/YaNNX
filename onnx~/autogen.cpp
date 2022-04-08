@@ -1,5 +1,6 @@
 #include <vector>
 #include <iostream>
+#include <fstream>
 #include <sstream>
 
 #include <onnx/defs/schema.h>
@@ -129,7 +130,7 @@ std::string api_generate(const OpSchema& op) {
             exit(-1);
         }
         if ( i == allAttributes.begin() ) {
-            oss << "/*attributes:/ ";
+            oss << "/*attributes:*/ ";
         }
 
         if ( i->second.required ) {
@@ -156,6 +157,10 @@ std::string api_generate(const OpSchema& op) {
     oss << "}" << std::endl;
 
     return oss.str();
+}
+
+std::string impl_generate(const OpSchema& op) {
+    return "";
 }
 
 int main(int argc, char* argv[]) {
@@ -193,10 +198,24 @@ int main(int argc, char* argv[]) {
         operators_by_tag[tag].push_back(i);
     }
 
-    // 1. generators operator's API definement, sorted by abc
+    // 1. generating operator's API definement, sorted by abc
+    std::ofstream ofs;
+    ofs.open("onnx_def.hpp", std::ofstream::out);
     for (auto ii = operators_by_name.begin(); ii != operators_by_name.end(); ii++) {
         std::string api_code = api_generate( schemas[ ii->second ] );
-        std::cout << api_code << std::endl;
+        ofs << api_code << std::endl;
     }
+    ofs.close();
+
+    // 2. generating operator's implementation word, sorted by tags
+    ofs.open("onnx_impl.hpp", std::ofstream::out);
+    for (auto i = operators_by_tag.begin(); i != operators_by_tag.end(); i++) {
+        ofs << "namespace " << i->first << " {" << std::endl;
+        for (size_t ii = 0; ii < i->second.size(); ii++) {
+            std::string api_code = impl_generate( schemas[ i->second[ii] ] );
+        }
+        ofs << "}" << std::endl;
+    }
+    ofs.close();
 }
 
