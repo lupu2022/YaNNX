@@ -174,7 +174,7 @@ struct ValueStack {
         return v.tensor();
     }
 
-    // fast acess psedo list
+    // fast acess psedo data struct : list & map
     const std::vector<YNumber> pop_number_tuple() {
         YNumber sn = pop_number();
         yannx_assert( roundf(sn) == sn, "pop_number_tuple: size must be integer!");
