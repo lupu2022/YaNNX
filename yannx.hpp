@@ -199,33 +199,6 @@ struct ValueStack {
     }
 };
 
-
-template<class YT> struct NativeWord;
-template<class YT> struct UserWord;
-
-// txt -> tokens ->  SyntaxElement<YT> (parsed) -> SyntaxElement<YT> (linked)
-template<class YT>
-struct SyntaxElement {
-    enum SyntaxType {
-        // parsed value,
-        T_Number,
-        T_String,
-        T_NativeSymbol,
-        T_UserSymbol,
-
-        // linked value
-        T_NativeWord,
-        T_UserWord,
-    };
-    SyntaxType type_;
-
-    YNumber v_number;
-    std::string v_string;
-
-    std::shared_ptr< NativeWord<YT> > v_nword;
-    std::shared_ptr< UserWord<YT> > v_uword;
-};
-
 template<class YT>
 struct WordHash {
     using vmap_t = std::map<std::string, Value<YT> >;
@@ -259,11 +232,40 @@ private:
     vmap_t* local_;
 };
 
+
+template<class YT> struct Runtime;
+template<class YT> struct NativeWord;
+template<class YT> struct UserWord;
+
+// txt -> tokens ->  SyntaxElement<YT> (parsed) -> SyntaxElement<YT> (linked)
+template<class YT>
+struct SyntaxElement {
+    enum SyntaxType {
+        // parsed value,
+        T_Number,
+        T_String,
+        T_NativeSymbol,
+        T_UserSymbol,
+
+        // linked value
+        T_NativeWord,
+        T_UserWord,
+    };
+    SyntaxType type_;
+
+    YNumber v_number;
+    std::string v_string;
+
+    std::shared_ptr< NativeWord<YT> > v_nword;
+    std::shared_ptr< UserWord<YT> > v_uword;
+};
+
+
 // buit-in word implement in c++ code
 template<class YT>
 struct NativeWord {
-    virtual void boot(ValueStack<YT>& stack, WordHash<YT>& hash) {
-        run(stack);
+    virtual void boot(Runtime<YT>& rt, WordHash<YT>& hash) {
+        run(rt);
     }
     virtual void run(ValueStack<YT>& stack) = 0;
 };
@@ -275,7 +277,7 @@ struct UserWord {
     using UserBinary = std::vector<SyntaxElement<YT> >;      // compiled
 
     UserWord(){}
-    void boot(ValueStack<YT>& stack, vmap_t* global_hash_) {
+    void boot(Runtime<YT>& rt, vmap_t* global_hash_) {
         if ( global_hash_ == nullptr) {
             global_hash_ = &local_hash_;
         }
@@ -284,19 +286,19 @@ struct UserWord {
 
         for (size_t i = 0; i < binary_.size(); i++) {
             if ( binary_[i].type_ == SyntaxElement<YT>::T_Number ) {
-                stack.push_number( binary_[i].v_number);
+                rt.push_number( binary_[i].v_number);
                 continue;
             }
             if ( binary_[i].type_ == SyntaxElement<YT>::T_String ) {
-                stack.push_string( binary_[i].v_string );
+                rt.push_string( binary_[i].v_string );
                 continue;
             }
             if ( binary_[i].type_ == SyntaxElement<YT>::T_NativeWord ) {
-                binary_[i].v_nword->boot(stack, whash);
+                binary_[i].v_nword->boot(rt, whash);
                 continue;
             }
             if ( binary_[i].type_ == SyntaxElement<YT>::T_UserWord ) {
-                binary_[i].v_uword->boot(stack, global_hash_);
+                binary_[i].v_uword->boot(rt, global_hash_);
                 continue;
             }
             yannx_panic("FIXME: Can't be here");
@@ -334,7 +336,6 @@ private:
 
     UserBinary binary_;
     vmap_t local_hash_;
-    friend struct Runtime;
 };
 
 template<class YT>
@@ -349,10 +350,6 @@ public:
         register_builtin_native_words();
     }
     ~Runtime() {
-    }
-
-    ValueStack<YT>& stack() {
-        return *this;
     }
 
     void new_nword(const char* name, nword_creator_t f) {
@@ -729,7 +726,7 @@ namespace builtin {
 template<class YT>
 struct Get : NativeWord<YT> {
     Value<YT> value;
-    virtual void boot(ValueStack<YT>& stack, WordHash<YT>& hash) {
+    virtual void boot(Runtime<YT>& stack, WordHash<YT>& hash) {
         auto var = stack.pop_string();
         value = hash.get(var);
         stack.push( value );
@@ -743,7 +740,7 @@ struct Get : NativeWord<YT> {
 
 template<class YT>
 struct Set : NativeWord<YT> {
-    virtual void boot(ValueStack<YT>& stack, WordHash<YT>& hash) {
+    virtual void boot(Runtime<YT>& stack, WordHash<YT>& hash) {
         auto var = stack.pop_string();
         auto value = stack.pop();
         hash.set(var, value);
@@ -757,7 +754,7 @@ struct Set : NativeWord<YT> {
 
 template<class YT>
 struct Print1 : NativeWord<YT> {
-    virtual void boot(ValueStack<YT>& stack, WordHash<YT>& hash) {
+    virtual void boot(Runtime<YT>& stack, WordHash<YT>& hash) {
         auto v = stack.top();
         std::cout << v.to_string() << std::endl;
     }
@@ -768,7 +765,7 @@ struct Print1 : NativeWord<YT> {
 
 template<class YT>
 struct Print2 : NativeWord<YT> {
-    virtual void boot(ValueStack<YT>& stack, WordHash<YT>& hash) {
+    virtual void boot(Runtime<YT>& stack, WordHash<YT>& hash) {
     }
     virtual void run(ValueStack<YT>& stack) {
         auto v = stack.top();
