@@ -29,9 +29,9 @@ static const char* TensorDataType[] = {
 };
 
 static const char* ParameterType[] = {
-    "tensor_t",                     // Signal
-    "tensor_t",                     // Optional, shape = 0 & undefined
-    "std::vector<tensor_t>&"        // Variadic
+    "tensor_t",                         // Signal
+    "std::variant<void *, tensor_t>",   // Optional, shape = 0 & undefined
+    "std::vector<tensor_t>&"            // Variadic
 };
 
 /*
@@ -61,6 +61,43 @@ std::string parse_tag(const std::string& filename) {
         splittedStrings.push_back(item);
     }
     return splittedStrings[ splittedStrings.size() - 2];
+}
+
+void replace_all(std::string& str, const std::string& from, const std::string& to) {
+    size_t start_pos = 0;
+    while((start_pos = str.find(from, start_pos)) != std::string::npos) {
+        str.replace(start_pos, from.length(), to);
+        start_pos += to.length(); // Handles case where 'to' is a substring of 'from'
+    }
+}
+
+std::string attribute_type_name(int t) {
+    std::string type = "";
+    switch ( t ) {
+        case AttributeProto_AttributeType_FLOAT:
+            type = "double";
+            break;
+        case AttributeProto_AttributeType_INT:
+            type = "long";
+            break;
+        case AttributeProto_AttributeType_STRING:
+            type = "std::string";
+            break;
+        case AttributeProto_AttributeType_FLOATS:
+            type = "std::vector<double>";
+            break;
+        case AttributeProto_AttributeType_INTS:
+            type = "std::vector<long>";
+            break;
+        case AttributeProto_AttributeType_STRINGS:
+            type = "std::vector<std::string>";
+            break;
+        default:
+            break;
+    }
+    assert(type != "");
+
+    return type;
 }
 
 std::string api_generate(const OpSchema& op) {
@@ -101,34 +138,7 @@ std::string api_generate(const OpSchema& op) {
         std::ostringstream oss;
 
         std::string attr_name = i->first;
-        std::string type = "";
-        switch ( i->second.type ) {
-            case AttributeProto_AttributeType_FLOAT:
-                type = "double";
-                break;
-            case AttributeProto_AttributeType_INT:
-                type = "long";
-                break;
-            case AttributeProto_AttributeType_STRING:
-                type = "std::string";
-                break;
-            case AttributeProto_AttributeType_FLOATS:
-                type = "std::vector<double>";
-                break;
-            case AttributeProto_AttributeType_INTS:
-                type = "std::vector<long>";
-                break;
-            case AttributeProto_AttributeType_STRINGS:
-                type = "std::vector<std::string>";
-                break;
-            default:
-                break;
-        }
-        if ( type == "" ) {
-            std::cerr << "FIXME: can't be here !" << std::endl;
-            std::cout << op << std::endl;
-            exit(-1);
-        }
+        std::string type = attribute_type_name( i->second.type );
         if ( i == allAttributes.begin() ) {
             oss << "/*attributes:*/ ";
         }
@@ -136,7 +146,7 @@ std::string api_generate(const OpSchema& op) {
         if ( i->second.required ) {
             oss << type << " " << attr_name;
         } else {
-            oss << "std::variant<void *," << type << " > " << attr_name;
+            oss << "std::variant<void *, " << type << " > " << attr_name;
         }
 
         tokens.push_back( oss.str() );
@@ -159,20 +169,95 @@ std::string api_generate(const OpSchema& op) {
     return oss.str();
 }
 
-const char* impl_template =  R"~~(
+const char* word_template =  R"~~(
     struct #WORDNAME# : NativeWord<TensorType> {
-        virtual void boot(ValueStack<TensorType>& stack, WordHash<TensorType>& hash) {
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+#ATTR#
+
 
         }
         virtual void run(ValueStack<TensorType>& stack) {
+#ATTR#
 
         }
         NWORD_CREATOR_DEFINE(#WORDNAME#);
     }
 )~~";
 
+
+
 std::string impl_generate(const OpSchema& op) {
-    return impl_template;
+    std::string op_name = op.Name();
+
+    std::string code = word_template;
+    replace_all(code, "#WORDNAME#", op_name);
+
+    // parsing attr
+    {
+        std::ostringstream oss;
+
+        auto infos = op.attributes();
+        for ( auto i = infos.rbegin(); i != infos.rend(); i++) {
+            std::string aname = i->first;
+            int t = i->second.type;
+            int opt = (i->second.required == 0);
+
+            switch ( t ) {
+                case AttributeProto_AttributeType_FLOAT:
+                    if (opt) {
+                        oss << "\tauto " << aname << " = fetch_optional_float(stack);" << std::endl;
+                    } else {
+                        oss << "\tauto " << aname << " = fetch_float(stack);" << std::endl;
+                    }
+                    break;
+                case AttributeProto_AttributeType_INT:
+                    if (opt) {
+                        oss << "\tauto " << aname << " = fetch_optional_int(stack);" << std::endl;
+                    } else {
+                        oss << "\tauto " << aname << " = fetch_int(stack);" << std::endl;
+                    }
+                    break;
+                case AttributeProto_AttributeType_STRING:
+                    if (opt) {
+                        oss << "\tauto " << aname << " = fetch_optional_string(stack);" << std::endl;
+                    } else {
+                        oss << "\tauto " << aname << " = fetch_string(stack);" << std::endl;
+                    }
+                    break;
+                case AttributeProto_AttributeType_FLOATS:
+                    if (opt) {
+                        oss << "\tauto " << aname << " = fetch_optional_floats(stack);" << std::endl;
+                    } else {
+                        oss << "\tauto " << aname << " = fetch_floats(stack);" << std::endl;
+                    }
+                    break;
+                case AttributeProto_AttributeType_INTS:
+                    if (opt) {
+                        oss << "\tauto " << aname << " = fetch_optional_ints(stack);" << std::endl;
+                    } else {
+                        oss << "\tauto " << aname << " = fetch_ints(stack);" << std::endl;
+                    }
+                    break;
+                case AttributeProto_AttributeType_STRINGS:
+                    if (opt) {
+                        oss << "\tauto " << aname << " = fetch_optional_strings(stack);" << std::endl;
+                    } else {
+                        oss << "\tauto " << aname << " = fetch_strings(stack);" << std::endl;
+                    }
+                    break;
+                default:
+                    assert(false);
+                    break;
+            }
+        }
+        auto attr_code = oss.str();
+        replace_all(attr_code, "\t", "            ");
+        replace_all(code, "#ATTR#", attr_code);
+    }
+
+    return code;
 }
 
 int main(int argc, char* argv[]) {
@@ -220,15 +305,16 @@ int main(int argc, char* argv[]) {
     ofs.close();
 
     // 2. generating operator's implementation word, sorted by tags
-    ofs.open("onnx_impl.hpp", std::ofstream::out);
     for (auto i = operators_by_tag.begin(); i != operators_by_tag.end(); i++) {
+        std::string tag_file = "onnx_" + i->first + ".hpp";
+        ofs.open(tag_file, std::ofstream::out);
         ofs << "namespace " << i->first << " {" << std::endl;
         for (size_t ii = 0; ii < i->second.size(); ii++) {
             std::string api_code = impl_generate( schemas[ i->second[ii] ] );
             ofs << api_code << std::endl;
         }
         ofs << "}" << std::endl;
+        ofs.close();
     }
-    ofs.close();
 }
 

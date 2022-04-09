@@ -50,24 +50,111 @@ enum OperatorReturnType {
 
 /*
  *  https://github.com/onnx/onnx/blob/main/docs/IR.md#tensor-definition
- *  null:           an empty shape with a undefined data type, used as optional tensor
  *  scalar:         an empty shape with a defined data type
  *  tensor:         shape dimention > 0
+ *  undefined:      an empty shape with a undefined data type, used for typing output.
  */
 
 struct TensorType {
     TensorDataType dtype_;
     std::vector<size_t> shape_;
+
+    TensorType() {
+        dtype_ = TensorElementType::YNX_UNDEFINED;
+    }
     TensorType(TensorElementType dtype, std::vector<size_t>& shape) {
         dtype_ = dtype;
         shape_ = shape;
     }
 
     using tensor_t = std::shared_ptr<TensorType>;
-
 #include "onnx_def.hpp"
 
 };
+
+//
+//  some common help functions, and none-auto operators
+//
+
+static double fetch_float(ValueStack<TensorType>& stack) {
+    double v = stack.pop_number();
+    return v;
+}
+
+static long fetch_int(ValueStack<TensorType>& stack) {
+    long v = stack.pop_number();
+    return v;
+}
+
+static std::string fetch_string(ValueStack<TensorType>& stack) {
+    std::string v = stack.pop_string();
+    return v;
+}
+
+static std::vevtor<double> fetch_floats(ValueStack<TensorType>& stack) {
+    auto v = stack.pop_number_tuple();
+    std::vevtor<double> ret;
+    for (size_t i = 0; i < v.size(); i++) {
+        ret.push_back( v[i] );
+    }
+    return ret;
+}
+
+static std::vevtor<long> fetch_ints(ValueStack<TensorType>& stack) {
+    auto v = stack.pop_number_tuple();
+    std::vevtor<long> ret;
+    for (size_t i = 0; i < v.size(); i++) {
+        ret.push_back( v[i] );
+    }
+    return ret;
+}
+
+static std::vevtor<std::string> fetch_strings(ValueStack<TensorType>& stack) {
+    auto v = stack.pop_string_tuple();
+    return v;
+}
+
+static std::variant<void *, double> fetch_optional_float(ValueStack<TensorType>& stack) {
+    if ( stack.top().is_none() ) {
+        return std::variant<void *, double>(nullptr);
+    }
+    return std::variant<void *, double>( fetch_float(stack) );
+}
+
+static std::variant<void *, long> fetch_optional_int(ValueStack<TensorType>& stack) {
+    if ( stack.top().is_none() ) {
+        return std::variant<void *, long>(nullptr);
+    }
+    return std::variant<void *, long>( fetch_int(stack) );
+}
+
+static std::variant<void *, std::string> fetch_optional_string(ValueStack<TensorType>& stack) {
+    if ( stack.top().is_none() ) {
+        return std::variant<void *, std::string>(nullptr);
+    }
+    return std::variant<void *, std::string>( fetch_string(stack) );
+}
+
+static std::variant<void *, std::vector<double> > fetch_optional_floats(ValueStack<TensorType>& stack) {
+    if ( stack.top().is_none() ) {
+        return std::variant<void *, std::vector<double> >(nullptr);
+    }
+    return std::variant<void *, std::vector<double> >( fetch_floats(stack) );
+}
+
+static std::variant<void *, std::vector<long> > fetch_optional_int(ValueStack<TensorType>& stack) {
+    if ( stack.top().is_none() ) {
+        return std::variant<void *, std::vector<long> >(nullptr);
+    }
+    return std::variant<void *, std::vector<long> >( fetch_ints(stack) );
+}
+
+static std::variant<void *, std::vector<std::string> > fetch_optional_strings(ValueStack<TensorType>& stack) {
+    if ( stack.top().is_none() ) {
+        return std::variant<void *, std::vector<std::string>> (nullptr);
+    }
+    return std::variant<void *, std::vector<std::string> >( fetch_strings(stack) );
+}
 
 #include "onnx_impl.hpp"
 

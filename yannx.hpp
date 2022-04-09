@@ -63,6 +63,17 @@ public:
 
         return std::get<const std::string>(cell_);
     }
+    // none is a shadowed value, used for Optional parameters
+    bool is_none() {
+        if ( cell_.index() != ValueType::T_String ) {
+            return false;
+        }
+        std::string s = std::get<const std::string>(cell_);
+        if ( s == "") {
+            return true;
+        }
+        return false;
+    }
 
     YTensor tensor() {
         if ( cell_.index() != ValueType::T_Tensor ) {
@@ -174,7 +185,7 @@ struct ValueStack {
         return v.tensor();
     }
 
-    // fast acess psedo data struct : list & map
+    // fast acess psedo data struct : list
     const std::vector<YNumber> pop_number_tuple() {
         YNumber sn = pop_number();
         yannx_assert( roundf(sn) == sn, "pop_number_tuple: size must be integer!");
@@ -197,6 +208,18 @@ struct ValueStack {
         }
         return ret;
     }
+    const std::vector<std::string> pop_string_tuple() {
+        YNumber sn = pop_number();
+        yannx_assert( roundf(sn) == sn, "pop_string_tuple: size must be integer!");
+
+        std::vector<std::string> ret;
+        ret.resize( (size_t)sn);
+        for (size_t i = 0; i < ret.size(); i++) {
+            ret[ ret.size() - 1 - i ] = pop_string();
+        }
+        return ret;
+    }
+
 };
 
 template<class YT>
@@ -634,6 +657,16 @@ private:
                 }
             }
 
+            // check none value
+            if ( token == "none" ) {
+                nobj.type_ = SyntaxElement<YT>::T_String;
+                nobj.v_string = "";
+                target_code->push_back(nobj);
+
+                i = i + 1;
+                continue;
+            }
+
             // query words in dictionary
             if ( ndict_.find(token) != ndict_.end() ) {
                 nobj.type_ = SyntaxElement<YT>::T_NativeSymbol;
@@ -666,10 +699,6 @@ private:
                 continue;
             }
             if ( code[i].type_ == SyntaxElement<YT>::T_String ) {
-                binary.push_back(code[i]);
-                continue;
-            }
-            if ( code[i].type_ == SyntaxElement<YT>::T_Tuple ) {
                 binary.push_back(code[i]);
                 continue;
             }
