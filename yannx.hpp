@@ -170,6 +170,10 @@ struct ValueStack {
         auto v = top();
         return v.string();
     }
+    void push_none() {
+        Value<YT> v("");
+        push(v);
+    }
 
     void push_tensor(YTensor* t) {
         Value<YT> v(t);

@@ -8,6 +8,7 @@
 
 using namespace onnx;
 
+/*
 static const char* TensorDataType[] = {
     "TD_UNDEFINED",
     "TD_FLOAT",
@@ -28,13 +29,6 @@ static const char* TensorDataType[] = {
     "TD_BFLOAT16"
 };
 
-static const char* ParameterType[] = {
-    "tensor_t",                         // Signal
-    "std::variant<void *, tensor_t>",   // Optional, shape = 0 & undefined
-    "std::vector<tensor_t>&"            // Variadic
-};
-
-/*
 enum AttributeProto_AttributeType : int {
   AttributeProto_AttributeType_UNDEFINED = 0,
   AttributeProto_AttributeType_FLOAT = 1,
@@ -100,17 +94,23 @@ std::string attribute_type_name(int t) {
     return type;
 }
 
-std::string api_generate(const OpSchema& op) {
-    std::string op_name = op.Name();
 
+static const char* TensorParameterType[] = {
+    "tensor_t",                          // Signal
+    "std::variant<void *, tensor_t>&",   // Optional, shape = 0 & undefined
+    "std::vector<tensor_t>&"             // Variadic
+};
+
+std::string api_generate(const OpSchema& op) {
     std::vector<std::string> tokens;
 
+    std::string op_name = op.Name();
     auto allInputs = op.inputs();
     for(size_t i = 0; i < allInputs.size(); i++) {
         std::ostringstream oss;
 
         std::string iname = allInputs[i].GetName();
-        std::string pt = ParameterType[ allInputs[i].GetOption() ];
+        std::string pt = TensorParameterType[ allInputs[i].GetOption() ];
 
         if ( i == 0 ) {
             oss << "/*inputs:*/ ";
@@ -123,13 +123,13 @@ std::string api_generate(const OpSchema& op) {
     for(size_t i = 0; i < allOutputs.size(); i++) {
         std::ostringstream oss;
 
-        std::string iname = allOutputs[i].GetName();
-        std::string pt = ParameterType[ allOutputs[i].GetOption() ];
+        std::string oname = allOutputs[i].GetName();
+        std::string pt = TensorParameterType[ allOutputs[i].GetOption() ];
 
         if ( i == 0 ) {
             oss << "/*outputs:*/ ";
         }
-        oss << pt << " " << iname;
+        oss << pt << " " << oname;
         tokens.push_back( oss.str() );
     }
 
@@ -165,28 +165,33 @@ std::string api_generate(const OpSchema& op) {
     oss << ") {" << std::endl;
     oss << "    return YNX_TODO_ERROR;" << std::endl;
     oss << "}" << std::endl;
-
     return oss.str();
 }
 
 const char* word_template =  R"~~(
     struct #WORDNAME# : NativeWord<TensorType> {
+#OUTPUT_DEF#
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
-
+#OUTPUT_INIT#
 #ATTR#
-
-
+#INPUT#
+            if ( #CALL_API# != YNX_OK ) {
+                yannx_panic("API: #WORDNAME#  return error!");
+            }
+#RETURN_OUTPUT#
         }
         virtual void run(ValueStack<TensorType>& stack) {
 #ATTR#
-
+#INPUT#
+            if ( #CALL_API# != YNX_OK ) {
+                yannx_panic("API: #WORDNAME#  return error!");
+            }
+#RETURN_OUTPUT#
         }
         NWORD_CREATOR_DEFINE(#WORDNAME#);
     }
 )~~";
-
-
 
 std::string impl_generate(const OpSchema& op) {
     std::string op_name = op.Name();
@@ -257,6 +262,126 @@ std::string impl_generate(const OpSchema& op) {
         replace_all(code, "#ATTR#", attr_code);
     }
 
+    // processing input
+    {
+        std::ostringstream oss;
+
+        auto allInputs = op.inputs();
+        for(size_t i = 0; i < allInputs.size(); i++) {
+            std::string iname = allInputs[i].GetName();
+            int opt = allInputs[i].GetOption();
+            if ( opt == 0 ) {
+                oss << "\tauto " << iname << " = fetch_tensor(stack);" << std::endl;
+            } else if ( opt == 1) {
+                oss << "\tauto " << iname << " = fetch_optional_tensor(stack);" << std::endl;
+            } else {
+                oss << "\tauto " << iname << " = fetch_tensors(stack);" << std::endl;
+            }
+        }
+        auto input_code = oss.str();
+        replace_all(input_code, "\t", "            ");
+        replace_all(code, "#INPUT#", input_code);
+    }
+
+    //processing output
+    {
+        auto allOutputs = op.outputs();
+        {
+            std::ostringstream oss;
+            for(size_t i = 0; i < allOutputs.size(); i++) {
+                int opt = allOutputs[i].GetOption();
+                std::string oname = allOutputs[i].GetName();
+
+                if ( opt == 0 ) {        // Single
+                    oss << "\ttensor_t " << oname << ";" << std::endl;
+                } else if ( opt == 1) {  // Optional
+                    oss << "\tstd::variant<void *, tensor_t> " << oname << "(nullptr);" << std::endl;
+                } else {                 // Variadic
+                    oss << "\tstd::vector<tensor_t>" << oname << ";" << std::endl;
+                }
+            }
+            std::string output_def = oss.str();
+            replace_all(output_def, "\t", "        ");
+            replace_all(code, "#OUTPUT_DEF#", output_def);
+        }
+
+        {
+            std::ostringstream oss;
+            for(size_t i = 0; i < allOutputs.size(); i++) {
+                std::string oname = allOutputs[i].GetName();
+                int opt = allOutputs[i].GetOption();
+                if ( opt == 0 ) {        // Single
+                    oss << "\t" << oname << " = create_undefined_tensor();" << std::endl;
+                }
+            }
+            std::string output_init = oss.str();
+            replace_all(output_init, "\t", "            ");
+            replace_all(code, "#OUTPUT_INIT#", output_init);
+        }
+    }
+
+    // call api
+    {
+        std::ostringstream oss;
+
+        // find first tensor to executing API
+        auto allInputs = op.inputs();
+        auto allOutputs = op.outputs();
+        auto allAttrs = op.attributes();
+        if ( allInputs.size() > 0 && allInputs[0].GetOption() == 0) {
+            oss << allInputs[0].GetName() << "->";
+        } else if ( allOutputs.size() > 0 && allOutputs[0].GetOption() == 0) {
+            oss << allOutputs[0].GetName() << "->";
+        } else {
+            std::cerr << op << std::endl;
+            assert(false);
+        }
+
+        oss << "onnx_" << op.Name() << "(";
+
+        std::vector<std::string> tokens;
+        for(size_t i = 0; i < allInputs.size(); i++) {
+            tokens.push_back( allInputs[i].GetName() );
+        }
+        for(size_t i = 0; i < allOutputs.size(); i++) {
+            tokens.push_back( allOutputs[i].GetName() );
+        }
+        for (auto i = allAttrs.begin(); i != allAttrs.end(); i++) {
+            tokens.push_back(i->first);
+        }
+
+        for (size_t i = 0; i < tokens.size(); i++) {
+            oss << tokens[i] ;
+            if ( i != tokens.size() - 1) {
+                oss << ", ";
+            }
+        }
+        oss << ")";
+
+        std::string api_str = oss.str();
+        //replace_all(api_str, "\t", "            ");
+        replace_all(code, "#CALL_API#", api_str);
+    }
+
+    // return api
+    {
+        std::ostringstream oss;
+        auto allOutputs = op.outputs();
+        for(size_t i = 0; i < allOutputs.size(); i++) {
+            int opt = allOutputs[i].GetOption();
+            if ( opt == 0 ) {
+                oss << "\tput_tensor(" << allOutputs[i].GetName() << ");" << std::endl;
+            } else if ( opt == 1) {
+                oss << "\tput_optional_tensor(" << allOutputs[i].GetName() << ");" << std::endl;
+            } else {
+                oss << "\tput_tensors(" << allOutputs[i].GetName() << ");" << std::endl;
+            }
+        }
+
+        std::string ret_str = oss.str();
+        replace_all(ret_str, "\t", "            ");
+        replace_all(code, "#RETURN_OUTPUT#", ret_str);
+    }
     return code;
 }
 
@@ -279,7 +404,7 @@ int main(int argc, char* argv[]) {
         auto op = schemas[i];
 
         std::string tag = parse_tag( op.file() );
-        if ( tag == "traditionalml" || tag == "controlflow" ) {
+        if ( tag == "traditionalml" || tag == "controlflow" || tag == "training" ) {
             continue;
         }
 

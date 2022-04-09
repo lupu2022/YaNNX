@@ -7,46 +7,21 @@
 
 #include <yannx.hpp>
 
-#include <onnx/defs/schema.h>
-#include <onnx/defs/shape_inference.h>
-
 //
 //  A simple Dummy Tensor followed Onnx's define
 //  https://github.com/onnx/onnx/blob/main/docs/IR.md
 //  https://github.com/onnx/onnx/blob/main/docs/Operators.md
 //
 
-
 namespace yannx {
 
-enum TensorDataType {
-    YNX_UNDEFINED = 0,
-    YNX_FLOAT = 1,
-    YNX_UINT8 = 2,
-    YNX_INT8 = 3,
-    YNX_UINT16 = 4,
-    YNX_INT16 = 5,
-    YNX_INT32 = 6,
-    YNX_INT64 = 7,
-    YNX_STRING = 8,
-    YNX_BOOL = 9,
-    YNX_FLOAT16 = 10,
-    YNX_DOUBLE = 11,
-    YNX_UINT32 = 12,
-    YNX_UINT64 = 13,
-    YNX_COMPLEX64 = 14,
-    YNX_COMPLEX128 = 15,
-    YNX_BFLOAT16 = 16
-};
-
 enum OperatorReturnType {
-    YNX_SUCCESS = 0,
+    YNX_OK = 0,
     YNX_TODO_ERROR = -1,
     YNX_INPUT_ERROR = -2,
     YNX_OUTPUT_ERROR = -3,
     YNX_ATTR_ERROR = -4,
 };
-
 
 /*
  *  https://github.com/onnx/onnx/blob/main/docs/IR.md#tensor-definition
@@ -54,6 +29,9 @@ enum OperatorReturnType {
  *  tensor:         shape dimention > 0
  *  undefined:      an empty shape with a undefined data type, used for typing output.
  */
+
+struct TensorType;
+using tensor_t = std::shared_ptr<TensorType>;
 
 struct TensorType {
     TensorDataType dtype_;
@@ -67,15 +45,19 @@ struct TensorType {
         shape_ = shape;
     }
 
-    using tensor_t = std::shared_ptr<TensorType>;
-#include "onnx_def.hpp"
-
+    #include "onnx_defs.hpp"
 };
+
+//
+//  User must be re-implement, return user side undefined tensor!
+//
+std::shared_ptr<TensorType> create_undefined_tensor() {
+    return nullptr;
+}
 
 //
 //  some common help functions, and none-auto operators
 //
-
 static double fetch_float(ValueStack<TensorType>& stack) {
     double v = stack.pop_number();
     return v;
@@ -88,6 +70,11 @@ static long fetch_int(ValueStack<TensorType>& stack) {
 
 static std::string fetch_string(ValueStack<TensorType>& stack) {
     std::string v = stack.pop_string();
+    return v;
+}
+
+static double fetch_tensor(ValueStack<TensorType>& stack) {
+    double v = stack.pop_tensor();
     return v;
 }
 
@@ -114,6 +101,11 @@ static std::vevtor<std::string> fetch_strings(ValueStack<TensorType>& stack) {
     return v;
 }
 
+static std::vevtor<std::string> fetch_tensors(ValueStack<TensorType>& stack) {
+    auto v = stack.pop_tensor_tuple();
+    return v;
+}
+
 static std::variant<void *, double> fetch_optional_float(ValueStack<TensorType>& stack) {
     if ( stack.top().is_none() ) {
         return std::variant<void *, double>(nullptr);
@@ -135,6 +127,13 @@ static std::variant<void *, std::string> fetch_optional_string(ValueStack<Tensor
     return std::variant<void *, std::string>( fetch_string(stack) );
 }
 
+static std::variant<void *, tensor_t> fetch_optional_tensor(ValueStack<TensorType>& stack) {
+    if ( stack.top().is_none() ) {
+        return std::variant<void *, tensor>(nullptr);
+    }
+    return std::variant<void *, tensor_t>( fetch_tensor(stack) );
+}
+
 static std::variant<void *, std::vector<double> > fetch_optional_floats(ValueStack<TensorType>& stack) {
     if ( stack.top().is_none() ) {
         return std::variant<void *, std::vector<double> >(nullptr);
@@ -154,6 +153,25 @@ static std::variant<void *, std::vector<std::string> > fetch_optional_strings(Va
         return std::variant<void *, std::vector<std::string>> (nullptr);
     }
     return std::variant<void *, std::vector<std::string> >( fetch_strings(stack) );
+}
+
+static void put_tensor(ValueStack<TensorType>& stack, tensor_t t) {
+    stack.push_tensor(t);
+}
+
+static void put_tensors(ValueStack<TensorType>& stack, std::vector<tensor_t>& ts) {
+    for (size_t i = 0; i < ts.size(); i++) {
+        stack.push_tensor(t);
+    }
+    stack.push_number(ts.size());
+}
+
+static void put_optional_tensors(ValueStack<TensorType>& stack, std::variant<void*, tensor_t>& ot) {
+    if ( ot.index() == 0) {
+        stack.push_none();
+        return;
+    }
+    stack.push_tensor( std::get<1>(ot) );
 }
 
 #include "onnx_impl.hpp"
