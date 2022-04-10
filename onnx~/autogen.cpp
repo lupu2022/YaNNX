@@ -9,26 +9,6 @@
 using namespace onnx;
 
 /*
-static const char* TensorDataType[] = {
-    "TD_UNDEFINED",
-    "TD_FLOAT",
-    "TD_UINT8",
-    "TD_INT8",
-    "TD_UINT16",
-    "TD_INT16",
-    "TD_INT32",
-    "TD_INT64",
-    "TD_STRING",
-    "TD_BOOL",
-    "TD_FLOAT16",
-    "TD_DOUBLE",
-    "TD_UINT32",
-    "TD_UINT64",
-    "TD_COMPLEX64",
-    "TD_COMPLEX128",
-    "TD_BFLOAT16"
-};
-
 enum AttributeProto_AttributeType : int {
   AttributeProto_AttributeType_UNDEFINED = 0,
   AttributeProto_AttributeType_FLOAT = 1,
@@ -153,8 +133,8 @@ std::string api_generate(const OpSchema& op) {
     }
 
     std::ostringstream oss;
-    oss << "// https://github.com/onnx/onnx/blob/main/docs/Operators.md#" << op_name << std::endl;
-    oss << "virtual OperatorReturnType onnx_" << op_name << "(";
+    oss << "\t// https://github.com/onnx/onnx/blob/main/docs/Operators.md#" << op_name << std::endl;
+    oss << "\tvirtual OperatorReturnType onnx_" << op_name << "(";
 
     for (size_t i = 0; i < tokens.size(); i++) {
         oss << tokens[i] ;
@@ -164,8 +144,8 @@ std::string api_generate(const OpSchema& op) {
     }
 
     oss << ") {" << std::endl;
-    oss << "    return YNX_TODO_ERROR;" << std::endl;
-    oss << "}" << std::endl;
+    oss << "\t    return YNX_TODO_ERROR;" << std::endl;
+    oss << "\t}" << std::endl;
     return oss.str();
 }
 
@@ -174,7 +154,13 @@ const char* word_template =  R"~~(
 #OUTPUT_DEF#
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
+
+#ifdef USING_NOONX
+
+#else
 #OUTPUT_INIT#
+#endif
+
 #ATTR#
 #INPUT#
             if ( #CALL_API# != YNX_OK ) {
@@ -386,11 +372,28 @@ std::string impl_generate(const OpSchema& op) {
     return code;
 }
 
+std::string fileToString(const char* filename) {
+    std::ifstream t(filename);
+    std::string str;
+
+    t.seekg(0, std::ios::end);
+    str.reserve(t.tellg());
+    t.seekg(0, std::ios::beg);
+
+    str.assign((std::istreambuf_iterator<char>(t)),
+        std::istreambuf_iterator<char>());
+
+    return str;
+}
+
+
 int main(int argc, char* argv[]) {
     const std::vector<OpSchema> schemas = OpSchemaRegistry::get_all_schemas();
 
     std::map<std::string, size_t> operators_by_name;
     std::map<std::string, std::vector<size_t> > operators_by_tag;
+
+    auto result = fileToString("tensortype~.hpp");
 
     // 0. fast scaning all the operators
     for (size_t i = 0; i < schemas.size(); i++) {
@@ -421,25 +424,32 @@ int main(int argc, char* argv[]) {
     }
 
     // 1. generating operator's API definement, sorted by abc
-    std::ofstream ofs;
-    ofs.open("onnx_def.hpp", std::ofstream::out);
+    std::ostringstream oss;
     for (auto ii = operators_by_name.begin(); ii != operators_by_name.end(); ii++) {
         std::string api_code = api_generate( schemas[ ii->second ] );
-        ofs << api_code << std::endl;
+        oss << api_code << std::endl;
     }
-    ofs.close();
+    replace_all(result, "#ONNX_DEF#", oss.str());
+    oss.clear();
 
     // 2. generating operator's implementation word, sorted by tags
     for (auto i = operators_by_tag.begin(); i != operators_by_tag.end(); i++) {
-        std::string tag_file = "onnx_" + i->first + ".hpp";
-        ofs.open(tag_file, std::ofstream::out);
-        ofs << "namespace " << i->first << " {" << std::endl;
+        oss << "namespace " << i->first << " {" << std::endl;
         for (size_t ii = 0; ii < i->second.size(); ii++) {
             std::string api_code = impl_generate( schemas[ i->second[ii] ] );
-            ofs << api_code << std::endl;
+            oss << api_code << std::endl;
         }
-        ofs << "}" << std::endl;
-        ofs.close();
+        oss << "}" << std::endl;
     }
+    std::string def_str = oss.str();
+    replace_all(def_str, "\t", "    ");
+    replace_all(result, "#ONNX_IMPL#", def_str);
+    oss.clear();
+
+    // 3. writing final result to file
+    std::ofstream ofs;
+    ofs.open("tensortype.hpp");
+    ofs << result;
+    ofs.close();
 }
 

@@ -1,14 +1,24 @@
-#ifndef _ONNX_IMPL_HPP_
-#define _ONNX_IMPL_HPP_
+//
+//  this file is geneated by onnx~/autogen
+//
+
+#ifndef _YANXX_TENSORTYPE_HPP_
+#define _YANNX_TENSORTYPE_HPP_
 
 #include <vector>
 #include <string>
 #include <algorithm>
 
+#ifdef USING_ONNX
+#include <onnx/onnx_pb.h>
+#include <onnx/defs/schema.h>
+#include <onnx/shape_inference/implementation.h>
+#endif
+
 #include <yannx.hpp>
 
 //
-//  A simple Dummy Tensor followed Onnx's define
+//  A simple onnx based (type and shape inference only, or a pure dummy tensor ) Tensor.following ONNX IR
 //  https://github.com/onnx/onnx/blob/main/docs/IR.md
 //  https://github.com/onnx/onnx/blob/main/docs/Operators.md
 //
@@ -23,15 +33,61 @@ enum OperatorReturnType {
     YNX_ATTR_ERROR = -4,
 };
 
+enum TensorDataType {
+    YNX_UNDEFINED,
+    YNX_FLOAT,
+    YNX_UINT8,
+    YNX_INT8,
+    YNX_UINT16,
+    YNX_INT16,
+    YNX_INT32,
+    YNX_INT64,
+    YNX_STRING,
+    YNX_BOOL,
+    YNX_FLOAT16,
+    YNX_DOUBLE,
+    YNX_UINT32,
+    YNX_UINT64,
+    YNX_COMPLEX64,
+    YNX_COMPLEX128,
+    YNX_BFLOAT16
+};
+
+static const char* TensorDataTypeString[] = {
+    "YNX_UNDEFINED",
+    "YNX_FLOAT",
+    "YNX_UINT8",
+    "YNX_INT8",
+    "YNX_UINT16",
+    "YNX_INT16",
+    "YNX_INT32",
+    "YNX_INT64",
+    "YNX_STRING",
+    "YNX_BOOL",
+    "YNX_FLOAT16",
+    "YNX_DOUBLE",
+    "YNX_UINT32",
+    "YNX_UINT64",
+    "YNX_COMPLEX64",
+    "YNX_COMPLEX128",
+    "YNX_BFLOAT16"
+};
+
+
 /*
  *  https://github.com/onnx/onnx/blob/main/docs/IR.md#tensor-definition
  *  scalar:         an empty shape with a defined data type
  *  tensor:         shape dimention > 0
- *  undefined:      an empty shape with a undefined data type, used for typing output.
+ *  undefined:      empty shape with a undefined data type, used for type_shape inference.
  */
 
 struct TensorType;
 using tensor_t = std::shared_ptr<TensorType>;
+
+//
+//  User must be re-implement, return user side undefined tensor!
+//
+extern tensor_t create_undefined_tensor();
 
 struct TensorType {
     TensorDataType dtype_;
@@ -45,15 +101,10 @@ struct TensorType {
         shape_ = shape;
     }
 
-    #include "onnx_defs.hpp"
+#ONNX_DEF#
+
 };
 
-//
-//  User must be re-implement, return user side undefined tensor!
-//
-std::shared_ptr<TensorType> create_undefined_tensor() {
-    return nullptr;
-}
 
 //
 //  some common help functions, and none-auto operators
@@ -174,7 +225,7 @@ static void put_optional_tensors(ValueStack<TensorType>& stack, std::variant<voi
     stack.push_tensor( std::get<1>(ot) );
 }
 
-#include "onnx_impl.hpp"
+#ONNX_IMPL#
 
 }
 #endif
