@@ -153,6 +153,7 @@ std::string api_generate(const OpSchema& op) {
     }
 
     std::ostringstream oss;
+    oss << "// https://github.com/onnx/onnx/blob/main/docs/Operators.md#" << op_name << std::endl;
     oss << "virtual OperatorReturnType onnx_" << op_name << "(";
 
     for (size_t i = 0; i < tokens.size(); i++) {
@@ -407,7 +408,6 @@ int main(int argc, char* argv[]) {
         if ( tag == "traditionalml" || tag == "controlflow" || tag == "training" ) {
             continue;
         }
-
         std::string name = schemas[i].Name();
         if ( name.find("Constant") != std::string::npos ) {
             continue;
