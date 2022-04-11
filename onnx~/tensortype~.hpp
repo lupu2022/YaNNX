@@ -262,13 +262,23 @@ static void put_tensors(ValueStack<TensorType>& stack, std::vector<tensor_t>& ts
     stack.push_number(ts.size());
 }
 
-static void put_optional_tensors(ValueStack<TensorType>& stack, std::variant<void*, tensor_t>& ot) {
+static void put_optional_tensor(ValueStack<TensorType>& stack, std::variant<void*, tensor_t>& ot) {
     if ( ot.index() == 0) {
         stack.push_none();
         return;
     }
     stack.push_tensor( std::get<1>(ot) );
 }
+
+#define NWORD_CREATOR_DEFINE_TENSORTYPE(CLS)                                                \
+    static std::shared_ptr<NativeWord<TensorType> >   creator(Runtime<TensorType>& rt ) {   \
+        std::shared_ptr<NativeWord<TensorType> > wd(new CLS());                             \
+        return wd;                                                                          \
+    }
+
+#ONNX_IMPL#
+
+
 
 }
 #endif

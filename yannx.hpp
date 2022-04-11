@@ -748,11 +748,12 @@ private:
     std::vector<Value<YT> > stack_;
 };
 
-#define NWORD_CREATOR_DEFINE(CLS)               \
+#define NWORD_CREATOR_DEFINE(CLS)                                                           \
     static std::shared_ptr<NativeWord<YT> >   creator(Runtime<YT>& rt ) {   \
-        std::shared_ptr<NativeWord<YT> > wd(new CLS<YT> ());             \
-        return wd;                              \
+        std::shared_ptr<NativeWord<YT> > wd(new CLS<YT> ());                        \
+        return wd;                                                                          \
     }
+
 
 namespace builtin {
 

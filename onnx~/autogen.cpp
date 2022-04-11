@@ -178,8 +178,8 @@ const char* word_template =  R"~~(
             }
 #RETURN_OUTPUT#
         }
-        NWORD_CREATOR_DEFINE(#WORDNAME#);
-    }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(#WORDNAME#)
+    };
 )~~";
 
 std::string impl_generate(const OpSchema& op) {
@@ -284,7 +284,7 @@ std::string impl_generate(const OpSchema& op) {
                 if ( opt == 0 ) {        // Single
                     oss << "\ttensor_t " << oname << ";" << std::endl;
                 } else if ( opt == 1) {  // Optional
-                    oss << "\tstd::variant<void *, tensor_t> " << oname << "(nullptr);" << std::endl;
+                    oss << "\tstd::variant<void *, tensor_t> " << oname << ";" << std::endl;
                 } else {                 // Variadic
                     oss << "\tstd::vector<tensor_t>" << oname << ";" << std::endl;
                 }
@@ -359,11 +359,11 @@ std::string impl_generate(const OpSchema& op) {
         for(size_t i = 0; i < allOutputs.size(); i++) {
             int opt = allOutputs[i].GetOption();
             if ( opt == 0 ) {
-                oss << "\tput_tensor(" << allOutputs[i].GetName() << ");" << std::endl;
+                oss << "\tput_tensor(stack, " << allOutputs[i].GetName() << ");" << std::endl;
             } else if ( opt == 1) {
-                oss << "\tput_optional_tensor(" << allOutputs[i].GetName() << ");" << std::endl;
+                oss << "\tput_optional_tensor(stack, " << allOutputs[i].GetName() << ");" << std::endl;
             } else {
-                oss << "\tput_tensors(" << allOutputs[i].GetName() << ");" << std::endl;
+                oss << "\tput_tensors(stack, " << allOutputs[i].GetName() << ");" << std::endl;
             }
         }
 
@@ -426,27 +426,32 @@ int main(int argc, char* argv[]) {
     }
 
     // 1. generating operator's API definement, sorted by abc
-    std::ostringstream oss;
-    for (auto ii = operators_by_name.begin(); ii != operators_by_name.end(); ii++) {
-        std::string api_code = api_generate( schemas[ ii->second ] );
-        oss << api_code << std::endl;
-    }
-    replace_all(result, "#ONNX_DEF#", oss.str());
-    oss.clear();
-
-    // 2. generating operator's implementation word, sorted by tags
-    for (auto i = operators_by_tag.begin(); i != operators_by_tag.end(); i++) {
-        oss << "namespace " << i->first << " {" << std::endl;
-        for (size_t ii = 0; ii < i->second.size(); ii++) {
-            std::string api_code = impl_generate( schemas[ i->second[ii] ] );
+    {
+        std::ostringstream oss;
+        for (auto ii = operators_by_name.begin(); ii != operators_by_name.end(); ii++) {
+            std::string api_code = api_generate( schemas[ ii->second ] );
             oss << api_code << std::endl;
         }
-        oss << "}" << std::endl;
+        replace_all(result, "#ONNX_DEF#", oss.str());
+        oss.clear();
     }
-    std::string def_str = oss.str();
-    replace_all(def_str, "\t", "    ");
-    //replace_all(result, "#ONNX_IMPL#", def_str);
-    oss.clear();
+
+    // 2. generating operator's implementation word, sorted by tags
+    {
+        std::ostringstream oss;
+        for (auto i = operators_by_tag.begin(); i != operators_by_tag.end(); i++) {
+            oss << "namespace " << i->first << " {" << std::endl;
+            for (size_t ii = 0; ii < i->second.size(); ii++) {
+                std::string api_code = impl_generate( schemas[ i->second[ii] ] );
+                oss << api_code << std::endl;
+            }
+            oss << "}" << std::endl;
+        }
+        std::string def_str = oss.str();
+        replace_all(def_str, "\t", "    ");
+        replace_all(result, "#ONNX_IMPL#", def_str);
+        oss.clear();
+    }
 
     // 3. writing final result to file
     std::ofstream ofs;
