@@ -7,6 +7,7 @@
 
 #include <vector>
 #include <string>
+#include <sstream>
 #include <algorithm>
 
 #ifdef USING_ONNX
@@ -99,6 +100,19 @@ struct TensorType {
     TensorType(TensorElementType dtype, std::vector<size_t>& shape) {
         dtype_ = dtype;
         shape_ = shape;
+    }
+    virtual std::string to_string() {
+        std::ostringstream ss;
+        ss << TensorDataTypeString[dtype_];
+        ss << ":[";
+        for (size_t i = 0; i < shape_.size(); i++) {
+            ss << shape_[i];
+            if (i != shape_.size() - 1) {
+                ss << " ";
+            }
+        }
+        ss << "]";
+        return ss.str();
     }
 
 #ONNX_DEF#

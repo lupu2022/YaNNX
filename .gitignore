@@ -2,4 +2,4 @@
 tools/repl/repl
 onnx~/autogen
 
-onnx~/onnx_*.hpp
+onnx~/tensortype.hpp
