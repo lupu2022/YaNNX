@@ -12,9 +12,9 @@ $(TARGET): autogen.cpp
 	g++ $(FLAGS) -o $@ $^ $(INC) $(LINK) 
 
 install: $(TARGET)
-	LD_LIBRARY_PATH=$(ONNX_PATH)/lib:$(PROTOBUF_PATH)/lib:$LD_LIBRARY_PATH ./autogen
-	mv tensortype.hpp ../	
-	
+	LD_LIBRARY_PATH=$(ONNX_PATH)/lib:$(PROTOBUF_PATH)/lib:$LD_LIBRARY_PATH ./$(TARGET)
+	mv tensortype.hpp ../tensortype.hpp
+
 clean:
 	rm -f $(TARGET)
 	rm -f tensortype.hpp

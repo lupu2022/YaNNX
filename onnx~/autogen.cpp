@@ -445,7 +445,7 @@ int main(int argc, char* argv[]) {
     }
     std::string def_str = oss.str();
     replace_all(def_str, "\t", "    ");
-    replace_all(result, "#ONNX_IMPL#", def_str);
+    //replace_all(result, "#ONNX_IMPL#", def_str);
     oss.clear();
 
     // 3. writing final result to file

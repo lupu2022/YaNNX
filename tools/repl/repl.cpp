@@ -2,6 +2,7 @@
 #include <fstream>
 
 #include "yannx.hpp"
+#include "tensortype.hpp"
 
 std::string fileToString(const char* filename) {
     std::ifstream t(filename);

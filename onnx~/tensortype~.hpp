@@ -95,9 +95,9 @@ struct TensorType {
     std::vector<size_t> shape_;
 
     TensorType() {
-        dtype_ = TensorElementType::YNX_UNDEFINED;
+        dtype_ = TensorDataType::YNX_UNDEFINED;
     }
-    TensorType(TensorElementType dtype, std::vector<size_t>& shape) {
+    TensorType(TensorDataType dtype, std::vector<size_t>& shape) {
         dtype_ = dtype;
         shape_ = shape;
     }
@@ -121,39 +121,30 @@ struct TensorType {
 
 #ifdef USING_ONNX
 struct YNXInferenceContextImpl : public InferenceContext {
-
     const AttributeProto* getAttribute(const std::string& name) override {
         return nullptr;
     }
-
     size_t getNumInputs() const override {
         return 0;
     }
-
     const TypeProto* getInputType(size_t index) const override {
         return nullptr;
     }
-
     const TensorProto* getInputData(size_t index) const override {
         return nullptr;
     }
-
     const TensorShapeProto* getSymbolicInput(size_t index) const override {
         return nullptr;
     }
-
     const SparseTensorProto* getInputSparseData(size_t index) const override {
         return nullptr;
     }
-
     size_t getNumOutputs() const override {
-        return nullptr;
+        return 0;
     }
-
     virtual TypeProto* getOutputType(size_t index) override {
         return nullptr;
     }
-
     GraphInferencer* getGraphAttributeInferencer( const std::string& attr_name) override {
         return nullptr;
     }
@@ -178,35 +169,35 @@ static std::string fetch_string(ValueStack<TensorType>& stack) {
     return v;
 }
 
-static double fetch_tensor(ValueStack<TensorType>& stack) {
-    double v = stack.pop_tensor();
+static tensor_t fetch_tensor(ValueStack<TensorType>& stack) {
+    auto v = stack.pop_tensor();
     return v;
 }
 
-static std::vevtor<double> fetch_floats(ValueStack<TensorType>& stack) {
+static std::vector<double> fetch_floats(ValueStack<TensorType>& stack) {
     auto v = stack.pop_number_tuple();
-    std::vevtor<double> ret;
+    std::vector<double> ret;
     for (size_t i = 0; i < v.size(); i++) {
         ret.push_back( v[i] );
     }
     return ret;
 }
 
-static std::vevtor<long> fetch_ints(ValueStack<TensorType>& stack) {
+static std::vector<long> fetch_ints(ValueStack<TensorType>& stack) {
     auto v = stack.pop_number_tuple();
-    std::vevtor<long> ret;
+    std::vector<long> ret;
     for (size_t i = 0; i < v.size(); i++) {
         ret.push_back( v[i] );
     }
     return ret;
 }
 
-static std::vevtor<std::string> fetch_strings(ValueStack<TensorType>& stack) {
+static std::vector<std::string> fetch_strings(ValueStack<TensorType>& stack) {
     auto v = stack.pop_string_tuple();
     return v;
 }
 
-static std::vevtor<std::string> fetch_tensors(ValueStack<TensorType>& stack) {
+static std::vector<tensor_t> fetch_tensors(ValueStack<TensorType>& stack) {
     auto v = stack.pop_tensor_tuple();
     return v;
 }
@@ -234,7 +225,7 @@ static std::variant<void *, std::string> fetch_optional_string(ValueStack<Tensor
 
 static std::variant<void *, tensor_t> fetch_optional_tensor(ValueStack<TensorType>& stack) {
     if ( stack.top().is_none() ) {
-        return std::variant<void *, tensor>(nullptr);
+        return std::variant<void *, tensor_t>(nullptr);
     }
     return std::variant<void *, tensor_t>( fetch_tensor(stack) );
 }
@@ -246,7 +237,7 @@ static std::variant<void *, std::vector<double> > fetch_optional_floats(ValueSta
     return std::variant<void *, std::vector<double> >( fetch_floats(stack) );
 }
 
-static std::variant<void *, std::vector<long> > fetch_optional_int(ValueStack<TensorType>& stack) {
+static std::variant<void *, std::vector<long> > fetch_optional_ints(ValueStack<TensorType>& stack) {
     if ( stack.top().is_none() ) {
         return std::variant<void *, std::vector<long> >(nullptr);
     }
@@ -266,7 +257,7 @@ static void put_tensor(ValueStack<TensorType>& stack, tensor_t t) {
 
 static void put_tensors(ValueStack<TensorType>& stack, std::vector<tensor_t>& ts) {
     for (size_t i = 0; i < ts.size(); i++) {
-        stack.push_tensor(t);
+        stack.push_tensor(ts[i]);
     }
     stack.push_number(ts.size());
 }
@@ -278,8 +269,6 @@ static void put_optional_tensors(ValueStack<TensorType>& stack, std::variant<voi
     }
     stack.push_tensor( std::get<1>(ot) );
 }
-
-#ONNX_IMPL#
 
 }
 #endif

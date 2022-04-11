@@ -1,5 +1,5 @@
 #ifndef _YANNX_HPP_
-#define _YANXX_HPP_
+#define _YANNX_HPP_
 
 #include <iostream>
 #include <map>
@@ -53,7 +53,7 @@ public:
             yannx_panic("Value type error!");
         }
 
-        return std::get<YNumber>(cell_);
+        return std::get<0>(cell_);
     }
 
     const std::string& string() {
@@ -68,7 +68,7 @@ public:
         if ( cell_.index() != ValueType::T_String ) {
             return false;
         }
-        std::string s = std::get<const std::string>(cell_);
+        std::string s = std::get<1>(cell_);
         if ( s == "") {
             return true;
         }
@@ -86,9 +86,9 @@ public:
     std::string to_string() {
         std::ostringstream ss;
         if ( cell_.index() == ValueType::T_Number ) {
-            ss << std::get<YNumber>(cell_) ;
+            ss << std::get<0>(cell_) ;
         } else if ( cell_.index() == ValueType::T_String ) {
-            ss << std::get<std::string>(cell_);
+            ss << std::get<1>(cell_);
         } else {
             ss << "<tensor>";
         }
@@ -162,9 +162,9 @@ struct ValueStack {
         Value<YT> v(s);
         push(v);
     }
-    std::string& pop_string() {
+    std::string pop_string() {
         auto v = pop();
-        return v.string();
+        return v.to_string();
     }
     const char* top_string() {
         auto v = top();
@@ -175,7 +175,7 @@ struct ValueStack {
         push(v);
     }
 
-    void push_tensor(YTensor* t) {
+    void push_tensor(YTensor t) {
         Value<YT> v(t);
         push(v);
     }
@@ -201,11 +201,11 @@ struct ValueStack {
         }
         return ret;
     }
-    const std::vector<YTensor*> pop_tensor_tuple() {
+    const std::vector<YTensor> pop_tensor_tuple() {
         YNumber sn = pop_number();
         yannx_assert( roundf(sn) == sn, "pop_tensor_tuple: size must be integer!");
 
-        std::vector<YTensor*> ret;
+        std::vector<YTensor> ret;
         ret.resize( (size_t)sn);
         for (size_t i = 0; i < ret.size(); i++) {
             ret[ ret.size() - 1 - i ] = pop_tensor();
