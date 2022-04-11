@@ -119,6 +119,46 @@ struct TensorType {
 
 };
 
+#ifdef USING_ONNX
+struct YNXInferenceContextImpl : public InferenceContext {
+
+    const AttributeProto* getAttribute(const std::string& name) override {
+        return nullptr;
+    }
+
+    size_t getNumInputs() const override {
+        return 0;
+    }
+
+    const TypeProto* getInputType(size_t index) const override {
+        return nullptr;
+    }
+
+    const TensorProto* getInputData(size_t index) const override {
+        return nullptr;
+    }
+
+    const TensorShapeProto* getSymbolicInput(size_t index) const override {
+        return nullptr;
+    }
+
+    const SparseTensorProto* getInputSparseData(size_t index) const override {
+        return nullptr;
+    }
+
+    size_t getNumOutputs() const override {
+        return nullptr;
+    }
+
+    virtual TypeProto* getOutputType(size_t index) override {
+        return nullptr;
+    }
+
+    GraphInferencer* getGraphAttributeInferencer( const std::string& attr_name) override {
+        return nullptr;
+    }
+};
+#endif
 
 //
 //  some common help functions, and none-auto operators

@@ -155,14 +155,16 @@ const char* word_template =  R"~~(
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
+#ATTR#
+#INPUT#
+
 #ifdef USING_NOONX
 
 #else
 #OUTPUT_INIT#
 #endif
 
-#ATTR#
-#INPUT#
+
             if ( #CALL_API# != YNX_OK ) {
                 yannx_panic("API: #WORDNAME#  return error!");
             }
