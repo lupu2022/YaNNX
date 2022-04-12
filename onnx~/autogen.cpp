@@ -49,19 +49,19 @@ std::string attribute_type_name(int t) {
     std::string type = "";
     switch ( t ) {
         case AttributeProto_AttributeType_FLOAT:
-            type = "double";
+            type = "float";
             break;
         case AttributeProto_AttributeType_INT:
-            type = "long";
+            type = "int64_t";
             break;
         case AttributeProto_AttributeType_STRING:
             type = "std::string";
             break;
         case AttributeProto_AttributeType_FLOATS:
-            type = "std::vector<double>";
+            type = "std::vector<float>";
             break;
         case AttributeProto_AttributeType_INTS:
-            type = "std::vector<long>";
+            type = "std::vector<int64_t>";
             break;
         case AttributeProto_AttributeType_STRINGS:
             type = "std::vector<std::string>";
@@ -256,7 +256,9 @@ std::string impl_generate(const OpSchema& op) {
         std::ostringstream oss;
 
         auto allInputs = op.inputs();
-        for(size_t i = 0; i < allInputs.size(); i++) {
+        for(size_t ri = 0; ri < allInputs.size(); ri++) {
+            size_t i = allInputs.size() - ri - 1;
+
             std::string iname = allInputs[i].GetName();
             int opt = allInputs[i].GetOption();
             if ( opt == 0 ) {

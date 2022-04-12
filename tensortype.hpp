@@ -13,6 +13,7 @@
 #ifdef USING_ONNX
 #include <onnx/onnx_pb.h>
 #include <onnx/defs/schema.h>
+#include <onnx/defs/attr_proto_util.h>
 #include <onnx/shape_inference/implementation.h>
 #endif
 
@@ -46,7 +47,7 @@ enum TensorDataType {
     YNX_STRING,
     YNX_BOOL,
     YNX_FLOAT16,
-    YNX_DOUBLE,
+    YNX_float,
     YNX_UINT32,
     YNX_UINT64,
     YNX_COMPLEX64,
@@ -66,7 +67,7 @@ static const char* TensorDataTypeString[] = {
     "YNX_STRING",
     "YNX_BOOL",
     "YNX_FLOAT16",
-    "YNX_DOUBLE",
+    "YNX_float",
     "YNX_UINT32",
     "YNX_UINT64",
     "YNX_COMPLEX64",
@@ -141,12 +142,12 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#ArgMax
-	virtual OperatorReturnType onnx_ArgMax(/*inputs:*/ tensor_t data, /*outputs:*/ tensor_t reduced, /*attributes:*/ std::variant<void *, long > axis, std::variant<void *, long > keepdims, std::variant<void *, long > select_last_index) {
+	virtual OperatorReturnType onnx_ArgMax(/*inputs:*/ tensor_t data, /*outputs:*/ tensor_t reduced, /*attributes:*/ std::variant<void *, int64_t > axis, std::variant<void *, int64_t > keepdims, std::variant<void *, int64_t > select_last_index) {
 	    return YNX_TODO_ERROR;
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#ArgMin
-	virtual OperatorReturnType onnx_ArgMin(/*inputs:*/ tensor_t data, /*outputs:*/ tensor_t reduced, /*attributes:*/ std::variant<void *, long > axis, std::variant<void *, long > keepdims, std::variant<void *, long > select_last_index) {
+	virtual OperatorReturnType onnx_ArgMin(/*inputs:*/ tensor_t data, /*outputs:*/ tensor_t reduced, /*attributes:*/ std::variant<void *, int64_t > axis, std::variant<void *, int64_t > keepdims, std::variant<void *, int64_t > select_last_index) {
 	    return YNX_TODO_ERROR;
 	}
 
@@ -171,17 +172,17 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#AveragePool
-	virtual OperatorReturnType onnx_AveragePool(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y, /*attributes:*/ std::variant<void *, std::string > auto_pad, std::variant<void *, long > ceil_mode, std::variant<void *, long > count_include_pad, std::vector<long> kernel_shape, std::variant<void *, std::vector<long> > pads, std::variant<void *, std::vector<long> > strides) {
+	virtual OperatorReturnType onnx_AveragePool(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y, /*attributes:*/ std::variant<void *, std::string > auto_pad, std::variant<void *, int64_t > ceil_mode, std::variant<void *, int64_t > count_include_pad, std::vector<int64_t> kernel_shape, std::variant<void *, std::vector<int64_t> > pads, std::variant<void *, std::vector<int64_t> > strides) {
 	    return YNX_TODO_ERROR;
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#BatchNormalization
-	virtual OperatorReturnType onnx_BatchNormalization(/*inputs:*/ tensor_t X, tensor_t scale, tensor_t B, tensor_t input_mean, tensor_t input_var, /*outputs:*/ tensor_t Y, std::variant<void *, tensor_t>& running_mean, std::variant<void *, tensor_t>& running_var, /*attributes:*/ std::variant<void *, double > epsilon, std::variant<void *, double > momentum, std::variant<void *, long > training_mode) {
+	virtual OperatorReturnType onnx_BatchNormalization(/*inputs:*/ tensor_t X, tensor_t scale, tensor_t B, tensor_t input_mean, tensor_t input_var, /*outputs:*/ tensor_t Y, std::variant<void *, tensor_t>& running_mean, std::variant<void *, tensor_t>& running_var, /*attributes:*/ std::variant<void *, float > epsilon, std::variant<void *, float > momentum, std::variant<void *, int64_t > training_mode) {
 	    return YNX_TODO_ERROR;
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Bernoulli
-	virtual OperatorReturnType onnx_Bernoulli(/*inputs:*/ tensor_t input, /*outputs:*/ tensor_t output, /*attributes:*/ std::variant<void *, long > dtype, std::variant<void *, double > seed) {
+	virtual OperatorReturnType onnx_Bernoulli(/*inputs:*/ tensor_t input, /*outputs:*/ tensor_t output, /*attributes:*/ std::variant<void *, int64_t > dtype, std::variant<void *, float > seed) {
 	    return YNX_TODO_ERROR;
 	}
 
@@ -191,7 +192,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Cast
-	virtual OperatorReturnType onnx_Cast(/*inputs:*/ tensor_t input, /*outputs:*/ tensor_t output, /*attributes:*/ long to) {
+	virtual OperatorReturnType onnx_Cast(/*inputs:*/ tensor_t input, /*outputs:*/ tensor_t output, /*attributes:*/ int64_t to) {
 	    return YNX_TODO_ERROR;
 	}
 
@@ -206,7 +207,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Celu
-	virtual OperatorReturnType onnx_Celu(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y, /*attributes:*/ std::variant<void *, double > alpha) {
+	virtual OperatorReturnType onnx_Celu(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y, /*attributes:*/ std::variant<void *, float > alpha) {
 	    return YNX_TODO_ERROR;
 	}
 
@@ -216,32 +217,32 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Compress
-	virtual OperatorReturnType onnx_Compress(/*inputs:*/ tensor_t input, tensor_t condition, /*outputs:*/ tensor_t output, /*attributes:*/ std::variant<void *, long > axis) {
+	virtual OperatorReturnType onnx_Compress(/*inputs:*/ tensor_t input, tensor_t condition, /*outputs:*/ tensor_t output, /*attributes:*/ std::variant<void *, int64_t > axis) {
 	    return YNX_TODO_ERROR;
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Concat
-	virtual OperatorReturnType onnx_Concat(/*inputs:*/ std::vector<tensor_t>& inputs, /*outputs:*/ tensor_t concat_result, /*attributes:*/ long axis) {
+	virtual OperatorReturnType onnx_Concat(/*inputs:*/ std::vector<tensor_t>& inputs, /*outputs:*/ tensor_t concat_result, /*attributes:*/ int64_t axis) {
 	    return YNX_TODO_ERROR;
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#ConcatFromSequence
-	virtual OperatorReturnType onnx_ConcatFromSequence(/*inputs:*/ tensor_t input_sequence, /*outputs:*/ tensor_t concat_result, /*attributes:*/ long axis, std::variant<void *, long > new_axis) {
+	virtual OperatorReturnType onnx_ConcatFromSequence(/*inputs:*/ tensor_t input_sequence, /*outputs:*/ tensor_t concat_result, /*attributes:*/ int64_t axis, std::variant<void *, int64_t > new_axis) {
 	    return YNX_TODO_ERROR;
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Conv
-	virtual OperatorReturnType onnx_Conv(/*inputs:*/ tensor_t X, tensor_t W, std::variant<void *, tensor_t>& B, /*outputs:*/ tensor_t Y, /*attributes:*/ std::variant<void *, std::string > auto_pad, std::variant<void *, std::vector<long> > dilations, std::variant<void *, long > group, std::variant<void *, std::vector<long> > kernel_shape, std::variant<void *, std::vector<long> > pads, std::variant<void *, std::vector<long> > strides) {
+	virtual OperatorReturnType onnx_Conv(/*inputs:*/ tensor_t X, tensor_t W, std::variant<void *, tensor_t>& B, /*outputs:*/ tensor_t Y, /*attributes:*/ std::variant<void *, std::string > auto_pad, std::variant<void *, std::vector<int64_t> > dilations, std::variant<void *, int64_t > group, std::variant<void *, std::vector<int64_t> > kernel_shape, std::variant<void *, std::vector<int64_t> > pads, std::variant<void *, std::vector<int64_t> > strides) {
 	    return YNX_TODO_ERROR;
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#ConvInteger
-	virtual OperatorReturnType onnx_ConvInteger(/*inputs:*/ tensor_t x, tensor_t w, std::variant<void *, tensor_t>& x_zero_point, std::variant<void *, tensor_t>& w_zero_point, /*outputs:*/ tensor_t y, /*attributes:*/ std::variant<void *, std::string > auto_pad, std::variant<void *, std::vector<long> > dilations, std::variant<void *, long > group, std::variant<void *, std::vector<long> > kernel_shape, std::variant<void *, std::vector<long> > pads, std::variant<void *, std::vector<long> > strides) {
+	virtual OperatorReturnType onnx_ConvInteger(/*inputs:*/ tensor_t x, tensor_t w, std::variant<void *, tensor_t>& x_zero_point, std::variant<void *, tensor_t>& w_zero_point, /*outputs:*/ tensor_t y, /*attributes:*/ std::variant<void *, std::string > auto_pad, std::variant<void *, std::vector<int64_t> > dilations, std::variant<void *, int64_t > group, std::variant<void *, std::vector<int64_t> > kernel_shape, std::variant<void *, std::vector<int64_t> > pads, std::variant<void *, std::vector<int64_t> > strides) {
 	    return YNX_TODO_ERROR;
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#ConvTranspose
-	virtual OperatorReturnType onnx_ConvTranspose(/*inputs:*/ tensor_t X, tensor_t W, std::variant<void *, tensor_t>& B, /*outputs:*/ tensor_t Y, /*attributes:*/ std::variant<void *, std::string > auto_pad, std::variant<void *, std::vector<long> > dilations, std::variant<void *, long > group, std::variant<void *, std::vector<long> > kernel_shape, std::variant<void *, std::vector<long> > output_padding, std::variant<void *, std::vector<long> > output_shape, std::variant<void *, std::vector<long> > pads, std::variant<void *, std::vector<long> > strides) {
+	virtual OperatorReturnType onnx_ConvTranspose(/*inputs:*/ tensor_t X, tensor_t W, std::variant<void *, tensor_t>& B, /*outputs:*/ tensor_t Y, /*attributes:*/ std::variant<void *, std::string > auto_pad, std::variant<void *, std::vector<int64_t> > dilations, std::variant<void *, int64_t > group, std::variant<void *, std::vector<int64_t> > kernel_shape, std::variant<void *, std::vector<int64_t> > output_padding, std::variant<void *, std::vector<int64_t> > output_shape, std::variant<void *, std::vector<int64_t> > pads, std::variant<void *, std::vector<int64_t> > strides) {
 	    return YNX_TODO_ERROR;
 	}
 
@@ -256,17 +257,17 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#CumSum
-	virtual OperatorReturnType onnx_CumSum(/*inputs:*/ tensor_t x, tensor_t axis, /*outputs:*/ tensor_t y, /*attributes:*/ std::variant<void *, long > exclusive, std::variant<void *, long > reverse) {
+	virtual OperatorReturnType onnx_CumSum(/*inputs:*/ tensor_t x, tensor_t axis, /*outputs:*/ tensor_t y, /*attributes:*/ std::variant<void *, int64_t > exclusive, std::variant<void *, int64_t > reverse) {
 	    return YNX_TODO_ERROR;
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#DepthToSpace
-	virtual OperatorReturnType onnx_DepthToSpace(/*inputs:*/ tensor_t input, /*outputs:*/ tensor_t output, /*attributes:*/ long blocksize, std::variant<void *, std::string > mode) {
+	virtual OperatorReturnType onnx_DepthToSpace(/*inputs:*/ tensor_t input, /*outputs:*/ tensor_t output, /*attributes:*/ int64_t blocksize, std::variant<void *, std::string > mode) {
 	    return YNX_TODO_ERROR;
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#DequantizeLinear
-	virtual OperatorReturnType onnx_DequantizeLinear(/*inputs:*/ tensor_t x, tensor_t x_scale, std::variant<void *, tensor_t>& x_zero_point, /*outputs:*/ tensor_t y, /*attributes:*/ std::variant<void *, long > axis) {
+	virtual OperatorReturnType onnx_DequantizeLinear(/*inputs:*/ tensor_t x, tensor_t x_scale, std::variant<void *, tensor_t>& x_zero_point, /*outputs:*/ tensor_t y, /*attributes:*/ std::variant<void *, int64_t > axis) {
 	    return YNX_TODO_ERROR;
 	}
 
@@ -281,7 +282,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Dropout
-	virtual OperatorReturnType onnx_Dropout(/*inputs:*/ tensor_t data, std::variant<void *, tensor_t>& ratio, std::variant<void *, tensor_t>& training_mode, /*outputs:*/ tensor_t output, std::variant<void *, tensor_t>& mask, /*attributes:*/ std::variant<void *, long > seed) {
+	virtual OperatorReturnType onnx_Dropout(/*inputs:*/ tensor_t data, std::variant<void *, tensor_t>& ratio, std::variant<void *, tensor_t>& training_mode, /*outputs:*/ tensor_t output, std::variant<void *, tensor_t>& mask, /*attributes:*/ std::variant<void *, int64_t > seed) {
 	    return YNX_TODO_ERROR;
 	}
 
@@ -296,7 +297,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Elu
-	virtual OperatorReturnType onnx_Elu(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y, /*attributes:*/ std::variant<void *, double > alpha) {
+	virtual OperatorReturnType onnx_Elu(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y, /*attributes:*/ std::variant<void *, float > alpha) {
 	    return YNX_TODO_ERROR;
 	}
 
@@ -321,12 +322,12 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#EyeLike
-	virtual OperatorReturnType onnx_EyeLike(/*inputs:*/ tensor_t input, /*outputs:*/ tensor_t output, /*attributes:*/ std::variant<void *, long > dtype, std::variant<void *, long > k) {
+	virtual OperatorReturnType onnx_EyeLike(/*inputs:*/ tensor_t input, /*outputs:*/ tensor_t output, /*attributes:*/ std::variant<void *, int64_t > dtype, std::variant<void *, int64_t > k) {
 	    return YNX_TODO_ERROR;
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Flatten
-	virtual OperatorReturnType onnx_Flatten(/*inputs:*/ tensor_t input, /*outputs:*/ tensor_t output, /*attributes:*/ std::variant<void *, long > axis) {
+	virtual OperatorReturnType onnx_Flatten(/*inputs:*/ tensor_t input, /*outputs:*/ tensor_t output, /*attributes:*/ std::variant<void *, int64_t > axis) {
 	    return YNX_TODO_ERROR;
 	}
 
@@ -336,27 +337,27 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#GRU
-	virtual OperatorReturnType onnx_GRU(/*inputs:*/ tensor_t X, tensor_t W, tensor_t R, std::variant<void *, tensor_t>& B, std::variant<void *, tensor_t>& sequence_lens, std::variant<void *, tensor_t>& initial_h, /*outputs:*/ std::variant<void *, tensor_t>& Y, std::variant<void *, tensor_t>& Y_h, /*attributes:*/ std::variant<void *, std::vector<double> > activation_alpha, std::variant<void *, std::vector<double> > activation_beta, std::variant<void *, std::vector<std::string> > activations, std::variant<void *, double > clip, std::variant<void *, std::string > direction, std::variant<void *, long > hidden_size, std::variant<void *, long > layout, std::variant<void *, long > linear_before_reset) {
+	virtual OperatorReturnType onnx_GRU(/*inputs:*/ tensor_t X, tensor_t W, tensor_t R, std::variant<void *, tensor_t>& B, std::variant<void *, tensor_t>& sequence_lens, std::variant<void *, tensor_t>& initial_h, /*outputs:*/ std::variant<void *, tensor_t>& Y, std::variant<void *, tensor_t>& Y_h, /*attributes:*/ std::variant<void *, std::vector<float> > activation_alpha, std::variant<void *, std::vector<float> > activation_beta, std::variant<void *, std::vector<std::string> > activations, std::variant<void *, float > clip, std::variant<void *, std::string > direction, std::variant<void *, int64_t > hidden_size, std::variant<void *, int64_t > layout, std::variant<void *, int64_t > linear_before_reset) {
 	    return YNX_TODO_ERROR;
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Gather
-	virtual OperatorReturnType onnx_Gather(/*inputs:*/ tensor_t data, tensor_t indices, /*outputs:*/ tensor_t output, /*attributes:*/ std::variant<void *, long > axis) {
+	virtual OperatorReturnType onnx_Gather(/*inputs:*/ tensor_t data, tensor_t indices, /*outputs:*/ tensor_t output, /*attributes:*/ std::variant<void *, int64_t > axis) {
 	    return YNX_TODO_ERROR;
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#GatherElements
-	virtual OperatorReturnType onnx_GatherElements(/*inputs:*/ tensor_t data, tensor_t indices, /*outputs:*/ tensor_t output, /*attributes:*/ std::variant<void *, long > axis) {
+	virtual OperatorReturnType onnx_GatherElements(/*inputs:*/ tensor_t data, tensor_t indices, /*outputs:*/ tensor_t output, /*attributes:*/ std::variant<void *, int64_t > axis) {
 	    return YNX_TODO_ERROR;
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#GatherND
-	virtual OperatorReturnType onnx_GatherND(/*inputs:*/ tensor_t data, tensor_t indices, /*outputs:*/ tensor_t output, /*attributes:*/ std::variant<void *, long > batch_dims) {
+	virtual OperatorReturnType onnx_GatherND(/*inputs:*/ tensor_t data, tensor_t indices, /*outputs:*/ tensor_t output, /*attributes:*/ std::variant<void *, int64_t > batch_dims) {
 	    return YNX_TODO_ERROR;
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Gemm
-	virtual OperatorReturnType onnx_Gemm(/*inputs:*/ tensor_t A, tensor_t B, std::variant<void *, tensor_t>& C, /*outputs:*/ tensor_t Y, /*attributes:*/ std::variant<void *, double > alpha, std::variant<void *, double > beta, std::variant<void *, long > transA, std::variant<void *, long > transB) {
+	virtual OperatorReturnType onnx_Gemm(/*inputs:*/ tensor_t A, tensor_t B, std::variant<void *, tensor_t>& C, /*outputs:*/ tensor_t Y, /*attributes:*/ std::variant<void *, float > alpha, std::variant<void *, float > beta, std::variant<void *, int64_t > transA, std::variant<void *, int64_t > transB) {
 	    return YNX_TODO_ERROR;
 	}
 
@@ -366,7 +367,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#GlobalLpPool
-	virtual OperatorReturnType onnx_GlobalLpPool(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y, /*attributes:*/ std::variant<void *, long > p) {
+	virtual OperatorReturnType onnx_GlobalLpPool(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y, /*attributes:*/ std::variant<void *, int64_t > p) {
 	    return YNX_TODO_ERROR;
 	}
 
@@ -386,7 +387,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#HardSigmoid
-	virtual OperatorReturnType onnx_HardSigmoid(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y, /*attributes:*/ std::variant<void *, double > alpha, std::variant<void *, double > beta) {
+	virtual OperatorReturnType onnx_HardSigmoid(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y, /*attributes:*/ std::variant<void *, float > alpha, std::variant<void *, float > beta) {
 	    return YNX_TODO_ERROR;
 	}
 
@@ -396,7 +397,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Hardmax
-	virtual OperatorReturnType onnx_Hardmax(/*inputs:*/ tensor_t input, /*outputs:*/ tensor_t output, /*attributes:*/ std::variant<void *, long > axis) {
+	virtual OperatorReturnType onnx_Hardmax(/*inputs:*/ tensor_t input, /*outputs:*/ tensor_t output, /*attributes:*/ std::variant<void *, int64_t > axis) {
 	    return YNX_TODO_ERROR;
 	}
 
@@ -406,12 +407,12 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#InstanceNormalization
-	virtual OperatorReturnType onnx_InstanceNormalization(/*inputs:*/ tensor_t input, tensor_t scale, tensor_t B, /*outputs:*/ tensor_t output, /*attributes:*/ std::variant<void *, double > epsilon) {
+	virtual OperatorReturnType onnx_InstanceNormalization(/*inputs:*/ tensor_t input, tensor_t scale, tensor_t B, /*outputs:*/ tensor_t output, /*attributes:*/ std::variant<void *, float > epsilon) {
 	    return YNX_TODO_ERROR;
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#IsInf
-	virtual OperatorReturnType onnx_IsInf(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y, /*attributes:*/ std::variant<void *, long > detect_negative, std::variant<void *, long > detect_positive) {
+	virtual OperatorReturnType onnx_IsInf(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y, /*attributes:*/ std::variant<void *, int64_t > detect_negative, std::variant<void *, int64_t > detect_positive) {
 	    return YNX_TODO_ERROR;
 	}
 
@@ -421,17 +422,17 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#LRN
-	virtual OperatorReturnType onnx_LRN(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y, /*attributes:*/ std::variant<void *, double > alpha, std::variant<void *, double > beta, std::variant<void *, double > bias, long size) {
+	virtual OperatorReturnType onnx_LRN(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y, /*attributes:*/ std::variant<void *, float > alpha, std::variant<void *, float > beta, std::variant<void *, float > bias, int64_t size) {
 	    return YNX_TODO_ERROR;
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#LSTM
-	virtual OperatorReturnType onnx_LSTM(/*inputs:*/ tensor_t X, tensor_t W, tensor_t R, std::variant<void *, tensor_t>& B, std::variant<void *, tensor_t>& sequence_lens, std::variant<void *, tensor_t>& initial_h, std::variant<void *, tensor_t>& initial_c, std::variant<void *, tensor_t>& P, /*outputs:*/ std::variant<void *, tensor_t>& Y, std::variant<void *, tensor_t>& Y_h, std::variant<void *, tensor_t>& Y_c, /*attributes:*/ std::variant<void *, std::vector<double> > activation_alpha, std::variant<void *, std::vector<double> > activation_beta, std::variant<void *, std::vector<std::string> > activations, std::variant<void *, double > clip, std::variant<void *, std::string > direction, std::variant<void *, long > hidden_size, std::variant<void *, long > input_forget, std::variant<void *, long > layout) {
+	virtual OperatorReturnType onnx_LSTM(/*inputs:*/ tensor_t X, tensor_t W, tensor_t R, std::variant<void *, tensor_t>& B, std::variant<void *, tensor_t>& sequence_lens, std::variant<void *, tensor_t>& initial_h, std::variant<void *, tensor_t>& initial_c, std::variant<void *, tensor_t>& P, /*outputs:*/ std::variant<void *, tensor_t>& Y, std::variant<void *, tensor_t>& Y_h, std::variant<void *, tensor_t>& Y_c, /*attributes:*/ std::variant<void *, std::vector<float> > activation_alpha, std::variant<void *, std::vector<float> > activation_beta, std::variant<void *, std::vector<std::string> > activations, std::variant<void *, float > clip, std::variant<void *, std::string > direction, std::variant<void *, int64_t > hidden_size, std::variant<void *, int64_t > input_forget, std::variant<void *, int64_t > layout) {
 	    return YNX_TODO_ERROR;
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#LeakyRelu
-	virtual OperatorReturnType onnx_LeakyRelu(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y, /*attributes:*/ std::variant<void *, double > alpha) {
+	virtual OperatorReturnType onnx_LeakyRelu(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y, /*attributes:*/ std::variant<void *, float > alpha) {
 	    return YNX_TODO_ERROR;
 	}
 
@@ -451,17 +452,17 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#LogSoftmax
-	virtual OperatorReturnType onnx_LogSoftmax(/*inputs:*/ tensor_t input, /*outputs:*/ tensor_t output, /*attributes:*/ std::variant<void *, long > axis) {
+	virtual OperatorReturnType onnx_LogSoftmax(/*inputs:*/ tensor_t input, /*outputs:*/ tensor_t output, /*attributes:*/ std::variant<void *, int64_t > axis) {
 	    return YNX_TODO_ERROR;
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#LpNormalization
-	virtual OperatorReturnType onnx_LpNormalization(/*inputs:*/ tensor_t input, /*outputs:*/ tensor_t output, /*attributes:*/ std::variant<void *, long > axis, std::variant<void *, long > p) {
+	virtual OperatorReturnType onnx_LpNormalization(/*inputs:*/ tensor_t input, /*outputs:*/ tensor_t output, /*attributes:*/ std::variant<void *, int64_t > axis, std::variant<void *, int64_t > p) {
 	    return YNX_TODO_ERROR;
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#LpPool
-	virtual OperatorReturnType onnx_LpPool(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y, /*attributes:*/ std::variant<void *, std::string > auto_pad, std::vector<long> kernel_shape, std::variant<void *, long > p, std::variant<void *, std::vector<long> > pads, std::variant<void *, std::vector<long> > strides) {
+	virtual OperatorReturnType onnx_LpPool(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y, /*attributes:*/ std::variant<void *, std::string > auto_pad, std::vector<int64_t> kernel_shape, std::variant<void *, int64_t > p, std::variant<void *, std::vector<int64_t> > pads, std::variant<void *, std::vector<int64_t> > strides) {
 	    return YNX_TODO_ERROR;
 	}
 
@@ -481,17 +482,17 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#MaxPool
-	virtual OperatorReturnType onnx_MaxPool(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y, std::variant<void *, tensor_t>& Indices, /*attributes:*/ std::variant<void *, std::string > auto_pad, std::variant<void *, long > ceil_mode, std::variant<void *, std::vector<long> > dilations, std::vector<long> kernel_shape, std::variant<void *, std::vector<long> > pads, std::variant<void *, long > storage_order, std::variant<void *, std::vector<long> > strides) {
+	virtual OperatorReturnType onnx_MaxPool(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y, std::variant<void *, tensor_t>& Indices, /*attributes:*/ std::variant<void *, std::string > auto_pad, std::variant<void *, int64_t > ceil_mode, std::variant<void *, std::vector<int64_t> > dilations, std::vector<int64_t> kernel_shape, std::variant<void *, std::vector<int64_t> > pads, std::variant<void *, int64_t > storage_order, std::variant<void *, std::vector<int64_t> > strides) {
 	    return YNX_TODO_ERROR;
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#MaxRoiPool
-	virtual OperatorReturnType onnx_MaxRoiPool(/*inputs:*/ tensor_t X, tensor_t rois, /*outputs:*/ tensor_t Y, /*attributes:*/ std::vector<long> pooled_shape, std::variant<void *, double > spatial_scale) {
+	virtual OperatorReturnType onnx_MaxRoiPool(/*inputs:*/ tensor_t X, tensor_t rois, /*outputs:*/ tensor_t Y, /*attributes:*/ std::vector<int64_t> pooled_shape, std::variant<void *, float > spatial_scale) {
 	    return YNX_TODO_ERROR;
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#MaxUnpool
-	virtual OperatorReturnType onnx_MaxUnpool(/*inputs:*/ tensor_t X, tensor_t I, std::variant<void *, tensor_t>& output_shape, /*outputs:*/ tensor_t output, /*attributes:*/ std::vector<long> kernel_shape, std::variant<void *, std::vector<long> > pads, std::variant<void *, std::vector<long> > strides) {
+	virtual OperatorReturnType onnx_MaxUnpool(/*inputs:*/ tensor_t X, tensor_t I, std::variant<void *, tensor_t>& output_shape, /*outputs:*/ tensor_t output, /*attributes:*/ std::vector<int64_t> kernel_shape, std::variant<void *, std::vector<int64_t> > pads, std::variant<void *, std::vector<int64_t> > strides) {
 	    return YNX_TODO_ERROR;
 	}
 
@@ -501,7 +502,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#MeanVarianceNormalization
-	virtual OperatorReturnType onnx_MeanVarianceNormalization(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y, /*attributes:*/ std::variant<void *, std::vector<long> > axes) {
+	virtual OperatorReturnType onnx_MeanVarianceNormalization(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y, /*attributes:*/ std::variant<void *, std::vector<int64_t> > axes) {
 	    return YNX_TODO_ERROR;
 	}
 
@@ -511,7 +512,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Mod
-	virtual OperatorReturnType onnx_Mod(/*inputs:*/ tensor_t A, tensor_t B, /*outputs:*/ tensor_t C, /*attributes:*/ std::variant<void *, long > fmod) {
+	virtual OperatorReturnType onnx_Mod(/*inputs:*/ tensor_t A, tensor_t B, /*outputs:*/ tensor_t C, /*attributes:*/ std::variant<void *, int64_t > fmod) {
 	    return YNX_TODO_ERROR;
 	}
 
@@ -521,7 +522,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Multinomial
-	virtual OperatorReturnType onnx_Multinomial(/*inputs:*/ tensor_t input, /*outputs:*/ tensor_t output, /*attributes:*/ std::variant<void *, long > dtype, std::variant<void *, long > sample_size, std::variant<void *, double > seed) {
+	virtual OperatorReturnType onnx_Multinomial(/*inputs:*/ tensor_t input, /*outputs:*/ tensor_t output, /*attributes:*/ std::variant<void *, int64_t > dtype, std::variant<void *, int64_t > sample_size, std::variant<void *, float > seed) {
 	    return YNX_TODO_ERROR;
 	}
 
@@ -531,12 +532,12 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#NegativeLogLikelihoodLoss
-	virtual OperatorReturnType onnx_NegativeLogLikelihoodLoss(/*inputs:*/ tensor_t input, tensor_t target, std::variant<void *, tensor_t>& weight, /*outputs:*/ tensor_t loss, /*attributes:*/ std::variant<void *, long > ignore_index, std::variant<void *, std::string > reduction) {
+	virtual OperatorReturnType onnx_NegativeLogLikelihoodLoss(/*inputs:*/ tensor_t input, tensor_t target, std::variant<void *, tensor_t>& weight, /*outputs:*/ tensor_t loss, /*attributes:*/ std::variant<void *, int64_t > ignore_index, std::variant<void *, std::string > reduction) {
 	    return YNX_TODO_ERROR;
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#NonMaxSuppression
-	virtual OperatorReturnType onnx_NonMaxSuppression(/*inputs:*/ tensor_t boxes, tensor_t scores, std::variant<void *, tensor_t>& max_output_boxes_per_class, std::variant<void *, tensor_t>& iou_threshold, std::variant<void *, tensor_t>& score_threshold, /*outputs:*/ tensor_t selected_indices, /*attributes:*/ std::variant<void *, long > center_point_box) {
+	virtual OperatorReturnType onnx_NonMaxSuppression(/*inputs:*/ tensor_t boxes, tensor_t scores, std::variant<void *, tensor_t>& max_output_boxes_per_class, std::variant<void *, tensor_t>& iou_threshold, std::variant<void *, tensor_t>& score_threshold, /*outputs:*/ tensor_t selected_indices, /*attributes:*/ std::variant<void *, int64_t > center_point_box) {
 	    return YNX_TODO_ERROR;
 	}
 
@@ -551,7 +552,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#OneHot
-	virtual OperatorReturnType onnx_OneHot(/*inputs:*/ tensor_t indices, tensor_t depth, tensor_t values, /*outputs:*/ tensor_t output, /*attributes:*/ std::variant<void *, long > axis) {
+	virtual OperatorReturnType onnx_OneHot(/*inputs:*/ tensor_t indices, tensor_t depth, tensor_t values, /*outputs:*/ tensor_t output, /*attributes:*/ std::variant<void *, int64_t > axis) {
 	    return YNX_TODO_ERROR;
 	}
 
@@ -576,7 +577,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#QLinearConv
-	virtual OperatorReturnType onnx_QLinearConv(/*inputs:*/ tensor_t x, tensor_t x_scale, tensor_t x_zero_point, tensor_t w, tensor_t w_scale, tensor_t w_zero_point, tensor_t y_scale, tensor_t y_zero_point, std::variant<void *, tensor_t>& B, /*outputs:*/ tensor_t y, /*attributes:*/ std::variant<void *, std::string > auto_pad, std::variant<void *, std::vector<long> > dilations, std::variant<void *, long > group, std::variant<void *, std::vector<long> > kernel_shape, std::variant<void *, std::vector<long> > pads, std::variant<void *, std::vector<long> > strides) {
+	virtual OperatorReturnType onnx_QLinearConv(/*inputs:*/ tensor_t x, tensor_t x_scale, tensor_t x_zero_point, tensor_t w, tensor_t w_scale, tensor_t w_zero_point, tensor_t y_scale, tensor_t y_zero_point, std::variant<void *, tensor_t>& B, /*outputs:*/ tensor_t y, /*attributes:*/ std::variant<void *, std::string > auto_pad, std::variant<void *, std::vector<int64_t> > dilations, std::variant<void *, int64_t > group, std::variant<void *, std::vector<int64_t> > kernel_shape, std::variant<void *, std::vector<int64_t> > pads, std::variant<void *, std::vector<int64_t> > strides) {
 	    return YNX_TODO_ERROR;
 	}
 
@@ -586,32 +587,32 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#QuantizeLinear
-	virtual OperatorReturnType onnx_QuantizeLinear(/*inputs:*/ tensor_t x, tensor_t y_scale, std::variant<void *, tensor_t>& y_zero_point, /*outputs:*/ tensor_t y, /*attributes:*/ std::variant<void *, long > axis) {
+	virtual OperatorReturnType onnx_QuantizeLinear(/*inputs:*/ tensor_t x, tensor_t y_scale, std::variant<void *, tensor_t>& y_zero_point, /*outputs:*/ tensor_t y, /*attributes:*/ std::variant<void *, int64_t > axis) {
 	    return YNX_TODO_ERROR;
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#RNN
-	virtual OperatorReturnType onnx_RNN(/*inputs:*/ tensor_t X, tensor_t W, tensor_t R, std::variant<void *, tensor_t>& B, std::variant<void *, tensor_t>& sequence_lens, std::variant<void *, tensor_t>& initial_h, /*outputs:*/ std::variant<void *, tensor_t>& Y, std::variant<void *, tensor_t>& Y_h, /*attributes:*/ std::variant<void *, std::vector<double> > activation_alpha, std::variant<void *, std::vector<double> > activation_beta, std::variant<void *, std::vector<std::string> > activations, std::variant<void *, double > clip, std::variant<void *, std::string > direction, std::variant<void *, long > hidden_size, std::variant<void *, long > layout) {
+	virtual OperatorReturnType onnx_RNN(/*inputs:*/ tensor_t X, tensor_t W, tensor_t R, std::variant<void *, tensor_t>& B, std::variant<void *, tensor_t>& sequence_lens, std::variant<void *, tensor_t>& initial_h, /*outputs:*/ std::variant<void *, tensor_t>& Y, std::variant<void *, tensor_t>& Y_h, /*attributes:*/ std::variant<void *, std::vector<float> > activation_alpha, std::variant<void *, std::vector<float> > activation_beta, std::variant<void *, std::vector<std::string> > activations, std::variant<void *, float > clip, std::variant<void *, std::string > direction, std::variant<void *, int64_t > hidden_size, std::variant<void *, int64_t > layout) {
 	    return YNX_TODO_ERROR;
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#RandomNormal
-	virtual OperatorReturnType onnx_RandomNormal(/*outputs:*/ tensor_t output, /*attributes:*/ std::variant<void *, long > dtype, std::variant<void *, double > mean, std::variant<void *, double > scale, std::variant<void *, double > seed, std::vector<long> shape) {
+	virtual OperatorReturnType onnx_RandomNormal(/*outputs:*/ tensor_t output, /*attributes:*/ std::variant<void *, int64_t > dtype, std::variant<void *, float > mean, std::variant<void *, float > scale, std::variant<void *, float > seed, std::vector<int64_t> shape) {
 	    return YNX_TODO_ERROR;
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#RandomNormalLike
-	virtual OperatorReturnType onnx_RandomNormalLike(/*inputs:*/ tensor_t input, /*outputs:*/ tensor_t output, /*attributes:*/ std::variant<void *, long > dtype, std::variant<void *, double > mean, std::variant<void *, double > scale, std::variant<void *, double > seed) {
+	virtual OperatorReturnType onnx_RandomNormalLike(/*inputs:*/ tensor_t input, /*outputs:*/ tensor_t output, /*attributes:*/ std::variant<void *, int64_t > dtype, std::variant<void *, float > mean, std::variant<void *, float > scale, std::variant<void *, float > seed) {
 	    return YNX_TODO_ERROR;
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#RandomUniform
-	virtual OperatorReturnType onnx_RandomUniform(/*outputs:*/ tensor_t output, /*attributes:*/ std::variant<void *, long > dtype, std::variant<void *, double > high, std::variant<void *, double > low, std::variant<void *, double > seed, std::vector<long> shape) {
+	virtual OperatorReturnType onnx_RandomUniform(/*outputs:*/ tensor_t output, /*attributes:*/ std::variant<void *, int64_t > dtype, std::variant<void *, float > high, std::variant<void *, float > low, std::variant<void *, float > seed, std::vector<int64_t> shape) {
 	    return YNX_TODO_ERROR;
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#RandomUniformLike
-	virtual OperatorReturnType onnx_RandomUniformLike(/*inputs:*/ tensor_t input, /*outputs:*/ tensor_t output, /*attributes:*/ std::variant<void *, long > dtype, std::variant<void *, double > high, std::variant<void *, double > low, std::variant<void *, double > seed) {
+	virtual OperatorReturnType onnx_RandomUniformLike(/*inputs:*/ tensor_t input, /*outputs:*/ tensor_t output, /*attributes:*/ std::variant<void *, int64_t > dtype, std::variant<void *, float > high, std::variant<void *, float > low, std::variant<void *, float > seed) {
 	    return YNX_TODO_ERROR;
 	}
 
@@ -626,52 +627,52 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#ReduceL1
-	virtual OperatorReturnType onnx_ReduceL1(/*inputs:*/ tensor_t data, /*outputs:*/ tensor_t reduced, /*attributes:*/ std::variant<void *, std::vector<long> > axes, std::variant<void *, long > keepdims) {
+	virtual OperatorReturnType onnx_ReduceL1(/*inputs:*/ tensor_t data, /*outputs:*/ tensor_t reduced, /*attributes:*/ std::variant<void *, std::vector<int64_t> > axes, std::variant<void *, int64_t > keepdims) {
 	    return YNX_TODO_ERROR;
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#ReduceL2
-	virtual OperatorReturnType onnx_ReduceL2(/*inputs:*/ tensor_t data, /*outputs:*/ tensor_t reduced, /*attributes:*/ std::variant<void *, std::vector<long> > axes, std::variant<void *, long > keepdims) {
+	virtual OperatorReturnType onnx_ReduceL2(/*inputs:*/ tensor_t data, /*outputs:*/ tensor_t reduced, /*attributes:*/ std::variant<void *, std::vector<int64_t> > axes, std::variant<void *, int64_t > keepdims) {
 	    return YNX_TODO_ERROR;
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#ReduceLogSum
-	virtual OperatorReturnType onnx_ReduceLogSum(/*inputs:*/ tensor_t data, /*outputs:*/ tensor_t reduced, /*attributes:*/ std::variant<void *, std::vector<long> > axes, std::variant<void *, long > keepdims) {
+	virtual OperatorReturnType onnx_ReduceLogSum(/*inputs:*/ tensor_t data, /*outputs:*/ tensor_t reduced, /*attributes:*/ std::variant<void *, std::vector<int64_t> > axes, std::variant<void *, int64_t > keepdims) {
 	    return YNX_TODO_ERROR;
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#ReduceLogSumExp
-	virtual OperatorReturnType onnx_ReduceLogSumExp(/*inputs:*/ tensor_t data, /*outputs:*/ tensor_t reduced, /*attributes:*/ std::variant<void *, std::vector<long> > axes, std::variant<void *, long > keepdims) {
+	virtual OperatorReturnType onnx_ReduceLogSumExp(/*inputs:*/ tensor_t data, /*outputs:*/ tensor_t reduced, /*attributes:*/ std::variant<void *, std::vector<int64_t> > axes, std::variant<void *, int64_t > keepdims) {
 	    return YNX_TODO_ERROR;
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#ReduceMax
-	virtual OperatorReturnType onnx_ReduceMax(/*inputs:*/ tensor_t data, /*outputs:*/ tensor_t reduced, /*attributes:*/ std::variant<void *, std::vector<long> > axes, std::variant<void *, long > keepdims) {
+	virtual OperatorReturnType onnx_ReduceMax(/*inputs:*/ tensor_t data, /*outputs:*/ tensor_t reduced, /*attributes:*/ std::variant<void *, std::vector<int64_t> > axes, std::variant<void *, int64_t > keepdims) {
 	    return YNX_TODO_ERROR;
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#ReduceMean
-	virtual OperatorReturnType onnx_ReduceMean(/*inputs:*/ tensor_t data, /*outputs:*/ tensor_t reduced, /*attributes:*/ std::variant<void *, std::vector<long> > axes, std::variant<void *, long > keepdims) {
+	virtual OperatorReturnType onnx_ReduceMean(/*inputs:*/ tensor_t data, /*outputs:*/ tensor_t reduced, /*attributes:*/ std::variant<void *, std::vector<int64_t> > axes, std::variant<void *, int64_t > keepdims) {
 	    return YNX_TODO_ERROR;
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#ReduceMin
-	virtual OperatorReturnType onnx_ReduceMin(/*inputs:*/ tensor_t data, /*outputs:*/ tensor_t reduced, /*attributes:*/ std::variant<void *, std::vector<long> > axes, std::variant<void *, long > keepdims) {
+	virtual OperatorReturnType onnx_ReduceMin(/*inputs:*/ tensor_t data, /*outputs:*/ tensor_t reduced, /*attributes:*/ std::variant<void *, std::vector<int64_t> > axes, std::variant<void *, int64_t > keepdims) {
 	    return YNX_TODO_ERROR;
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#ReduceProd
-	virtual OperatorReturnType onnx_ReduceProd(/*inputs:*/ tensor_t data, /*outputs:*/ tensor_t reduced, /*attributes:*/ std::variant<void *, std::vector<long> > axes, std::variant<void *, long > keepdims) {
+	virtual OperatorReturnType onnx_ReduceProd(/*inputs:*/ tensor_t data, /*outputs:*/ tensor_t reduced, /*attributes:*/ std::variant<void *, std::vector<int64_t> > axes, std::variant<void *, int64_t > keepdims) {
 	    return YNX_TODO_ERROR;
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#ReduceSum
-	virtual OperatorReturnType onnx_ReduceSum(/*inputs:*/ tensor_t data, std::variant<void *, tensor_t>& axes, /*outputs:*/ tensor_t reduced, /*attributes:*/ std::variant<void *, long > keepdims, std::variant<void *, long > noop_with_empty_axes) {
+	virtual OperatorReturnType onnx_ReduceSum(/*inputs:*/ tensor_t data, std::variant<void *, tensor_t>& axes, /*outputs:*/ tensor_t reduced, /*attributes:*/ std::variant<void *, int64_t > keepdims, std::variant<void *, int64_t > noop_with_empty_axes) {
 	    return YNX_TODO_ERROR;
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#ReduceSumSquare
-	virtual OperatorReturnType onnx_ReduceSumSquare(/*inputs:*/ tensor_t data, /*outputs:*/ tensor_t reduced, /*attributes:*/ std::variant<void *, std::vector<long> > axes, std::variant<void *, long > keepdims) {
+	virtual OperatorReturnType onnx_ReduceSumSquare(/*inputs:*/ tensor_t data, /*outputs:*/ tensor_t reduced, /*attributes:*/ std::variant<void *, std::vector<int64_t> > axes, std::variant<void *, int64_t > keepdims) {
 	    return YNX_TODO_ERROR;
 	}
 
@@ -681,22 +682,22 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Reshape
-	virtual OperatorReturnType onnx_Reshape(/*inputs:*/ tensor_t data, tensor_t shape, /*outputs:*/ tensor_t reshaped, /*attributes:*/ std::variant<void *, long > allowzero) {
+	virtual OperatorReturnType onnx_Reshape(/*inputs:*/ tensor_t data, tensor_t shape, /*outputs:*/ tensor_t reshaped, /*attributes:*/ std::variant<void *, int64_t > allowzero) {
 	    return YNX_TODO_ERROR;
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Resize
-	virtual OperatorReturnType onnx_Resize(/*inputs:*/ tensor_t X, std::variant<void *, tensor_t>& roi, std::variant<void *, tensor_t>& scales, std::variant<void *, tensor_t>& sizes, /*outputs:*/ tensor_t Y, /*attributes:*/ std::variant<void *, std::string > coordinate_transformation_mode, std::variant<void *, double > cubic_coeff_a, std::variant<void *, long > exclude_outside, std::variant<void *, double > extrapolation_value, std::variant<void *, std::string > mode, std::variant<void *, std::string > nearest_mode) {
+	virtual OperatorReturnType onnx_Resize(/*inputs:*/ tensor_t X, std::variant<void *, tensor_t>& roi, std::variant<void *, tensor_t>& scales, std::variant<void *, tensor_t>& sizes, /*outputs:*/ tensor_t Y, /*attributes:*/ std::variant<void *, std::string > coordinate_transformation_mode, std::variant<void *, float > cubic_coeff_a, std::variant<void *, int64_t > exclude_outside, std::variant<void *, float > extrapolation_value, std::variant<void *, std::string > mode, std::variant<void *, std::string > nearest_mode) {
 	    return YNX_TODO_ERROR;
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#ReverseSequence
-	virtual OperatorReturnType onnx_ReverseSequence(/*inputs:*/ tensor_t input, tensor_t sequence_lens, /*outputs:*/ tensor_t Y, /*attributes:*/ std::variant<void *, long > batch_axis, std::variant<void *, long > time_axis) {
+	virtual OperatorReturnType onnx_ReverseSequence(/*inputs:*/ tensor_t input, tensor_t sequence_lens, /*outputs:*/ tensor_t Y, /*attributes:*/ std::variant<void *, int64_t > batch_axis, std::variant<void *, int64_t > time_axis) {
 	    return YNX_TODO_ERROR;
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#RoiAlign
-	virtual OperatorReturnType onnx_RoiAlign(/*inputs:*/ tensor_t X, tensor_t rois, tensor_t batch_indices, /*outputs:*/ tensor_t Y, /*attributes:*/ std::variant<void *, std::string > mode, std::variant<void *, long > output_height, std::variant<void *, long > output_width, std::variant<void *, long > sampling_ratio, std::variant<void *, double > spatial_scale) {
+	virtual OperatorReturnType onnx_RoiAlign(/*inputs:*/ tensor_t X, tensor_t rois, tensor_t batch_indices, /*outputs:*/ tensor_t Y, /*attributes:*/ std::variant<void *, std::string > mode, std::variant<void *, int64_t > output_height, std::variant<void *, int64_t > output_width, std::variant<void *, int64_t > sampling_ratio, std::variant<void *, float > spatial_scale) {
 	    return YNX_TODO_ERROR;
 	}
 
@@ -706,7 +707,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#ScatterElements
-	virtual OperatorReturnType onnx_ScatterElements(/*inputs:*/ tensor_t data, tensor_t indices, tensor_t updates, /*outputs:*/ tensor_t output, /*attributes:*/ std::variant<void *, long > axis) {
+	virtual OperatorReturnType onnx_ScatterElements(/*inputs:*/ tensor_t data, tensor_t indices, tensor_t updates, /*outputs:*/ tensor_t output, /*attributes:*/ std::variant<void *, int64_t > axis) {
 	    return YNX_TODO_ERROR;
 	}
 
@@ -716,7 +717,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Selu
-	virtual OperatorReturnType onnx_Selu(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y, /*attributes:*/ std::variant<void *, double > alpha, std::variant<void *, double > gamma) {
+	virtual OperatorReturnType onnx_Selu(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y, /*attributes:*/ std::variant<void *, float > alpha, std::variant<void *, float > gamma) {
 	    return YNX_TODO_ERROR;
 	}
 
@@ -731,7 +732,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#SequenceEmpty
-	virtual OperatorReturnType onnx_SequenceEmpty(/*outputs:*/ tensor_t output, /*attributes:*/ std::variant<void *, long > dtype) {
+	virtual OperatorReturnType onnx_SequenceEmpty(/*outputs:*/ tensor_t output, /*attributes:*/ std::variant<void *, int64_t > dtype) {
 	    return YNX_TODO_ERROR;
 	}
 
@@ -751,12 +752,12 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Shape
-	virtual OperatorReturnType onnx_Shape(/*inputs:*/ tensor_t data, /*outputs:*/ tensor_t shape, /*attributes:*/ std::variant<void *, long > end, std::variant<void *, long > start) {
+	virtual OperatorReturnType onnx_Shape(/*inputs:*/ tensor_t data, /*outputs:*/ tensor_t shape, /*attributes:*/ std::variant<void *, int64_t > end, std::variant<void *, int64_t > start) {
 	    return YNX_TODO_ERROR;
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Shrink
-	virtual OperatorReturnType onnx_Shrink(/*inputs:*/ tensor_t input, /*outputs:*/ tensor_t output, /*attributes:*/ std::variant<void *, double > bias, std::variant<void *, double > lambd) {
+	virtual OperatorReturnType onnx_Shrink(/*inputs:*/ tensor_t input, /*outputs:*/ tensor_t output, /*attributes:*/ std::variant<void *, float > bias, std::variant<void *, float > lambd) {
 	    return YNX_TODO_ERROR;
 	}
 
@@ -791,12 +792,12 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Softmax
-	virtual OperatorReturnType onnx_Softmax(/*inputs:*/ tensor_t input, /*outputs:*/ tensor_t output, /*attributes:*/ std::variant<void *, long > axis) {
+	virtual OperatorReturnType onnx_Softmax(/*inputs:*/ tensor_t input, /*outputs:*/ tensor_t output, /*attributes:*/ std::variant<void *, int64_t > axis) {
 	    return YNX_TODO_ERROR;
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#SoftmaxCrossEntropyLoss
-	virtual OperatorReturnType onnx_SoftmaxCrossEntropyLoss(/*inputs:*/ tensor_t scores, tensor_t labels, std::variant<void *, tensor_t>& weights, /*outputs:*/ tensor_t output, std::variant<void *, tensor_t>& log_prob, /*attributes:*/ std::variant<void *, long > ignore_index, std::variant<void *, std::string > reduction) {
+	virtual OperatorReturnType onnx_SoftmaxCrossEntropyLoss(/*inputs:*/ tensor_t scores, tensor_t labels, std::variant<void *, tensor_t>& weights, /*outputs:*/ tensor_t output, std::variant<void *, tensor_t>& log_prob, /*attributes:*/ std::variant<void *, int64_t > ignore_index, std::variant<void *, std::string > reduction) {
 	    return YNX_TODO_ERROR;
 	}
 
@@ -811,17 +812,17 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#SpaceToDepth
-	virtual OperatorReturnType onnx_SpaceToDepth(/*inputs:*/ tensor_t input, /*outputs:*/ tensor_t output, /*attributes:*/ long blocksize) {
+	virtual OperatorReturnType onnx_SpaceToDepth(/*inputs:*/ tensor_t input, /*outputs:*/ tensor_t output, /*attributes:*/ int64_t blocksize) {
 	    return YNX_TODO_ERROR;
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Split
-	virtual OperatorReturnType onnx_Split(/*inputs:*/ tensor_t input, std::variant<void *, tensor_t>& split, /*outputs:*/ std::vector<tensor_t>& outputs, /*attributes:*/ std::variant<void *, long > axis) {
+	virtual OperatorReturnType onnx_Split(/*inputs:*/ tensor_t input, std::variant<void *, tensor_t>& split, /*outputs:*/ std::vector<tensor_t>& outputs, /*attributes:*/ std::variant<void *, int64_t > axis) {
 	    return YNX_TODO_ERROR;
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#SplitToSequence
-	virtual OperatorReturnType onnx_SplitToSequence(/*inputs:*/ tensor_t input, std::variant<void *, tensor_t>& split, /*outputs:*/ tensor_t output_sequence, /*attributes:*/ std::variant<void *, long > axis, std::variant<void *, long > keepdims) {
+	virtual OperatorReturnType onnx_SplitToSequence(/*inputs:*/ tensor_t input, std::variant<void *, tensor_t>& split, /*outputs:*/ tensor_t output_sequence, /*attributes:*/ std::variant<void *, int64_t > axis, std::variant<void *, int64_t > keepdims) {
 	    return YNX_TODO_ERROR;
 	}
 
@@ -836,7 +837,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#StringNormalizer
-	virtual OperatorReturnType onnx_StringNormalizer(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y, /*attributes:*/ std::variant<void *, std::string > case_change_action, std::variant<void *, long > is_case_sensitive, std::variant<void *, std::string > locale, std::variant<void *, std::vector<std::string> > stopwords) {
+	virtual OperatorReturnType onnx_StringNormalizer(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y, /*attributes:*/ std::variant<void *, std::string > case_change_action, std::variant<void *, int64_t > is_case_sensitive, std::variant<void *, std::string > locale, std::variant<void *, std::vector<std::string> > stopwords) {
 	    return YNX_TODO_ERROR;
 	}
 
@@ -861,12 +862,12 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#TfIdfVectorizer
-	virtual OperatorReturnType onnx_TfIdfVectorizer(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y, /*attributes:*/ long max_gram_length, long max_skip_count, long min_gram_length, std::string mode, std::vector<long> ngram_counts, std::vector<long> ngram_indexes, std::variant<void *, std::vector<long> > pool_int64s, std::variant<void *, std::vector<std::string> > pool_strings, std::variant<void *, std::vector<double> > weights) {
+	virtual OperatorReturnType onnx_TfIdfVectorizer(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y, /*attributes:*/ int64_t max_gram_length, int64_t max_skip_count, int64_t min_gram_length, std::string mode, std::vector<int64_t> ngram_counts, std::vector<int64_t> ngram_indexes, std::variant<void *, std::vector<int64_t> > pool_int64s, std::variant<void *, std::vector<std::string> > pool_strings, std::variant<void *, std::vector<float> > weights) {
 	    return YNX_TODO_ERROR;
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#ThresholdedRelu
-	virtual OperatorReturnType onnx_ThresholdedRelu(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y, /*attributes:*/ std::variant<void *, double > alpha) {
+	virtual OperatorReturnType onnx_ThresholdedRelu(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y, /*attributes:*/ std::variant<void *, float > alpha) {
 	    return YNX_TODO_ERROR;
 	}
 
@@ -876,22 +877,22 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#TopK
-	virtual OperatorReturnType onnx_TopK(/*inputs:*/ tensor_t X, tensor_t K, /*outputs:*/ tensor_t Values, tensor_t Indices, /*attributes:*/ std::variant<void *, long > axis, std::variant<void *, long > largest, std::variant<void *, long > sorted) {
+	virtual OperatorReturnType onnx_TopK(/*inputs:*/ tensor_t X, tensor_t K, /*outputs:*/ tensor_t Values, tensor_t Indices, /*attributes:*/ std::variant<void *, int64_t > axis, std::variant<void *, int64_t > largest, std::variant<void *, int64_t > sorted) {
 	    return YNX_TODO_ERROR;
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Transpose
-	virtual OperatorReturnType onnx_Transpose(/*inputs:*/ tensor_t data, /*outputs:*/ tensor_t transposed, /*attributes:*/ std::variant<void *, std::vector<long> > perm) {
+	virtual OperatorReturnType onnx_Transpose(/*inputs:*/ tensor_t data, /*outputs:*/ tensor_t transposed, /*attributes:*/ std::variant<void *, std::vector<int64_t> > perm) {
 	    return YNX_TODO_ERROR;
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Trilu
-	virtual OperatorReturnType onnx_Trilu(/*inputs:*/ tensor_t input, std::variant<void *, tensor_t>& k, /*outputs:*/ tensor_t output, /*attributes:*/ std::variant<void *, long > upper) {
+	virtual OperatorReturnType onnx_Trilu(/*inputs:*/ tensor_t input, std::variant<void *, tensor_t>& k, /*outputs:*/ tensor_t output, /*attributes:*/ std::variant<void *, int64_t > upper) {
 	    return YNX_TODO_ERROR;
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Unique
-	virtual OperatorReturnType onnx_Unique(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y, std::variant<void *, tensor_t>& indices, std::variant<void *, tensor_t>& inverse_indices, std::variant<void *, tensor_t>& counts, /*attributes:*/ std::variant<void *, long > axis, std::variant<void *, long > sorted) {
+	virtual OperatorReturnType onnx_Unique(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y, std::variant<void *, tensor_t>& indices, std::variant<void *, tensor_t>& inverse_indices, std::variant<void *, tensor_t>& counts, /*attributes:*/ std::variant<void *, int64_t > axis, std::variant<void *, int64_t > sorted) {
 	    return YNX_TODO_ERROR;
 	}
 
@@ -916,28 +917,55 @@ struct TensorType {
 
 #ifdef USING_ONNX
 struct YNXInferenceContextImpl : public InferenceContext {
-    const AttributeProto* getAttribute(const std::string& name) override {
-        return nullptr;
+    const size_t num_inputs_;
+    const size_t num_outputs_;
+
+    std::map<std::string, AttributeProto> attrs_;
+
+    YNXInferenceContextImpl(size_t in, size_t out) : num_inputs_(in), num_outputs_(out) {
     }
+
+    // setup interfaces
+    void new_attr(const std::string& name, float v) {
+        auto attr = MakeAttribute(name, v);
+        attrs_[name] = attr;
+    }
+    void new_attr(const std::string& name, int64_t v) {
+        auto attr = MakeAttribute(name, v);
+        attrs_[name] = attr;
+    }
+    void new_attr(const std::string& name, std::string& v) {
+        auto attr = MakeAttribute(name, v);
+        attrs_[name] = attr;
+    }
+
+
+
+    // InferenceContext apis
     size_t getNumInputs() const override {
-        return 0;
+        return num_inputs_;
+    }
+    size_t getNumOutputs() const override {
+        return num_outputs_;
     }
     const TypeProto* getInputType(size_t index) const override {
+        return nullptr;
+    }
+    const AttributeProto* getAttribute(const std::string& name) override {
         return nullptr;
     }
     const TensorProto* getInputData(size_t index) const override {
         return nullptr;
     }
+    virtual TypeProto* getOutputType(size_t index) override {
+        return nullptr;
+    }
+
+    // Skipping these impl
     const TensorShapeProto* getSymbolicInput(size_t index) const override {
         return nullptr;
     }
     const SparseTensorProto* getInputSparseData(size_t index) const override {
-        return nullptr;
-    }
-    size_t getNumOutputs() const override {
-        return 0;
-    }
-    virtual TypeProto* getOutputType(size_t index) override {
         return nullptr;
     }
     GraphInferencer* getGraphAttributeInferencer( const std::string& attr_name) override {
@@ -949,13 +977,13 @@ struct YNXInferenceContextImpl : public InferenceContext {
 //
 //  some common help functions, and none-auto operators
 //
-static double fetch_float(ValueStack<TensorType>& stack) {
-    double v = stack.pop_number();
+static float fetch_float(ValueStack<TensorType>& stack) {
+    float v = stack.pop_number();
     return v;
 }
 
-static long fetch_int(ValueStack<TensorType>& stack) {
-    long v = stack.pop_number();
+static int64_t fetch_int(ValueStack<TensorType>& stack) {
+    int64_t v = stack.pop_number();
     return v;
 }
 
@@ -969,18 +997,18 @@ static tensor_t fetch_tensor(ValueStack<TensorType>& stack) {
     return v;
 }
 
-static std::vector<double> fetch_floats(ValueStack<TensorType>& stack) {
+static std::vector<float> fetch_floats(ValueStack<TensorType>& stack) {
     auto v = stack.pop_number_tuple();
-    std::vector<double> ret;
+    std::vector<float> ret;
     for (size_t i = 0; i < v.size(); i++) {
         ret.push_back( v[i] );
     }
     return ret;
 }
 
-static std::vector<long> fetch_ints(ValueStack<TensorType>& stack) {
+static std::vector<int64_t> fetch_ints(ValueStack<TensorType>& stack) {
     auto v = stack.pop_number_tuple();
-    std::vector<long> ret;
+    std::vector<int64_t> ret;
     for (size_t i = 0; i < v.size(); i++) {
         ret.push_back( v[i] );
     }
@@ -997,18 +1025,18 @@ static std::vector<tensor_t> fetch_tensors(ValueStack<TensorType>& stack) {
     return v;
 }
 
-static std::variant<void *, double> fetch_optional_float(ValueStack<TensorType>& stack) {
+static std::variant<void *, float> fetch_optional_float(ValueStack<TensorType>& stack) {
     if ( stack.top().is_none() ) {
-        return std::variant<void *, double>(nullptr);
+        return std::variant<void *, float>(nullptr);
     }
-    return std::variant<void *, double>( fetch_float(stack) );
+    return std::variant<void *, float>( fetch_float(stack) );
 }
 
-static std::variant<void *, long> fetch_optional_int(ValueStack<TensorType>& stack) {
+static std::variant<void *, int64_t> fetch_optional_int(ValueStack<TensorType>& stack) {
     if ( stack.top().is_none() ) {
-        return std::variant<void *, long>(nullptr);
+        return std::variant<void *, int64_t>(nullptr);
     }
-    return std::variant<void *, long>( fetch_int(stack) );
+    return std::variant<void *, int64_t>( fetch_int(stack) );
 }
 
 static std::variant<void *, std::string> fetch_optional_string(ValueStack<TensorType>& stack) {
@@ -1025,18 +1053,18 @@ static std::variant<void *, tensor_t> fetch_optional_tensor(ValueStack<TensorTyp
     return std::variant<void *, tensor_t>( fetch_tensor(stack) );
 }
 
-static std::variant<void *, std::vector<double> > fetch_optional_floats(ValueStack<TensorType>& stack) {
+static std::variant<void *, std::vector<float> > fetch_optional_floats(ValueStack<TensorType>& stack) {
     if ( stack.top().is_none() ) {
-        return std::variant<void *, std::vector<double> >(nullptr);
+        return std::variant<void *, std::vector<float> >(nullptr);
     }
-    return std::variant<void *, std::vector<double> >( fetch_floats(stack) );
+    return std::variant<void *, std::vector<float> >( fetch_floats(stack) );
 }
 
-static std::variant<void *, std::vector<long> > fetch_optional_ints(ValueStack<TensorType>& stack) {
+static std::variant<void *, std::vector<int64_t> > fetch_optional_ints(ValueStack<TensorType>& stack) {
     if ( stack.top().is_none() ) {
-        return std::variant<void *, std::vector<long> >(nullptr);
+        return std::variant<void *, std::vector<int64_t> >(nullptr);
     }
-    return std::variant<void *, std::vector<long> >( fetch_ints(stack) );
+    return std::variant<void *, std::vector<int64_t> >( fetch_ints(stack) );
 }
 
 static std::variant<void *, std::vector<std::string> > fetch_optional_strings(ValueStack<TensorType>& stack) {
@@ -1392,9 +1420,9 @@ namespace generator {
             ValueStack<TensorType>& stack = rt;
 
 
-            auto start = fetch_tensor(stack);
-            auto limit = fetch_tensor(stack);
             auto delta = fetch_tensor(stack);
+            auto limit = fetch_tensor(stack);
+            auto start = fetch_tensor(stack);
 
 
 #ifdef USING_NOONX
@@ -1413,9 +1441,9 @@ namespace generator {
         }
         virtual void run(ValueStack<TensorType>& stack) {
 
-            auto start = fetch_tensor(stack);
-            auto limit = fetch_tensor(stack);
             auto delta = fetch_tensor(stack);
+            auto limit = fetch_tensor(stack);
+            auto start = fetch_tensor(stack);
 
             if ( start->onnx_Range(start, limit, delta, output) != YNX_OK ) {
                 yannx_panic("API: Range  return error!");
@@ -1436,8 +1464,8 @@ namespace logical {
             ValueStack<TensorType>& stack = rt;
 
 
-            auto A = fetch_tensor(stack);
             auto B = fetch_tensor(stack);
+            auto A = fetch_tensor(stack);
 
 
 #ifdef USING_NOONX
@@ -1456,8 +1484,8 @@ namespace logical {
         }
         virtual void run(ValueStack<TensorType>& stack) {
 
-            auto A = fetch_tensor(stack);
             auto B = fetch_tensor(stack);
+            auto A = fetch_tensor(stack);
 
             if ( A->onnx_GreaterOrEqual(A, B, C) != YNX_OK ) {
                 yannx_panic("API: GreaterOrEqual  return error!");
@@ -1476,8 +1504,8 @@ namespace logical {
             ValueStack<TensorType>& stack = rt;
 
 
-            auto A = fetch_tensor(stack);
             auto B = fetch_tensor(stack);
+            auto A = fetch_tensor(stack);
 
 
 #ifdef USING_NOONX
@@ -1496,8 +1524,8 @@ namespace logical {
         }
         virtual void run(ValueStack<TensorType>& stack) {
 
-            auto A = fetch_tensor(stack);
             auto B = fetch_tensor(stack);
+            auto A = fetch_tensor(stack);
 
             if ( A->onnx_Or(A, B, C) != YNX_OK ) {
                 yannx_panic("API: Or  return error!");
@@ -1517,8 +1545,8 @@ namespace logical {
 
             auto direction = fetch_string(stack);
 
-            auto X = fetch_tensor(stack);
             auto Y = fetch_tensor(stack);
+            auto X = fetch_tensor(stack);
 
 
 #ifdef USING_NOONX
@@ -1538,8 +1566,8 @@ namespace logical {
         virtual void run(ValueStack<TensorType>& stack) {
             auto direction = fetch_string(stack);
 
-            auto X = fetch_tensor(stack);
             auto Y = fetch_tensor(stack);
+            auto X = fetch_tensor(stack);
 
             if ( X->onnx_BitShift(X, Y, Z, direction) != YNX_OK ) {
                 yannx_panic("API: BitShift  return error!");
@@ -1558,8 +1586,8 @@ namespace logical {
             ValueStack<TensorType>& stack = rt;
 
 
-            auto A = fetch_tensor(stack);
             auto B = fetch_tensor(stack);
+            auto A = fetch_tensor(stack);
 
 
 #ifdef USING_NOONX
@@ -1578,8 +1606,8 @@ namespace logical {
         }
         virtual void run(ValueStack<TensorType>& stack) {
 
-            auto A = fetch_tensor(stack);
             auto B = fetch_tensor(stack);
+            auto A = fetch_tensor(stack);
 
             if ( A->onnx_Greater(A, B, C) != YNX_OK ) {
                 yannx_panic("API: Greater  return error!");
@@ -1598,8 +1626,8 @@ namespace logical {
             ValueStack<TensorType>& stack = rt;
 
 
-            auto A = fetch_tensor(stack);
             auto B = fetch_tensor(stack);
+            auto A = fetch_tensor(stack);
 
 
 #ifdef USING_NOONX
@@ -1618,8 +1646,8 @@ namespace logical {
         }
         virtual void run(ValueStack<TensorType>& stack) {
 
-            auto A = fetch_tensor(stack);
             auto B = fetch_tensor(stack);
+            auto A = fetch_tensor(stack);
 
             if ( A->onnx_Xor(A, B, C) != YNX_OK ) {
                 yannx_panic("API: Xor  return error!");
@@ -1638,8 +1666,8 @@ namespace logical {
             ValueStack<TensorType>& stack = rt;
 
 
-            auto A = fetch_tensor(stack);
             auto B = fetch_tensor(stack);
+            auto A = fetch_tensor(stack);
 
 
 #ifdef USING_NOONX
@@ -1658,8 +1686,8 @@ namespace logical {
         }
         virtual void run(ValueStack<TensorType>& stack) {
 
-            auto A = fetch_tensor(stack);
             auto B = fetch_tensor(stack);
+            auto A = fetch_tensor(stack);
 
             if ( A->onnx_And(A, B, C) != YNX_OK ) {
                 yannx_panic("API: And  return error!");
@@ -1678,8 +1706,8 @@ namespace logical {
             ValueStack<TensorType>& stack = rt;
 
 
-            auto A = fetch_tensor(stack);
             auto B = fetch_tensor(stack);
+            auto A = fetch_tensor(stack);
 
 
 #ifdef USING_NOONX
@@ -1698,8 +1726,8 @@ namespace logical {
         }
         virtual void run(ValueStack<TensorType>& stack) {
 
-            auto A = fetch_tensor(stack);
             auto B = fetch_tensor(stack);
+            auto A = fetch_tensor(stack);
 
             if ( A->onnx_LessOrEqual(A, B, C) != YNX_OK ) {
                 yannx_panic("API: LessOrEqual  return error!");
@@ -1756,8 +1784,8 @@ namespace logical {
             ValueStack<TensorType>& stack = rt;
 
 
-            auto A = fetch_tensor(stack);
             auto B = fetch_tensor(stack);
+            auto A = fetch_tensor(stack);
 
 
 #ifdef USING_NOONX
@@ -1776,8 +1804,8 @@ namespace logical {
         }
         virtual void run(ValueStack<TensorType>& stack) {
 
-            auto A = fetch_tensor(stack);
             auto B = fetch_tensor(stack);
+            auto A = fetch_tensor(stack);
 
             if ( A->onnx_Equal(A, B, C) != YNX_OK ) {
                 yannx_panic("API: Equal  return error!");
@@ -1796,8 +1824,8 @@ namespace logical {
             ValueStack<TensorType>& stack = rt;
 
 
-            auto A = fetch_tensor(stack);
             auto B = fetch_tensor(stack);
+            auto A = fetch_tensor(stack);
 
 
 #ifdef USING_NOONX
@@ -1816,8 +1844,8 @@ namespace logical {
         }
         virtual void run(ValueStack<TensorType>& stack) {
 
-            auto A = fetch_tensor(stack);
             auto B = fetch_tensor(stack);
+            auto A = fetch_tensor(stack);
 
             if ( A->onnx_Less(A, B, C) != YNX_OK ) {
                 yannx_panic("API: Less  return error!");
@@ -1958,8 +1986,8 @@ namespace math {
             ValueStack<TensorType>& stack = rt;
 
 
-            auto A = fetch_tensor(stack);
             auto B = fetch_tensor(stack);
+            auto A = fetch_tensor(stack);
 
 
 #ifdef USING_NOONX
@@ -1978,8 +2006,8 @@ namespace math {
         }
         virtual void run(ValueStack<TensorType>& stack) {
 
-            auto A = fetch_tensor(stack);
             auto B = fetch_tensor(stack);
+            auto A = fetch_tensor(stack);
 
             if ( A->onnx_Div(A, B, C) != YNX_OK ) {
                 yannx_panic("API: Div  return error!");
@@ -1998,8 +2026,8 @@ namespace math {
             ValueStack<TensorType>& stack = rt;
 
 
-            auto X = fetch_tensor(stack);
             auto Y = fetch_tensor(stack);
+            auto X = fetch_tensor(stack);
 
 
 #ifdef USING_NOONX
@@ -2018,8 +2046,8 @@ namespace math {
         }
         virtual void run(ValueStack<TensorType>& stack) {
 
-            auto X = fetch_tensor(stack);
             auto Y = fetch_tensor(stack);
+            auto X = fetch_tensor(stack);
 
             if ( X->onnx_Pow(X, Y, Z) != YNX_OK ) {
                 yannx_panic("API: Pow  return error!");
@@ -2038,8 +2066,8 @@ namespace math {
             ValueStack<TensorType>& stack = rt;
 
 
-            auto A = fetch_tensor(stack);
             auto B = fetch_tensor(stack);
+            auto A = fetch_tensor(stack);
 
 
 #ifdef USING_NOONX
@@ -2058,8 +2086,8 @@ namespace math {
         }
         virtual void run(ValueStack<TensorType>& stack) {
 
-            auto A = fetch_tensor(stack);
             auto B = fetch_tensor(stack);
+            auto A = fetch_tensor(stack);
 
             if ( A->onnx_Mul(A, B, C) != YNX_OK ) {
                 yannx_panic("API: Mul  return error!");
@@ -2498,8 +2526,8 @@ namespace math {
             ValueStack<TensorType>& stack = rt;
 
 
-            auto A = fetch_tensor(stack);
             auto B = fetch_tensor(stack);
+            auto A = fetch_tensor(stack);
 
 
 #ifdef USING_NOONX
@@ -2518,8 +2546,8 @@ namespace math {
         }
         virtual void run(ValueStack<TensorType>& stack) {
 
-            auto A = fetch_tensor(stack);
             auto B = fetch_tensor(stack);
+            auto A = fetch_tensor(stack);
 
             if ( A->onnx_Sub(A, B, C) != YNX_OK ) {
                 yannx_panic("API: Sub  return error!");
@@ -2538,8 +2566,8 @@ namespace math {
             ValueStack<TensorType>& stack = rt;
 
 
-            auto X = fetch_tensor(stack);
             auto slope = fetch_tensor(stack);
+            auto X = fetch_tensor(stack);
 
 
 #ifdef USING_NOONX
@@ -2558,8 +2586,8 @@ namespace math {
         }
         virtual void run(ValueStack<TensorType>& stack) {
 
-            auto X = fetch_tensor(stack);
             auto slope = fetch_tensor(stack);
+            auto X = fetch_tensor(stack);
 
             if ( X->onnx_PRelu(X, slope, Y) != YNX_OK ) {
                 yannx_panic("API: PRelu  return error!");
@@ -2578,8 +2606,8 @@ namespace math {
             ValueStack<TensorType>& stack = rt;
 
 
-            auto A = fetch_tensor(stack);
             auto B = fetch_tensor(stack);
+            auto A = fetch_tensor(stack);
 
 
 #ifdef USING_NOONX
@@ -2598,8 +2626,8 @@ namespace math {
         }
         virtual void run(ValueStack<TensorType>& stack) {
 
-            auto A = fetch_tensor(stack);
             auto B = fetch_tensor(stack);
+            auto A = fetch_tensor(stack);
 
             if ( A->onnx_Add(A, B, C) != YNX_OK ) {
                 yannx_panic("API: Add  return error!");
@@ -2698,14 +2726,14 @@ namespace math {
             ValueStack<TensorType>& stack = rt;
 
 
-            auto a = fetch_tensor(stack);
-            auto a_scale = fetch_tensor(stack);
-            auto a_zero_point = fetch_tensor(stack);
-            auto b = fetch_tensor(stack);
-            auto b_scale = fetch_tensor(stack);
-            auto b_zero_point = fetch_tensor(stack);
-            auto y_scale = fetch_tensor(stack);
             auto y_zero_point = fetch_tensor(stack);
+            auto y_scale = fetch_tensor(stack);
+            auto b_zero_point = fetch_tensor(stack);
+            auto b_scale = fetch_tensor(stack);
+            auto b = fetch_tensor(stack);
+            auto a_zero_point = fetch_tensor(stack);
+            auto a_scale = fetch_tensor(stack);
+            auto a = fetch_tensor(stack);
 
 
 #ifdef USING_NOONX
@@ -2724,14 +2752,14 @@ namespace math {
         }
         virtual void run(ValueStack<TensorType>& stack) {
 
-            auto a = fetch_tensor(stack);
-            auto a_scale = fetch_tensor(stack);
-            auto a_zero_point = fetch_tensor(stack);
-            auto b = fetch_tensor(stack);
-            auto b_scale = fetch_tensor(stack);
-            auto b_zero_point = fetch_tensor(stack);
-            auto y_scale = fetch_tensor(stack);
             auto y_zero_point = fetch_tensor(stack);
+            auto y_scale = fetch_tensor(stack);
+            auto b_zero_point = fetch_tensor(stack);
+            auto b_scale = fetch_tensor(stack);
+            auto b = fetch_tensor(stack);
+            auto a_zero_point = fetch_tensor(stack);
+            auto a_scale = fetch_tensor(stack);
+            auto a = fetch_tensor(stack);
 
             if ( a->onnx_QLinearMatMul(a, a_scale, a_zero_point, b, b_scale, b_zero_point, y_scale, y_zero_point, y) != YNX_OK ) {
                 yannx_panic("API: QLinearMatMul  return error!");
@@ -2750,9 +2778,9 @@ namespace math {
             ValueStack<TensorType>& stack = rt;
 
 
-            auto input = fetch_tensor(stack);
-            auto min = fetch_optional_tensor(stack);
             auto max = fetch_optional_tensor(stack);
+            auto min = fetch_optional_tensor(stack);
+            auto input = fetch_tensor(stack);
 
 
 #ifdef USING_NOONX
@@ -2771,9 +2799,9 @@ namespace math {
         }
         virtual void run(ValueStack<TensorType>& stack) {
 
-            auto input = fetch_tensor(stack);
-            auto min = fetch_optional_tensor(stack);
             auto max = fetch_optional_tensor(stack);
+            auto min = fetch_optional_tensor(stack);
+            auto input = fetch_tensor(stack);
 
             if ( input->onnx_Clip(input, min, max, output) != YNX_OK ) {
                 yannx_panic("API: Clip  return error!");
@@ -2914,9 +2942,9 @@ namespace math {
             auto beta = fetch_optional_float(stack);
             auto alpha = fetch_optional_float(stack);
 
-            auto A = fetch_tensor(stack);
-            auto B = fetch_tensor(stack);
             auto C = fetch_optional_tensor(stack);
+            auto B = fetch_tensor(stack);
+            auto A = fetch_tensor(stack);
 
 
 #ifdef USING_NOONX
@@ -2939,9 +2967,9 @@ namespace math {
             auto beta = fetch_optional_float(stack);
             auto alpha = fetch_optional_float(stack);
 
-            auto A = fetch_tensor(stack);
-            auto B = fetch_tensor(stack);
             auto C = fetch_optional_tensor(stack);
+            auto B = fetch_tensor(stack);
+            auto A = fetch_tensor(stack);
 
             if ( A->onnx_Gemm(A, B, C, Y, alpha, beta, transA, transB) != YNX_OK ) {
                 yannx_panic("API: Gemm  return error!");
@@ -3117,9 +3145,9 @@ namespace math {
             auto reduction = fetch_optional_string(stack);
             auto ignore_index = fetch_optional_int(stack);
 
-            auto scores = fetch_tensor(stack);
-            auto labels = fetch_tensor(stack);
             auto weights = fetch_optional_tensor(stack);
+            auto labels = fetch_tensor(stack);
+            auto scores = fetch_tensor(stack);
 
 
 #ifdef USING_NOONX
@@ -3141,9 +3169,9 @@ namespace math {
             auto reduction = fetch_optional_string(stack);
             auto ignore_index = fetch_optional_int(stack);
 
-            auto scores = fetch_tensor(stack);
-            auto labels = fetch_tensor(stack);
             auto weights = fetch_optional_tensor(stack);
+            auto labels = fetch_tensor(stack);
+            auto scores = fetch_tensor(stack);
 
             if ( scores->onnx_SoftmaxCrossEntropyLoss(scores, labels, weights, output, log_prob, ignore_index, reduction) != YNX_OK ) {
                 yannx_panic("API: SoftmaxCrossEntropyLoss  return error!");
@@ -3319,8 +3347,8 @@ namespace math {
             auto largest = fetch_optional_int(stack);
             auto axis = fetch_optional_int(stack);
 
-            auto X = fetch_tensor(stack);
             auto K = fetch_tensor(stack);
+            auto X = fetch_tensor(stack);
 
 
 #ifdef USING_NOONX
@@ -3344,8 +3372,8 @@ namespace math {
             auto largest = fetch_optional_int(stack);
             auto axis = fetch_optional_int(stack);
 
-            auto X = fetch_tensor(stack);
             auto K = fetch_tensor(stack);
+            auto X = fetch_tensor(stack);
 
             if ( X->onnx_TopK(X, K, Values, Indices, axis, largest, sorted) != YNX_OK ) {
                 yannx_panic("API: TopK  return error!");
@@ -3555,8 +3583,8 @@ namespace math {
             ValueStack<TensorType>& stack = rt;
 
 
-            auto A = fetch_tensor(stack);
             auto B = fetch_tensor(stack);
+            auto A = fetch_tensor(stack);
 
 
 #ifdef USING_NOONX
@@ -3575,8 +3603,8 @@ namespace math {
         }
         virtual void run(ValueStack<TensorType>& stack) {
 
-            auto A = fetch_tensor(stack);
             auto B = fetch_tensor(stack);
+            auto A = fetch_tensor(stack);
 
             if ( A->onnx_MatMul(A, B, Y) != YNX_OK ) {
                 yannx_panic("API: MatMul  return error!");
@@ -3595,8 +3623,8 @@ namespace math {
             ValueStack<TensorType>& stack = rt;
 
 
-            auto input = fetch_tensor(stack);
             auto shape = fetch_tensor(stack);
+            auto input = fetch_tensor(stack);
 
 
 #ifdef USING_NOONX
@@ -3615,8 +3643,8 @@ namespace math {
         }
         virtual void run(ValueStack<TensorType>& stack) {
 
-            auto input = fetch_tensor(stack);
             auto shape = fetch_tensor(stack);
+            auto input = fetch_tensor(stack);
 
             if ( input->onnx_Expand(input, shape, output) != YNX_OK ) {
                 yannx_panic("API: Expand  return error!");
@@ -3866,8 +3894,8 @@ namespace math {
 
             auto fmod = fetch_optional_int(stack);
 
-            auto A = fetch_tensor(stack);
             auto B = fetch_tensor(stack);
+            auto A = fetch_tensor(stack);
 
 
 #ifdef USING_NOONX
@@ -3887,8 +3915,8 @@ namespace math {
         virtual void run(ValueStack<TensorType>& stack) {
             auto fmod = fetch_optional_int(stack);
 
-            auto A = fetch_tensor(stack);
             auto B = fetch_tensor(stack);
+            auto A = fetch_tensor(stack);
 
             if ( A->onnx_Mod(A, B, C, fmod) != YNX_OK ) {
                 yannx_panic("API: Mod  return error!");
@@ -3947,10 +3975,10 @@ namespace math {
             ValueStack<TensorType>& stack = rt;
 
 
-            auto A = fetch_tensor(stack);
-            auto B = fetch_tensor(stack);
-            auto a_zero_point = fetch_optional_tensor(stack);
             auto b_zero_point = fetch_optional_tensor(stack);
+            auto a_zero_point = fetch_optional_tensor(stack);
+            auto B = fetch_tensor(stack);
+            auto A = fetch_tensor(stack);
 
 
 #ifdef USING_NOONX
@@ -3969,10 +3997,10 @@ namespace math {
         }
         virtual void run(ValueStack<TensorType>& stack) {
 
-            auto A = fetch_tensor(stack);
-            auto B = fetch_tensor(stack);
-            auto a_zero_point = fetch_optional_tensor(stack);
             auto b_zero_point = fetch_optional_tensor(stack);
+            auto a_zero_point = fetch_optional_tensor(stack);
+            auto B = fetch_tensor(stack);
+            auto A = fetch_tensor(stack);
 
             if ( A->onnx_MatMulInteger(A, B, a_zero_point, b_zero_point, Y) != YNX_OK ) {
                 yannx_panic("API: MatMulInteger  return error!");
@@ -4033,8 +4061,8 @@ namespace math {
             auto reverse = fetch_optional_int(stack);
             auto exclusive = fetch_optional_int(stack);
 
-            auto x = fetch_tensor(stack);
             auto axis = fetch_tensor(stack);
+            auto x = fetch_tensor(stack);
 
 
 #ifdef USING_NOONX
@@ -4055,8 +4083,8 @@ namespace math {
             auto reverse = fetch_optional_int(stack);
             auto exclusive = fetch_optional_int(stack);
 
-            auto x = fetch_tensor(stack);
             auto axis = fetch_tensor(stack);
+            auto x = fetch_tensor(stack);
 
             if ( x->onnx_CumSum(x, axis, y, exclusive, reverse) != YNX_OK ) {
                 yannx_panic("API: CumSum  return error!");
@@ -4115,9 +4143,9 @@ namespace math {
             auto reduction = fetch_optional_string(stack);
             auto ignore_index = fetch_optional_int(stack);
 
-            auto input = fetch_tensor(stack);
-            auto target = fetch_tensor(stack);
             auto weight = fetch_optional_tensor(stack);
+            auto target = fetch_tensor(stack);
+            auto input = fetch_tensor(stack);
 
 
 #ifdef USING_NOONX
@@ -4138,9 +4166,9 @@ namespace math {
             auto reduction = fetch_optional_string(stack);
             auto ignore_index = fetch_optional_int(stack);
 
-            auto input = fetch_tensor(stack);
-            auto target = fetch_tensor(stack);
             auto weight = fetch_optional_tensor(stack);
+            auto target = fetch_tensor(stack);
+            auto input = fetch_tensor(stack);
 
             if ( input->onnx_NegativeLogLikelihoodLoss(input, target, weight, loss, ignore_index, reduction) != YNX_OK ) {
                 yannx_panic("API: NegativeLogLikelihoodLoss  return error!");
@@ -4333,9 +4361,9 @@ namespace nn {
 
             auto seed = fetch_optional_int(stack);
 
-            auto data = fetch_tensor(stack);
-            auto ratio = fetch_optional_tensor(stack);
             auto training_mode = fetch_optional_tensor(stack);
+            auto ratio = fetch_optional_tensor(stack);
+            auto data = fetch_tensor(stack);
 
 
 #ifdef USING_NOONX
@@ -4356,9 +4384,9 @@ namespace nn {
         virtual void run(ValueStack<TensorType>& stack) {
             auto seed = fetch_optional_int(stack);
 
-            auto data = fetch_tensor(stack);
-            auto ratio = fetch_optional_tensor(stack);
             auto training_mode = fetch_optional_tensor(stack);
+            auto ratio = fetch_optional_tensor(stack);
+            auto data = fetch_tensor(stack);
 
             if ( data->onnx_Dropout(data, ratio, training_mode, output, mask, seed) != YNX_OK ) {
                 yannx_panic("API: Dropout  return error!");
@@ -4521,9 +4549,9 @@ namespace nn {
             auto dilations = fetch_optional_ints(stack);
             auto auto_pad = fetch_optional_string(stack);
 
-            auto X = fetch_tensor(stack);
-            auto W = fetch_tensor(stack);
             auto B = fetch_optional_tensor(stack);
+            auto W = fetch_tensor(stack);
+            auto X = fetch_tensor(stack);
 
 
 #ifdef USING_NOONX
@@ -4548,9 +4576,9 @@ namespace nn {
             auto dilations = fetch_optional_ints(stack);
             auto auto_pad = fetch_optional_string(stack);
 
-            auto X = fetch_tensor(stack);
-            auto W = fetch_tensor(stack);
             auto B = fetch_optional_tensor(stack);
+            auto W = fetch_tensor(stack);
+            auto X = fetch_tensor(stack);
 
             if ( X->onnx_Conv(X, W, B, Y, auto_pad, dilations, group, kernel_shape, pads, strides) != YNX_OK ) {
                 yannx_panic("API: Conv  return error!");
@@ -4610,9 +4638,9 @@ namespace nn {
             auto pads = fetch_optional_ints(stack);
             auto kernel_shape = fetch_ints(stack);
 
-            auto X = fetch_tensor(stack);
-            auto I = fetch_tensor(stack);
             auto output_shape = fetch_optional_tensor(stack);
+            auto I = fetch_tensor(stack);
+            auto X = fetch_tensor(stack);
 
 
 #ifdef USING_NOONX
@@ -4634,9 +4662,9 @@ namespace nn {
             auto pads = fetch_optional_ints(stack);
             auto kernel_shape = fetch_ints(stack);
 
-            auto X = fetch_tensor(stack);
-            auto I = fetch_tensor(stack);
             auto output_shape = fetch_optional_tensor(stack);
+            auto I = fetch_tensor(stack);
+            auto X = fetch_tensor(stack);
 
             if ( X->onnx_MaxUnpool(X, I, output_shape, output, kernel_shape, pads, strides) != YNX_OK ) {
                 yannx_panic("API: MaxUnpool  return error!");
@@ -4706,9 +4734,9 @@ namespace nn {
 
             auto epsilon = fetch_optional_float(stack);
 
-            auto input = fetch_tensor(stack);
-            auto scale = fetch_tensor(stack);
             auto B = fetch_tensor(stack);
+            auto scale = fetch_tensor(stack);
+            auto input = fetch_tensor(stack);
 
 
 #ifdef USING_NOONX
@@ -4728,9 +4756,9 @@ namespace nn {
         virtual void run(ValueStack<TensorType>& stack) {
             auto epsilon = fetch_optional_float(stack);
 
-            auto input = fetch_tensor(stack);
-            auto scale = fetch_tensor(stack);
             auto B = fetch_tensor(stack);
+            auto scale = fetch_tensor(stack);
+            auto input = fetch_tensor(stack);
 
             if ( input->onnx_InstanceNormalization(input, scale, B, output, epsilon) != YNX_OK ) {
                 yannx_panic("API: InstanceNormalization  return error!");
@@ -4829,8 +4857,8 @@ namespace nn {
             auto spatial_scale = fetch_optional_float(stack);
             auto pooled_shape = fetch_ints(stack);
 
-            auto X = fetch_tensor(stack);
             auto rois = fetch_tensor(stack);
+            auto X = fetch_tensor(stack);
 
 
 #ifdef USING_NOONX
@@ -4851,8 +4879,8 @@ namespace nn {
             auto spatial_scale = fetch_optional_float(stack);
             auto pooled_shape = fetch_ints(stack);
 
-            auto X = fetch_tensor(stack);
             auto rois = fetch_tensor(stack);
+            auto X = fetch_tensor(stack);
 
             if ( X->onnx_MaxRoiPool(X, rois, Y, pooled_shape, spatial_scale) != YNX_OK ) {
                 yannx_panic("API: MaxRoiPool  return error!");
@@ -4876,11 +4904,11 @@ namespace nn {
             auto momentum = fetch_optional_float(stack);
             auto epsilon = fetch_optional_float(stack);
 
-            auto X = fetch_tensor(stack);
-            auto scale = fetch_tensor(stack);
-            auto B = fetch_tensor(stack);
-            auto input_mean = fetch_tensor(stack);
             auto input_var = fetch_tensor(stack);
+            auto input_mean = fetch_tensor(stack);
+            auto B = fetch_tensor(stack);
+            auto scale = fetch_tensor(stack);
+            auto X = fetch_tensor(stack);
 
 
 #ifdef USING_NOONX
@@ -4904,11 +4932,11 @@ namespace nn {
             auto momentum = fetch_optional_float(stack);
             auto epsilon = fetch_optional_float(stack);
 
-            auto X = fetch_tensor(stack);
-            auto scale = fetch_tensor(stack);
-            auto B = fetch_tensor(stack);
-            auto input_mean = fetch_tensor(stack);
             auto input_var = fetch_tensor(stack);
+            auto input_mean = fetch_tensor(stack);
+            auto B = fetch_tensor(stack);
+            auto scale = fetch_tensor(stack);
+            auto X = fetch_tensor(stack);
 
             if ( X->onnx_BatchNormalization(X, scale, B, input_mean, input_var, Y, running_mean, running_var, epsilon, momentum, training_mode) != YNX_OK ) {
                 yannx_panic("API: BatchNormalization  return error!");
@@ -5063,10 +5091,10 @@ namespace nn {
             auto dilations = fetch_optional_ints(stack);
             auto auto_pad = fetch_optional_string(stack);
 
-            auto x = fetch_tensor(stack);
-            auto w = fetch_tensor(stack);
-            auto x_zero_point = fetch_optional_tensor(stack);
             auto w_zero_point = fetch_optional_tensor(stack);
+            auto x_zero_point = fetch_optional_tensor(stack);
+            auto w = fetch_tensor(stack);
+            auto x = fetch_tensor(stack);
 
 
 #ifdef USING_NOONX
@@ -5091,10 +5119,10 @@ namespace nn {
             auto dilations = fetch_optional_ints(stack);
             auto auto_pad = fetch_optional_string(stack);
 
-            auto x = fetch_tensor(stack);
-            auto w = fetch_tensor(stack);
-            auto x_zero_point = fetch_optional_tensor(stack);
             auto w_zero_point = fetch_optional_tensor(stack);
+            auto x_zero_point = fetch_optional_tensor(stack);
+            auto w = fetch_tensor(stack);
+            auto x = fetch_tensor(stack);
 
             if ( x->onnx_ConvInteger(x, w, x_zero_point, w_zero_point, y, auto_pad, dilations, group, kernel_shape, pads, strides) != YNX_OK ) {
                 yannx_panic("API: ConvInteger  return error!");
@@ -5119,15 +5147,15 @@ namespace nn {
             auto dilations = fetch_optional_ints(stack);
             auto auto_pad = fetch_optional_string(stack);
 
-            auto x = fetch_tensor(stack);
-            auto x_scale = fetch_tensor(stack);
-            auto x_zero_point = fetch_tensor(stack);
-            auto w = fetch_tensor(stack);
-            auto w_scale = fetch_tensor(stack);
-            auto w_zero_point = fetch_tensor(stack);
-            auto y_scale = fetch_tensor(stack);
-            auto y_zero_point = fetch_tensor(stack);
             auto B = fetch_optional_tensor(stack);
+            auto y_zero_point = fetch_tensor(stack);
+            auto y_scale = fetch_tensor(stack);
+            auto w_zero_point = fetch_tensor(stack);
+            auto w_scale = fetch_tensor(stack);
+            auto w = fetch_tensor(stack);
+            auto x_zero_point = fetch_tensor(stack);
+            auto x_scale = fetch_tensor(stack);
+            auto x = fetch_tensor(stack);
 
 
 #ifdef USING_NOONX
@@ -5152,15 +5180,15 @@ namespace nn {
             auto dilations = fetch_optional_ints(stack);
             auto auto_pad = fetch_optional_string(stack);
 
-            auto x = fetch_tensor(stack);
-            auto x_scale = fetch_tensor(stack);
-            auto x_zero_point = fetch_tensor(stack);
-            auto w = fetch_tensor(stack);
-            auto w_scale = fetch_tensor(stack);
-            auto w_zero_point = fetch_tensor(stack);
-            auto y_scale = fetch_tensor(stack);
-            auto y_zero_point = fetch_tensor(stack);
             auto B = fetch_optional_tensor(stack);
+            auto y_zero_point = fetch_tensor(stack);
+            auto y_scale = fetch_tensor(stack);
+            auto w_zero_point = fetch_tensor(stack);
+            auto w_scale = fetch_tensor(stack);
+            auto w = fetch_tensor(stack);
+            auto x_zero_point = fetch_tensor(stack);
+            auto x_scale = fetch_tensor(stack);
+            auto x = fetch_tensor(stack);
 
             if ( x->onnx_QLinearConv(x, x_scale, x_zero_point, w, w_scale, w_zero_point, y_scale, y_zero_point, B, y, auto_pad, dilations, group, kernel_shape, pads, strides) != YNX_OK ) {
                 yannx_panic("API: QLinearConv  return error!");
@@ -5187,9 +5215,9 @@ namespace nn {
             auto dilations = fetch_optional_ints(stack);
             auto auto_pad = fetch_optional_string(stack);
 
-            auto X = fetch_tensor(stack);
-            auto W = fetch_tensor(stack);
             auto B = fetch_optional_tensor(stack);
+            auto W = fetch_tensor(stack);
+            auto X = fetch_tensor(stack);
 
 
 #ifdef USING_NOONX
@@ -5216,9 +5244,9 @@ namespace nn {
             auto dilations = fetch_optional_ints(stack);
             auto auto_pad = fetch_optional_string(stack);
 
-            auto X = fetch_tensor(stack);
-            auto W = fetch_tensor(stack);
             auto B = fetch_optional_tensor(stack);
+            auto W = fetch_tensor(stack);
+            auto X = fetch_tensor(stack);
 
             if ( X->onnx_ConvTranspose(X, W, B, Y, auto_pad, dilations, group, kernel_shape, output_padding, output_shape, pads, strides) != YNX_OK ) {
                 yannx_panic("API: ConvTranspose  return error!");
@@ -5300,9 +5328,9 @@ namespace object_detection {
             auto output_height = fetch_optional_int(stack);
             auto mode = fetch_optional_string(stack);
 
-            auto X = fetch_tensor(stack);
-            auto rois = fetch_tensor(stack);
             auto batch_indices = fetch_tensor(stack);
+            auto rois = fetch_tensor(stack);
+            auto X = fetch_tensor(stack);
 
 
 #ifdef USING_NOONX
@@ -5326,9 +5354,9 @@ namespace object_detection {
             auto output_height = fetch_optional_int(stack);
             auto mode = fetch_optional_string(stack);
 
-            auto X = fetch_tensor(stack);
-            auto rois = fetch_tensor(stack);
             auto batch_indices = fetch_tensor(stack);
+            auto rois = fetch_tensor(stack);
+            auto X = fetch_tensor(stack);
 
             if ( X->onnx_RoiAlign(X, rois, batch_indices, Y, mode, output_height, output_width, sampling_ratio, spatial_scale) != YNX_OK ) {
                 yannx_panic("API: RoiAlign  return error!");
@@ -5348,11 +5376,11 @@ namespace object_detection {
 
             auto center_point_box = fetch_optional_int(stack);
 
-            auto boxes = fetch_tensor(stack);
-            auto scores = fetch_tensor(stack);
-            auto max_output_boxes_per_class = fetch_optional_tensor(stack);
-            auto iou_threshold = fetch_optional_tensor(stack);
             auto score_threshold = fetch_optional_tensor(stack);
+            auto iou_threshold = fetch_optional_tensor(stack);
+            auto max_output_boxes_per_class = fetch_optional_tensor(stack);
+            auto scores = fetch_tensor(stack);
+            auto boxes = fetch_tensor(stack);
 
 
 #ifdef USING_NOONX
@@ -5372,11 +5400,11 @@ namespace object_detection {
         virtual void run(ValueStack<TensorType>& stack) {
             auto center_point_box = fetch_optional_int(stack);
 
-            auto boxes = fetch_tensor(stack);
-            auto scores = fetch_tensor(stack);
-            auto max_output_boxes_per_class = fetch_optional_tensor(stack);
-            auto iou_threshold = fetch_optional_tensor(stack);
             auto score_threshold = fetch_optional_tensor(stack);
+            auto iou_threshold = fetch_optional_tensor(stack);
+            auto max_output_boxes_per_class = fetch_optional_tensor(stack);
+            auto scores = fetch_tensor(stack);
+            auto boxes = fetch_tensor(stack);
 
             if ( boxes->onnx_NonMaxSuppression(boxes, scores, max_output_boxes_per_class, iou_threshold, score_threshold, selected_indices, center_point_box) != YNX_OK ) {
                 yannx_panic("API: NonMaxSuppression  return error!");
@@ -5398,9 +5426,9 @@ namespace quantization {
 
             auto axis = fetch_optional_int(stack);
 
-            auto x = fetch_tensor(stack);
-            auto y_scale = fetch_tensor(stack);
             auto y_zero_point = fetch_optional_tensor(stack);
+            auto y_scale = fetch_tensor(stack);
+            auto x = fetch_tensor(stack);
 
 
 #ifdef USING_NOONX
@@ -5420,9 +5448,9 @@ namespace quantization {
         virtual void run(ValueStack<TensorType>& stack) {
             auto axis = fetch_optional_int(stack);
 
-            auto x = fetch_tensor(stack);
-            auto y_scale = fetch_tensor(stack);
             auto y_zero_point = fetch_optional_tensor(stack);
+            auto y_scale = fetch_tensor(stack);
+            auto x = fetch_tensor(stack);
 
             if ( x->onnx_QuantizeLinear(x, y_scale, y_zero_point, y, axis) != YNX_OK ) {
                 yannx_panic("API: QuantizeLinear  return error!");
@@ -5488,9 +5516,9 @@ namespace quantization {
 
             auto axis = fetch_optional_int(stack);
 
-            auto x = fetch_tensor(stack);
-            auto x_scale = fetch_tensor(stack);
             auto x_zero_point = fetch_optional_tensor(stack);
+            auto x_scale = fetch_tensor(stack);
+            auto x = fetch_tensor(stack);
 
 
 #ifdef USING_NOONX
@@ -5510,9 +5538,9 @@ namespace quantization {
         virtual void run(ValueStack<TensorType>& stack) {
             auto axis = fetch_optional_int(stack);
 
-            auto x = fetch_tensor(stack);
-            auto x_scale = fetch_tensor(stack);
             auto x_zero_point = fetch_optional_tensor(stack);
+            auto x_scale = fetch_tensor(stack);
+            auto x = fetch_tensor(stack);
 
             if ( x->onnx_DequantizeLinear(x, x_scale, x_zero_point, y, axis) != YNX_OK ) {
                 yannx_panic("API: DequantizeLinear  return error!");
@@ -5661,8 +5689,8 @@ namespace reduction {
             auto noop_with_empty_axes = fetch_optional_int(stack);
             auto keepdims = fetch_optional_int(stack);
 
-            auto data = fetch_tensor(stack);
             auto axes = fetch_optional_tensor(stack);
+            auto data = fetch_tensor(stack);
 
 
 #ifdef USING_NOONX
@@ -5683,8 +5711,8 @@ namespace reduction {
             auto noop_with_empty_axes = fetch_optional_int(stack);
             auto keepdims = fetch_optional_int(stack);
 
-            auto data = fetch_tensor(stack);
             auto axes = fetch_optional_tensor(stack);
+            auto data = fetch_tensor(stack);
 
             if ( data->onnx_ReduceSum(data, axes, reduced, keepdims, noop_with_empty_axes) != YNX_OK ) {
                 yannx_panic("API: ReduceSum  return error!");
@@ -6055,14 +6083,14 @@ namespace rnn {
             auto activation_beta = fetch_optional_floats(stack);
             auto activation_alpha = fetch_optional_floats(stack);
 
-            auto X = fetch_tensor(stack);
-            auto W = fetch_tensor(stack);
-            auto R = fetch_tensor(stack);
-            auto B = fetch_optional_tensor(stack);
-            auto sequence_lens = fetch_optional_tensor(stack);
-            auto initial_h = fetch_optional_tensor(stack);
-            auto initial_c = fetch_optional_tensor(stack);
             auto P = fetch_optional_tensor(stack);
+            auto initial_c = fetch_optional_tensor(stack);
+            auto initial_h = fetch_optional_tensor(stack);
+            auto sequence_lens = fetch_optional_tensor(stack);
+            auto B = fetch_optional_tensor(stack);
+            auto R = fetch_tensor(stack);
+            auto W = fetch_tensor(stack);
+            auto X = fetch_tensor(stack);
 
 
 #ifdef USING_NOONX
@@ -6090,14 +6118,14 @@ namespace rnn {
             auto activation_beta = fetch_optional_floats(stack);
             auto activation_alpha = fetch_optional_floats(stack);
 
-            auto X = fetch_tensor(stack);
-            auto W = fetch_tensor(stack);
-            auto R = fetch_tensor(stack);
-            auto B = fetch_optional_tensor(stack);
-            auto sequence_lens = fetch_optional_tensor(stack);
-            auto initial_h = fetch_optional_tensor(stack);
-            auto initial_c = fetch_optional_tensor(stack);
             auto P = fetch_optional_tensor(stack);
+            auto initial_c = fetch_optional_tensor(stack);
+            auto initial_h = fetch_optional_tensor(stack);
+            auto sequence_lens = fetch_optional_tensor(stack);
+            auto B = fetch_optional_tensor(stack);
+            auto R = fetch_tensor(stack);
+            auto W = fetch_tensor(stack);
+            auto X = fetch_tensor(stack);
 
             if ( X->onnx_LSTM(X, W, R, B, sequence_lens, initial_h, initial_c, P, Y, Y_h, Y_c, activation_alpha, activation_beta, activations, clip, direction, hidden_size, input_forget, layout) != YNX_OK ) {
                 yannx_panic("API: LSTM  return error!");
@@ -6127,12 +6155,12 @@ namespace rnn {
             auto activation_beta = fetch_optional_floats(stack);
             auto activation_alpha = fetch_optional_floats(stack);
 
-            auto X = fetch_tensor(stack);
-            auto W = fetch_tensor(stack);
-            auto R = fetch_tensor(stack);
-            auto B = fetch_optional_tensor(stack);
-            auto sequence_lens = fetch_optional_tensor(stack);
             auto initial_h = fetch_optional_tensor(stack);
+            auto sequence_lens = fetch_optional_tensor(stack);
+            auto B = fetch_optional_tensor(stack);
+            auto R = fetch_tensor(stack);
+            auto W = fetch_tensor(stack);
+            auto X = fetch_tensor(stack);
 
 
 #ifdef USING_NOONX
@@ -6159,12 +6187,12 @@ namespace rnn {
             auto activation_beta = fetch_optional_floats(stack);
             auto activation_alpha = fetch_optional_floats(stack);
 
-            auto X = fetch_tensor(stack);
-            auto W = fetch_tensor(stack);
-            auto R = fetch_tensor(stack);
-            auto B = fetch_optional_tensor(stack);
-            auto sequence_lens = fetch_optional_tensor(stack);
             auto initial_h = fetch_optional_tensor(stack);
+            auto sequence_lens = fetch_optional_tensor(stack);
+            auto B = fetch_optional_tensor(stack);
+            auto R = fetch_tensor(stack);
+            auto W = fetch_tensor(stack);
+            auto X = fetch_tensor(stack);
 
             if ( X->onnx_GRU(X, W, R, B, sequence_lens, initial_h, Y, Y_h, activation_alpha, activation_beta, activations, clip, direction, hidden_size, layout, linear_before_reset) != YNX_OK ) {
                 yannx_panic("API: GRU  return error!");
@@ -6192,12 +6220,12 @@ namespace rnn {
             auto activation_beta = fetch_optional_floats(stack);
             auto activation_alpha = fetch_optional_floats(stack);
 
-            auto X = fetch_tensor(stack);
-            auto W = fetch_tensor(stack);
-            auto R = fetch_tensor(stack);
-            auto B = fetch_optional_tensor(stack);
-            auto sequence_lens = fetch_optional_tensor(stack);
             auto initial_h = fetch_optional_tensor(stack);
+            auto sequence_lens = fetch_optional_tensor(stack);
+            auto B = fetch_optional_tensor(stack);
+            auto R = fetch_tensor(stack);
+            auto W = fetch_tensor(stack);
+            auto X = fetch_tensor(stack);
 
 
 #ifdef USING_NOONX
@@ -6223,12 +6251,12 @@ namespace rnn {
             auto activation_beta = fetch_optional_floats(stack);
             auto activation_alpha = fetch_optional_floats(stack);
 
-            auto X = fetch_tensor(stack);
-            auto W = fetch_tensor(stack);
-            auto R = fetch_tensor(stack);
-            auto B = fetch_optional_tensor(stack);
-            auto sequence_lens = fetch_optional_tensor(stack);
             auto initial_h = fetch_optional_tensor(stack);
+            auto sequence_lens = fetch_optional_tensor(stack);
+            auto B = fetch_optional_tensor(stack);
+            auto R = fetch_tensor(stack);
+            auto W = fetch_tensor(stack);
+            auto X = fetch_tensor(stack);
 
             if ( X->onnx_RNN(X, W, R, B, sequence_lens, initial_h, Y, Y_h, activation_alpha, activation_beta, activations, clip, direction, hidden_size, layout) != YNX_OK ) {
                 yannx_panic("API: RNN  return error!");
@@ -6290,8 +6318,8 @@ namespace sequence {
             auto keepdims = fetch_optional_int(stack);
             auto axis = fetch_optional_int(stack);
 
-            auto input = fetch_tensor(stack);
             auto split = fetch_optional_tensor(stack);
+            auto input = fetch_tensor(stack);
 
 
 #ifdef USING_NOONX
@@ -6312,8 +6340,8 @@ namespace sequence {
             auto keepdims = fetch_optional_int(stack);
             auto axis = fetch_optional_int(stack);
 
-            auto input = fetch_tensor(stack);
             auto split = fetch_optional_tensor(stack);
+            auto input = fetch_tensor(stack);
 
             if ( input->onnx_SplitToSequence(input, split, output_sequence, axis, keepdims) != YNX_OK ) {
                 yannx_panic("API: SplitToSequence  return error!");
@@ -6332,8 +6360,8 @@ namespace sequence {
             ValueStack<TensorType>& stack = rt;
 
 
-            auto input_sequence = fetch_tensor(stack);
             auto position = fetch_tensor(stack);
+            auto input_sequence = fetch_tensor(stack);
 
 
 #ifdef USING_NOONX
@@ -6352,8 +6380,8 @@ namespace sequence {
         }
         virtual void run(ValueStack<TensorType>& stack) {
 
-            auto input_sequence = fetch_tensor(stack);
             auto position = fetch_tensor(stack);
+            auto input_sequence = fetch_tensor(stack);
 
             if ( input_sequence->onnx_SequenceAt(input_sequence, position, tensor) != YNX_OK ) {
                 yannx_panic("API: SequenceAt  return error!");
@@ -6448,9 +6476,9 @@ namespace sequence {
             ValueStack<TensorType>& stack = rt;
 
 
-            auto input_sequence = fetch_tensor(stack);
-            auto tensor = fetch_tensor(stack);
             auto position = fetch_optional_tensor(stack);
+            auto tensor = fetch_tensor(stack);
+            auto input_sequence = fetch_tensor(stack);
 
 
 #ifdef USING_NOONX
@@ -6469,9 +6497,9 @@ namespace sequence {
         }
         virtual void run(ValueStack<TensorType>& stack) {
 
-            auto input_sequence = fetch_tensor(stack);
-            auto tensor = fetch_tensor(stack);
             auto position = fetch_optional_tensor(stack);
+            auto tensor = fetch_tensor(stack);
+            auto input_sequence = fetch_tensor(stack);
 
             if ( input_sequence->onnx_SequenceInsert(input_sequence, tensor, position, output_sequence) != YNX_OK ) {
                 yannx_panic("API: SequenceInsert  return error!");
@@ -6490,8 +6518,8 @@ namespace sequence {
             ValueStack<TensorType>& stack = rt;
 
 
-            auto input_sequence = fetch_tensor(stack);
             auto position = fetch_optional_tensor(stack);
+            auto input_sequence = fetch_tensor(stack);
 
 
 #ifdef USING_NOONX
@@ -6510,8 +6538,8 @@ namespace sequence {
         }
         virtual void run(ValueStack<TensorType>& stack) {
 
-            auto input_sequence = fetch_tensor(stack);
             auto position = fetch_optional_tensor(stack);
+            auto input_sequence = fetch_tensor(stack);
 
             if ( input_sequence->onnx_SequenceErase(input_sequence, position, output_sequence) != YNX_OK ) {
                 yannx_panic("API: SequenceErase  return error!");
@@ -6574,8 +6602,8 @@ namespace tensor {
             ValueStack<TensorType>& stack = rt;
 
 
-            auto input = fetch_tensor(stack);
             auto target_type = fetch_tensor(stack);
+            auto input = fetch_tensor(stack);
 
 
 #ifdef USING_NOONX
@@ -6594,8 +6622,8 @@ namespace tensor {
         }
         virtual void run(ValueStack<TensorType>& stack) {
 
-            auto input = fetch_tensor(stack);
             auto target_type = fetch_tensor(stack);
+            auto input = fetch_tensor(stack);
 
             if ( input->onnx_CastLike(input, target_type, output) != YNX_OK ) {
                 yannx_panic("API: CastLike  return error!");
@@ -6657,8 +6685,8 @@ namespace tensor {
 
             auto allowzero = fetch_optional_int(stack);
 
-            auto data = fetch_tensor(stack);
             auto shape = fetch_tensor(stack);
+            auto data = fetch_tensor(stack);
 
 
 #ifdef USING_NOONX
@@ -6678,8 +6706,8 @@ namespace tensor {
         virtual void run(ValueStack<TensorType>& stack) {
             auto allowzero = fetch_optional_int(stack);
 
-            auto data = fetch_tensor(stack);
             auto shape = fetch_tensor(stack);
+            auto data = fetch_tensor(stack);
 
             if ( data->onnx_Reshape(data, shape, reshaped, allowzero) != YNX_OK ) {
                 yannx_panic("API: Reshape  return error!");
@@ -6781,8 +6809,8 @@ namespace tensor {
 
             auto axis = fetch_optional_int(stack);
 
-            auto data = fetch_tensor(stack);
             auto indices = fetch_tensor(stack);
+            auto data = fetch_tensor(stack);
 
 
 #ifdef USING_NOONX
@@ -6802,8 +6830,8 @@ namespace tensor {
         virtual void run(ValueStack<TensorType>& stack) {
             auto axis = fetch_optional_int(stack);
 
-            auto data = fetch_tensor(stack);
             auto indices = fetch_tensor(stack);
+            auto data = fetch_tensor(stack);
 
             if ( data->onnx_Gather(data, indices, output, axis) != YNX_OK ) {
                 yannx_panic("API: Gather  return error!");
@@ -6901,8 +6929,8 @@ namespace tensor {
 
             auto axis = fetch_optional_int(stack);
 
-            auto input = fetch_tensor(stack);
             auto split = fetch_optional_tensor(stack);
+            auto input = fetch_tensor(stack);
 
 
 #ifdef USING_NOONX
@@ -6921,8 +6949,8 @@ namespace tensor {
         virtual void run(ValueStack<TensorType>& stack) {
             auto axis = fetch_optional_int(stack);
 
-            auto input = fetch_tensor(stack);
             auto split = fetch_optional_tensor(stack);
+            auto input = fetch_tensor(stack);
 
             if ( input->onnx_Split(input, split, outputs, axis) != YNX_OK ) {
                 yannx_panic("API: Split  return error!");
@@ -6979,11 +7007,11 @@ namespace tensor {
             ValueStack<TensorType>& stack = rt;
 
 
-            auto data = fetch_tensor(stack);
-            auto starts = fetch_tensor(stack);
-            auto ends = fetch_tensor(stack);
-            auto axes = fetch_optional_tensor(stack);
             auto steps = fetch_optional_tensor(stack);
+            auto axes = fetch_optional_tensor(stack);
+            auto ends = fetch_tensor(stack);
+            auto starts = fetch_tensor(stack);
+            auto data = fetch_tensor(stack);
 
 
 #ifdef USING_NOONX
@@ -7002,11 +7030,11 @@ namespace tensor {
         }
         virtual void run(ValueStack<TensorType>& stack) {
 
-            auto data = fetch_tensor(stack);
-            auto starts = fetch_tensor(stack);
-            auto ends = fetch_tensor(stack);
-            auto axes = fetch_optional_tensor(stack);
             auto steps = fetch_optional_tensor(stack);
+            auto axes = fetch_optional_tensor(stack);
+            auto ends = fetch_tensor(stack);
+            auto starts = fetch_tensor(stack);
+            auto data = fetch_tensor(stack);
 
             if ( data->onnx_Slice(data, starts, ends, axes, steps, output) != YNX_OK ) {
                 yannx_panic("API: Slice  return error!");
@@ -7026,8 +7054,8 @@ namespace tensor {
 
             auto batch_dims = fetch_optional_int(stack);
 
-            auto data = fetch_tensor(stack);
             auto indices = fetch_tensor(stack);
+            auto data = fetch_tensor(stack);
 
 
 #ifdef USING_NOONX
@@ -7047,8 +7075,8 @@ namespace tensor {
         virtual void run(ValueStack<TensorType>& stack) {
             auto batch_dims = fetch_optional_int(stack);
 
-            auto data = fetch_tensor(stack);
             auto indices = fetch_tensor(stack);
+            auto data = fetch_tensor(stack);
 
             if ( data->onnx_GatherND(data, indices, output, batch_dims) != YNX_OK ) {
                 yannx_panic("API: GatherND  return error!");
@@ -7107,8 +7135,8 @@ namespace tensor {
             ValueStack<TensorType>& stack = rt;
 
 
-            auto data = fetch_tensor(stack);
             auto axes = fetch_optional_tensor(stack);
+            auto data = fetch_tensor(stack);
 
 
 #ifdef USING_NOONX
@@ -7127,8 +7155,8 @@ namespace tensor {
         }
         virtual void run(ValueStack<TensorType>& stack) {
 
-            auto data = fetch_tensor(stack);
             auto axes = fetch_optional_tensor(stack);
+            auto data = fetch_tensor(stack);
 
             if ( data->onnx_Squeeze(data, axes, squeezed) != YNX_OK ) {
                 yannx_panic("API: Squeeze  return error!");
@@ -7236,8 +7264,8 @@ namespace tensor {
             ValueStack<TensorType>& stack = rt;
 
 
-            auto input = fetch_tensor(stack);
             auto repeats = fetch_tensor(stack);
+            auto input = fetch_tensor(stack);
 
 
 #ifdef USING_NOONX
@@ -7256,8 +7284,8 @@ namespace tensor {
         }
         virtual void run(ValueStack<TensorType>& stack) {
 
-            auto input = fetch_tensor(stack);
             auto repeats = fetch_tensor(stack);
+            auto input = fetch_tensor(stack);
 
             if ( input->onnx_Tile(input, repeats, output) != YNX_OK ) {
                 yannx_panic("API: Tile  return error!");
@@ -7278,8 +7306,8 @@ namespace tensor {
             auto time_axis = fetch_optional_int(stack);
             auto batch_axis = fetch_optional_int(stack);
 
-            auto input = fetch_tensor(stack);
             auto sequence_lens = fetch_tensor(stack);
+            auto input = fetch_tensor(stack);
 
 
 #ifdef USING_NOONX
@@ -7300,8 +7328,8 @@ namespace tensor {
             auto time_axis = fetch_optional_int(stack);
             auto batch_axis = fetch_optional_int(stack);
 
-            auto input = fetch_tensor(stack);
             auto sequence_lens = fetch_tensor(stack);
+            auto input = fetch_tensor(stack);
 
             if ( input->onnx_ReverseSequence(input, sequence_lens, Y, batch_axis, time_axis) != YNX_OK ) {
                 yannx_panic("API: ReverseSequence  return error!");
@@ -7361,8 +7389,8 @@ namespace tensor {
 
             auto upper = fetch_optional_int(stack);
 
-            auto input = fetch_tensor(stack);
             auto k = fetch_optional_tensor(stack);
+            auto input = fetch_tensor(stack);
 
 
 #ifdef USING_NOONX
@@ -7382,8 +7410,8 @@ namespace tensor {
         virtual void run(ValueStack<TensorType>& stack) {
             auto upper = fetch_optional_int(stack);
 
-            auto input = fetch_tensor(stack);
             auto k = fetch_optional_tensor(stack);
+            auto input = fetch_tensor(stack);
 
             if ( input->onnx_Trilu(input, k, output, upper) != YNX_OK ) {
                 yannx_panic("API: Trilu  return error!");
@@ -7402,9 +7430,9 @@ namespace tensor {
             ValueStack<TensorType>& stack = rt;
 
 
-            auto condition = fetch_tensor(stack);
-            auto X = fetch_tensor(stack);
             auto Y = fetch_tensor(stack);
+            auto X = fetch_tensor(stack);
+            auto condition = fetch_tensor(stack);
 
 
 #ifdef USING_NOONX
@@ -7423,9 +7451,9 @@ namespace tensor {
         }
         virtual void run(ValueStack<TensorType>& stack) {
 
-            auto condition = fetch_tensor(stack);
-            auto X = fetch_tensor(stack);
             auto Y = fetch_tensor(stack);
+            auto X = fetch_tensor(stack);
+            auto condition = fetch_tensor(stack);
 
             if ( condition->onnx_Where(condition, X, Y, output) != YNX_OK ) {
                 yannx_panic("API: Where  return error!");
@@ -7445,8 +7473,8 @@ namespace tensor {
 
             auto axis = fetch_optional_int(stack);
 
-            auto input = fetch_tensor(stack);
             auto condition = fetch_tensor(stack);
+            auto input = fetch_tensor(stack);
 
 
 #ifdef USING_NOONX
@@ -7466,8 +7494,8 @@ namespace tensor {
         virtual void run(ValueStack<TensorType>& stack) {
             auto axis = fetch_optional_int(stack);
 
-            auto input = fetch_tensor(stack);
             auto condition = fetch_tensor(stack);
+            auto input = fetch_tensor(stack);
 
             if ( input->onnx_Compress(input, condition, output, axis) != YNX_OK ) {
                 yannx_panic("API: Compress  return error!");
@@ -7486,8 +7514,8 @@ namespace tensor {
             ValueStack<TensorType>& stack = rt;
 
 
-            auto data = fetch_tensor(stack);
             auto axes = fetch_tensor(stack);
+            auto data = fetch_tensor(stack);
 
 
 #ifdef USING_NOONX
@@ -7506,8 +7534,8 @@ namespace tensor {
         }
         virtual void run(ValueStack<TensorType>& stack) {
 
-            auto data = fetch_tensor(stack);
             auto axes = fetch_tensor(stack);
+            auto data = fetch_tensor(stack);
 
             if ( data->onnx_Unsqueeze(data, axes, expanded) != YNX_OK ) {
                 yannx_panic("API: Unsqueeze  return error!");
@@ -7527,9 +7555,9 @@ namespace tensor {
 
             auto axis = fetch_optional_int(stack);
 
-            auto indices = fetch_tensor(stack);
-            auto depth = fetch_tensor(stack);
             auto values = fetch_tensor(stack);
+            auto depth = fetch_tensor(stack);
+            auto indices = fetch_tensor(stack);
 
 
 #ifdef USING_NOONX
@@ -7549,9 +7577,9 @@ namespace tensor {
         virtual void run(ValueStack<TensorType>& stack) {
             auto axis = fetch_optional_int(stack);
 
-            auto indices = fetch_tensor(stack);
-            auto depth = fetch_tensor(stack);
             auto values = fetch_tensor(stack);
+            auto depth = fetch_tensor(stack);
+            auto indices = fetch_tensor(stack);
 
             if ( indices->onnx_OneHot(indices, depth, values, output, axis) != YNX_OK ) {
                 yannx_panic("API: OneHot  return error!");
@@ -7608,9 +7636,9 @@ namespace tensor {
             ValueStack<TensorType>& stack = rt;
 
 
-            auto data = fetch_tensor(stack);
-            auto indices = fetch_tensor(stack);
             auto updates = fetch_tensor(stack);
+            auto indices = fetch_tensor(stack);
+            auto data = fetch_tensor(stack);
 
 
 #ifdef USING_NOONX
@@ -7629,9 +7657,9 @@ namespace tensor {
         }
         virtual void run(ValueStack<TensorType>& stack) {
 
-            auto data = fetch_tensor(stack);
-            auto indices = fetch_tensor(stack);
             auto updates = fetch_tensor(stack);
+            auto indices = fetch_tensor(stack);
+            auto data = fetch_tensor(stack);
 
             if ( data->onnx_ScatterND(data, indices, updates, output) != YNX_OK ) {
                 yannx_panic("API: ScatterND  return error!");
@@ -7656,10 +7684,10 @@ namespace tensor {
             auto cubic_coeff_a = fetch_optional_float(stack);
             auto coordinate_transformation_mode = fetch_optional_string(stack);
 
-            auto X = fetch_tensor(stack);
-            auto roi = fetch_optional_tensor(stack);
-            auto scales = fetch_optional_tensor(stack);
             auto sizes = fetch_optional_tensor(stack);
+            auto scales = fetch_optional_tensor(stack);
+            auto roi = fetch_optional_tensor(stack);
+            auto X = fetch_tensor(stack);
 
 
 #ifdef USING_NOONX
@@ -7684,10 +7712,10 @@ namespace tensor {
             auto cubic_coeff_a = fetch_optional_float(stack);
             auto coordinate_transformation_mode = fetch_optional_string(stack);
 
-            auto X = fetch_tensor(stack);
-            auto roi = fetch_optional_tensor(stack);
-            auto scales = fetch_optional_tensor(stack);
             auto sizes = fetch_optional_tensor(stack);
+            auto scales = fetch_optional_tensor(stack);
+            auto roi = fetch_optional_tensor(stack);
+            auto X = fetch_tensor(stack);
 
             if ( X->onnx_Resize(X, roi, scales, sizes, Y, coordinate_transformation_mode, cubic_coeff_a, exclude_outside, extrapolation_value, mode, nearest_mode) != YNX_OK ) {
                 yannx_panic("API: Resize  return error!");
@@ -7707,9 +7735,9 @@ namespace tensor {
 
             auto mode = fetch_optional_string(stack);
 
-            auto data = fetch_tensor(stack);
-            auto pads = fetch_tensor(stack);
             auto constant_value = fetch_optional_tensor(stack);
+            auto pads = fetch_tensor(stack);
+            auto data = fetch_tensor(stack);
 
 
 #ifdef USING_NOONX
@@ -7729,9 +7757,9 @@ namespace tensor {
         virtual void run(ValueStack<TensorType>& stack) {
             auto mode = fetch_optional_string(stack);
 
-            auto data = fetch_tensor(stack);
-            auto pads = fetch_tensor(stack);
             auto constant_value = fetch_optional_tensor(stack);
+            auto pads = fetch_tensor(stack);
+            auto data = fetch_tensor(stack);
 
             if ( data->onnx_Pad(data, pads, constant_value, output, mode) != YNX_OK ) {
                 yannx_panic("API: Pad  return error!");
@@ -7793,8 +7821,8 @@ namespace tensor {
 
             auto axis = fetch_optional_int(stack);
 
-            auto data = fetch_tensor(stack);
             auto indices = fetch_tensor(stack);
+            auto data = fetch_tensor(stack);
 
 
 #ifdef USING_NOONX
@@ -7814,8 +7842,8 @@ namespace tensor {
         virtual void run(ValueStack<TensorType>& stack) {
             auto axis = fetch_optional_int(stack);
 
-            auto data = fetch_tensor(stack);
             auto indices = fetch_tensor(stack);
+            auto data = fetch_tensor(stack);
 
             if ( data->onnx_GatherElements(data, indices, output, axis) != YNX_OK ) {
                 yannx_panic("API: GatherElements  return error!");
@@ -7835,9 +7863,9 @@ namespace tensor {
 
             auto axis = fetch_optional_int(stack);
 
-            auto data = fetch_tensor(stack);
-            auto indices = fetch_tensor(stack);
             auto updates = fetch_tensor(stack);
+            auto indices = fetch_tensor(stack);
+            auto data = fetch_tensor(stack);
 
 
 #ifdef USING_NOONX
@@ -7857,9 +7885,9 @@ namespace tensor {
         virtual void run(ValueStack<TensorType>& stack) {
             auto axis = fetch_optional_int(stack);
 
-            auto data = fetch_tensor(stack);
-            auto indices = fetch_tensor(stack);
             auto updates = fetch_tensor(stack);
+            auto indices = fetch_tensor(stack);
+            auto data = fetch_tensor(stack);
 
             if ( data->onnx_ScatterElements(data, indices, updates, output, axis) != YNX_OK ) {
                 yannx_panic("API: ScatterElements  return error!");

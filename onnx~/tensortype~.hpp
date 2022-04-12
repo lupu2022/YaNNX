@@ -13,6 +13,7 @@
 #ifdef USING_ONNX
 #include <onnx/onnx_pb.h>
 #include <onnx/defs/schema.h>
+#include <onnx/defs/attr_proto_util.h>
 #include <onnx/shape_inference/implementation.h>
 #endif
 
@@ -46,7 +47,7 @@ enum TensorDataType {
     YNX_STRING,
     YNX_BOOL,
     YNX_FLOAT16,
-    YNX_DOUBLE,
+    YNX_float,
     YNX_UINT32,
     YNX_UINT64,
     YNX_COMPLEX64,
@@ -66,7 +67,7 @@ static const char* TensorDataTypeString[] = {
     "YNX_STRING",
     "YNX_BOOL",
     "YNX_FLOAT16",
-    "YNX_DOUBLE",
+    "YNX_float",
     "YNX_UINT32",
     "YNX_UINT64",
     "YNX_COMPLEX64",
@@ -121,28 +122,55 @@ struct TensorType {
 
 #ifdef USING_ONNX
 struct YNXInferenceContextImpl : public InferenceContext {
-    const AttributeProto* getAttribute(const std::string& name) override {
-        return nullptr;
+    const size_t num_inputs_;
+    const size_t num_outputs_;
+
+    std::map<std::string, AttributeProto> attrs_;
+
+    YNXInferenceContextImpl(size_t in, size_t out) : num_inputs_(in), num_outputs_(out) {
     }
+
+    // setup interfaces
+    void new_attr(const std::string& name, float v) {
+        auto attr = MakeAttribute(name, v);
+        attrs_[name] = attr;
+    }
+    void new_attr(const std::string& name, int64_t v) {
+        auto attr = MakeAttribute(name, v);
+        attrs_[name] = attr;
+    }
+    void new_attr(const std::string& name, std::string& v) {
+        auto attr = MakeAttribute(name, v);
+        attrs_[name] = attr;
+    }
+
+
+
+    // InferenceContext apis
     size_t getNumInputs() const override {
-        return 0;
+        return num_inputs_;
+    }
+    size_t getNumOutputs() const override {
+        return num_outputs_;
     }
     const TypeProto* getInputType(size_t index) const override {
+        return nullptr;
+    }
+    const AttributeProto* getAttribute(const std::string& name) override {
         return nullptr;
     }
     const TensorProto* getInputData(size_t index) const override {
         return nullptr;
     }
+    virtual TypeProto* getOutputType(size_t index) override {
+        return nullptr;
+    }
+
+    // Skipping these impl
     const TensorShapeProto* getSymbolicInput(size_t index) const override {
         return nullptr;
     }
     const SparseTensorProto* getInputSparseData(size_t index) const override {
-        return nullptr;
-    }
-    size_t getNumOutputs() const override {
-        return 0;
-    }
-    virtual TypeProto* getOutputType(size_t index) override {
         return nullptr;
     }
     GraphInferencer* getGraphAttributeInferencer( const std::string& attr_name) override {
@@ -154,13 +182,13 @@ struct YNXInferenceContextImpl : public InferenceContext {
 //
 //  some common help functions, and none-auto operators
 //
-static double fetch_float(ValueStack<TensorType>& stack) {
-    double v = stack.pop_number();
+static float fetch_float(ValueStack<TensorType>& stack) {
+    float v = stack.pop_number();
     return v;
 }
 
-static long fetch_int(ValueStack<TensorType>& stack) {
-    long v = stack.pop_number();
+static int64_t fetch_int(ValueStack<TensorType>& stack) {
+    int64_t v = stack.pop_number();
     return v;
 }
 
@@ -174,18 +202,18 @@ static tensor_t fetch_tensor(ValueStack<TensorType>& stack) {
     return v;
 }
 
-static std::vector<double> fetch_floats(ValueStack<TensorType>& stack) {
+static std::vector<float> fetch_floats(ValueStack<TensorType>& stack) {
     auto v = stack.pop_number_tuple();
-    std::vector<double> ret;
+    std::vector<float> ret;
     for (size_t i = 0; i < v.size(); i++) {
         ret.push_back( v[i] );
     }
     return ret;
 }
 
-static std::vector<long> fetch_ints(ValueStack<TensorType>& stack) {
+static std::vector<int64_t> fetch_ints(ValueStack<TensorType>& stack) {
     auto v = stack.pop_number_tuple();
-    std::vector<long> ret;
+    std::vector<int64_t> ret;
     for (size_t i = 0; i < v.size(); i++) {
         ret.push_back( v[i] );
     }
@@ -202,18 +230,18 @@ static std::vector<tensor_t> fetch_tensors(ValueStack<TensorType>& stack) {
     return v;
 }
 
-static std::variant<void *, double> fetch_optional_float(ValueStack<TensorType>& stack) {
+static std::variant<void *, float> fetch_optional_float(ValueStack<TensorType>& stack) {
     if ( stack.top().is_none() ) {
-        return std::variant<void *, double>(nullptr);
+        return std::variant<void *, float>(nullptr);
     }
-    return std::variant<void *, double>( fetch_float(stack) );
+    return std::variant<void *, float>( fetch_float(stack) );
 }
 
-static std::variant<void *, long> fetch_optional_int(ValueStack<TensorType>& stack) {
+static std::variant<void *, int64_t> fetch_optional_int(ValueStack<TensorType>& stack) {
     if ( stack.top().is_none() ) {
-        return std::variant<void *, long>(nullptr);
+        return std::variant<void *, int64_t>(nullptr);
     }
-    return std::variant<void *, long>( fetch_int(stack) );
+    return std::variant<void *, int64_t>( fetch_int(stack) );
 }
 
 static std::variant<void *, std::string> fetch_optional_string(ValueStack<TensorType>& stack) {
@@ -230,18 +258,18 @@ static std::variant<void *, tensor_t> fetch_optional_tensor(ValueStack<TensorTyp
     return std::variant<void *, tensor_t>( fetch_tensor(stack) );
 }
 
-static std::variant<void *, std::vector<double> > fetch_optional_floats(ValueStack<TensorType>& stack) {
+static std::variant<void *, std::vector<float> > fetch_optional_floats(ValueStack<TensorType>& stack) {
     if ( stack.top().is_none() ) {
-        return std::variant<void *, std::vector<double> >(nullptr);
+        return std::variant<void *, std::vector<float> >(nullptr);
     }
-    return std::variant<void *, std::vector<double> >( fetch_floats(stack) );
+    return std::variant<void *, std::vector<float> >( fetch_floats(stack) );
 }
 
-static std::variant<void *, std::vector<long> > fetch_optional_ints(ValueStack<TensorType>& stack) {
+static std::variant<void *, std::vector<int64_t> > fetch_optional_ints(ValueStack<TensorType>& stack) {
     if ( stack.top().is_none() ) {
-        return std::variant<void *, std::vector<long> >(nullptr);
+        return std::variant<void *, std::vector<int64_t> >(nullptr);
     }
-    return std::variant<void *, std::vector<long> >( fetch_ints(stack) );
+    return std::variant<void *, std::vector<int64_t> >( fetch_ints(stack) );
 }
 
 static std::variant<void *, std::vector<std::string> > fetch_optional_strings(ValueStack<TensorType>& stack) {
