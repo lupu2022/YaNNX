@@ -36,7 +36,7 @@ enum OperatorReturnType {
 };
 
 enum TensorDataType {
-    YNX_UNDEFINED,
+    YNX_UNDEFINED = 0,
     YNX_FLOAT,
     YNX_UINT8,
     YNX_INT8,
@@ -916,52 +916,108 @@ struct TensorType {
 };
 
 #ifdef USING_ONNX
+
 struct YNXInferenceContextImpl : public InferenceContext {
-    const size_t num_inputs_;
-    const size_t num_outputs_;
-
     std::map<std::string, AttributeProto> attrs_;
+    std::map<size_t, TypeProto> input_types_;
+    std::vecotr<TypeProto> output_types_;
 
-    YNXInferenceContextImpl(size_t in, size_t out) : num_inputs_(in), num_outputs_(out) {
+    size_t input_num_;
+    const size_t output_num_;
+
+    YNXInferenceContextImpl(size_t output_num) : output_num_(output_num) {
+        input_num_ = 0;
+        output_types_.resize( output_num_);
     }
 
     // setup interfaces
-    void new_attr(const std::string& name, float v) {
+    void new_attr(const std::string& name, const float v) {
         auto attr = MakeAttribute(name, v);
         attrs_[name] = attr;
     }
-    void new_attr(const std::string& name, int64_t v) {
+    void new_attr(const std::string& name, const int64_t v) {
         auto attr = MakeAttribute(name, v);
         attrs_[name] = attr;
     }
-    void new_attr(const std::string& name, std::string& v) {
+    void new_attr(const std::string& name, const std::string& v) {
+        auto attr = MakeAttribute(name, v);
+        attrs_[name] = attr;
+    }
+    void new_attr(const std::string& name, const std::vector<float>& v) {
+        auto attr = MakeAttribute(name, v);
+        attrs_[name] = attr;
+    }
+    void new_attr(const std::string& name, const std::vector<int64_t>& v) {
+        auto attr = MakeAttribute(name, v);
+        attrs_[name] = attr;
+    }
+    void new_attr(const std::string& name, const std::vector<std::string>& v) {
         auto attr = MakeAttribute(name, v);
         attrs_[name] = attr;
     }
 
+    void new_input(tensor_t t) {
+        TypeProto proto;
+
+        TypeProto_Tensor* p_tensor = proto.mutable_tensor_type();
+        p_tensor->set_elem_type( t->dtype_ );
+        auto* shape = p_tensor->mutable_shape();
+
+        shape->clear_dim();
+        for (size_t i = 0; i < t->shape_.size(); i++) {
+            shape->add_dim();
+            auto dim = shape->mutable_dim(i);
+            dim->set_dim_value( t->shape_[i] );
+        }
+        size_t index = input_num_;
+        input_types_[index] = proto;
+
+        input_num_ ++;
+    }
+    void new_input(std::variant<void *, tensor_t> v) {
+        if ( v.index() == 1 ) {
+            new_input(index, std::get<1>(v) );
+        } else {
+            input_num_ ++;
+        }
+    }
+    void new_input(std::vector<tensor_t> v) {
+        for (size_t i = 0; i < v.size(); i++) {
+            new_input(v);
+        }
+    }
 
 
     // InferenceContext apis
     size_t getNumInputs() const override {
-        return num_inputs_;
+        return input_num_;
     }
     size_t getNumOutputs() const override {
-        return num_outputs_;
-    }
-    const TypeProto* getInputType(size_t index) const override {
-        return nullptr;
+        return output_types_.size();
     }
     const AttributeProto* getAttribute(const std::string& name) override {
+        if ( attrs_.find[name] != attrs_.end() ) {
+            return &attrs_[name];
+        }
         return nullptr;
     }
-    const TensorProto* getInputData(size_t index) const override {
+    const TypeProto* getInputType(size_t index) const override {
+        if ( input_types_.find(index) ) {
+            return &input_types_[index];
+        }
         return nullptr;
     }
-    virtual TypeProto* getOutputType(size_t index) override {
+    TypeProto* getOutputType(size_t index) override {
+        if ( index < output_types_.size() ) {
+            return  &output_types_[index];
+        }
         return nullptr;
     }
 
-    // Skipping these impl
+    // Skipping these impl, FIXME TensorProto seems not be used by Type&Shape inference
+    const TensorProto* getInputData(size_t index) const override {
+        return nullptr;
+    }
     const TensorShapeProto* getSymbolicInput(size_t index) const override {
         return nullptr;
     }
