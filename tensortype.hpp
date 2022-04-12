@@ -10,7 +10,7 @@
 #include <sstream>
 #include <algorithm>
 
-#ifdef USING_ONNX
+#ifdef USING_ONNX_IMPL
 #include <onnx/onnx_pb.h>
 #include <onnx/defs/schema.h>
 #include <onnx/defs/attr_proto_util.h>
@@ -75,6 +75,10 @@ static const char* TensorDataTypeString[] = {
     "YNX_BFLOAT16"
 };
 
+#ifdef USING_ONNX_IMPL
+
+#endif
+
 
 /*
  *  https://github.com/onnx/onnx/blob/main/docs/IR.md#tensor-definition
@@ -99,6 +103,9 @@ struct TensorType {
         dtype_ = TensorDataType::YNX_UNDEFINED;
     }
     TensorType(TensorDataType dtype, std::vector<size_t>& shape) {
+        reset(dtype, shape);
+    }
+    virtual void reset(TensorDataType dtype, std::vector<size_t>& shape) {
         dtype_ = dtype;
         shape_ = shape;
     }
@@ -915,7 +922,7 @@ struct TensorType {
 
 };
 
-#ifdef USING_ONNX
+#ifdef USING_ONNX_IMPL
 
 struct YNXInferenceContextImpl : public InferenceContext {
     std::map<std::string, AttributeProto> attrs_;
@@ -986,6 +993,62 @@ struct YNXInferenceContextImpl : public InferenceContext {
             new_input(v);
         }
     }
+
+    int do_inference(InferenceFunction f)
+        f(*this);
+    }
+
+    int check_output(size_t index, tensor_t t) {
+        auto proto* = getOutputType(index);
+        auto p_tensor = proto->tensor_type();
+
+        if (! p_tensor.has_elem_type() ) {
+            return YNX_OUTPUT_ERROR;
+        }
+        TensorDataType dtype = p_tesnor.elem_type();
+
+        std::vector<size_t> shape;
+        auto shape_proto = p_tensor.shape();
+
+        for (size_t i = 0; i < shape_proto.dim_size() ) {
+            if ( !shape_proto.dim(i).has_dim_value() ) {
+                return YNX_OUTPUT_ERROR;
+            }
+            shape.push_back( shape_proto.dim(i).dim_value() );
+        }
+
+        t->reset(dtype, shape);
+
+        return YNX_OK;
+    }
+    int check_output(size_t index, std::variant<void *, tensor_t>& v) {
+        auto proto* = getOutputType(index);
+        auto p_tensor = proto->tensor_type();
+
+        if (! p_tensor.has_elem_type() ) {
+            return YNX_OK;
+        }
+        TensorDataType dtype = p_tesnor.elem_type();
+
+        std::vector<size_t> shape;
+        auto shape_proto = p_tensor.shape();
+
+        for (size_t i = 0; i < shape_proto.dim_size() ) {
+            if ( !shape_proto.dim(i).has_dim_value() ) {
+                return YNX_OUTPUT_ERROR;
+            }
+            shape.push_back( shape_proto.dim(i).dim_value() );
+        }
+
+        std::get<1>(v)->reset(dtype, shape);
+
+        return YNX_OK;
+    }
+    int check_output(size_t index, std::vector<tensor_t>& v) {
+        yannx_panic("FIXME: how to check Variadic type");
+        return YNX_OUTPUT_ERROR;
+    }
+
 
 
     // InferenceContext apis
@@ -1170,18 +1233,31 @@ namespace generator {
 
             auto input = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             output = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+            infer_.new_attr("seed", seed);
+            infer_.new_attr("scale", scale);
+            infer_.new_attr("mean", mean);
+            infer_.new_attr("dtype", dtype);
+
+            infer_.new_input(input);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("RandomNormalLike : inference error!");
+            }
+            infer_.check_output(0, output);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( input->onnx_RandomNormalLike(input, output, dtype, mean, scale, seed) != YNX_OK ) {
                 yannx_panic("API: RandomNormalLike  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -1193,9 +1269,13 @@ namespace generator {
 
             auto input = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( input->onnx_RandomNormalLike(input, output, dtype, mean, scale, seed) != YNX_OK ) {
                 yannx_panic("API: RandomNormalLike  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -1216,18 +1296,31 @@ namespace generator {
             auto dtype = fetch_optional_int(stack);
 
 
-
-#ifdef USING_NOONX
-
-#else
             output = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+            infer_.new_attr("shape", shape);
+            infer_.new_attr("seed", seed);
+            infer_.new_attr("scale", scale);
+            infer_.new_attr("mean", mean);
+            infer_.new_attr("dtype", dtype);
+
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("RandomNormal : inference error!");
+            }
+            infer_.check_output(0, output);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( output->onnx_RandomNormal(output, dtype, mean, scale, seed, shape) != YNX_OK ) {
                 yannx_panic("API: RandomNormal  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -1239,9 +1332,13 @@ namespace generator {
             auto dtype = fetch_optional_int(stack);
 
 
+
+#ifndef USING_ONNX_IMPL
             if ( output->onnx_RandomNormal(output, dtype, mean, scale, seed, shape) != YNX_OK ) {
                 yannx_panic("API: RandomNormal  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -1262,18 +1359,31 @@ namespace generator {
             auto dtype = fetch_optional_int(stack);
 
 
-
-#ifdef USING_NOONX
-
-#else
             output = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+            infer_.new_attr("shape", shape);
+            infer_.new_attr("seed", seed);
+            infer_.new_attr("low", low);
+            infer_.new_attr("high", high);
+            infer_.new_attr("dtype", dtype);
+
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("RandomUniform : inference error!");
+            }
+            infer_.check_output(0, output);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( output->onnx_RandomUniform(output, dtype, high, low, seed, shape) != YNX_OK ) {
                 yannx_panic("API: RandomUniform  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -1285,9 +1395,13 @@ namespace generator {
             auto dtype = fetch_optional_int(stack);
 
 
+
+#ifndef USING_ONNX_IMPL
             if ( output->onnx_RandomUniform(output, dtype, high, low, seed, shape) != YNX_OK ) {
                 yannx_panic("API: RandomUniform  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -1306,18 +1420,29 @@ namespace generator {
 
             auto input = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             output = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+            infer_.new_attr("k", k);
+            infer_.new_attr("dtype", dtype);
+
+            infer_.new_input(input);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("EyeLike : inference error!");
+            }
+            infer_.check_output(0, output);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( input->onnx_EyeLike(input, output, dtype, k) != YNX_OK ) {
                 yannx_panic("API: EyeLike  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -1327,9 +1452,13 @@ namespace generator {
 
             auto input = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( input->onnx_EyeLike(input, output, dtype, k) != YNX_OK ) {
                 yannx_panic("API: EyeLike  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -1348,18 +1477,29 @@ namespace generator {
 
             auto input = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             output = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+            infer_.new_attr("seed", seed);
+            infer_.new_attr("dtype", dtype);
+
+            infer_.new_input(input);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("Bernoulli : inference error!");
+            }
+            infer_.check_output(0, output);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( input->onnx_Bernoulli(input, output, dtype, seed) != YNX_OK ) {
                 yannx_panic("API: Bernoulli  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -1369,9 +1509,13 @@ namespace generator {
 
             auto input = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( input->onnx_Bernoulli(input, output, dtype, seed) != YNX_OK ) {
                 yannx_panic("API: Bernoulli  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -1391,18 +1535,30 @@ namespace generator {
 
             auto input = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             output = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+            infer_.new_attr("seed", seed);
+            infer_.new_attr("sample_size", sample_size);
+            infer_.new_attr("dtype", dtype);
+
+            infer_.new_input(input);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("Multinomial : inference error!");
+            }
+            infer_.check_output(0, output);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( input->onnx_Multinomial(input, output, dtype, sample_size, seed) != YNX_OK ) {
                 yannx_panic("API: Multinomial  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -1413,9 +1569,13 @@ namespace generator {
 
             auto input = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( input->onnx_Multinomial(input, output, dtype, sample_size, seed) != YNX_OK ) {
                 yannx_panic("API: Multinomial  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -1436,18 +1596,31 @@ namespace generator {
 
             auto input = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             output = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+            infer_.new_attr("seed", seed);
+            infer_.new_attr("low", low);
+            infer_.new_attr("high", high);
+            infer_.new_attr("dtype", dtype);
+
+            infer_.new_input(input);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("RandomUniformLike : inference error!");
+            }
+            infer_.check_output(0, output);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( input->onnx_RandomUniformLike(input, output, dtype, high, low, seed) != YNX_OK ) {
                 yannx_panic("API: RandomUniformLike  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -1459,9 +1632,13 @@ namespace generator {
 
             auto input = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( input->onnx_RandomUniformLike(input, output, dtype, high, low, seed) != YNX_OK ) {
                 yannx_panic("API: RandomUniformLike  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -1480,18 +1657,29 @@ namespace generator {
             auto limit = fetch_tensor(stack);
             auto start = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             output = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+
+            infer_.new_input(delta);
+            infer_.new_input(limit);
+            infer_.new_input(start);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("Range : inference error!");
+            }
+            infer_.check_output(0, output);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( start->onnx_Range(start, limit, delta, output) != YNX_OK ) {
                 yannx_panic("API: Range  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -1501,9 +1689,13 @@ namespace generator {
             auto limit = fetch_tensor(stack);
             auto start = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( start->onnx_Range(start, limit, delta, output) != YNX_OK ) {
                 yannx_panic("API: Range  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -1523,18 +1715,28 @@ namespace logical {
             auto B = fetch_tensor(stack);
             auto A = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             C = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+
+            infer_.new_input(B);
+            infer_.new_input(A);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("GreaterOrEqual : inference error!");
+            }
+            infer_.check_output(0, C);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( A->onnx_GreaterOrEqual(A, B, C) != YNX_OK ) {
                 yannx_panic("API: GreaterOrEqual  return error!");
             }
+#endif
+
             put_tensor(stack, C);
 
         }
@@ -1543,9 +1745,13 @@ namespace logical {
             auto B = fetch_tensor(stack);
             auto A = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( A->onnx_GreaterOrEqual(A, B, C) != YNX_OK ) {
                 yannx_panic("API: GreaterOrEqual  return error!");
             }
+#endif
+
             put_tensor(stack, C);
 
         }
@@ -1563,18 +1769,28 @@ namespace logical {
             auto B = fetch_tensor(stack);
             auto A = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             C = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+
+            infer_.new_input(B);
+            infer_.new_input(A);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("Or : inference error!");
+            }
+            infer_.check_output(0, C);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( A->onnx_Or(A, B, C) != YNX_OK ) {
                 yannx_panic("API: Or  return error!");
             }
+#endif
+
             put_tensor(stack, C);
 
         }
@@ -1583,9 +1799,13 @@ namespace logical {
             auto B = fetch_tensor(stack);
             auto A = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( A->onnx_Or(A, B, C) != YNX_OK ) {
                 yannx_panic("API: Or  return error!");
             }
+#endif
+
             put_tensor(stack, C);
 
         }
@@ -1604,18 +1824,29 @@ namespace logical {
             auto Y = fetch_tensor(stack);
             auto X = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             Z = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+            infer_.new_attr("direction", direction);
+
+            infer_.new_input(Y);
+            infer_.new_input(X);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("BitShift : inference error!");
+            }
+            infer_.check_output(0, Z);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( X->onnx_BitShift(X, Y, Z, direction) != YNX_OK ) {
                 yannx_panic("API: BitShift  return error!");
             }
+#endif
+
             put_tensor(stack, Z);
 
         }
@@ -1625,9 +1856,13 @@ namespace logical {
             auto Y = fetch_tensor(stack);
             auto X = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( X->onnx_BitShift(X, Y, Z, direction) != YNX_OK ) {
                 yannx_panic("API: BitShift  return error!");
             }
+#endif
+
             put_tensor(stack, Z);
 
         }
@@ -1645,18 +1880,28 @@ namespace logical {
             auto B = fetch_tensor(stack);
             auto A = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             C = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+
+            infer_.new_input(B);
+            infer_.new_input(A);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("Greater : inference error!");
+            }
+            infer_.check_output(0, C);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( A->onnx_Greater(A, B, C) != YNX_OK ) {
                 yannx_panic("API: Greater  return error!");
             }
+#endif
+
             put_tensor(stack, C);
 
         }
@@ -1665,9 +1910,13 @@ namespace logical {
             auto B = fetch_tensor(stack);
             auto A = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( A->onnx_Greater(A, B, C) != YNX_OK ) {
                 yannx_panic("API: Greater  return error!");
             }
+#endif
+
             put_tensor(stack, C);
 
         }
@@ -1685,18 +1934,28 @@ namespace logical {
             auto B = fetch_tensor(stack);
             auto A = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             C = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+
+            infer_.new_input(B);
+            infer_.new_input(A);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("Xor : inference error!");
+            }
+            infer_.check_output(0, C);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( A->onnx_Xor(A, B, C) != YNX_OK ) {
                 yannx_panic("API: Xor  return error!");
             }
+#endif
+
             put_tensor(stack, C);
 
         }
@@ -1705,9 +1964,13 @@ namespace logical {
             auto B = fetch_tensor(stack);
             auto A = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( A->onnx_Xor(A, B, C) != YNX_OK ) {
                 yannx_panic("API: Xor  return error!");
             }
+#endif
+
             put_tensor(stack, C);
 
         }
@@ -1725,18 +1988,28 @@ namespace logical {
             auto B = fetch_tensor(stack);
             auto A = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             C = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+
+            infer_.new_input(B);
+            infer_.new_input(A);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("And : inference error!");
+            }
+            infer_.check_output(0, C);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( A->onnx_And(A, B, C) != YNX_OK ) {
                 yannx_panic("API: And  return error!");
             }
+#endif
+
             put_tensor(stack, C);
 
         }
@@ -1745,9 +2018,13 @@ namespace logical {
             auto B = fetch_tensor(stack);
             auto A = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( A->onnx_And(A, B, C) != YNX_OK ) {
                 yannx_panic("API: And  return error!");
             }
+#endif
+
             put_tensor(stack, C);
 
         }
@@ -1765,18 +2042,28 @@ namespace logical {
             auto B = fetch_tensor(stack);
             auto A = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             C = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+
+            infer_.new_input(B);
+            infer_.new_input(A);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("LessOrEqual : inference error!");
+            }
+            infer_.check_output(0, C);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( A->onnx_LessOrEqual(A, B, C) != YNX_OK ) {
                 yannx_panic("API: LessOrEqual  return error!");
             }
+#endif
+
             put_tensor(stack, C);
 
         }
@@ -1785,9 +2072,13 @@ namespace logical {
             auto B = fetch_tensor(stack);
             auto A = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( A->onnx_LessOrEqual(A, B, C) != YNX_OK ) {
                 yannx_panic("API: LessOrEqual  return error!");
             }
+#endif
+
             put_tensor(stack, C);
 
         }
@@ -1804,18 +2095,27 @@ namespace logical {
 
             auto X = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             Y = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+
+            infer_.new_input(X);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("Not : inference error!");
+            }
+            infer_.check_output(0, Y);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( X->onnx_Not(X, Y) != YNX_OK ) {
                 yannx_panic("API: Not  return error!");
             }
+#endif
+
             put_tensor(stack, Y);
 
         }
@@ -1823,9 +2123,13 @@ namespace logical {
 
             auto X = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( X->onnx_Not(X, Y) != YNX_OK ) {
                 yannx_panic("API: Not  return error!");
             }
+#endif
+
             put_tensor(stack, Y);
 
         }
@@ -1843,18 +2147,28 @@ namespace logical {
             auto B = fetch_tensor(stack);
             auto A = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             C = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+
+            infer_.new_input(B);
+            infer_.new_input(A);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("Equal : inference error!");
+            }
+            infer_.check_output(0, C);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( A->onnx_Equal(A, B, C) != YNX_OK ) {
                 yannx_panic("API: Equal  return error!");
             }
+#endif
+
             put_tensor(stack, C);
 
         }
@@ -1863,9 +2177,13 @@ namespace logical {
             auto B = fetch_tensor(stack);
             auto A = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( A->onnx_Equal(A, B, C) != YNX_OK ) {
                 yannx_panic("API: Equal  return error!");
             }
+#endif
+
             put_tensor(stack, C);
 
         }
@@ -1883,18 +2201,28 @@ namespace logical {
             auto B = fetch_tensor(stack);
             auto A = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             C = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+
+            infer_.new_input(B);
+            infer_.new_input(A);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("Less : inference error!");
+            }
+            infer_.check_output(0, C);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( A->onnx_Less(A, B, C) != YNX_OK ) {
                 yannx_panic("API: Less  return error!");
             }
+#endif
+
             put_tensor(stack, C);
 
         }
@@ -1903,9 +2231,13 @@ namespace logical {
             auto B = fetch_tensor(stack);
             auto A = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( A->onnx_Less(A, B, C) != YNX_OK ) {
                 yannx_panic("API: Less  return error!");
             }
+#endif
+
             put_tensor(stack, C);
 
         }
@@ -1924,18 +2256,27 @@ namespace math {
 
             auto X = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             Y = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+
+            infer_.new_input(X);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("Reciprocal : inference error!");
+            }
+            infer_.check_output(0, Y);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( X->onnx_Reciprocal(X, Y) != YNX_OK ) {
                 yannx_panic("API: Reciprocal  return error!");
             }
+#endif
+
             put_tensor(stack, Y);
 
         }
@@ -1943,9 +2284,13 @@ namespace math {
 
             auto X = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( X->onnx_Reciprocal(X, Y) != YNX_OK ) {
                 yannx_panic("API: Reciprocal  return error!");
             }
+#endif
+
             put_tensor(stack, Y);
 
         }
@@ -1963,18 +2308,28 @@ namespace math {
 
             auto X = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             Y = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+            infer_.new_attr("alpha", alpha);
+
+            infer_.new_input(X);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("LeakyRelu : inference error!");
+            }
+            infer_.check_output(0, Y);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( X->onnx_LeakyRelu(X, Y, alpha) != YNX_OK ) {
                 yannx_panic("API: LeakyRelu  return error!");
             }
+#endif
+
             put_tensor(stack, Y);
 
         }
@@ -1983,9 +2338,13 @@ namespace math {
 
             auto X = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( X->onnx_LeakyRelu(X, Y, alpha) != YNX_OK ) {
                 yannx_panic("API: LeakyRelu  return error!");
             }
+#endif
+
             put_tensor(stack, Y);
 
         }
@@ -2004,18 +2363,29 @@ namespace math {
 
             auto X = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             Y = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+            infer_.new_attr("beta", beta);
+            infer_.new_attr("alpha", alpha);
+
+            infer_.new_input(X);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("HardSigmoid : inference error!");
+            }
+            infer_.check_output(0, Y);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( X->onnx_HardSigmoid(X, Y, alpha, beta) != YNX_OK ) {
                 yannx_panic("API: HardSigmoid  return error!");
             }
+#endif
+
             put_tensor(stack, Y);
 
         }
@@ -2025,9 +2395,13 @@ namespace math {
 
             auto X = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( X->onnx_HardSigmoid(X, Y, alpha, beta) != YNX_OK ) {
                 yannx_panic("API: HardSigmoid  return error!");
             }
+#endif
+
             put_tensor(stack, Y);
 
         }
@@ -2045,18 +2419,28 @@ namespace math {
             auto B = fetch_tensor(stack);
             auto A = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             C = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+
+            infer_.new_input(B);
+            infer_.new_input(A);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("Div : inference error!");
+            }
+            infer_.check_output(0, C);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( A->onnx_Div(A, B, C) != YNX_OK ) {
                 yannx_panic("API: Div  return error!");
             }
+#endif
+
             put_tensor(stack, C);
 
         }
@@ -2065,9 +2449,13 @@ namespace math {
             auto B = fetch_tensor(stack);
             auto A = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( A->onnx_Div(A, B, C) != YNX_OK ) {
                 yannx_panic("API: Div  return error!");
             }
+#endif
+
             put_tensor(stack, C);
 
         }
@@ -2085,18 +2473,28 @@ namespace math {
             auto Y = fetch_tensor(stack);
             auto X = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             Z = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+
+            infer_.new_input(Y);
+            infer_.new_input(X);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("Pow : inference error!");
+            }
+            infer_.check_output(0, Z);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( X->onnx_Pow(X, Y, Z) != YNX_OK ) {
                 yannx_panic("API: Pow  return error!");
             }
+#endif
+
             put_tensor(stack, Z);
 
         }
@@ -2105,9 +2503,13 @@ namespace math {
             auto Y = fetch_tensor(stack);
             auto X = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( X->onnx_Pow(X, Y, Z) != YNX_OK ) {
                 yannx_panic("API: Pow  return error!");
             }
+#endif
+
             put_tensor(stack, Z);
 
         }
@@ -2125,18 +2527,28 @@ namespace math {
             auto B = fetch_tensor(stack);
             auto A = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             C = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+
+            infer_.new_input(B);
+            infer_.new_input(A);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("Mul : inference error!");
+            }
+            infer_.check_output(0, C);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( A->onnx_Mul(A, B, C) != YNX_OK ) {
                 yannx_panic("API: Mul  return error!");
             }
+#endif
+
             put_tensor(stack, C);
 
         }
@@ -2145,9 +2557,13 @@ namespace math {
             auto B = fetch_tensor(stack);
             auto A = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( A->onnx_Mul(A, B, C) != YNX_OK ) {
                 yannx_panic("API: Mul  return error!");
             }
+#endif
+
             put_tensor(stack, C);
 
         }
@@ -2164,18 +2580,27 @@ namespace math {
 
             auto data_0 = fetch_tensors(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             min = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+
+            infer_.new_input(data_0);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("Min : inference error!");
+            }
+            infer_.check_output(0, min);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( min->onnx_Min(data_0, min) != YNX_OK ) {
                 yannx_panic("API: Min  return error!");
             }
+#endif
+
             put_tensor(stack, min);
 
         }
@@ -2183,9 +2608,13 @@ namespace math {
 
             auto data_0 = fetch_tensors(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( min->onnx_Min(data_0, min) != YNX_OK ) {
                 yannx_panic("API: Min  return error!");
             }
+#endif
+
             put_tensor(stack, min);
 
         }
@@ -2202,18 +2631,27 @@ namespace math {
 
             auto X = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             Y = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+
+            infer_.new_input(X);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("Floor : inference error!");
+            }
+            infer_.check_output(0, Y);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( X->onnx_Floor(X, Y) != YNX_OK ) {
                 yannx_panic("API: Floor  return error!");
             }
+#endif
+
             put_tensor(stack, Y);
 
         }
@@ -2221,9 +2659,13 @@ namespace math {
 
             auto X = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( X->onnx_Floor(X, Y) != YNX_OK ) {
                 yannx_panic("API: Floor  return error!");
             }
+#endif
+
             put_tensor(stack, Y);
 
         }
@@ -2240,18 +2682,27 @@ namespace math {
 
             auto data_0 = fetch_tensors(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             mean = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+
+            infer_.new_input(data_0);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("Mean : inference error!");
+            }
+            infer_.check_output(0, mean);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( mean->onnx_Mean(data_0, mean) != YNX_OK ) {
                 yannx_panic("API: Mean  return error!");
             }
+#endif
+
             put_tensor(stack, mean);
 
         }
@@ -2259,9 +2710,13 @@ namespace math {
 
             auto data_0 = fetch_tensors(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( mean->onnx_Mean(data_0, mean) != YNX_OK ) {
                 yannx_panic("API: Mean  return error!");
             }
+#endif
+
             put_tensor(stack, mean);
 
         }
@@ -2278,18 +2733,27 @@ namespace math {
 
             auto data_0 = fetch_tensors(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             max = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+
+            infer_.new_input(data_0);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("Max : inference error!");
+            }
+            infer_.check_output(0, max);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( max->onnx_Max(data_0, max) != YNX_OK ) {
                 yannx_panic("API: Max  return error!");
             }
+#endif
+
             put_tensor(stack, max);
 
         }
@@ -2297,9 +2761,13 @@ namespace math {
 
             auto data_0 = fetch_tensors(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( max->onnx_Max(data_0, max) != YNX_OK ) {
                 yannx_panic("API: Max  return error!");
             }
+#endif
+
             put_tensor(stack, max);
 
         }
@@ -2316,18 +2784,27 @@ namespace math {
 
             auto X = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             Y = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+
+            infer_.new_input(X);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("Round : inference error!");
+            }
+            infer_.check_output(0, Y);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( X->onnx_Round(X, Y) != YNX_OK ) {
                 yannx_panic("API: Round  return error!");
             }
+#endif
+
             put_tensor(stack, Y);
 
         }
@@ -2335,9 +2812,13 @@ namespace math {
 
             auto X = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( X->onnx_Round(X, Y) != YNX_OK ) {
                 yannx_panic("API: Round  return error!");
             }
+#endif
+
             put_tensor(stack, Y);
 
         }
@@ -2354,18 +2835,27 @@ namespace math {
 
             auto X = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             Y = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+
+            infer_.new_input(X);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("Sigmoid : inference error!");
+            }
+            infer_.check_output(0, Y);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( X->onnx_Sigmoid(X, Y) != YNX_OK ) {
                 yannx_panic("API: Sigmoid  return error!");
             }
+#endif
+
             put_tensor(stack, Y);
 
         }
@@ -2373,9 +2863,13 @@ namespace math {
 
             auto X = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( X->onnx_Sigmoid(X, Y) != YNX_OK ) {
                 yannx_panic("API: Sigmoid  return error!");
             }
+#endif
+
             put_tensor(stack, Y);
 
         }
@@ -2392,18 +2886,27 @@ namespace math {
 
             auto X = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             Y = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+
+            infer_.new_input(X);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("Relu : inference error!");
+            }
+            infer_.check_output(0, Y);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( X->onnx_Relu(X, Y) != YNX_OK ) {
                 yannx_panic("API: Relu  return error!");
             }
+#endif
+
             put_tensor(stack, Y);
 
         }
@@ -2411,9 +2914,13 @@ namespace math {
 
             auto X = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( X->onnx_Relu(X, Y) != YNX_OK ) {
                 yannx_panic("API: Relu  return error!");
             }
+#endif
+
             put_tensor(stack, Y);
 
         }
@@ -2431,18 +2938,28 @@ namespace math {
 
             auto input = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             output = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+            infer_.new_attr("axis", axis);
+
+            infer_.new_input(input);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("LogSoftmax : inference error!");
+            }
+            infer_.check_output(0, output);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( input->onnx_LogSoftmax(input, output, axis) != YNX_OK ) {
                 yannx_panic("API: LogSoftmax  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -2451,9 +2968,13 @@ namespace math {
 
             auto input = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( input->onnx_LogSoftmax(input, output, axis) != YNX_OK ) {
                 yannx_panic("API: LogSoftmax  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -2470,18 +2991,27 @@ namespace math {
 
             auto X = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             Y = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+
+            infer_.new_input(X);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("Ceil : inference error!");
+            }
+            infer_.check_output(0, Y);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( X->onnx_Ceil(X, Y) != YNX_OK ) {
                 yannx_panic("API: Ceil  return error!");
             }
+#endif
+
             put_tensor(stack, Y);
 
         }
@@ -2489,9 +3019,13 @@ namespace math {
 
             auto X = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( X->onnx_Ceil(X, Y) != YNX_OK ) {
                 yannx_panic("API: Ceil  return error!");
             }
+#endif
+
             put_tensor(stack, Y);
 
         }
@@ -2508,18 +3042,27 @@ namespace math {
 
             auto input = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             output = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+
+            infer_.new_input(input);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("Log : inference error!");
+            }
+            infer_.check_output(0, output);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( input->onnx_Log(input, output) != YNX_OK ) {
                 yannx_panic("API: Log  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -2527,9 +3070,13 @@ namespace math {
 
             auto input = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( input->onnx_Log(input, output) != YNX_OK ) {
                 yannx_panic("API: Log  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -2546,18 +3093,27 @@ namespace math {
 
             auto X = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             Y = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+
+            infer_.new_input(X);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("Neg : inference error!");
+            }
+            infer_.check_output(0, Y);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( X->onnx_Neg(X, Y) != YNX_OK ) {
                 yannx_panic("API: Neg  return error!");
             }
+#endif
+
             put_tensor(stack, Y);
 
         }
@@ -2565,9 +3121,13 @@ namespace math {
 
             auto X = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( X->onnx_Neg(X, Y) != YNX_OK ) {
                 yannx_panic("API: Neg  return error!");
             }
+#endif
+
             put_tensor(stack, Y);
 
         }
@@ -2585,18 +3145,28 @@ namespace math {
             auto B = fetch_tensor(stack);
             auto A = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             C = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+
+            infer_.new_input(B);
+            infer_.new_input(A);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("Sub : inference error!");
+            }
+            infer_.check_output(0, C);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( A->onnx_Sub(A, B, C) != YNX_OK ) {
                 yannx_panic("API: Sub  return error!");
             }
+#endif
+
             put_tensor(stack, C);
 
         }
@@ -2605,9 +3175,13 @@ namespace math {
             auto B = fetch_tensor(stack);
             auto A = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( A->onnx_Sub(A, B, C) != YNX_OK ) {
                 yannx_panic("API: Sub  return error!");
             }
+#endif
+
             put_tensor(stack, C);
 
         }
@@ -2625,18 +3199,28 @@ namespace math {
             auto slope = fetch_tensor(stack);
             auto X = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             Y = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+
+            infer_.new_input(slope);
+            infer_.new_input(X);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("PRelu : inference error!");
+            }
+            infer_.check_output(0, Y);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( X->onnx_PRelu(X, slope, Y) != YNX_OK ) {
                 yannx_panic("API: PRelu  return error!");
             }
+#endif
+
             put_tensor(stack, Y);
 
         }
@@ -2645,9 +3229,13 @@ namespace math {
             auto slope = fetch_tensor(stack);
             auto X = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( X->onnx_PRelu(X, slope, Y) != YNX_OK ) {
                 yannx_panic("API: PRelu  return error!");
             }
+#endif
+
             put_tensor(stack, Y);
 
         }
@@ -2665,18 +3253,28 @@ namespace math {
             auto B = fetch_tensor(stack);
             auto A = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             C = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+
+            infer_.new_input(B);
+            infer_.new_input(A);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("Add : inference error!");
+            }
+            infer_.check_output(0, C);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( A->onnx_Add(A, B, C) != YNX_OK ) {
                 yannx_panic("API: Add  return error!");
             }
+#endif
+
             put_tensor(stack, C);
 
         }
@@ -2685,9 +3283,13 @@ namespace math {
             auto B = fetch_tensor(stack);
             auto A = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( A->onnx_Add(A, B, C) != YNX_OK ) {
                 yannx_panic("API: Add  return error!");
             }
+#endif
+
             put_tensor(stack, C);
 
         }
@@ -2706,18 +3308,29 @@ namespace math {
 
             auto X = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             Y = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+            infer_.new_attr("gamma", gamma);
+            infer_.new_attr("alpha", alpha);
+
+            infer_.new_input(X);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("Selu : inference error!");
+            }
+            infer_.check_output(0, Y);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( X->onnx_Selu(X, Y, alpha, gamma) != YNX_OK ) {
                 yannx_panic("API: Selu  return error!");
             }
+#endif
+
             put_tensor(stack, Y);
 
         }
@@ -2727,9 +3340,13 @@ namespace math {
 
             auto X = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( X->onnx_Selu(X, Y, alpha, gamma) != YNX_OK ) {
                 yannx_panic("API: Selu  return error!");
             }
+#endif
+
             put_tensor(stack, Y);
 
         }
@@ -2746,18 +3363,27 @@ namespace math {
 
             auto X = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             Y = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+
+            infer_.new_input(X);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("Abs : inference error!");
+            }
+            infer_.check_output(0, Y);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( X->onnx_Abs(X, Y) != YNX_OK ) {
                 yannx_panic("API: Abs  return error!");
             }
+#endif
+
             put_tensor(stack, Y);
 
         }
@@ -2765,9 +3391,13 @@ namespace math {
 
             auto X = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( X->onnx_Abs(X, Y) != YNX_OK ) {
                 yannx_panic("API: Abs  return error!");
             }
+#endif
+
             put_tensor(stack, Y);
 
         }
@@ -2791,18 +3421,34 @@ namespace math {
             auto a_scale = fetch_tensor(stack);
             auto a = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             y = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+
+            infer_.new_input(y_zero_point);
+            infer_.new_input(y_scale);
+            infer_.new_input(b_zero_point);
+            infer_.new_input(b_scale);
+            infer_.new_input(b);
+            infer_.new_input(a_zero_point);
+            infer_.new_input(a_scale);
+            infer_.new_input(a);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("QLinearMatMul : inference error!");
+            }
+            infer_.check_output(0, y);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( a->onnx_QLinearMatMul(a, a_scale, a_zero_point, b, b_scale, b_zero_point, y_scale, y_zero_point, y) != YNX_OK ) {
                 yannx_panic("API: QLinearMatMul  return error!");
             }
+#endif
+
             put_tensor(stack, y);
 
         }
@@ -2817,9 +3463,13 @@ namespace math {
             auto a_scale = fetch_tensor(stack);
             auto a = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( a->onnx_QLinearMatMul(a, a_scale, a_zero_point, b, b_scale, b_zero_point, y_scale, y_zero_point, y) != YNX_OK ) {
                 yannx_panic("API: QLinearMatMul  return error!");
             }
+#endif
+
             put_tensor(stack, y);
 
         }
@@ -2838,18 +3488,29 @@ namespace math {
             auto min = fetch_optional_tensor(stack);
             auto input = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             output = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+
+            infer_.new_input(max);
+            infer_.new_input(min);
+            infer_.new_input(input);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("Clip : inference error!");
+            }
+            infer_.check_output(0, output);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( input->onnx_Clip(input, min, max, output) != YNX_OK ) {
                 yannx_panic("API: Clip  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -2859,9 +3520,13 @@ namespace math {
             auto min = fetch_optional_tensor(stack);
             auto input = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( input->onnx_Clip(input, min, max, output) != YNX_OK ) {
                 yannx_panic("API: Clip  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -2879,18 +3544,28 @@ namespace math {
 
             auto Inputs = fetch_tensors(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             Output = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+            infer_.new_attr("equation", equation);
+
+            infer_.new_input(Inputs);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("Einsum : inference error!");
+            }
+            infer_.check_output(0, Output);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( Output->onnx_Einsum(Inputs, Output, equation) != YNX_OK ) {
                 yannx_panic("API: Einsum  return error!");
             }
+#endif
+
             put_tensor(stack, Output);
 
         }
@@ -2899,9 +3574,13 @@ namespace math {
 
             auto Inputs = fetch_tensors(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( Output->onnx_Einsum(Inputs, Output, equation) != YNX_OK ) {
                 yannx_panic("API: Einsum  return error!");
             }
+#endif
+
             put_tensor(stack, Output);
 
         }
@@ -2919,18 +3598,28 @@ namespace math {
 
             auto input = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             output = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+            infer_.new_attr("axis", axis);
+
+            infer_.new_input(input);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("Hardmax : inference error!");
+            }
+            infer_.check_output(0, output);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( input->onnx_Hardmax(input, output, axis) != YNX_OK ) {
                 yannx_panic("API: Hardmax  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -2939,9 +3628,13 @@ namespace math {
 
             auto input = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( input->onnx_Hardmax(input, output, axis) != YNX_OK ) {
                 yannx_panic("API: Hardmax  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -2958,18 +3651,27 @@ namespace math {
 
             auto X = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             Y = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+
+            infer_.new_input(X);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("Sqrt : inference error!");
+            }
+            infer_.check_output(0, Y);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( X->onnx_Sqrt(X, Y) != YNX_OK ) {
                 yannx_panic("API: Sqrt  return error!");
             }
+#endif
+
             put_tensor(stack, Y);
 
         }
@@ -2977,9 +3679,13 @@ namespace math {
 
             auto X = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( X->onnx_Sqrt(X, Y) != YNX_OK ) {
                 yannx_panic("API: Sqrt  return error!");
             }
+#endif
+
             put_tensor(stack, Y);
 
         }
@@ -3002,18 +3708,33 @@ namespace math {
             auto B = fetch_tensor(stack);
             auto A = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             Y = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+            infer_.new_attr("transB", transB);
+            infer_.new_attr("transA", transA);
+            infer_.new_attr("beta", beta);
+            infer_.new_attr("alpha", alpha);
+
+            infer_.new_input(C);
+            infer_.new_input(B);
+            infer_.new_input(A);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("Gemm : inference error!");
+            }
+            infer_.check_output(0, Y);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( A->onnx_Gemm(A, B, C, Y, alpha, beta, transA, transB) != YNX_OK ) {
                 yannx_panic("API: Gemm  return error!");
             }
+#endif
+
             put_tensor(stack, Y);
 
         }
@@ -3027,9 +3748,13 @@ namespace math {
             auto B = fetch_tensor(stack);
             auto A = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( A->onnx_Gemm(A, B, C, Y, alpha, beta, transA, transB) != YNX_OK ) {
                 yannx_panic("API: Gemm  return error!");
             }
+#endif
+
             put_tensor(stack, Y);
 
         }
@@ -3046,18 +3771,27 @@ namespace math {
 
             auto input = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             output = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+
+            infer_.new_input(input);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("Cos : inference error!");
+            }
+            infer_.check_output(0, output);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( input->onnx_Cos(input, output) != YNX_OK ) {
                 yannx_panic("API: Cos  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -3065,9 +3799,13 @@ namespace math {
 
             auto input = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( input->onnx_Cos(input, output) != YNX_OK ) {
                 yannx_panic("API: Cos  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -3084,18 +3822,27 @@ namespace math {
 
             auto input = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             output = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+
+            infer_.new_input(input);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("Exp : inference error!");
+            }
+            infer_.check_output(0, output);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( input->onnx_Exp(input, output) != YNX_OK ) {
                 yannx_panic("API: Exp  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -3103,9 +3850,13 @@ namespace math {
 
             auto input = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( input->onnx_Exp(input, output) != YNX_OK ) {
                 yannx_panic("API: Exp  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -3122,18 +3873,27 @@ namespace math {
 
             auto input = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             output = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+
+            infer_.new_input(input);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("Tan : inference error!");
+            }
+            infer_.check_output(0, output);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( input->onnx_Tan(input, output) != YNX_OK ) {
                 yannx_panic("API: Tan  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -3141,9 +3901,13 @@ namespace math {
 
             auto input = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( input->onnx_Tan(input, output) != YNX_OK ) {
                 yannx_panic("API: Tan  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -3161,18 +3925,28 @@ namespace math {
 
             auto input = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             output = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+            infer_.new_attr("axis", axis);
+
+            infer_.new_input(input);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("Softmax : inference error!");
+            }
+            infer_.check_output(0, output);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( input->onnx_Softmax(input, output, axis) != YNX_OK ) {
                 yannx_panic("API: Softmax  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -3181,9 +3955,13 @@ namespace math {
 
             auto input = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( input->onnx_Softmax(input, output, axis) != YNX_OK ) {
                 yannx_panic("API: Softmax  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -3205,18 +3983,32 @@ namespace math {
             auto labels = fetch_tensor(stack);
             auto scores = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             output = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(2);
+            infer_.new_attr("reduction", reduction);
+            infer_.new_attr("ignore_index", ignore_index);
+
+            infer_.new_input(weights);
+            infer_.new_input(labels);
+            infer_.new_input(scores);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("SoftmaxCrossEntropyLoss : inference error!");
+            }
+            infer_.check_output(0, output);
+            infer_.check_output(1, log_prob);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( scores->onnx_SoftmaxCrossEntropyLoss(scores, labels, weights, output, log_prob, ignore_index, reduction) != YNX_OK ) {
                 yannx_panic("API: SoftmaxCrossEntropyLoss  return error!");
             }
+#endif
+
             put_tensor(stack, output);
             put_optional_tensor(stack, log_prob);
 
@@ -3229,9 +4021,13 @@ namespace math {
             auto labels = fetch_tensor(stack);
             auto scores = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( scores->onnx_SoftmaxCrossEntropyLoss(scores, labels, weights, output, log_prob, ignore_index, reduction) != YNX_OK ) {
                 yannx_panic("API: SoftmaxCrossEntropyLoss  return error!");
             }
+#endif
+
             put_tensor(stack, output);
             put_optional_tensor(stack, log_prob);
 
@@ -3249,18 +4045,27 @@ namespace math {
 
             auto input = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             output = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+
+            infer_.new_input(input);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("Softsign : inference error!");
+            }
+            infer_.check_output(0, output);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( input->onnx_Softsign(input, output) != YNX_OK ) {
                 yannx_panic("API: Softsign  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -3268,9 +4073,13 @@ namespace math {
 
             auto input = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( input->onnx_Softsign(input, output) != YNX_OK ) {
                 yannx_panic("API: Softsign  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -3287,18 +4096,27 @@ namespace math {
 
             auto data_0 = fetch_tensors(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             sum = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+
+            infer_.new_input(data_0);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("Sum : inference error!");
+            }
+            infer_.check_output(0, sum);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( sum->onnx_Sum(data_0, sum) != YNX_OK ) {
                 yannx_panic("API: Sum  return error!");
             }
+#endif
+
             put_tensor(stack, sum);
 
         }
@@ -3306,9 +4124,13 @@ namespace math {
 
             auto data_0 = fetch_tensors(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( sum->onnx_Sum(data_0, sum) != YNX_OK ) {
                 yannx_panic("API: Sum  return error!");
             }
+#endif
+
             put_tensor(stack, sum);
 
         }
@@ -3325,18 +4147,27 @@ namespace math {
 
             auto input = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             output = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+
+            infer_.new_input(input);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("Sinh : inference error!");
+            }
+            infer_.check_output(0, output);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( input->onnx_Sinh(input, output) != YNX_OK ) {
                 yannx_panic("API: Sinh  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -3344,9 +4175,13 @@ namespace math {
 
             auto input = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( input->onnx_Sinh(input, output) != YNX_OK ) {
                 yannx_panic("API: Sinh  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -3363,18 +4198,27 @@ namespace math {
 
             auto input = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             output = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+
+            infer_.new_input(input);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("Tanh : inference error!");
+            }
+            infer_.check_output(0, output);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( input->onnx_Tanh(input, output) != YNX_OK ) {
                 yannx_panic("API: Tanh  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -3382,9 +4226,13 @@ namespace math {
 
             auto input = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( input->onnx_Tanh(input, output) != YNX_OK ) {
                 yannx_panic("API: Tanh  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -3406,19 +4254,33 @@ namespace math {
             auto K = fetch_tensor(stack);
             auto X = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             Values = create_undefined_tensor();
             Indices = create_undefined_tensor();
 
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(2);
+            infer_.new_attr("sorted", sorted);
+            infer_.new_attr("largest", largest);
+            infer_.new_attr("axis", axis);
+
+            infer_.new_input(K);
+            infer_.new_input(X);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("TopK : inference error!");
+            }
+            infer_.check_output(0, Values);
+            infer_.check_output(1, Indices);
+
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( X->onnx_TopK(X, K, Values, Indices, axis, largest, sorted) != YNX_OK ) {
                 yannx_panic("API: TopK  return error!");
             }
+#endif
+
             put_tensor(stack, Values);
             put_tensor(stack, Indices);
 
@@ -3431,9 +4293,13 @@ namespace math {
             auto K = fetch_tensor(stack);
             auto X = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( X->onnx_TopK(X, K, Values, Indices, axis, largest, sorted) != YNX_OK ) {
                 yannx_panic("API: TopK  return error!");
             }
+#endif
+
             put_tensor(stack, Values);
             put_tensor(stack, Indices);
 
@@ -3451,18 +4317,27 @@ namespace math {
 
             auto input = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             output = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+
+            infer_.new_input(input);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("Acos : inference error!");
+            }
+            infer_.check_output(0, output);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( input->onnx_Acos(input, output) != YNX_OK ) {
                 yannx_panic("API: Acos  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -3470,9 +4345,13 @@ namespace math {
 
             auto input = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( input->onnx_Acos(input, output) != YNX_OK ) {
                 yannx_panic("API: Acos  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -3489,18 +4368,27 @@ namespace math {
 
             auto input = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             output = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+
+            infer_.new_input(input);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("Asin : inference error!");
+            }
+            infer_.check_output(0, output);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( input->onnx_Asin(input, output) != YNX_OK ) {
                 yannx_panic("API: Asin  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -3508,9 +4396,13 @@ namespace math {
 
             auto input = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( input->onnx_Asin(input, output) != YNX_OK ) {
                 yannx_panic("API: Asin  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -3527,18 +4419,27 @@ namespace math {
 
             auto input = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             output = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+
+            infer_.new_input(input);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("Atan : inference error!");
+            }
+            infer_.check_output(0, output);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( input->onnx_Atan(input, output) != YNX_OK ) {
                 yannx_panic("API: Atan  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -3546,9 +4447,13 @@ namespace math {
 
             auto input = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( input->onnx_Atan(input, output) != YNX_OK ) {
                 yannx_panic("API: Atan  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -3565,18 +4470,27 @@ namespace math {
 
             auto input = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             output = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+
+            infer_.new_input(input);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("Sign : inference error!");
+            }
+            infer_.check_output(0, output);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( input->onnx_Sign(input, output) != YNX_OK ) {
                 yannx_panic("API: Sign  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -3584,9 +4498,13 @@ namespace math {
 
             auto input = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( input->onnx_Sign(input, output) != YNX_OK ) {
                 yannx_panic("API: Sign  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -3603,18 +4521,27 @@ namespace math {
 
             auto input = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             output = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+
+            infer_.new_input(input);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("Sin : inference error!");
+            }
+            infer_.check_output(0, output);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( input->onnx_Sin(input, output) != YNX_OK ) {
                 yannx_panic("API: Sin  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -3622,9 +4549,13 @@ namespace math {
 
             auto input = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( input->onnx_Sin(input, output) != YNX_OK ) {
                 yannx_panic("API: Sin  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -3642,18 +4573,28 @@ namespace math {
             auto B = fetch_tensor(stack);
             auto A = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             Y = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+
+            infer_.new_input(B);
+            infer_.new_input(A);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("MatMul : inference error!");
+            }
+            infer_.check_output(0, Y);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( A->onnx_MatMul(A, B, Y) != YNX_OK ) {
                 yannx_panic("API: MatMul  return error!");
             }
+#endif
+
             put_tensor(stack, Y);
 
         }
@@ -3662,9 +4603,13 @@ namespace math {
             auto B = fetch_tensor(stack);
             auto A = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( A->onnx_MatMul(A, B, Y) != YNX_OK ) {
                 yannx_panic("API: MatMul  return error!");
             }
+#endif
+
             put_tensor(stack, Y);
 
         }
@@ -3682,18 +4627,28 @@ namespace math {
             auto shape = fetch_tensor(stack);
             auto input = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             output = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+
+            infer_.new_input(shape);
+            infer_.new_input(input);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("Expand : inference error!");
+            }
+            infer_.check_output(0, output);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( input->onnx_Expand(input, shape, output) != YNX_OK ) {
                 yannx_panic("API: Expand  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -3702,9 +4657,13 @@ namespace math {
             auto shape = fetch_tensor(stack);
             auto input = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( input->onnx_Expand(input, shape, output) != YNX_OK ) {
                 yannx_panic("API: Expand  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -3722,18 +4681,28 @@ namespace math {
 
             auto X = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             Y = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+            infer_.new_attr("alpha", alpha);
+
+            infer_.new_input(X);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("Elu : inference error!");
+            }
+            infer_.check_output(0, Y);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( X->onnx_Elu(X, Y, alpha) != YNX_OK ) {
                 yannx_panic("API: Elu  return error!");
             }
+#endif
+
             put_tensor(stack, Y);
 
         }
@@ -3742,9 +4711,13 @@ namespace math {
 
             auto X = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( X->onnx_Elu(X, Y, alpha) != YNX_OK ) {
                 yannx_panic("API: Elu  return error!");
             }
+#endif
+
             put_tensor(stack, Y);
 
         }
@@ -3761,18 +4734,27 @@ namespace math {
 
             auto input = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             output = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+
+            infer_.new_input(input);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("Cosh : inference error!");
+            }
+            infer_.check_output(0, output);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( input->onnx_Cosh(input, output) != YNX_OK ) {
                 yannx_panic("API: Cosh  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -3780,9 +4762,13 @@ namespace math {
 
             auto input = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( input->onnx_Cosh(input, output) != YNX_OK ) {
                 yannx_panic("API: Cosh  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -3799,18 +4785,27 @@ namespace math {
 
             auto input = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             output = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+
+            infer_.new_input(input);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("Asinh : inference error!");
+            }
+            infer_.check_output(0, output);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( input->onnx_Asinh(input, output) != YNX_OK ) {
                 yannx_panic("API: Asinh  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -3818,9 +4813,13 @@ namespace math {
 
             auto input = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( input->onnx_Asinh(input, output) != YNX_OK ) {
                 yannx_panic("API: Asinh  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -3837,18 +4836,27 @@ namespace math {
 
             auto input = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             output = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+
+            infer_.new_input(input);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("Acosh : inference error!");
+            }
+            infer_.check_output(0, output);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( input->onnx_Acosh(input, output) != YNX_OK ) {
                 yannx_panic("API: Acosh  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -3856,9 +4864,13 @@ namespace math {
 
             auto input = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( input->onnx_Acosh(input, output) != YNX_OK ) {
                 yannx_panic("API: Acosh  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -3875,18 +4887,27 @@ namespace math {
 
             auto input = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             output = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+
+            infer_.new_input(input);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("Atanh : inference error!");
+            }
+            infer_.check_output(0, output);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( input->onnx_Atanh(input, output) != YNX_OK ) {
                 yannx_panic("API: Atanh  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -3894,9 +4915,13 @@ namespace math {
 
             auto input = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( input->onnx_Atanh(input, output) != YNX_OK ) {
                 yannx_panic("API: Atanh  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -3913,18 +4938,27 @@ namespace math {
 
             auto input = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             output = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+
+            infer_.new_input(input);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("Erf : inference error!");
+            }
+            infer_.check_output(0, output);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( input->onnx_Erf(input, output) != YNX_OK ) {
                 yannx_panic("API: Erf  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -3932,9 +4966,13 @@ namespace math {
 
             auto input = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( input->onnx_Erf(input, output) != YNX_OK ) {
                 yannx_panic("API: Erf  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -3953,18 +4991,29 @@ namespace math {
             auto B = fetch_tensor(stack);
             auto A = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             C = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+            infer_.new_attr("fmod", fmod);
+
+            infer_.new_input(B);
+            infer_.new_input(A);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("Mod : inference error!");
+            }
+            infer_.check_output(0, C);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( A->onnx_Mod(A, B, C, fmod) != YNX_OK ) {
                 yannx_panic("API: Mod  return error!");
             }
+#endif
+
             put_tensor(stack, C);
 
         }
@@ -3974,9 +5023,13 @@ namespace math {
             auto B = fetch_tensor(stack);
             auto A = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( A->onnx_Mod(A, B, C, fmod) != YNX_OK ) {
                 yannx_panic("API: Mod  return error!");
             }
+#endif
+
             put_tensor(stack, C);
 
         }
@@ -3994,18 +5047,28 @@ namespace math {
 
             auto X = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             Y = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+            infer_.new_attr("alpha", alpha);
+
+            infer_.new_input(X);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("ThresholdedRelu : inference error!");
+            }
+            infer_.check_output(0, Y);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( X->onnx_ThresholdedRelu(X, Y, alpha) != YNX_OK ) {
                 yannx_panic("API: ThresholdedRelu  return error!");
             }
+#endif
+
             put_tensor(stack, Y);
 
         }
@@ -4014,9 +5077,13 @@ namespace math {
 
             auto X = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( X->onnx_ThresholdedRelu(X, Y, alpha) != YNX_OK ) {
                 yannx_panic("API: ThresholdedRelu  return error!");
             }
+#endif
+
             put_tensor(stack, Y);
 
         }
@@ -4036,18 +5103,30 @@ namespace math {
             auto B = fetch_tensor(stack);
             auto A = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             Y = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+
+            infer_.new_input(b_zero_point);
+            infer_.new_input(a_zero_point);
+            infer_.new_input(B);
+            infer_.new_input(A);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("MatMulInteger : inference error!");
+            }
+            infer_.check_output(0, Y);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( A->onnx_MatMulInteger(A, B, a_zero_point, b_zero_point, Y) != YNX_OK ) {
                 yannx_panic("API: MatMulInteger  return error!");
             }
+#endif
+
             put_tensor(stack, Y);
 
         }
@@ -4058,9 +5137,13 @@ namespace math {
             auto B = fetch_tensor(stack);
             auto A = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( A->onnx_MatMulInteger(A, B, a_zero_point, b_zero_point, Y) != YNX_OK ) {
                 yannx_panic("API: MatMulInteger  return error!");
             }
+#endif
+
             put_tensor(stack, Y);
 
         }
@@ -4078,18 +5161,28 @@ namespace math {
 
             auto X = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             Y = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+            infer_.new_attr("alpha", alpha);
+
+            infer_.new_input(X);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("Celu : inference error!");
+            }
+            infer_.check_output(0, Y);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( X->onnx_Celu(X, Y, alpha) != YNX_OK ) {
                 yannx_panic("API: Celu  return error!");
             }
+#endif
+
             put_tensor(stack, Y);
 
         }
@@ -4098,9 +5191,13 @@ namespace math {
 
             auto X = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( X->onnx_Celu(X, Y, alpha) != YNX_OK ) {
                 yannx_panic("API: Celu  return error!");
             }
+#endif
+
             put_tensor(stack, Y);
 
         }
@@ -4120,18 +5217,30 @@ namespace math {
             auto axis = fetch_tensor(stack);
             auto x = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             y = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+            infer_.new_attr("reverse", reverse);
+            infer_.new_attr("exclusive", exclusive);
+
+            infer_.new_input(axis);
+            infer_.new_input(x);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("CumSum : inference error!");
+            }
+            infer_.check_output(0, y);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( x->onnx_CumSum(x, axis, y, exclusive, reverse) != YNX_OK ) {
                 yannx_panic("API: CumSum  return error!");
             }
+#endif
+
             put_tensor(stack, y);
 
         }
@@ -4142,9 +5251,13 @@ namespace math {
             auto axis = fetch_tensor(stack);
             auto x = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( x->onnx_CumSum(x, axis, y, exclusive, reverse) != YNX_OK ) {
                 yannx_panic("API: CumSum  return error!");
             }
+#endif
+
             put_tensor(stack, y);
 
         }
@@ -4161,18 +5274,27 @@ namespace math {
 
             auto X = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             Y = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+
+            infer_.new_input(X);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("Softplus : inference error!");
+            }
+            infer_.check_output(0, Y);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( X->onnx_Softplus(X, Y) != YNX_OK ) {
                 yannx_panic("API: Softplus  return error!");
             }
+#endif
+
             put_tensor(stack, Y);
 
         }
@@ -4180,9 +5302,13 @@ namespace math {
 
             auto X = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( X->onnx_Softplus(X, Y) != YNX_OK ) {
                 yannx_panic("API: Softplus  return error!");
             }
+#endif
+
             put_tensor(stack, Y);
 
         }
@@ -4203,18 +5329,31 @@ namespace math {
             auto target = fetch_tensor(stack);
             auto input = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             loss = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+            infer_.new_attr("reduction", reduction);
+            infer_.new_attr("ignore_index", ignore_index);
+
+            infer_.new_input(weight);
+            infer_.new_input(target);
+            infer_.new_input(input);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("NegativeLogLikelihoodLoss : inference error!");
+            }
+            infer_.check_output(0, loss);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( input->onnx_NegativeLogLikelihoodLoss(input, target, weight, loss, ignore_index, reduction) != YNX_OK ) {
                 yannx_panic("API: NegativeLogLikelihoodLoss  return error!");
             }
+#endif
+
             put_tensor(stack, loss);
 
         }
@@ -4226,9 +5365,13 @@ namespace math {
             auto target = fetch_tensor(stack);
             auto input = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( input->onnx_NegativeLogLikelihoodLoss(input, target, weight, loss, ignore_index, reduction) != YNX_OK ) {
                 yannx_panic("API: NegativeLogLikelihoodLoss  return error!");
             }
+#endif
+
             put_tensor(stack, loss);
 
         }
@@ -4245,18 +5388,27 @@ namespace math {
 
             auto X = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             Y = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+
+            infer_.new_input(X);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("Det : inference error!");
+            }
+            infer_.check_output(0, Y);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( X->onnx_Det(X, Y) != YNX_OK ) {
                 yannx_panic("API: Det  return error!");
             }
+#endif
+
             put_tensor(stack, Y);
 
         }
@@ -4264,9 +5416,13 @@ namespace math {
 
             auto X = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( X->onnx_Det(X, Y) != YNX_OK ) {
                 yannx_panic("API: Det  return error!");
             }
+#endif
+
             put_tensor(stack, Y);
 
         }
@@ -4283,18 +5439,27 @@ namespace math {
 
             auto X = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             Y = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+
+            infer_.new_input(X);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("HardSwish : inference error!");
+            }
+            infer_.check_output(0, Y);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( X->onnx_HardSwish(X, Y) != YNX_OK ) {
                 yannx_panic("API: HardSwish  return error!");
             }
+#endif
+
             put_tensor(stack, Y);
 
         }
@@ -4302,9 +5467,13 @@ namespace math {
 
             auto X = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( X->onnx_HardSwish(X, Y) != YNX_OK ) {
                 yannx_panic("API: HardSwish  return error!");
             }
+#endif
+
             put_tensor(stack, Y);
 
         }
@@ -4327,18 +5496,31 @@ namespace nn {
 
             auto X = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             Y = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+            infer_.new_attr("size", size);
+            infer_.new_attr("bias", bias);
+            infer_.new_attr("beta", beta);
+            infer_.new_attr("alpha", alpha);
+
+            infer_.new_input(X);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("LRN : inference error!");
+            }
+            infer_.check_output(0, Y);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( X->onnx_LRN(X, Y, alpha, beta, bias, size) != YNX_OK ) {
                 yannx_panic("API: LRN  return error!");
             }
+#endif
+
             put_tensor(stack, Y);
 
         }
@@ -4350,9 +5532,13 @@ namespace nn {
 
             auto X = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( X->onnx_LRN(X, Y, alpha, beta, bias, size) != YNX_OK ) {
                 yannx_panic("API: LRN  return error!");
             }
+#endif
+
             put_tensor(stack, Y);
 
         }
@@ -4374,18 +5560,32 @@ namespace nn {
 
             auto X = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             Y = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+            infer_.new_attr("strides", strides);
+            infer_.new_attr("pads", pads);
+            infer_.new_attr("p", p);
+            infer_.new_attr("kernel_shape", kernel_shape);
+            infer_.new_attr("auto_pad", auto_pad);
+
+            infer_.new_input(X);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("LpPool : inference error!");
+            }
+            infer_.check_output(0, Y);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( X->onnx_LpPool(X, Y, auto_pad, kernel_shape, p, pads, strides) != YNX_OK ) {
                 yannx_panic("API: LpPool  return error!");
             }
+#endif
+
             put_tensor(stack, Y);
 
         }
@@ -4398,9 +5598,13 @@ namespace nn {
 
             auto X = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( X->onnx_LpPool(X, Y, auto_pad, kernel_shape, p, pads, strides) != YNX_OK ) {
                 yannx_panic("API: LpPool  return error!");
             }
+#endif
+
             put_tensor(stack, Y);
 
         }
@@ -4421,18 +5625,31 @@ namespace nn {
             auto ratio = fetch_optional_tensor(stack);
             auto data = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             output = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(2);
+            infer_.new_attr("seed", seed);
+
+            infer_.new_input(training_mode);
+            infer_.new_input(ratio);
+            infer_.new_input(data);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("Dropout : inference error!");
+            }
+            infer_.check_output(0, output);
+            infer_.check_output(1, mask);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( data->onnx_Dropout(data, ratio, training_mode, output, mask, seed) != YNX_OK ) {
                 yannx_panic("API: Dropout  return error!");
             }
+#endif
+
             put_tensor(stack, output);
             put_optional_tensor(stack, mask);
 
@@ -4444,9 +5661,13 @@ namespace nn {
             auto ratio = fetch_optional_tensor(stack);
             auto data = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( data->onnx_Dropout(data, ratio, training_mode, output, mask, seed) != YNX_OK ) {
                 yannx_panic("API: Dropout  return error!");
             }
+#endif
+
             put_tensor(stack, output);
             put_optional_tensor(stack, mask);
 
@@ -4472,18 +5693,35 @@ namespace nn {
 
             auto X = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             Y = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(2);
+            infer_.new_attr("strides", strides);
+            infer_.new_attr("storage_order", storage_order);
+            infer_.new_attr("pads", pads);
+            infer_.new_attr("kernel_shape", kernel_shape);
+            infer_.new_attr("dilations", dilations);
+            infer_.new_attr("ceil_mode", ceil_mode);
+            infer_.new_attr("auto_pad", auto_pad);
+
+            infer_.new_input(X);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("MaxPool : inference error!");
+            }
+            infer_.check_output(0, Y);
+            infer_.check_output(1, Indices);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( X->onnx_MaxPool(X, Y, Indices, auto_pad, ceil_mode, dilations, kernel_shape, pads, storage_order, strides) != YNX_OK ) {
                 yannx_panic("API: MaxPool  return error!");
             }
+#endif
+
             put_tensor(stack, Y);
             put_optional_tensor(stack, Indices);
 
@@ -4499,9 +5737,13 @@ namespace nn {
 
             auto X = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( X->onnx_MaxPool(X, Y, Indices, auto_pad, ceil_mode, dilations, kernel_shape, pads, storage_order, strides) != YNX_OK ) {
                 yannx_panic("API: MaxPool  return error!");
             }
+#endif
+
             put_tensor(stack, Y);
             put_optional_tensor(stack, Indices);
 
@@ -4520,18 +5762,28 @@ namespace nn {
 
             auto X = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             Y = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+            infer_.new_attr("p", p);
+
+            infer_.new_input(X);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("GlobalLpPool : inference error!");
+            }
+            infer_.check_output(0, Y);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( X->onnx_GlobalLpPool(X, Y, p) != YNX_OK ) {
                 yannx_panic("API: GlobalLpPool  return error!");
             }
+#endif
+
             put_tensor(stack, Y);
 
         }
@@ -4540,9 +5792,13 @@ namespace nn {
 
             auto X = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( X->onnx_GlobalLpPool(X, Y, p) != YNX_OK ) {
                 yannx_panic("API: GlobalLpPool  return error!");
             }
+#endif
+
             put_tensor(stack, Y);
 
         }
@@ -4561,18 +5817,29 @@ namespace nn {
 
             auto input = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             output = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+            infer_.new_attr("p", p);
+            infer_.new_attr("axis", axis);
+
+            infer_.new_input(input);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("LpNormalization : inference error!");
+            }
+            infer_.check_output(0, output);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( input->onnx_LpNormalization(input, output, axis, p) != YNX_OK ) {
                 yannx_panic("API: LpNormalization  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -4582,9 +5849,13 @@ namespace nn {
 
             auto input = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( input->onnx_LpNormalization(input, output, axis, p) != YNX_OK ) {
                 yannx_panic("API: LpNormalization  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -4609,18 +5880,35 @@ namespace nn {
             auto W = fetch_tensor(stack);
             auto X = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             Y = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+            infer_.new_attr("strides", strides);
+            infer_.new_attr("pads", pads);
+            infer_.new_attr("kernel_shape", kernel_shape);
+            infer_.new_attr("group", group);
+            infer_.new_attr("dilations", dilations);
+            infer_.new_attr("auto_pad", auto_pad);
+
+            infer_.new_input(B);
+            infer_.new_input(W);
+            infer_.new_input(X);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("Conv : inference error!");
+            }
+            infer_.check_output(0, Y);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( X->onnx_Conv(X, W, B, Y, auto_pad, dilations, group, kernel_shape, pads, strides) != YNX_OK ) {
                 yannx_panic("API: Conv  return error!");
             }
+#endif
+
             put_tensor(stack, Y);
 
         }
@@ -4636,9 +5924,13 @@ namespace nn {
             auto W = fetch_tensor(stack);
             auto X = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( X->onnx_Conv(X, W, B, Y, auto_pad, dilations, group, kernel_shape, pads, strides) != YNX_OK ) {
                 yannx_panic("API: Conv  return error!");
             }
+#endif
+
             put_tensor(stack, Y);
 
         }
@@ -4655,18 +5947,27 @@ namespace nn {
 
             auto X = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             Y = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+
+            infer_.new_input(X);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("GlobalMaxPool : inference error!");
+            }
+            infer_.check_output(0, Y);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( X->onnx_GlobalMaxPool(X, Y) != YNX_OK ) {
                 yannx_panic("API: GlobalMaxPool  return error!");
             }
+#endif
+
             put_tensor(stack, Y);
 
         }
@@ -4674,9 +5975,13 @@ namespace nn {
 
             auto X = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( X->onnx_GlobalMaxPool(X, Y) != YNX_OK ) {
                 yannx_panic("API: GlobalMaxPool  return error!");
             }
+#endif
+
             put_tensor(stack, Y);
 
         }
@@ -4698,18 +6003,32 @@ namespace nn {
             auto I = fetch_tensor(stack);
             auto X = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             output = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+            infer_.new_attr("strides", strides);
+            infer_.new_attr("pads", pads);
+            infer_.new_attr("kernel_shape", kernel_shape);
+
+            infer_.new_input(output_shape);
+            infer_.new_input(I);
+            infer_.new_input(X);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("MaxUnpool : inference error!");
+            }
+            infer_.check_output(0, output);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( X->onnx_MaxUnpool(X, I, output_shape, output, kernel_shape, pads, strides) != YNX_OK ) {
                 yannx_panic("API: MaxUnpool  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -4722,9 +6041,13 @@ namespace nn {
             auto I = fetch_tensor(stack);
             auto X = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( X->onnx_MaxUnpool(X, I, output_shape, output, kernel_shape, pads, strides) != YNX_OK ) {
                 yannx_panic("API: MaxUnpool  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -4747,18 +6070,33 @@ namespace nn {
 
             auto X = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             Y = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+            infer_.new_attr("strides", strides);
+            infer_.new_attr("pads", pads);
+            infer_.new_attr("kernel_shape", kernel_shape);
+            infer_.new_attr("count_include_pad", count_include_pad);
+            infer_.new_attr("ceil_mode", ceil_mode);
+            infer_.new_attr("auto_pad", auto_pad);
+
+            infer_.new_input(X);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("AveragePool : inference error!");
+            }
+            infer_.check_output(0, Y);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( X->onnx_AveragePool(X, Y, auto_pad, ceil_mode, count_include_pad, kernel_shape, pads, strides) != YNX_OK ) {
                 yannx_panic("API: AveragePool  return error!");
             }
+#endif
+
             put_tensor(stack, Y);
 
         }
@@ -4772,9 +6110,13 @@ namespace nn {
 
             auto X = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( X->onnx_AveragePool(X, Y, auto_pad, ceil_mode, count_include_pad, kernel_shape, pads, strides) != YNX_OK ) {
                 yannx_panic("API: AveragePool  return error!");
             }
+#endif
+
             put_tensor(stack, Y);
 
         }
@@ -4794,18 +6136,30 @@ namespace nn {
             auto scale = fetch_tensor(stack);
             auto input = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             output = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+            infer_.new_attr("epsilon", epsilon);
+
+            infer_.new_input(B);
+            infer_.new_input(scale);
+            infer_.new_input(input);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("InstanceNormalization : inference error!");
+            }
+            infer_.check_output(0, output);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( input->onnx_InstanceNormalization(input, scale, B, output, epsilon) != YNX_OK ) {
                 yannx_panic("API: InstanceNormalization  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -4816,9 +6170,13 @@ namespace nn {
             auto scale = fetch_tensor(stack);
             auto input = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( input->onnx_InstanceNormalization(input, scale, B, output, epsilon) != YNX_OK ) {
                 yannx_panic("API: InstanceNormalization  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -4836,18 +6194,28 @@ namespace nn {
 
             auto input = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             output = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+            infer_.new_attr("axis", axis);
+
+            infer_.new_input(input);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("Flatten : inference error!");
+            }
+            infer_.check_output(0, output);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( input->onnx_Flatten(input, output, axis) != YNX_OK ) {
                 yannx_panic("API: Flatten  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -4856,9 +6224,13 @@ namespace nn {
 
             auto input = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( input->onnx_Flatten(input, output, axis) != YNX_OK ) {
                 yannx_panic("API: Flatten  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -4875,18 +6247,27 @@ namespace nn {
 
             auto X = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             Y = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+
+            infer_.new_input(X);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("GlobalAveragePool : inference error!");
+            }
+            infer_.check_output(0, Y);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( X->onnx_GlobalAveragePool(X, Y) != YNX_OK ) {
                 yannx_panic("API: GlobalAveragePool  return error!");
             }
+#endif
+
             put_tensor(stack, Y);
 
         }
@@ -4894,9 +6275,13 @@ namespace nn {
 
             auto X = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( X->onnx_GlobalAveragePool(X, Y) != YNX_OK ) {
                 yannx_panic("API: GlobalAveragePool  return error!");
             }
+#endif
+
             put_tensor(stack, Y);
 
         }
@@ -4916,18 +6301,30 @@ namespace nn {
             auto rois = fetch_tensor(stack);
             auto X = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             Y = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+            infer_.new_attr("spatial_scale", spatial_scale);
+            infer_.new_attr("pooled_shape", pooled_shape);
+
+            infer_.new_input(rois);
+            infer_.new_input(X);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("MaxRoiPool : inference error!");
+            }
+            infer_.check_output(0, Y);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( X->onnx_MaxRoiPool(X, rois, Y, pooled_shape, spatial_scale) != YNX_OK ) {
                 yannx_panic("API: MaxRoiPool  return error!");
             }
+#endif
+
             put_tensor(stack, Y);
 
         }
@@ -4938,9 +6335,13 @@ namespace nn {
             auto rois = fetch_tensor(stack);
             auto X = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( X->onnx_MaxRoiPool(X, rois, Y, pooled_shape, spatial_scale) != YNX_OK ) {
                 yannx_panic("API: MaxRoiPool  return error!");
             }
+#endif
+
             put_tensor(stack, Y);
 
         }
@@ -4966,18 +6367,36 @@ namespace nn {
             auto scale = fetch_tensor(stack);
             auto X = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             Y = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(3);
+            infer_.new_attr("training_mode", training_mode);
+            infer_.new_attr("momentum", momentum);
+            infer_.new_attr("epsilon", epsilon);
+
+            infer_.new_input(input_var);
+            infer_.new_input(input_mean);
+            infer_.new_input(B);
+            infer_.new_input(scale);
+            infer_.new_input(X);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("BatchNormalization : inference error!");
+            }
+            infer_.check_output(0, Y);
+            infer_.check_output(1, running_mean);
+            infer_.check_output(2, running_var);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( X->onnx_BatchNormalization(X, scale, B, input_mean, input_var, Y, running_mean, running_var, epsilon, momentum, training_mode) != YNX_OK ) {
                 yannx_panic("API: BatchNormalization  return error!");
             }
+#endif
+
             put_tensor(stack, Y);
             put_optional_tensor(stack, running_mean);
             put_optional_tensor(stack, running_var);
@@ -4994,9 +6413,13 @@ namespace nn {
             auto scale = fetch_tensor(stack);
             auto X = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( X->onnx_BatchNormalization(X, scale, B, input_mean, input_var, Y, running_mean, running_var, epsilon, momentum, training_mode) != YNX_OK ) {
                 yannx_panic("API: BatchNormalization  return error!");
             }
+#endif
+
             put_tensor(stack, Y);
             put_optional_tensor(stack, running_mean);
             put_optional_tensor(stack, running_var);
@@ -5019,18 +6442,31 @@ namespace nn {
 
             auto X = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             Y = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+            infer_.new_attr("stopwords", stopwords);
+            infer_.new_attr("locale", locale);
+            infer_.new_attr("is_case_sensitive", is_case_sensitive);
+            infer_.new_attr("case_change_action", case_change_action);
+
+            infer_.new_input(X);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("StringNormalizer : inference error!");
+            }
+            infer_.check_output(0, Y);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( X->onnx_StringNormalizer(X, Y, case_change_action, is_case_sensitive, locale, stopwords) != YNX_OK ) {
                 yannx_panic("API: StringNormalizer  return error!");
             }
+#endif
+
             put_tensor(stack, Y);
 
         }
@@ -5042,9 +6478,13 @@ namespace nn {
 
             auto X = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( X->onnx_StringNormalizer(X, Y, case_change_action, is_case_sensitive, locale, stopwords) != YNX_OK ) {
                 yannx_panic("API: StringNormalizer  return error!");
             }
+#endif
+
             put_tensor(stack, Y);
 
         }
@@ -5063,18 +6503,29 @@ namespace nn {
 
             auto input = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             output = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+            infer_.new_attr("lambd", lambd);
+            infer_.new_attr("bias", bias);
+
+            infer_.new_input(input);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("Shrink : inference error!");
+            }
+            infer_.check_output(0, output);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( input->onnx_Shrink(input, output, bias, lambd) != YNX_OK ) {
                 yannx_panic("API: Shrink  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -5084,9 +6535,13 @@ namespace nn {
 
             auto input = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( input->onnx_Shrink(input, output, bias, lambd) != YNX_OK ) {
                 yannx_panic("API: Shrink  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -5104,18 +6559,28 @@ namespace nn {
 
             auto X = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             Y = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+            infer_.new_attr("axes", axes);
+
+            infer_.new_input(X);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("MeanVarianceNormalization : inference error!");
+            }
+            infer_.check_output(0, Y);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( X->onnx_MeanVarianceNormalization(X, Y, axes) != YNX_OK ) {
                 yannx_panic("API: MeanVarianceNormalization  return error!");
             }
+#endif
+
             put_tensor(stack, Y);
 
         }
@@ -5124,9 +6589,13 @@ namespace nn {
 
             auto X = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( X->onnx_MeanVarianceNormalization(X, Y, axes) != YNX_OK ) {
                 yannx_panic("API: MeanVarianceNormalization  return error!");
             }
+#endif
+
             put_tensor(stack, Y);
 
         }
@@ -5152,18 +6621,36 @@ namespace nn {
             auto w = fetch_tensor(stack);
             auto x = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             y = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+            infer_.new_attr("strides", strides);
+            infer_.new_attr("pads", pads);
+            infer_.new_attr("kernel_shape", kernel_shape);
+            infer_.new_attr("group", group);
+            infer_.new_attr("dilations", dilations);
+            infer_.new_attr("auto_pad", auto_pad);
+
+            infer_.new_input(w_zero_point);
+            infer_.new_input(x_zero_point);
+            infer_.new_input(w);
+            infer_.new_input(x);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("ConvInteger : inference error!");
+            }
+            infer_.check_output(0, y);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( x->onnx_ConvInteger(x, w, x_zero_point, w_zero_point, y, auto_pad, dilations, group, kernel_shape, pads, strides) != YNX_OK ) {
                 yannx_panic("API: ConvInteger  return error!");
             }
+#endif
+
             put_tensor(stack, y);
 
         }
@@ -5180,9 +6667,13 @@ namespace nn {
             auto w = fetch_tensor(stack);
             auto x = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( x->onnx_ConvInteger(x, w, x_zero_point, w_zero_point, y, auto_pad, dilations, group, kernel_shape, pads, strides) != YNX_OK ) {
                 yannx_panic("API: ConvInteger  return error!");
             }
+#endif
+
             put_tensor(stack, y);
 
         }
@@ -5213,18 +6704,41 @@ namespace nn {
             auto x_scale = fetch_tensor(stack);
             auto x = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             y = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+            infer_.new_attr("strides", strides);
+            infer_.new_attr("pads", pads);
+            infer_.new_attr("kernel_shape", kernel_shape);
+            infer_.new_attr("group", group);
+            infer_.new_attr("dilations", dilations);
+            infer_.new_attr("auto_pad", auto_pad);
+
+            infer_.new_input(B);
+            infer_.new_input(y_zero_point);
+            infer_.new_input(y_scale);
+            infer_.new_input(w_zero_point);
+            infer_.new_input(w_scale);
+            infer_.new_input(w);
+            infer_.new_input(x_zero_point);
+            infer_.new_input(x_scale);
+            infer_.new_input(x);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("QLinearConv : inference error!");
+            }
+            infer_.check_output(0, y);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( x->onnx_QLinearConv(x, x_scale, x_zero_point, w, w_scale, w_zero_point, y_scale, y_zero_point, B, y, auto_pad, dilations, group, kernel_shape, pads, strides) != YNX_OK ) {
                 yannx_panic("API: QLinearConv  return error!");
             }
+#endif
+
             put_tensor(stack, y);
 
         }
@@ -5246,9 +6760,13 @@ namespace nn {
             auto x_scale = fetch_tensor(stack);
             auto x = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( x->onnx_QLinearConv(x, x_scale, x_zero_point, w, w_scale, w_zero_point, y_scale, y_zero_point, B, y, auto_pad, dilations, group, kernel_shape, pads, strides) != YNX_OK ) {
                 yannx_panic("API: QLinearConv  return error!");
             }
+#endif
+
             put_tensor(stack, y);
 
         }
@@ -5275,18 +6793,37 @@ namespace nn {
             auto W = fetch_tensor(stack);
             auto X = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             Y = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+            infer_.new_attr("strides", strides);
+            infer_.new_attr("pads", pads);
+            infer_.new_attr("output_shape", output_shape);
+            infer_.new_attr("output_padding", output_padding);
+            infer_.new_attr("kernel_shape", kernel_shape);
+            infer_.new_attr("group", group);
+            infer_.new_attr("dilations", dilations);
+            infer_.new_attr("auto_pad", auto_pad);
+
+            infer_.new_input(B);
+            infer_.new_input(W);
+            infer_.new_input(X);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("ConvTranspose : inference error!");
+            }
+            infer_.check_output(0, Y);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( X->onnx_ConvTranspose(X, W, B, Y, auto_pad, dilations, group, kernel_shape, output_padding, output_shape, pads, strides) != YNX_OK ) {
                 yannx_panic("API: ConvTranspose  return error!");
             }
+#endif
+
             put_tensor(stack, Y);
 
         }
@@ -5304,9 +6841,13 @@ namespace nn {
             auto W = fetch_tensor(stack);
             auto X = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( X->onnx_ConvTranspose(X, W, B, Y, auto_pad, dilations, group, kernel_shape, output_padding, output_shape, pads, strides) != YNX_OK ) {
                 yannx_panic("API: ConvTranspose  return error!");
             }
+#endif
+
             put_tensor(stack, Y);
 
         }
@@ -5332,18 +6873,36 @@ namespace nn {
 
             auto X = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             Y = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+            infer_.new_attr("weights", weights);
+            infer_.new_attr("pool_strings", pool_strings);
+            infer_.new_attr("pool_int64s", pool_int64s);
+            infer_.new_attr("ngram_indexes", ngram_indexes);
+            infer_.new_attr("ngram_counts", ngram_counts);
+            infer_.new_attr("mode", mode);
+            infer_.new_attr("min_gram_length", min_gram_length);
+            infer_.new_attr("max_skip_count", max_skip_count);
+            infer_.new_attr("max_gram_length", max_gram_length);
+
+            infer_.new_input(X);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("TfIdfVectorizer : inference error!");
+            }
+            infer_.check_output(0, Y);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( X->onnx_TfIdfVectorizer(X, Y, max_gram_length, max_skip_count, min_gram_length, mode, ngram_counts, ngram_indexes, pool_int64s, pool_strings, weights) != YNX_OK ) {
                 yannx_panic("API: TfIdfVectorizer  return error!");
             }
+#endif
+
             put_tensor(stack, Y);
 
         }
@@ -5360,9 +6919,13 @@ namespace nn {
 
             auto X = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( X->onnx_TfIdfVectorizer(X, Y, max_gram_length, max_skip_count, min_gram_length, mode, ngram_counts, ngram_indexes, pool_int64s, pool_strings, weights) != YNX_OK ) {
                 yannx_panic("API: TfIdfVectorizer  return error!");
             }
+#endif
+
             put_tensor(stack, Y);
 
         }
@@ -5388,18 +6951,34 @@ namespace object_detection {
             auto rois = fetch_tensor(stack);
             auto X = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             Y = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+            infer_.new_attr("spatial_scale", spatial_scale);
+            infer_.new_attr("sampling_ratio", sampling_ratio);
+            infer_.new_attr("output_width", output_width);
+            infer_.new_attr("output_height", output_height);
+            infer_.new_attr("mode", mode);
+
+            infer_.new_input(batch_indices);
+            infer_.new_input(rois);
+            infer_.new_input(X);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("RoiAlign : inference error!");
+            }
+            infer_.check_output(0, Y);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( X->onnx_RoiAlign(X, rois, batch_indices, Y, mode, output_height, output_width, sampling_ratio, spatial_scale) != YNX_OK ) {
                 yannx_panic("API: RoiAlign  return error!");
             }
+#endif
+
             put_tensor(stack, Y);
 
         }
@@ -5414,9 +6993,13 @@ namespace object_detection {
             auto rois = fetch_tensor(stack);
             auto X = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( X->onnx_RoiAlign(X, rois, batch_indices, Y, mode, output_height, output_width, sampling_ratio, spatial_scale) != YNX_OK ) {
                 yannx_panic("API: RoiAlign  return error!");
             }
+#endif
+
             put_tensor(stack, Y);
 
         }
@@ -5438,18 +7021,32 @@ namespace object_detection {
             auto scores = fetch_tensor(stack);
             auto boxes = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             selected_indices = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+            infer_.new_attr("center_point_box", center_point_box);
+
+            infer_.new_input(score_threshold);
+            infer_.new_input(iou_threshold);
+            infer_.new_input(max_output_boxes_per_class);
+            infer_.new_input(scores);
+            infer_.new_input(boxes);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("NonMaxSuppression : inference error!");
+            }
+            infer_.check_output(0, selected_indices);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( boxes->onnx_NonMaxSuppression(boxes, scores, max_output_boxes_per_class, iou_threshold, score_threshold, selected_indices, center_point_box) != YNX_OK ) {
                 yannx_panic("API: NonMaxSuppression  return error!");
             }
+#endif
+
             put_tensor(stack, selected_indices);
 
         }
@@ -5462,9 +7059,13 @@ namespace object_detection {
             auto scores = fetch_tensor(stack);
             auto boxes = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( boxes->onnx_NonMaxSuppression(boxes, scores, max_output_boxes_per_class, iou_threshold, score_threshold, selected_indices, center_point_box) != YNX_OK ) {
                 yannx_panic("API: NonMaxSuppression  return error!");
             }
+#endif
+
             put_tensor(stack, selected_indices);
 
         }
@@ -5486,18 +7087,30 @@ namespace quantization {
             auto y_scale = fetch_tensor(stack);
             auto x = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             y = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+            infer_.new_attr("axis", axis);
+
+            infer_.new_input(y_zero_point);
+            infer_.new_input(y_scale);
+            infer_.new_input(x);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("QuantizeLinear : inference error!");
+            }
+            infer_.check_output(0, y);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( x->onnx_QuantizeLinear(x, y_scale, y_zero_point, y, axis) != YNX_OK ) {
                 yannx_panic("API: QuantizeLinear  return error!");
             }
+#endif
+
             put_tensor(stack, y);
 
         }
@@ -5508,9 +7121,13 @@ namespace quantization {
             auto y_scale = fetch_tensor(stack);
             auto x = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( x->onnx_QuantizeLinear(x, y_scale, y_zero_point, y, axis) != YNX_OK ) {
                 yannx_panic("API: QuantizeLinear  return error!");
             }
+#endif
+
             put_tensor(stack, y);
 
         }
@@ -5529,20 +7146,31 @@ namespace quantization {
 
             auto x = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             y = create_undefined_tensor();
             y_scale = create_undefined_tensor();
             y_zero_point = create_undefined_tensor();
 
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(3);
+
+            infer_.new_input(x);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("DynamicQuantizeLinear : inference error!");
+            }
+            infer_.check_output(0, y);
+            infer_.check_output(1, y_scale);
+            infer_.check_output(2, y_zero_point);
+
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( x->onnx_DynamicQuantizeLinear(x, y, y_scale, y_zero_point) != YNX_OK ) {
                 yannx_panic("API: DynamicQuantizeLinear  return error!");
             }
+#endif
+
             put_tensor(stack, y);
             put_tensor(stack, y_scale);
             put_tensor(stack, y_zero_point);
@@ -5552,9 +7180,13 @@ namespace quantization {
 
             auto x = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( x->onnx_DynamicQuantizeLinear(x, y, y_scale, y_zero_point) != YNX_OK ) {
                 yannx_panic("API: DynamicQuantizeLinear  return error!");
             }
+#endif
+
             put_tensor(stack, y);
             put_tensor(stack, y_scale);
             put_tensor(stack, y_zero_point);
@@ -5576,18 +7208,30 @@ namespace quantization {
             auto x_scale = fetch_tensor(stack);
             auto x = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             y = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+            infer_.new_attr("axis", axis);
+
+            infer_.new_input(x_zero_point);
+            infer_.new_input(x_scale);
+            infer_.new_input(x);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("DequantizeLinear : inference error!");
+            }
+            infer_.check_output(0, y);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( x->onnx_DequantizeLinear(x, x_scale, x_zero_point, y, axis) != YNX_OK ) {
                 yannx_panic("API: DequantizeLinear  return error!");
             }
+#endif
+
             put_tensor(stack, y);
 
         }
@@ -5598,9 +7242,13 @@ namespace quantization {
             auto x_scale = fetch_tensor(stack);
             auto x = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( x->onnx_DequantizeLinear(x, x_scale, x_zero_point, y, axis) != YNX_OK ) {
                 yannx_panic("API: DequantizeLinear  return error!");
             }
+#endif
+
             put_tensor(stack, y);
 
         }
@@ -5621,18 +7269,29 @@ namespace reduction {
 
             auto data = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             reduced = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+            infer_.new_attr("keepdims", keepdims);
+            infer_.new_attr("axes", axes);
+
+            infer_.new_input(data);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("ReduceProd : inference error!");
+            }
+            infer_.check_output(0, reduced);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( data->onnx_ReduceProd(data, reduced, axes, keepdims) != YNX_OK ) {
                 yannx_panic("API: ReduceProd  return error!");
             }
+#endif
+
             put_tensor(stack, reduced);
 
         }
@@ -5642,9 +7301,13 @@ namespace reduction {
 
             auto data = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( data->onnx_ReduceProd(data, reduced, axes, keepdims) != YNX_OK ) {
                 yannx_panic("API: ReduceProd  return error!");
             }
+#endif
+
             put_tensor(stack, reduced);
 
         }
@@ -5663,18 +7326,29 @@ namespace reduction {
 
             auto data = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             reduced = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+            infer_.new_attr("keepdims", keepdims);
+            infer_.new_attr("axes", axes);
+
+            infer_.new_input(data);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("ReduceMin : inference error!");
+            }
+            infer_.check_output(0, reduced);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( data->onnx_ReduceMin(data, reduced, axes, keepdims) != YNX_OK ) {
                 yannx_panic("API: ReduceMin  return error!");
             }
+#endif
+
             put_tensor(stack, reduced);
 
         }
@@ -5684,9 +7358,13 @@ namespace reduction {
 
             auto data = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( data->onnx_ReduceMin(data, reduced, axes, keepdims) != YNX_OK ) {
                 yannx_panic("API: ReduceMin  return error!");
             }
+#endif
+
             put_tensor(stack, reduced);
 
         }
@@ -5705,18 +7383,29 @@ namespace reduction {
 
             auto data = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             reduced = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+            infer_.new_attr("keepdims", keepdims);
+            infer_.new_attr("axes", axes);
+
+            infer_.new_input(data);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("ReduceSumSquare : inference error!");
+            }
+            infer_.check_output(0, reduced);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( data->onnx_ReduceSumSquare(data, reduced, axes, keepdims) != YNX_OK ) {
                 yannx_panic("API: ReduceSumSquare  return error!");
             }
+#endif
+
             put_tensor(stack, reduced);
 
         }
@@ -5726,9 +7415,13 @@ namespace reduction {
 
             auto data = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( data->onnx_ReduceSumSquare(data, reduced, axes, keepdims) != YNX_OK ) {
                 yannx_panic("API: ReduceSumSquare  return error!");
             }
+#endif
+
             put_tensor(stack, reduced);
 
         }
@@ -5748,18 +7441,30 @@ namespace reduction {
             auto axes = fetch_optional_tensor(stack);
             auto data = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             reduced = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+            infer_.new_attr("noop_with_empty_axes", noop_with_empty_axes);
+            infer_.new_attr("keepdims", keepdims);
+
+            infer_.new_input(axes);
+            infer_.new_input(data);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("ReduceSum : inference error!");
+            }
+            infer_.check_output(0, reduced);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( data->onnx_ReduceSum(data, axes, reduced, keepdims, noop_with_empty_axes) != YNX_OK ) {
                 yannx_panic("API: ReduceSum  return error!");
             }
+#endif
+
             put_tensor(stack, reduced);
 
         }
@@ -5770,9 +7475,13 @@ namespace reduction {
             auto axes = fetch_optional_tensor(stack);
             auto data = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( data->onnx_ReduceSum(data, axes, reduced, keepdims, noop_with_empty_axes) != YNX_OK ) {
                 yannx_panic("API: ReduceSum  return error!");
             }
+#endif
+
             put_tensor(stack, reduced);
 
         }
@@ -5791,18 +7500,29 @@ namespace reduction {
 
             auto data = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             reduced = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+            infer_.new_attr("keepdims", keepdims);
+            infer_.new_attr("axes", axes);
+
+            infer_.new_input(data);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("ReduceLogSumExp : inference error!");
+            }
+            infer_.check_output(0, reduced);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( data->onnx_ReduceLogSumExp(data, reduced, axes, keepdims) != YNX_OK ) {
                 yannx_panic("API: ReduceLogSumExp  return error!");
             }
+#endif
+
             put_tensor(stack, reduced);
 
         }
@@ -5812,9 +7532,13 @@ namespace reduction {
 
             auto data = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( data->onnx_ReduceLogSumExp(data, reduced, axes, keepdims) != YNX_OK ) {
                 yannx_panic("API: ReduceLogSumExp  return error!");
             }
+#endif
+
             put_tensor(stack, reduced);
 
         }
@@ -5833,18 +7557,29 @@ namespace reduction {
 
             auto data = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             reduced = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+            infer_.new_attr("keepdims", keepdims);
+            infer_.new_attr("axes", axes);
+
+            infer_.new_input(data);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("ReduceMax : inference error!");
+            }
+            infer_.check_output(0, reduced);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( data->onnx_ReduceMax(data, reduced, axes, keepdims) != YNX_OK ) {
                 yannx_panic("API: ReduceMax  return error!");
             }
+#endif
+
             put_tensor(stack, reduced);
 
         }
@@ -5854,9 +7589,13 @@ namespace reduction {
 
             auto data = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( data->onnx_ReduceMax(data, reduced, axes, keepdims) != YNX_OK ) {
                 yannx_panic("API: ReduceMax  return error!");
             }
+#endif
+
             put_tensor(stack, reduced);
 
         }
@@ -5876,18 +7615,30 @@ namespace reduction {
 
             auto data = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             reduced = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+            infer_.new_attr("select_last_index", select_last_index);
+            infer_.new_attr("keepdims", keepdims);
+            infer_.new_attr("axis", axis);
+
+            infer_.new_input(data);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("ArgMax : inference error!");
+            }
+            infer_.check_output(0, reduced);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( data->onnx_ArgMax(data, reduced, axis, keepdims, select_last_index) != YNX_OK ) {
                 yannx_panic("API: ArgMax  return error!");
             }
+#endif
+
             put_tensor(stack, reduced);
 
         }
@@ -5898,9 +7649,13 @@ namespace reduction {
 
             auto data = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( data->onnx_ArgMax(data, reduced, axis, keepdims, select_last_index) != YNX_OK ) {
                 yannx_panic("API: ArgMax  return error!");
             }
+#endif
+
             put_tensor(stack, reduced);
 
         }
@@ -5920,18 +7675,30 @@ namespace reduction {
 
             auto data = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             reduced = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+            infer_.new_attr("select_last_index", select_last_index);
+            infer_.new_attr("keepdims", keepdims);
+            infer_.new_attr("axis", axis);
+
+            infer_.new_input(data);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("ArgMin : inference error!");
+            }
+            infer_.check_output(0, reduced);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( data->onnx_ArgMin(data, reduced, axis, keepdims, select_last_index) != YNX_OK ) {
                 yannx_panic("API: ArgMin  return error!");
             }
+#endif
+
             put_tensor(stack, reduced);
 
         }
@@ -5942,9 +7709,13 @@ namespace reduction {
 
             auto data = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( data->onnx_ArgMin(data, reduced, axis, keepdims, select_last_index) != YNX_OK ) {
                 yannx_panic("API: ArgMin  return error!");
             }
+#endif
+
             put_tensor(stack, reduced);
 
         }
@@ -5963,18 +7734,29 @@ namespace reduction {
 
             auto data = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             reduced = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+            infer_.new_attr("keepdims", keepdims);
+            infer_.new_attr("axes", axes);
+
+            infer_.new_input(data);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("ReduceLogSum : inference error!");
+            }
+            infer_.check_output(0, reduced);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( data->onnx_ReduceLogSum(data, reduced, axes, keepdims) != YNX_OK ) {
                 yannx_panic("API: ReduceLogSum  return error!");
             }
+#endif
+
             put_tensor(stack, reduced);
 
         }
@@ -5984,9 +7766,13 @@ namespace reduction {
 
             auto data = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( data->onnx_ReduceLogSum(data, reduced, axes, keepdims) != YNX_OK ) {
                 yannx_panic("API: ReduceLogSum  return error!");
             }
+#endif
+
             put_tensor(stack, reduced);
 
         }
@@ -6005,18 +7791,29 @@ namespace reduction {
 
             auto data = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             reduced = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+            infer_.new_attr("keepdims", keepdims);
+            infer_.new_attr("axes", axes);
+
+            infer_.new_input(data);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("ReduceMean : inference error!");
+            }
+            infer_.check_output(0, reduced);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( data->onnx_ReduceMean(data, reduced, axes, keepdims) != YNX_OK ) {
                 yannx_panic("API: ReduceMean  return error!");
             }
+#endif
+
             put_tensor(stack, reduced);
 
         }
@@ -6026,9 +7823,13 @@ namespace reduction {
 
             auto data = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( data->onnx_ReduceMean(data, reduced, axes, keepdims) != YNX_OK ) {
                 yannx_panic("API: ReduceMean  return error!");
             }
+#endif
+
             put_tensor(stack, reduced);
 
         }
@@ -6047,18 +7848,29 @@ namespace reduction {
 
             auto data = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             reduced = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+            infer_.new_attr("keepdims", keepdims);
+            infer_.new_attr("axes", axes);
+
+            infer_.new_input(data);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("ReduceL2 : inference error!");
+            }
+            infer_.check_output(0, reduced);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( data->onnx_ReduceL2(data, reduced, axes, keepdims) != YNX_OK ) {
                 yannx_panic("API: ReduceL2  return error!");
             }
+#endif
+
             put_tensor(stack, reduced);
 
         }
@@ -6068,9 +7880,13 @@ namespace reduction {
 
             auto data = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( data->onnx_ReduceL2(data, reduced, axes, keepdims) != YNX_OK ) {
                 yannx_panic("API: ReduceL2  return error!");
             }
+#endif
+
             put_tensor(stack, reduced);
 
         }
@@ -6089,18 +7905,29 @@ namespace reduction {
 
             auto data = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             reduced = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+            infer_.new_attr("keepdims", keepdims);
+            infer_.new_attr("axes", axes);
+
+            infer_.new_input(data);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("ReduceL1 : inference error!");
+            }
+            infer_.check_output(0, reduced);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( data->onnx_ReduceL1(data, reduced, axes, keepdims) != YNX_OK ) {
                 yannx_panic("API: ReduceL1  return error!");
             }
+#endif
+
             put_tensor(stack, reduced);
 
         }
@@ -6110,9 +7937,13 @@ namespace reduction {
 
             auto data = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( data->onnx_ReduceL1(data, reduced, axes, keepdims) != YNX_OK ) {
                 yannx_panic("API: ReduceL1  return error!");
             }
+#endif
+
             put_tensor(stack, reduced);
 
         }
@@ -6149,16 +7980,42 @@ namespace rnn {
             auto X = fetch_tensor(stack);
 
 
-#ifdef USING_NOONX
 
-#else
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(3);
+            infer_.new_attr("layout", layout);
+            infer_.new_attr("input_forget", input_forget);
+            infer_.new_attr("hidden_size", hidden_size);
+            infer_.new_attr("direction", direction);
+            infer_.new_attr("clip", clip);
+            infer_.new_attr("activations", activations);
+            infer_.new_attr("activation_beta", activation_beta);
+            infer_.new_attr("activation_alpha", activation_alpha);
+
+            infer_.new_input(P);
+            infer_.new_input(initial_c);
+            infer_.new_input(initial_h);
+            infer_.new_input(sequence_lens);
+            infer_.new_input(B);
+            infer_.new_input(R);
+            infer_.new_input(W);
+            infer_.new_input(X);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("LSTM : inference error!");
+            }
+            infer_.check_output(0, Y);
+            infer_.check_output(1, Y_h);
+            infer_.check_output(2, Y_c);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( X->onnx_LSTM(X, W, R, B, sequence_lens, initial_h, initial_c, P, Y, Y_h, Y_c, activation_alpha, activation_beta, activations, clip, direction, hidden_size, input_forget, layout) != YNX_OK ) {
                 yannx_panic("API: LSTM  return error!");
             }
+#endif
+
             put_optional_tensor(stack, Y);
             put_optional_tensor(stack, Y_h);
             put_optional_tensor(stack, Y_c);
@@ -6183,9 +8040,13 @@ namespace rnn {
             auto W = fetch_tensor(stack);
             auto X = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( X->onnx_LSTM(X, W, R, B, sequence_lens, initial_h, initial_c, P, Y, Y_h, Y_c, activation_alpha, activation_beta, activations, clip, direction, hidden_size, input_forget, layout) != YNX_OK ) {
                 yannx_panic("API: LSTM  return error!");
             }
+#endif
+
             put_optional_tensor(stack, Y);
             put_optional_tensor(stack, Y_h);
             put_optional_tensor(stack, Y_c);
@@ -6219,16 +8080,39 @@ namespace rnn {
             auto X = fetch_tensor(stack);
 
 
-#ifdef USING_NOONX
 
-#else
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(2);
+            infer_.new_attr("linear_before_reset", linear_before_reset);
+            infer_.new_attr("layout", layout);
+            infer_.new_attr("hidden_size", hidden_size);
+            infer_.new_attr("direction", direction);
+            infer_.new_attr("clip", clip);
+            infer_.new_attr("activations", activations);
+            infer_.new_attr("activation_beta", activation_beta);
+            infer_.new_attr("activation_alpha", activation_alpha);
+
+            infer_.new_input(initial_h);
+            infer_.new_input(sequence_lens);
+            infer_.new_input(B);
+            infer_.new_input(R);
+            infer_.new_input(W);
+            infer_.new_input(X);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("GRU : inference error!");
+            }
+            infer_.check_output(0, Y);
+            infer_.check_output(1, Y_h);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( X->onnx_GRU(X, W, R, B, sequence_lens, initial_h, Y, Y_h, activation_alpha, activation_beta, activations, clip, direction, hidden_size, layout, linear_before_reset) != YNX_OK ) {
                 yannx_panic("API: GRU  return error!");
             }
+#endif
+
             put_optional_tensor(stack, Y);
             put_optional_tensor(stack, Y_h);
 
@@ -6250,9 +8134,13 @@ namespace rnn {
             auto W = fetch_tensor(stack);
             auto X = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( X->onnx_GRU(X, W, R, B, sequence_lens, initial_h, Y, Y_h, activation_alpha, activation_beta, activations, clip, direction, hidden_size, layout, linear_before_reset) != YNX_OK ) {
                 yannx_panic("API: GRU  return error!");
             }
+#endif
+
             put_optional_tensor(stack, Y);
             put_optional_tensor(stack, Y_h);
 
@@ -6284,16 +8172,38 @@ namespace rnn {
             auto X = fetch_tensor(stack);
 
 
-#ifdef USING_NOONX
 
-#else
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(2);
+            infer_.new_attr("layout", layout);
+            infer_.new_attr("hidden_size", hidden_size);
+            infer_.new_attr("direction", direction);
+            infer_.new_attr("clip", clip);
+            infer_.new_attr("activations", activations);
+            infer_.new_attr("activation_beta", activation_beta);
+            infer_.new_attr("activation_alpha", activation_alpha);
+
+            infer_.new_input(initial_h);
+            infer_.new_input(sequence_lens);
+            infer_.new_input(B);
+            infer_.new_input(R);
+            infer_.new_input(W);
+            infer_.new_input(X);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("RNN : inference error!");
+            }
+            infer_.check_output(0, Y);
+            infer_.check_output(1, Y_h);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( X->onnx_RNN(X, W, R, B, sequence_lens, initial_h, Y, Y_h, activation_alpha, activation_beta, activations, clip, direction, hidden_size, layout) != YNX_OK ) {
                 yannx_panic("API: RNN  return error!");
             }
+#endif
+
             put_optional_tensor(stack, Y);
             put_optional_tensor(stack, Y_h);
 
@@ -6314,9 +8224,13 @@ namespace rnn {
             auto W = fetch_tensor(stack);
             auto X = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( X->onnx_RNN(X, W, R, B, sequence_lens, initial_h, Y, Y_h, activation_alpha, activation_beta, activations, clip, direction, hidden_size, layout) != YNX_OK ) {
                 yannx_panic("API: RNN  return error!");
             }
+#endif
+
             put_optional_tensor(stack, Y);
             put_optional_tensor(stack, Y_h);
 
@@ -6336,18 +8250,27 @@ namespace sequence {
             auto dtype = fetch_optional_int(stack);
 
 
-
-#ifdef USING_NOONX
-
-#else
             output = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+            infer_.new_attr("dtype", dtype);
+
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("SequenceEmpty : inference error!");
+            }
+            infer_.check_output(0, output);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( output->onnx_SequenceEmpty(output, dtype) != YNX_OK ) {
                 yannx_panic("API: SequenceEmpty  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -6355,9 +8278,13 @@ namespace sequence {
             auto dtype = fetch_optional_int(stack);
 
 
+
+#ifndef USING_ONNX_IMPL
             if ( output->onnx_SequenceEmpty(output, dtype) != YNX_OK ) {
                 yannx_panic("API: SequenceEmpty  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -6377,18 +8304,30 @@ namespace sequence {
             auto split = fetch_optional_tensor(stack);
             auto input = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             output_sequence = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+            infer_.new_attr("keepdims", keepdims);
+            infer_.new_attr("axis", axis);
+
+            infer_.new_input(split);
+            infer_.new_input(input);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("SplitToSequence : inference error!");
+            }
+            infer_.check_output(0, output_sequence);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( input->onnx_SplitToSequence(input, split, output_sequence, axis, keepdims) != YNX_OK ) {
                 yannx_panic("API: SplitToSequence  return error!");
             }
+#endif
+
             put_tensor(stack, output_sequence);
 
         }
@@ -6399,9 +8338,13 @@ namespace sequence {
             auto split = fetch_optional_tensor(stack);
             auto input = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( input->onnx_SplitToSequence(input, split, output_sequence, axis, keepdims) != YNX_OK ) {
                 yannx_panic("API: SplitToSequence  return error!");
             }
+#endif
+
             put_tensor(stack, output_sequence);
 
         }
@@ -6419,18 +8362,28 @@ namespace sequence {
             auto position = fetch_tensor(stack);
             auto input_sequence = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             tensor = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+
+            infer_.new_input(position);
+            infer_.new_input(input_sequence);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("SequenceAt : inference error!");
+            }
+            infer_.check_output(0, tensor);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( input_sequence->onnx_SequenceAt(input_sequence, position, tensor) != YNX_OK ) {
                 yannx_panic("API: SequenceAt  return error!");
             }
+#endif
+
             put_tensor(stack, tensor);
 
         }
@@ -6439,9 +8392,13 @@ namespace sequence {
             auto position = fetch_tensor(stack);
             auto input_sequence = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( input_sequence->onnx_SequenceAt(input_sequence, position, tensor) != YNX_OK ) {
                 yannx_panic("API: SequenceAt  return error!");
             }
+#endif
+
             put_tensor(stack, tensor);
 
         }
@@ -6458,18 +8415,27 @@ namespace sequence {
 
             auto input_sequence = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             length = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+
+            infer_.new_input(input_sequence);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("SequenceLength : inference error!");
+            }
+            infer_.check_output(0, length);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( input_sequence->onnx_SequenceLength(input_sequence, length) != YNX_OK ) {
                 yannx_panic("API: SequenceLength  return error!");
             }
+#endif
+
             put_tensor(stack, length);
 
         }
@@ -6477,9 +8443,13 @@ namespace sequence {
 
             auto input_sequence = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( input_sequence->onnx_SequenceLength(input_sequence, length) != YNX_OK ) {
                 yannx_panic("API: SequenceLength  return error!");
             }
+#endif
+
             put_tensor(stack, length);
 
         }
@@ -6496,18 +8466,27 @@ namespace sequence {
 
             auto inputs = fetch_tensors(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             output_sequence = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+
+            infer_.new_input(inputs);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("SequenceConstruct : inference error!");
+            }
+            infer_.check_output(0, output_sequence);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( output_sequence->onnx_SequenceConstruct(inputs, output_sequence) != YNX_OK ) {
                 yannx_panic("API: SequenceConstruct  return error!");
             }
+#endif
+
             put_tensor(stack, output_sequence);
 
         }
@@ -6515,9 +8494,13 @@ namespace sequence {
 
             auto inputs = fetch_tensors(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( output_sequence->onnx_SequenceConstruct(inputs, output_sequence) != YNX_OK ) {
                 yannx_panic("API: SequenceConstruct  return error!");
             }
+#endif
+
             put_tensor(stack, output_sequence);
 
         }
@@ -6536,18 +8519,29 @@ namespace sequence {
             auto tensor = fetch_tensor(stack);
             auto input_sequence = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             output_sequence = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+
+            infer_.new_input(position);
+            infer_.new_input(tensor);
+            infer_.new_input(input_sequence);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("SequenceInsert : inference error!");
+            }
+            infer_.check_output(0, output_sequence);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( input_sequence->onnx_SequenceInsert(input_sequence, tensor, position, output_sequence) != YNX_OK ) {
                 yannx_panic("API: SequenceInsert  return error!");
             }
+#endif
+
             put_tensor(stack, output_sequence);
 
         }
@@ -6557,9 +8551,13 @@ namespace sequence {
             auto tensor = fetch_tensor(stack);
             auto input_sequence = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( input_sequence->onnx_SequenceInsert(input_sequence, tensor, position, output_sequence) != YNX_OK ) {
                 yannx_panic("API: SequenceInsert  return error!");
             }
+#endif
+
             put_tensor(stack, output_sequence);
 
         }
@@ -6577,18 +8575,28 @@ namespace sequence {
             auto position = fetch_optional_tensor(stack);
             auto input_sequence = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             output_sequence = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+
+            infer_.new_input(position);
+            infer_.new_input(input_sequence);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("SequenceErase : inference error!");
+            }
+            infer_.check_output(0, output_sequence);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( input_sequence->onnx_SequenceErase(input_sequence, position, output_sequence) != YNX_OK ) {
                 yannx_panic("API: SequenceErase  return error!");
             }
+#endif
+
             put_tensor(stack, output_sequence);
 
         }
@@ -6597,9 +8605,13 @@ namespace sequence {
             auto position = fetch_optional_tensor(stack);
             auto input_sequence = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( input_sequence->onnx_SequenceErase(input_sequence, position, output_sequence) != YNX_OK ) {
                 yannx_panic("API: SequenceErase  return error!");
             }
+#endif
+
             put_tensor(stack, output_sequence);
 
         }
@@ -6618,18 +8630,29 @@ namespace sequence {
 
             auto input_sequence = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             concat_result = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+            infer_.new_attr("new_axis", new_axis);
+            infer_.new_attr("axis", axis);
+
+            infer_.new_input(input_sequence);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("ConcatFromSequence : inference error!");
+            }
+            infer_.check_output(0, concat_result);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( input_sequence->onnx_ConcatFromSequence(input_sequence, concat_result, axis, new_axis) != YNX_OK ) {
                 yannx_panic("API: ConcatFromSequence  return error!");
             }
+#endif
+
             put_tensor(stack, concat_result);
 
         }
@@ -6639,9 +8662,13 @@ namespace sequence {
 
             auto input_sequence = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( input_sequence->onnx_ConcatFromSequence(input_sequence, concat_result, axis, new_axis) != YNX_OK ) {
                 yannx_panic("API: ConcatFromSequence  return error!");
             }
+#endif
+
             put_tensor(stack, concat_result);
 
         }
@@ -6661,18 +8688,28 @@ namespace tensor {
             auto target_type = fetch_tensor(stack);
             auto input = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             output = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+
+            infer_.new_input(target_type);
+            infer_.new_input(input);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("CastLike : inference error!");
+            }
+            infer_.check_output(0, output);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( input->onnx_CastLike(input, target_type, output) != YNX_OK ) {
                 yannx_panic("API: CastLike  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -6681,9 +8718,13 @@ namespace tensor {
             auto target_type = fetch_tensor(stack);
             auto input = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( input->onnx_CastLike(input, target_type, output) != YNX_OK ) {
                 yannx_panic("API: CastLike  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -6702,18 +8743,29 @@ namespace tensor {
 
             auto data = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             shape = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+            infer_.new_attr("start", start);
+            infer_.new_attr("end", end);
+
+            infer_.new_input(data);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("Shape : inference error!");
+            }
+            infer_.check_output(0, shape);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( data->onnx_Shape(data, shape, end, start) != YNX_OK ) {
                 yannx_panic("API: Shape  return error!");
             }
+#endif
+
             put_tensor(stack, shape);
 
         }
@@ -6723,9 +8775,13 @@ namespace tensor {
 
             auto data = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( data->onnx_Shape(data, shape, end, start) != YNX_OK ) {
                 yannx_panic("API: Shape  return error!");
             }
+#endif
+
             put_tensor(stack, shape);
 
         }
@@ -6744,18 +8800,29 @@ namespace tensor {
             auto shape = fetch_tensor(stack);
             auto data = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             reshaped = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+            infer_.new_attr("allowzero", allowzero);
+
+            infer_.new_input(shape);
+            infer_.new_input(data);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("Reshape : inference error!");
+            }
+            infer_.check_output(0, reshaped);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( data->onnx_Reshape(data, shape, reshaped, allowzero) != YNX_OK ) {
                 yannx_panic("API: Reshape  return error!");
             }
+#endif
+
             put_tensor(stack, reshaped);
 
         }
@@ -6765,9 +8832,13 @@ namespace tensor {
             auto shape = fetch_tensor(stack);
             auto data = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( data->onnx_Reshape(data, shape, reshaped, allowzero) != YNX_OK ) {
                 yannx_panic("API: Reshape  return error!");
             }
+#endif
+
             put_tensor(stack, reshaped);
 
         }
@@ -6786,18 +8857,29 @@ namespace tensor {
 
             auto input = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             output = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+            infer_.new_attr("mode", mode);
+            infer_.new_attr("blocksize", blocksize);
+
+            infer_.new_input(input);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("DepthToSpace : inference error!");
+            }
+            infer_.check_output(0, output);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( input->onnx_DepthToSpace(input, output, blocksize, mode) != YNX_OK ) {
                 yannx_panic("API: DepthToSpace  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -6807,9 +8889,13 @@ namespace tensor {
 
             auto input = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( input->onnx_DepthToSpace(input, output, blocksize, mode) != YNX_OK ) {
                 yannx_panic("API: DepthToSpace  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -6827,18 +8913,28 @@ namespace tensor {
 
             auto inputs = fetch_tensors(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             concat_result = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+            infer_.new_attr("axis", axis);
+
+            infer_.new_input(inputs);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("Concat : inference error!");
+            }
+            infer_.check_output(0, concat_result);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( concat_result->onnx_Concat(inputs, concat_result, axis) != YNX_OK ) {
                 yannx_panic("API: Concat  return error!");
             }
+#endif
+
             put_tensor(stack, concat_result);
 
         }
@@ -6847,9 +8943,13 @@ namespace tensor {
 
             auto inputs = fetch_tensors(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( concat_result->onnx_Concat(inputs, concat_result, axis) != YNX_OK ) {
                 yannx_panic("API: Concat  return error!");
             }
+#endif
+
             put_tensor(stack, concat_result);
 
         }
@@ -6868,18 +8968,29 @@ namespace tensor {
             auto indices = fetch_tensor(stack);
             auto data = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             output = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+            infer_.new_attr("axis", axis);
+
+            infer_.new_input(indices);
+            infer_.new_input(data);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("Gather : inference error!");
+            }
+            infer_.check_output(0, output);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( data->onnx_Gather(data, indices, output, axis) != YNX_OK ) {
                 yannx_panic("API: Gather  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -6889,9 +9000,13 @@ namespace tensor {
             auto indices = fetch_tensor(stack);
             auto data = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( data->onnx_Gather(data, indices, output, axis) != YNX_OK ) {
                 yannx_panic("API: Gather  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -6908,18 +9023,27 @@ namespace tensor {
 
             auto data = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             size = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+
+            infer_.new_input(data);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("Size : inference error!");
+            }
+            infer_.check_output(0, size);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( data->onnx_Size(data, size) != YNX_OK ) {
                 yannx_panic("API: Size  return error!");
             }
+#endif
+
             put_tensor(stack, size);
 
         }
@@ -6927,9 +9051,13 @@ namespace tensor {
 
             auto data = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( data->onnx_Size(data, size) != YNX_OK ) {
                 yannx_panic("API: Size  return error!");
             }
+#endif
+
             put_tensor(stack, size);
 
         }
@@ -6947,18 +9075,28 @@ namespace tensor {
 
             auto input = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             output = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+            infer_.new_attr("to", to);
+
+            infer_.new_input(input);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("Cast : inference error!");
+            }
+            infer_.check_output(0, output);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( input->onnx_Cast(input, output, to) != YNX_OK ) {
                 yannx_panic("API: Cast  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -6967,9 +9105,13 @@ namespace tensor {
 
             auto input = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( input->onnx_Cast(input, output, to) != YNX_OK ) {
                 yannx_panic("API: Cast  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -6989,16 +9131,27 @@ namespace tensor {
             auto input = fetch_tensor(stack);
 
 
-#ifdef USING_NOONX
 
-#else
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+            infer_.new_attr("axis", axis);
+
+            infer_.new_input(split);
+            infer_.new_input(input);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("Split : inference error!");
+            }
+            infer_.check_output(0, outputs);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( input->onnx_Split(input, split, outputs, axis) != YNX_OK ) {
                 yannx_panic("API: Split  return error!");
             }
+#endif
+
             put_tensors(stack, outputs);
 
         }
@@ -7008,9 +9161,13 @@ namespace tensor {
             auto split = fetch_optional_tensor(stack);
             auto input = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( input->onnx_Split(input, split, outputs, axis) != YNX_OK ) {
                 yannx_panic("API: Split  return error!");
             }
+#endif
+
             put_tensors(stack, outputs);
 
         }
@@ -7027,18 +9184,27 @@ namespace tensor {
 
             auto input = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             output = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+
+            infer_.new_input(input);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("Identity : inference error!");
+            }
+            infer_.check_output(0, output);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( input->onnx_Identity(input, output) != YNX_OK ) {
                 yannx_panic("API: Identity  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -7046,9 +9212,13 @@ namespace tensor {
 
             auto input = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( input->onnx_Identity(input, output) != YNX_OK ) {
                 yannx_panic("API: Identity  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -7069,18 +9239,31 @@ namespace tensor {
             auto starts = fetch_tensor(stack);
             auto data = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             output = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+
+            infer_.new_input(steps);
+            infer_.new_input(axes);
+            infer_.new_input(ends);
+            infer_.new_input(starts);
+            infer_.new_input(data);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("Slice : inference error!");
+            }
+            infer_.check_output(0, output);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( data->onnx_Slice(data, starts, ends, axes, steps, output) != YNX_OK ) {
                 yannx_panic("API: Slice  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -7092,9 +9275,13 @@ namespace tensor {
             auto starts = fetch_tensor(stack);
             auto data = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( data->onnx_Slice(data, starts, ends, axes, steps, output) != YNX_OK ) {
                 yannx_panic("API: Slice  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -7113,18 +9300,29 @@ namespace tensor {
             auto indices = fetch_tensor(stack);
             auto data = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             output = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+            infer_.new_attr("batch_dims", batch_dims);
+
+            infer_.new_input(indices);
+            infer_.new_input(data);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("GatherND : inference error!");
+            }
+            infer_.check_output(0, output);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( data->onnx_GatherND(data, indices, output, batch_dims) != YNX_OK ) {
                 yannx_panic("API: GatherND  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -7134,9 +9332,13 @@ namespace tensor {
             auto indices = fetch_tensor(stack);
             auto data = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( data->onnx_GatherND(data, indices, output, batch_dims) != YNX_OK ) {
                 yannx_panic("API: GatherND  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -7154,18 +9356,28 @@ namespace tensor {
 
             auto input = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             output = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+            infer_.new_attr("blocksize", blocksize);
+
+            infer_.new_input(input);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("SpaceToDepth : inference error!");
+            }
+            infer_.check_output(0, output);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( input->onnx_SpaceToDepth(input, output, blocksize) != YNX_OK ) {
                 yannx_panic("API: SpaceToDepth  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -7174,9 +9386,13 @@ namespace tensor {
 
             auto input = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( input->onnx_SpaceToDepth(input, output, blocksize) != YNX_OK ) {
                 yannx_panic("API: SpaceToDepth  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -7194,18 +9410,28 @@ namespace tensor {
             auto axes = fetch_optional_tensor(stack);
             auto data = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             squeezed = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+
+            infer_.new_input(axes);
+            infer_.new_input(data);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("Squeeze : inference error!");
+            }
+            infer_.check_output(0, squeezed);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( data->onnx_Squeeze(data, axes, squeezed) != YNX_OK ) {
                 yannx_panic("API: Squeeze  return error!");
             }
+#endif
+
             put_tensor(stack, squeezed);
 
         }
@@ -7214,9 +9440,13 @@ namespace tensor {
             auto axes = fetch_optional_tensor(stack);
             auto data = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( data->onnx_Squeeze(data, axes, squeezed) != YNX_OK ) {
                 yannx_panic("API: Squeeze  return error!");
             }
+#endif
+
             put_tensor(stack, squeezed);
 
         }
@@ -7238,18 +9468,32 @@ namespace tensor {
 
             auto X = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             Y = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(4);
+            infer_.new_attr("sorted", sorted);
+            infer_.new_attr("axis", axis);
+
+            infer_.new_input(X);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("Unique : inference error!");
+            }
+            infer_.check_output(0, Y);
+            infer_.check_output(1, indices);
+            infer_.check_output(2, inverse_indices);
+            infer_.check_output(3, counts);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( X->onnx_Unique(X, Y, indices, inverse_indices, counts, axis, sorted) != YNX_OK ) {
                 yannx_panic("API: Unique  return error!");
             }
+#endif
+
             put_tensor(stack, Y);
             put_optional_tensor(stack, indices);
             put_optional_tensor(stack, inverse_indices);
@@ -7262,9 +9506,13 @@ namespace tensor {
 
             auto X = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( X->onnx_Unique(X, Y, indices, inverse_indices, counts, axis, sorted) != YNX_OK ) {
                 yannx_panic("API: Unique  return error!");
             }
+#endif
+
             put_tensor(stack, Y);
             put_optional_tensor(stack, indices);
             put_optional_tensor(stack, inverse_indices);
@@ -7284,18 +9532,27 @@ namespace tensor {
 
             auto X = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             Y = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+
+            infer_.new_input(X);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("IsNaN : inference error!");
+            }
+            infer_.check_output(0, Y);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( X->onnx_IsNaN(X, Y) != YNX_OK ) {
                 yannx_panic("API: IsNaN  return error!");
             }
+#endif
+
             put_tensor(stack, Y);
 
         }
@@ -7303,9 +9560,13 @@ namespace tensor {
 
             auto X = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( X->onnx_IsNaN(X, Y) != YNX_OK ) {
                 yannx_panic("API: IsNaN  return error!");
             }
+#endif
+
             put_tensor(stack, Y);
 
         }
@@ -7323,18 +9584,28 @@ namespace tensor {
             auto repeats = fetch_tensor(stack);
             auto input = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             output = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+
+            infer_.new_input(repeats);
+            infer_.new_input(input);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("Tile : inference error!");
+            }
+            infer_.check_output(0, output);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( input->onnx_Tile(input, repeats, output) != YNX_OK ) {
                 yannx_panic("API: Tile  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -7343,9 +9614,13 @@ namespace tensor {
             auto repeats = fetch_tensor(stack);
             auto input = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( input->onnx_Tile(input, repeats, output) != YNX_OK ) {
                 yannx_panic("API: Tile  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -7365,18 +9640,30 @@ namespace tensor {
             auto sequence_lens = fetch_tensor(stack);
             auto input = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             Y = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+            infer_.new_attr("time_axis", time_axis);
+            infer_.new_attr("batch_axis", batch_axis);
+
+            infer_.new_input(sequence_lens);
+            infer_.new_input(input);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("ReverseSequence : inference error!");
+            }
+            infer_.check_output(0, Y);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( input->onnx_ReverseSequence(input, sequence_lens, Y, batch_axis, time_axis) != YNX_OK ) {
                 yannx_panic("API: ReverseSequence  return error!");
             }
+#endif
+
             put_tensor(stack, Y);
 
         }
@@ -7387,9 +9674,13 @@ namespace tensor {
             auto sequence_lens = fetch_tensor(stack);
             auto input = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( input->onnx_ReverseSequence(input, sequence_lens, Y, batch_axis, time_axis) != YNX_OK ) {
                 yannx_panic("API: ReverseSequence  return error!");
             }
+#endif
+
             put_tensor(stack, Y);
 
         }
@@ -7407,18 +9698,28 @@ namespace tensor {
 
             auto data = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             transposed = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+            infer_.new_attr("perm", perm);
+
+            infer_.new_input(data);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("Transpose : inference error!");
+            }
+            infer_.check_output(0, transposed);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( data->onnx_Transpose(data, transposed, perm) != YNX_OK ) {
                 yannx_panic("API: Transpose  return error!");
             }
+#endif
+
             put_tensor(stack, transposed);
 
         }
@@ -7427,9 +9728,13 @@ namespace tensor {
 
             auto data = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( data->onnx_Transpose(data, transposed, perm) != YNX_OK ) {
                 yannx_panic("API: Transpose  return error!");
             }
+#endif
+
             put_tensor(stack, transposed);
 
         }
@@ -7448,18 +9753,29 @@ namespace tensor {
             auto k = fetch_optional_tensor(stack);
             auto input = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             output = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+            infer_.new_attr("upper", upper);
+
+            infer_.new_input(k);
+            infer_.new_input(input);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("Trilu : inference error!");
+            }
+            infer_.check_output(0, output);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( input->onnx_Trilu(input, k, output, upper) != YNX_OK ) {
                 yannx_panic("API: Trilu  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -7469,9 +9785,13 @@ namespace tensor {
             auto k = fetch_optional_tensor(stack);
             auto input = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( input->onnx_Trilu(input, k, output, upper) != YNX_OK ) {
                 yannx_panic("API: Trilu  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -7490,18 +9810,29 @@ namespace tensor {
             auto X = fetch_tensor(stack);
             auto condition = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             output = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+
+            infer_.new_input(Y);
+            infer_.new_input(X);
+            infer_.new_input(condition);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("Where : inference error!");
+            }
+            infer_.check_output(0, output);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( condition->onnx_Where(condition, X, Y, output) != YNX_OK ) {
                 yannx_panic("API: Where  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -7511,9 +9842,13 @@ namespace tensor {
             auto X = fetch_tensor(stack);
             auto condition = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( condition->onnx_Where(condition, X, Y, output) != YNX_OK ) {
                 yannx_panic("API: Where  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -7532,18 +9867,29 @@ namespace tensor {
             auto condition = fetch_tensor(stack);
             auto input = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             output = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+            infer_.new_attr("axis", axis);
+
+            infer_.new_input(condition);
+            infer_.new_input(input);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("Compress : inference error!");
+            }
+            infer_.check_output(0, output);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( input->onnx_Compress(input, condition, output, axis) != YNX_OK ) {
                 yannx_panic("API: Compress  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -7553,9 +9899,13 @@ namespace tensor {
             auto condition = fetch_tensor(stack);
             auto input = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( input->onnx_Compress(input, condition, output, axis) != YNX_OK ) {
                 yannx_panic("API: Compress  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -7573,18 +9923,28 @@ namespace tensor {
             auto axes = fetch_tensor(stack);
             auto data = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             expanded = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+
+            infer_.new_input(axes);
+            infer_.new_input(data);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("Unsqueeze : inference error!");
+            }
+            infer_.check_output(0, expanded);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( data->onnx_Unsqueeze(data, axes, expanded) != YNX_OK ) {
                 yannx_panic("API: Unsqueeze  return error!");
             }
+#endif
+
             put_tensor(stack, expanded);
 
         }
@@ -7593,9 +9953,13 @@ namespace tensor {
             auto axes = fetch_tensor(stack);
             auto data = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( data->onnx_Unsqueeze(data, axes, expanded) != YNX_OK ) {
                 yannx_panic("API: Unsqueeze  return error!");
             }
+#endif
+
             put_tensor(stack, expanded);
 
         }
@@ -7615,18 +9979,30 @@ namespace tensor {
             auto depth = fetch_tensor(stack);
             auto indices = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             output = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+            infer_.new_attr("axis", axis);
+
+            infer_.new_input(values);
+            infer_.new_input(depth);
+            infer_.new_input(indices);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("OneHot : inference error!");
+            }
+            infer_.check_output(0, output);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( indices->onnx_OneHot(indices, depth, values, output, axis) != YNX_OK ) {
                 yannx_panic("API: OneHot  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -7637,9 +10013,13 @@ namespace tensor {
             auto depth = fetch_tensor(stack);
             auto indices = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( indices->onnx_OneHot(indices, depth, values, output, axis) != YNX_OK ) {
                 yannx_panic("API: OneHot  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -7656,18 +10036,27 @@ namespace tensor {
 
             auto X = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             Y = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+
+            infer_.new_input(X);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("NonZero : inference error!");
+            }
+            infer_.check_output(0, Y);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( X->onnx_NonZero(X, Y) != YNX_OK ) {
                 yannx_panic("API: NonZero  return error!");
             }
+#endif
+
             put_tensor(stack, Y);
 
         }
@@ -7675,9 +10064,13 @@ namespace tensor {
 
             auto X = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( X->onnx_NonZero(X, Y) != YNX_OK ) {
                 yannx_panic("API: NonZero  return error!");
             }
+#endif
+
             put_tensor(stack, Y);
 
         }
@@ -7696,18 +10089,29 @@ namespace tensor {
             auto indices = fetch_tensor(stack);
             auto data = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             output = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+
+            infer_.new_input(updates);
+            infer_.new_input(indices);
+            infer_.new_input(data);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("ScatterND : inference error!");
+            }
+            infer_.check_output(0, output);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( data->onnx_ScatterND(data, indices, updates, output) != YNX_OK ) {
                 yannx_panic("API: ScatterND  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -7717,9 +10121,13 @@ namespace tensor {
             auto indices = fetch_tensor(stack);
             auto data = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( data->onnx_ScatterND(data, indices, updates, output) != YNX_OK ) {
                 yannx_panic("API: ScatterND  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -7745,18 +10153,36 @@ namespace tensor {
             auto roi = fetch_optional_tensor(stack);
             auto X = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             Y = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+            infer_.new_attr("nearest_mode", nearest_mode);
+            infer_.new_attr("mode", mode);
+            infer_.new_attr("extrapolation_value", extrapolation_value);
+            infer_.new_attr("exclude_outside", exclude_outside);
+            infer_.new_attr("cubic_coeff_a", cubic_coeff_a);
+            infer_.new_attr("coordinate_transformation_mode", coordinate_transformation_mode);
+
+            infer_.new_input(sizes);
+            infer_.new_input(scales);
+            infer_.new_input(roi);
+            infer_.new_input(X);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("Resize : inference error!");
+            }
+            infer_.check_output(0, Y);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( X->onnx_Resize(X, roi, scales, sizes, Y, coordinate_transformation_mode, cubic_coeff_a, exclude_outside, extrapolation_value, mode, nearest_mode) != YNX_OK ) {
                 yannx_panic("API: Resize  return error!");
             }
+#endif
+
             put_tensor(stack, Y);
 
         }
@@ -7773,9 +10199,13 @@ namespace tensor {
             auto roi = fetch_optional_tensor(stack);
             auto X = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( X->onnx_Resize(X, roi, scales, sizes, Y, coordinate_transformation_mode, cubic_coeff_a, exclude_outside, extrapolation_value, mode, nearest_mode) != YNX_OK ) {
                 yannx_panic("API: Resize  return error!");
             }
+#endif
+
             put_tensor(stack, Y);
 
         }
@@ -7795,18 +10225,30 @@ namespace tensor {
             auto pads = fetch_tensor(stack);
             auto data = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             output = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+            infer_.new_attr("mode", mode);
+
+            infer_.new_input(constant_value);
+            infer_.new_input(pads);
+            infer_.new_input(data);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("Pad : inference error!");
+            }
+            infer_.check_output(0, output);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( data->onnx_Pad(data, pads, constant_value, output, mode) != YNX_OK ) {
                 yannx_panic("API: Pad  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -7817,9 +10259,13 @@ namespace tensor {
             auto pads = fetch_tensor(stack);
             auto data = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( data->onnx_Pad(data, pads, constant_value, output, mode) != YNX_OK ) {
                 yannx_panic("API: Pad  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -7838,18 +10284,29 @@ namespace tensor {
 
             auto X = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             Y = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+            infer_.new_attr("detect_positive", detect_positive);
+            infer_.new_attr("detect_negative", detect_negative);
+
+            infer_.new_input(X);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("IsInf : inference error!");
+            }
+            infer_.check_output(0, Y);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( X->onnx_IsInf(X, Y, detect_negative, detect_positive) != YNX_OK ) {
                 yannx_panic("API: IsInf  return error!");
             }
+#endif
+
             put_tensor(stack, Y);
 
         }
@@ -7859,9 +10316,13 @@ namespace tensor {
 
             auto X = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( X->onnx_IsInf(X, Y, detect_negative, detect_positive) != YNX_OK ) {
                 yannx_panic("API: IsInf  return error!");
             }
+#endif
+
             put_tensor(stack, Y);
 
         }
@@ -7880,18 +10341,29 @@ namespace tensor {
             auto indices = fetch_tensor(stack);
             auto data = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             output = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+            infer_.new_attr("axis", axis);
+
+            infer_.new_input(indices);
+            infer_.new_input(data);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("GatherElements : inference error!");
+            }
+            infer_.check_output(0, output);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( data->onnx_GatherElements(data, indices, output, axis) != YNX_OK ) {
                 yannx_panic("API: GatherElements  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -7901,9 +10373,13 @@ namespace tensor {
             auto indices = fetch_tensor(stack);
             auto data = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( data->onnx_GatherElements(data, indices, output, axis) != YNX_OK ) {
                 yannx_panic("API: GatherElements  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -7923,18 +10399,30 @@ namespace tensor {
             auto indices = fetch_tensor(stack);
             auto data = fetch_tensor(stack);
 
-
-#ifdef USING_NOONX
-
-#else
             output = create_undefined_tensor();
+
+
+#ifdef USING_ONNX_IMPL
+            YNXInferenceContextImpl infer_(1);
+            infer_.new_attr("axis", axis);
+
+            infer_.new_input(updates);
+            infer_.new_input(indices);
+            infer_.new_input(data);
+
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("ScatterElements : inference error!");
+            }
+            infer_.check_output(0, output);
 
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( data->onnx_ScatterElements(data, indices, updates, output, axis) != YNX_OK ) {
                 yannx_panic("API: ScatterElements  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }
@@ -7945,9 +10433,13 @@ namespace tensor {
             auto indices = fetch_tensor(stack);
             auto data = fetch_tensor(stack);
 
+
+#ifndef USING_ONNX_IMPL
             if ( data->onnx_ScatterElements(data, indices, updates, output, axis) != YNX_OK ) {
                 yannx_panic("API: ScatterElements  return error!");
             }
+#endif
+
             put_tensor(stack, output);
 
         }

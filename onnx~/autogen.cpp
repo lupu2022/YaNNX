@@ -157,25 +157,35 @@ const char* word_template =  R"~~(
 
 #ATTR#
 #INPUT#
-
-#ifdef USING_NOONX
-
-#else
 #OUTPUT_INIT#
+
+#ifdef USING_ONNX_IMPL
+#ATTR_ONNX#
+#INPUT_ONNX#
+            if ( infer_->do_inference() != YNX_OK ) {
+                yannx_panic("#WORDNAME# : inference error!");
+            }
+#OUTPUT_INIT_ONNX#
 #endif
 
-
+#ifndef USING_ONNX_IMPL
             if ( #CALL_API# != YNX_OK ) {
                 yannx_panic("API: #WORDNAME#  return error!");
             }
+#endif
+
 #RETURN_OUTPUT#
         }
         virtual void run(ValueStack<TensorType>& stack) {
 #ATTR#
 #INPUT#
+
+#ifndef USING_ONNX_IMPL
             if ( #CALL_API# != YNX_OK ) {
                 yannx_panic("API: #WORDNAME#  return error!");
             }
+#endif
+
 #RETURN_OUTPUT#
         }
         NWORD_CREATOR_DEFINE_TENSORTYPE(#WORDNAME#)
@@ -250,6 +260,18 @@ std::string impl_generate(const OpSchema& op) {
         replace_all(attr_code, "\t", "            ");
         replace_all(code, "#ATTR#", attr_code);
     }
+    {
+        std::ostringstream oss;
+        oss << "\tYNXInferenceContextImpl infer_(" << op.outputs().size() << ");" << std::endl;
+        auto infos = op.attributes();
+        for ( auto i = infos.rbegin(); i != infos.rend(); i++) {
+            oss << "\tinfer_.new_attr(\""  << i->first << "\", " << i->first <<  ");" << std::endl;
+        }
+
+        auto attr_code = oss.str();
+        replace_all(attr_code, "\t", "            ");
+        replace_all(code, "#ATTR_ONNX#", attr_code);
+    }
 
     // processing input
     {
@@ -274,6 +296,22 @@ std::string impl_generate(const OpSchema& op) {
         replace_all(code, "#INPUT#", input_code);
     }
 
+    {
+        std::ostringstream oss;
+
+        auto allInputs = op.inputs();
+        for(size_t ri = 0; ri < allInputs.size(); ri++) {
+            size_t i = allInputs.size() - ri - 1;
+
+            std::string iname = allInputs[i].GetName();
+            oss << "\tinfer_.new_input(" << iname << ");" << std::endl;
+        }
+        auto input_code = oss.str();
+        replace_all(input_code, "\t", "            ");
+        replace_all(code, "#INPUT_ONNX#", input_code);
+
+    }
+
     //processing output
     {
         auto allOutputs = op.outputs();
@@ -294,6 +332,16 @@ std::string impl_generate(const OpSchema& op) {
             std::string output_def = oss.str();
             replace_all(output_def, "\t", "        ");
             replace_all(code, "#OUTPUT_DEF#", output_def);
+        }
+
+        {
+            std::ostringstream oss;
+            for(size_t i = 0; i < allOutputs.size(); i++) {
+                oss << "\tinfer_.check_output(" << i << ", " << allOutputs[i].GetName() << ");" << std::endl;
+            }
+            std::string output_init = oss.str();
+            replace_all(output_init, "\t", "            ");
+            replace_all(code, "#OUTPUT_INIT_ONNX#", output_init);
         }
 
         {

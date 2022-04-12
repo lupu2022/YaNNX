@@ -10,7 +10,7 @@
 #include <sstream>
 #include <algorithm>
 
-#ifdef USING_ONNX
+#ifdef USING_ONNX_IMPL
 #include <onnx/onnx_pb.h>
 #include <onnx/defs/schema.h>
 #include <onnx/defs/attr_proto_util.h>
@@ -75,6 +75,10 @@ static const char* TensorDataTypeString[] = {
     "YNX_BFLOAT16"
 };
 
+#ifdef USING_ONNX_IMPL
+
+#endif
+
 
 /*
  *  https://github.com/onnx/onnx/blob/main/docs/IR.md#tensor-definition
@@ -99,6 +103,9 @@ struct TensorType {
         dtype_ = TensorDataType::YNX_UNDEFINED;
     }
     TensorType(TensorDataType dtype, std::vector<size_t>& shape) {
+        reset(dtype, shape);
+    }
+    virtual void reset(TensorDataType dtype, std::vector<size_t>& shape) {
         dtype_ = dtype;
         shape_ = shape;
     }
@@ -120,7 +127,7 @@ struct TensorType {
 
 };
 
-#ifdef USING_ONNX
+#ifdef USING_ONNX_IMPL
 
 struct YNXInferenceContextImpl : public InferenceContext {
     std::map<std::string, AttributeProto> attrs_;
@@ -191,6 +198,62 @@ struct YNXInferenceContextImpl : public InferenceContext {
             new_input(v);
         }
     }
+
+    int do_inference(InferenceFunction f)
+        f(*this);
+    }
+
+    int check_output(size_t index, tensor_t t) {
+        auto proto* = getOutputType(index);
+        auto p_tensor = proto->tensor_type();
+
+        if (! p_tensor.has_elem_type() ) {
+            return YNX_OUTPUT_ERROR;
+        }
+        TensorDataType dtype = p_tesnor.elem_type();
+
+        std::vector<size_t> shape;
+        auto shape_proto = p_tensor.shape();
+
+        for (size_t i = 0; i < shape_proto.dim_size() ) {
+            if ( !shape_proto.dim(i).has_dim_value() ) {
+                return YNX_OUTPUT_ERROR;
+            }
+            shape.push_back( shape_proto.dim(i).dim_value() );
+        }
+
+        t->reset(dtype, shape);
+
+        return YNX_OK;
+    }
+    int check_output(size_t index, std::variant<void *, tensor_t>& v) {
+        auto proto* = getOutputType(index);
+        auto p_tensor = proto->tensor_type();
+
+        if (! p_tensor.has_elem_type() ) {
+            return YNX_OK;
+        }
+        TensorDataType dtype = p_tesnor.elem_type();
+
+        std::vector<size_t> shape;
+        auto shape_proto = p_tensor.shape();
+
+        for (size_t i = 0; i < shape_proto.dim_size() ) {
+            if ( !shape_proto.dim(i).has_dim_value() ) {
+                return YNX_OUTPUT_ERROR;
+            }
+            shape.push_back( shape_proto.dim(i).dim_value() );
+        }
+
+        std::get<1>(v)->reset(dtype, shape);
+
+        return YNX_OK;
+    }
+    int check_output(size_t index, std::vector<tensor_t>& v) {
+        yannx_panic("FIXME: how to check Variadic type");
+        return YNX_OUTPUT_ERROR;
+    }
+
 
 
     // InferenceContext apis
