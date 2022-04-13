@@ -51,7 +51,8 @@ int main(const int argc, const char* argv[] ) {
     std::shared_ptr<yannx::UserWord<yannx::TensorType>> executor;
     while (readline(">> ", code)) {
         if ( code.find("b ") == 0) {
-            code = code.substr(3);
+            code = code.substr(2);
+            std::cout << "boostrap: " << code << std::endl;
             executor = runtime.boostrap(code);
         } else if ( code == "r" ) {
             if ( executor != nullptr) {

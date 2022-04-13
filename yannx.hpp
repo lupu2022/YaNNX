@@ -824,15 +824,21 @@ template<class YT>
 struct PrintAll : NativeWord<YT> {
     virtual void boot(Runtime<YT>& stack, WordHash<YT>& hash) {
         auto vec = stack.vec();
+        std::cout << "--- stack top ------" << std::endl;
         for (size_t i = 0; i < vec.size(); i++) {
-            std::cout << vec[i].to_string() << std::endl;
+            size_t ri = vec.size() - 1 - i;
+            std::cout << vec[ri].to_string() << std::endl;
         }
+        std::cout << "---- bottom --------" << std::endl;
     }
     virtual void run(ValueStack<YT>& stack) {
         auto vec = stack.vec();
+        std::cout << "--- stack top ------" << std::endl;
         for (size_t i = 0; i < vec.size(); i++) {
-            std::cout << vec[i].to_string() << std::endl;
+            size_t ri = vec.size() - 1 - i;
+            std::cout << vec[ri].to_string() << std::endl;
         }
+        std::cout << "---- bottom --------" << std::endl;
     }
     NWORD_CREATOR_DEFINE(PrintAll)
 };
