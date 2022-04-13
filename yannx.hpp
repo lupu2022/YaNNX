@@ -40,7 +40,7 @@ using YNumber = float;
 template<class YT>
 struct Value {
     using YTensor = std::shared_ptr<YT>;
-    using _Value = std::variant<const YNumber, const std::string, YTensor>;
+    using _Value = std::variant<const YNumber,const std::string, YTensor>;
 
 public:
     Value() : cell_((YNumber)0.0) {}
@@ -111,7 +111,7 @@ struct ValueStack {
 
     virtual Value<YT> top() = 0;
     virtual Value<YT> pop() = 0;
-    virtual void push( Value<YT> v) = 0;
+    virtual void push(Value<YT> v) = 0;
 
     // main control
     void drop() {
@@ -234,13 +234,14 @@ struct WordHash {
         global_ = g;
         local_ = l;
     }
-    void set(const char* name, Value<YT> item) {
+    void set(const std::string& name, Value<YT> item) {
         if ( local_->find(name) != local_->end() ) {
             yannx_panic("Hash only support write once!");
         }
-        (*local_)[name] = item;
+        //(*local_)[name] = item;
+        local_->emplace(name, item);
     }
-    Value<YT> get(const char* name) {
+    Value<YT> get(const std::string& name) {
         if ( local_->find(name) == local_->end() ) {
             if (global_ != NULL) {
                 if ( global_->find(name) == global_->end()) {
@@ -401,8 +402,8 @@ public:
         executor_->run(*this);
     }
 
-    virtual void push(Value<YT>  v) {
-        stack_.push(v);
+    virtual void push(Value<YT> v) {
+        stack_.push_back(v);
     }
     virtual Value<YT> pop() {
         yannx_assert(stack_.size() >= 1, "pop: stack out of size!");
@@ -759,15 +760,22 @@ namespace builtin {
 
 template<class YT>
 struct Get : NativeWord<YT> {
-    Value<YT> value;
+    Value<YT>* pvalue;
+
+    Get() { pvalue = nullptr; }
+    ~Get() {
+        if ( pvalue ) {
+            delete pvalue;
+        }
+    }
     virtual void boot(Runtime<YT>& stack, WordHash<YT>& hash) {
         auto var = stack.pop_string();
-        value = hash.get(var);
-        stack.push( value );
+        pvalue = new Value( hash.get(var) );
+        stack.push( *pvalue );
     }
     virtual void run(ValueStack<YT>& stack) {
         stack.pop();
-        stack.push( value );
+        stack.push( *pvalue );
     }
     NWORD_CREATOR_DEFINE(Get)
 };

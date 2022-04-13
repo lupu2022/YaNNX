@@ -1,6 +1,8 @@
 #include <chrono>
 #include <fstream>
 
+//#define USING_ONNX_IMPL
+
 #include "yannx.hpp"
 #include "tensortype.hpp"
 
@@ -19,6 +21,8 @@ std::string fileToString(const char* filename) {
 }
 
 int main(const int argc, const char* argv[] ) {
+    yannx::Runtime<yannx::TensorType> runtime;
+
     // 0. load all code to one string
     std::string txt;
     for (int i = 1; i < argc; i++) {
