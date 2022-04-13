@@ -144,7 +144,11 @@ std::string api_generate(const OpSchema& op) {
     }
 
     oss << ") {" << std::endl;
+    oss << "#ifndef USING_ONNX_IMPL" << std::endl;
     oss << "\t    return YNX_TODO_ERROR;" << std::endl;
+    oss << "#else" << std::endl;
+    oss << "\t    return YNX_OK;" << std::endl;
+    oss << "#endif" << std::endl;
     oss << "\t}" << std::endl;
     return oss.str();
 }
@@ -162,17 +166,14 @@ const char* word_template =  R"~~(
 #ifdef USING_ONNX_IMPL
 #ATTR_ONNX#
 #INPUT_ONNX#
-            if ( infer_->do_inference() != YNX_OK ) {
-                yannx_panic("#WORDNAME# : inference error!");
-            }
+            auto f = query_inference_function("#WORDNAME#");
+            infer_.do_inference(f);
 #OUTPUT_INIT_ONNX#
 #endif
 
-#ifndef USING_ONNX_IMPL
             if ( #CALL_API# != YNX_OK ) {
                 yannx_panic("API: #WORDNAME#  return error!");
             }
-#endif
 
 #RETURN_OUTPUT#
         }
@@ -180,11 +181,9 @@ const char* word_template =  R"~~(
 #ATTR#
 #INPUT#
 
-#ifndef USING_ONNX_IMPL
             if ( #CALL_API# != YNX_OK ) {
                 yannx_panic("API: #WORDNAME#  return error!");
             }
-#endif
 
 #RETURN_OUTPUT#
         }
@@ -265,7 +264,14 @@ std::string impl_generate(const OpSchema& op) {
         oss << "\tYNXInferenceContextImpl infer_(" << op.outputs().size() << ");" << std::endl;
         auto infos = op.attributes();
         for ( auto i = infos.rbegin(); i != infos.rend(); i++) {
-            oss << "\tinfer_.new_attr(\""  << i->first << "\", " << i->first <<  ");" << std::endl;
+            int opt = (i->second.required == 0);
+            if ( opt ) {
+                oss << "\tif ( " << i->first << ".index() != 0) {" << std::endl;
+                oss << "\t    infer_.new_attr(\""  << i->first << "\", std::get<1>(" << i->first <<  ") );" << std::endl;
+                oss << "\t}" << std::endl;
+            } else {
+                oss << "\tinfer_.new_attr(\""  << i->first << "\", " << i->first <<  ");" << std::endl;
+            }
         }
 
         auto attr_code = oss.str();

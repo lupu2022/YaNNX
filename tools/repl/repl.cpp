@@ -1,7 +1,7 @@
 #include <chrono>
 #include <fstream>
 
-//#define USING_ONNX_IMPL
+#define USING_ONNX_IMPL
 
 #include "yannx.hpp"
 #include "tensortype.hpp"

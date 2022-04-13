@@ -10,14 +10,17 @@
 #include <sstream>
 #include <algorithm>
 
+#include <yannx.hpp>
+
 #ifdef USING_ONNX_IMPL
 #include <onnx/onnx_pb.h>
 #include <onnx/defs/schema.h>
 #include <onnx/defs/attr_proto_util.h>
 #include <onnx/shape_inference/implementation.h>
+
+using namespace onnx;
 #endif
 
-#include <yannx.hpp>
 
 //
 //  A simple onnx based (type and shape inference only, or a pure dummy tensor ) Tensor.following ONNX IR
@@ -47,7 +50,7 @@ enum TensorDataType {
     YNX_STRING,
     YNX_BOOL,
     YNX_FLOAT16,
-    YNX_float,
+    YNX_DOUBLE,
     YNX_UINT32,
     YNX_UINT64,
     YNX_COMPLEX64,
@@ -67,7 +70,7 @@ static const char* TensorDataTypeString[] = {
     "YNX_STRING",
     "YNX_BOOL",
     "YNX_FLOAT16",
-    "YNX_float",
+    "YNX_DOUBLE",
     "YNX_UINT32",
     "YNX_UINT64",
     "YNX_COMPLEX64",
@@ -76,7 +79,43 @@ static const char* TensorDataTypeString[] = {
 };
 
 #ifdef USING_ONNX_IMPL
-
+TensorDataType datatype_from_onnx( int dt ) {
+    switch( dt ) {
+        case TensorProto_DataType_UNDEFINED:
+            return YNX_UNDEFINED;
+        case TensorProto_DataType_FLOAT:
+            return YNX_FLOAT;
+        case TensorProto_DataType_UINT8:
+            return YNX_UINT8;
+        case TensorProto_DataType_UINT16:
+            return YNX_UINT16;
+        case TensorProto_DataType_INT16:
+            return YNX_INT16;
+        case TensorProto_DataType_INT32:
+            return YNX_INT32;
+        case TensorProto_DataType_INT64:
+            return YNX_INT64;
+        case TensorProto_DataType_STRING:
+            return YNX_STRING;
+        case TensorProto_DataType_BOOL:
+            return YNX_BOOL;
+        case TensorProto_DataType_FLOAT16:
+            return YNX_FLOAT16;
+        case TensorProto_DataType_DOUBLE:
+            return YNX_DOUBLE;
+        case TensorProto_DataType_UINT32:
+            return YNX_UINT32;
+        case TensorProto_DataType_UINT64:
+            return YNX_UINT64;
+        case TensorProto_DataType_COMPLEX64:
+            return YNX_COMPLEX64;
+        case TensorProto_DataType_COMPLEX128:
+            return YNX_COMPLEX128;
+        case TensorProto_DataType_BFLOAT16:
+            return YNX_BFLOAT16;
+    }
+    return YNX_UNDEFINED;
+}
 #endif
 
 
@@ -128,11 +167,31 @@ struct TensorType {
 };
 
 #ifdef USING_ONNX_IMPL
+InferenceFunction query_inference_function(const std::string& op_name) {
+    static std::map<const std::string, InferenceFunction> allInferenceFunctions;
+
+    if ( allInferenceFunctions.size() == 0) {
+        const std::vector<OpSchema> schemas = OpSchemaRegistry::get_all_schemas();
+
+        for(size_t i = 0; i < schemas.size(); i++) {
+            std::string name = schemas[i].Name();
+            auto f = schemas[i].GetTypeAndShapeInferenceFunction();
+
+            allInferenceFunctions[name] = f;
+        }
+    }
+
+    if ( allInferenceFunctions.find(op_name) == allInferenceFunctions.end() ) {
+        yannx_panic("Can't find InferenceFunction!");
+    }
+
+    return allInferenceFunctions[op_name];
+}
 
 struct YNXInferenceContextImpl : public InferenceContext {
     std::map<std::string, AttributeProto> attrs_;
     std::map<size_t, TypeProto> input_types_;
-    std::vecotr<TypeProto> output_types_;
+    std::vector<TypeProto> output_types_;
 
     size_t input_num_;
     const size_t output_num_;
@@ -188,7 +247,7 @@ struct YNXInferenceContextImpl : public InferenceContext {
     }
     void new_input(std::variant<void *, tensor_t> v) {
         if ( v.index() == 1 ) {
-            new_input(index, std::get<1>(v) );
+            new_input(std::get<1>(v) );
         } else {
             input_num_ ++;
         }
@@ -199,23 +258,24 @@ struct YNXInferenceContextImpl : public InferenceContext {
         }
     }
 
-    int do_inference(InferenceFunction f)
-        f(*this);
+    // call InferenceFunction
+    void do_inference(InferenceFunction f) {
+        f( *this );
     }
 
     int check_output(size_t index, tensor_t t) {
-        auto proto* = getOutputType(index);
+        auto* proto = getOutputType(index);
         auto p_tensor = proto->tensor_type();
 
         if (! p_tensor.has_elem_type() ) {
             return YNX_OUTPUT_ERROR;
         }
-        TensorDataType dtype = p_tesnor.elem_type();
+        TensorDataType dtype =  datatype_from_onnx(p_tensor.elem_type());
 
         std::vector<size_t> shape;
         auto shape_proto = p_tensor.shape();
 
-        for (size_t i = 0; i < shape_proto.dim_size() ) {
+        for (int i = 0; i < shape_proto.dim_size(); i++ ) {
             if ( !shape_proto.dim(i).has_dim_value() ) {
                 return YNX_OUTPUT_ERROR;
             }
@@ -227,26 +287,10 @@ struct YNXInferenceContextImpl : public InferenceContext {
         return YNX_OK;
     }
     int check_output(size_t index, std::variant<void *, tensor_t>& v) {
-        auto proto* = getOutputType(index);
-        auto p_tensor = proto->tensor_type();
-
-        if (! p_tensor.has_elem_type() ) {
-            return YNX_OK;
-        }
-        TensorDataType dtype = p_tesnor.elem_type();
-
-        std::vector<size_t> shape;
-        auto shape_proto = p_tensor.shape();
-
-        for (size_t i = 0; i < shape_proto.dim_size() ) {
-            if ( !shape_proto.dim(i).has_dim_value() ) {
-                return YNX_OUTPUT_ERROR;
-            }
-            shape.push_back( shape_proto.dim(i).dim_value() );
-        }
+        /*
 
         std::get<1>(v)->reset(dtype, shape);
-
+        */
         return YNX_OK;
     }
     int check_output(size_t index, std::vector<tensor_t>& v) {
@@ -263,15 +307,15 @@ struct YNXInferenceContextImpl : public InferenceContext {
     size_t getNumOutputs() const override {
         return output_types_.size();
     }
-    const AttributeProto* getAttribute(const std::string& name) override {
-        if ( attrs_.find[name] != attrs_.end() ) {
-            return &attrs_[name];
+    const AttributeProto* getAttribute(const std::string& name) const override {
+        if ( attrs_.find(name) != attrs_.end() ) {
+            return &( attrs_.find(name)->second );
         }
         return nullptr;
     }
     const TypeProto* getInputType(size_t index) const override {
-        if ( input_types_.find(index) ) {
-            return &input_types_[index];
+        if ( input_types_.find(index) != input_types_.end() ) {
+            return &( input_types_.find(index)->second );
         }
         return nullptr;
     }
