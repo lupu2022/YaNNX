@@ -90,7 +90,7 @@ public:
         } else if ( cell_.index() == ValueType::T_String ) {
             ss << std::get<1>(cell_);
         } else {
-            ss << "<tensor>";
+            ss << "<tensor>:" << std::get<2>(cell_)->to_string();
         }
         return ss.str();
    }
@@ -112,6 +112,8 @@ struct ValueStack {
     virtual Value<YT> top() = 0;
     virtual Value<YT> pop() = 0;
     virtual void push(Value<YT> v) = 0;
+    virtual void clear() = 0;
+    virtual const std::vector<Value<YT>>& vec();
 
     // main control
     void drop() {
@@ -157,8 +159,7 @@ struct ValueStack {
         auto c = top();
         return c.number();
     }
-
-    void push_string(const char* s) {
+    void push_string(const std::string& s) {
         Value<YT> v(s);
         push(v);
     }
@@ -364,6 +365,8 @@ private:
 
     UserBinary binary_;
     vmap_t local_hash_;
+
+    friend struct Runtime<YT>;
 };
 
 template<class YT>
@@ -387,21 +390,25 @@ public:
         ndict_[name] = f;
     }
 
-    void boot(const std::string& txt) {
-        yannx_assert(executor_ == nullptr, "Can't call compile more than once!");
-        executor_ = std::make_unique<UserWord<YT>>();
+    std::shared_ptr<UserWord<YT>> boostrap(const std::string& txt) {
+        auto executor = std::make_shared<UserWord<YT>>();
 
         UserCode main_code = parse(txt);
-        build(main_code, executor_->bin());
-        executor_->boot(*this, nullptr);
-    }
-    void run() {
-        if ( executor_ == nullptr) {
-            yannx_panic("Can't run in uncompiled mode");
-        }
-        executor_->run(*this);
+        build(main_code, executor->bin());
+        executor->boot(*this, nullptr);
+
+        return executor;
     }
 
+    void run(std::shared_ptr<UserWord<YT>> executor ) {
+        if ( executor == nullptr) {
+            yannx_panic("Can't run in uncompiled mode");
+        }
+        executor->run(*this);
+    }
+
+public:
+    // for stack interfaces
     virtual void push(Value<YT> v) {
         stack_.push_back(v);
     }
@@ -416,6 +423,13 @@ public:
         auto c = stack_.back();
         return c;
     }
+    virtual void clear() {
+        stack_.clear();
+    }
+    virtual const std::vector<Value<YT>>& vec() {
+        return stack_;
+    }
+
 private:
     // help functions
     UserCode parse(const std::string& txt) {
@@ -709,26 +723,26 @@ private:
             }
 
             if ( code[i].type_ == SyntaxElement<YT>::T_NativeSymbol ) {
-                if ( ndict_.find( code[i].v_str ) == ndict_.end() ) {
+                if ( ndict_.find( code[i].v_string ) == ndict_.end() ) {
                     yannx_panic("Can't find native word");
                 }
 
                 SyntaxElement<YT> nobj;
                 nobj.type_ = SyntaxElement<YT>::T_NativeWord;
-                nobj.v_nword = ndict_[code[i].v_str](*this);
+                nobj.v_nword = ndict_[code[i].v_string](*this);
 
                 binary.push_back(nobj);
                 continue;
             }
             if ( code[i].type_ == SyntaxElement<YT>::T_UserSymbol ) {
-                if ( udict_.find( code[i].v_str ) == udict_.end() ) {
+                if ( udict_.find( code[i].v_string ) == udict_.end() ) {
                     yannx_panic("Can't find user word");
                 }
 
                 SyntaxElement<YT> nobj;
                 nobj.type_ = SyntaxElement<YT>::T_UserWord;
                 nobj.v_uword = std::make_shared<UserWord<YT> >();
-                build( udict_[code[i].v_str] , nobj.v_uword->bin());
+                build( udict_[code[i].v_string] , nobj.v_uword->bin());
 
                 binary.push_back(nobj);
                 continue;
@@ -745,7 +759,6 @@ private:
     std::map<std::string, UserCode > udict_;
 
     // runtime stuff
-    std::unique_ptr<UserWord<YT> > executor_;
     std::vector<Value<YT> > stack_;
 };
 
@@ -795,25 +808,33 @@ struct Set : NativeWord<YT> {
 };
 
 template<class YT>
-struct Print1 : NativeWord<YT> {
+struct PrintOne : NativeWord<YT> {
     virtual void boot(Runtime<YT>& stack, WordHash<YT>& hash) {
         auto v = stack.top();
         std::cout << v.to_string() << std::endl;
     }
     virtual void run(ValueStack<YT>& stack) {
+        auto v = stack.top();
+        std::cout << v.to_string() << std::endl;
     }
-    NWORD_CREATOR_DEFINE(Print1)
+    NWORD_CREATOR_DEFINE(PrintOne)
 };
 
 template<class YT>
-struct Print2 : NativeWord<YT> {
+struct PrintAll : NativeWord<YT> {
     virtual void boot(Runtime<YT>& stack, WordHash<YT>& hash) {
+        auto vec = stack.vec();
+        for (size_t i = 0; i < vec.size(); i++) {
+            std::cout << vec[i].to_string() << std::endl;
+        }
     }
     virtual void run(ValueStack<YT>& stack) {
-        auto v = stack.top();
-        std::cout << v.to_string() << std::endl;
+        auto vec = stack.vec();
+        for (size_t i = 0; i < vec.size(); i++) {
+            std::cout << vec[i].to_string() << std::endl;
+        }
     }
-    NWORD_CREATOR_DEFINE(Print2)
+    NWORD_CREATOR_DEFINE(PrintAll)
 };
 
 template<class YT>
@@ -867,8 +888,8 @@ template<class YT>
 void Runtime<YT>::register_builtin_native_words() {
     new_nword("@", builtin::Get<YT>::creator);
     new_nword("!", builtin::Set<YT>::creator);
-    new_nword("?", builtin::Print1<YT>::creator);
-    new_nword("??", builtin::Print2<YT>::creator);
+    new_nword("?", builtin::PrintOne<YT>::creator);
+    new_nword("??", builtin::PrintAll<YT>::creator);
 
     new_nword("drop", builtin::Drop<YT>::creator);
     new_nword("dup", builtin::Dup<YT>::creator);
