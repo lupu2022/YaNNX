@@ -28,7 +28,9 @@ using namespace onnx;
 //  https://github.com/onnx/onnx/blob/main/docs/Operators.md
 //
 
-namespace yannx {
+using namespace yannx;
+
+namespace yannx_tt {
 
 enum OperatorReturnType {
     YNX_OK = 0,
@@ -132,7 +134,7 @@ using tensor_t = std::shared_ptr<TensorType>;
 //
 //  User must be re-implement, return user side undefined tensor!
 //
-extern tensor_t create_undefined_tensor();
+extern tensor_t create_undefined_user_tensor();
 
 struct TensorType {
     TensorDataType dtype_;
@@ -1913,7 +1915,7 @@ namespace generator {
 
             auto input = fetch_tensor(stack);
 
-            output = create_undefined_tensor();
+            output = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -1979,7 +1981,7 @@ namespace generator {
             auto dtype = fetch_optional_int(stack);
 
 
-            output = create_undefined_tensor();
+            output = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -2045,7 +2047,7 @@ namespace generator {
             auto dtype = fetch_optional_int(stack);
 
 
-            output = create_undefined_tensor();
+            output = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -2109,7 +2111,7 @@ namespace generator {
 
             auto input = fetch_tensor(stack);
 
-            output = create_undefined_tensor();
+            output = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -2165,7 +2167,7 @@ namespace generator {
 
             auto input = fetch_tensor(stack);
 
-            output = create_undefined_tensor();
+            output = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -2222,7 +2224,7 @@ namespace generator {
 
             auto input = fetch_tensor(stack);
 
-            output = create_undefined_tensor();
+            output = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -2284,7 +2286,7 @@ namespace generator {
 
             auto input = fetch_tensor(stack);
 
-            output = create_undefined_tensor();
+            output = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -2348,7 +2350,7 @@ namespace generator {
             auto limit = fetch_tensor(stack);
             auto start = fetch_tensor(stack);
 
-            output = create_undefined_tensor();
+            output = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -2401,7 +2403,7 @@ namespace logical {
             auto B = fetch_tensor(stack);
             auto A = fetch_tensor(stack);
 
-            C = create_undefined_tensor();
+            C = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -2450,7 +2452,7 @@ namespace logical {
             auto B = fetch_tensor(stack);
             auto A = fetch_tensor(stack);
 
-            C = create_undefined_tensor();
+            C = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -2500,7 +2502,7 @@ namespace logical {
             auto Y = fetch_tensor(stack);
             auto X = fetch_tensor(stack);
 
-            Z = create_undefined_tensor();
+            Z = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -2551,7 +2553,7 @@ namespace logical {
             auto B = fetch_tensor(stack);
             auto A = fetch_tensor(stack);
 
-            C = create_undefined_tensor();
+            C = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -2600,7 +2602,7 @@ namespace logical {
             auto B = fetch_tensor(stack);
             auto A = fetch_tensor(stack);
 
-            C = create_undefined_tensor();
+            C = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -2649,7 +2651,7 @@ namespace logical {
             auto B = fetch_tensor(stack);
             auto A = fetch_tensor(stack);
 
-            C = create_undefined_tensor();
+            C = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -2698,7 +2700,7 @@ namespace logical {
             auto B = fetch_tensor(stack);
             auto A = fetch_tensor(stack);
 
-            C = create_undefined_tensor();
+            C = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -2746,7 +2748,7 @@ namespace logical {
 
             auto X = fetch_tensor(stack);
 
-            Y = create_undefined_tensor();
+            Y = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -2793,7 +2795,7 @@ namespace logical {
             auto B = fetch_tensor(stack);
             auto A = fetch_tensor(stack);
 
-            C = create_undefined_tensor();
+            C = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -2842,7 +2844,7 @@ namespace logical {
             auto B = fetch_tensor(stack);
             auto A = fetch_tensor(stack);
 
-            C = create_undefined_tensor();
+            C = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -2892,7 +2894,7 @@ namespace math {
 
             auto X = fetch_tensor(stack);
 
-            Y = create_undefined_tensor();
+            Y = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -2939,7 +2941,7 @@ namespace math {
 
             auto X = fetch_tensor(stack);
 
-            Y = create_undefined_tensor();
+            Y = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -2991,7 +2993,7 @@ namespace math {
 
             auto X = fetch_tensor(stack);
 
-            Y = create_undefined_tensor();
+            Y = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -3046,7 +3048,7 @@ namespace math {
             auto B = fetch_tensor(stack);
             auto A = fetch_tensor(stack);
 
-            C = create_undefined_tensor();
+            C = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -3095,7 +3097,7 @@ namespace math {
             auto Y = fetch_tensor(stack);
             auto X = fetch_tensor(stack);
 
-            Z = create_undefined_tensor();
+            Z = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -3144,7 +3146,7 @@ namespace math {
             auto B = fetch_tensor(stack);
             auto A = fetch_tensor(stack);
 
-            C = create_undefined_tensor();
+            C = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -3192,7 +3194,7 @@ namespace math {
 
             auto data_0 = fetch_tensors(stack);
 
-            min = create_undefined_tensor();
+            min = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -3238,7 +3240,7 @@ namespace math {
 
             auto X = fetch_tensor(stack);
 
-            Y = create_undefined_tensor();
+            Y = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -3284,7 +3286,7 @@ namespace math {
 
             auto data_0 = fetch_tensors(stack);
 
-            mean = create_undefined_tensor();
+            mean = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -3330,7 +3332,7 @@ namespace math {
 
             auto data_0 = fetch_tensors(stack);
 
-            max = create_undefined_tensor();
+            max = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -3376,7 +3378,7 @@ namespace math {
 
             auto X = fetch_tensor(stack);
 
-            Y = create_undefined_tensor();
+            Y = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -3422,7 +3424,7 @@ namespace math {
 
             auto X = fetch_tensor(stack);
 
-            Y = create_undefined_tensor();
+            Y = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -3468,7 +3470,7 @@ namespace math {
 
             auto X = fetch_tensor(stack);
 
-            Y = create_undefined_tensor();
+            Y = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -3515,7 +3517,7 @@ namespace math {
 
             auto input = fetch_tensor(stack);
 
-            output = create_undefined_tensor();
+            output = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -3565,7 +3567,7 @@ namespace math {
 
             auto X = fetch_tensor(stack);
 
-            Y = create_undefined_tensor();
+            Y = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -3611,7 +3613,7 @@ namespace math {
 
             auto input = fetch_tensor(stack);
 
-            output = create_undefined_tensor();
+            output = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -3657,7 +3659,7 @@ namespace math {
 
             auto X = fetch_tensor(stack);
 
-            Y = create_undefined_tensor();
+            Y = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -3704,7 +3706,7 @@ namespace math {
             auto B = fetch_tensor(stack);
             auto A = fetch_tensor(stack);
 
-            C = create_undefined_tensor();
+            C = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -3753,7 +3755,7 @@ namespace math {
             auto slope = fetch_tensor(stack);
             auto X = fetch_tensor(stack);
 
-            Y = create_undefined_tensor();
+            Y = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -3802,7 +3804,7 @@ namespace math {
             auto B = fetch_tensor(stack);
             auto A = fetch_tensor(stack);
 
-            C = create_undefined_tensor();
+            C = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -3852,7 +3854,7 @@ namespace math {
 
             auto X = fetch_tensor(stack);
 
-            Y = create_undefined_tensor();
+            Y = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -3906,7 +3908,7 @@ namespace math {
 
             auto X = fetch_tensor(stack);
 
-            Y = create_undefined_tensor();
+            Y = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -3959,7 +3961,7 @@ namespace math {
             auto a_scale = fetch_tensor(stack);
             auto a = fetch_tensor(stack);
 
-            y = create_undefined_tensor();
+            y = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -4021,7 +4023,7 @@ namespace math {
             auto min = fetch_optional_tensor(stack);
             auto input = fetch_tensor(stack);
 
-            output = create_undefined_tensor();
+            output = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -4072,7 +4074,7 @@ namespace math {
 
             auto Inputs = fetch_tensors(stack);
 
-            Output = create_undefined_tensor();
+            Output = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -4121,7 +4123,7 @@ namespace math {
 
             auto input = fetch_tensor(stack);
 
-            output = create_undefined_tensor();
+            output = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -4171,7 +4173,7 @@ namespace math {
 
             auto X = fetch_tensor(stack);
 
-            Y = create_undefined_tensor();
+            Y = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -4223,7 +4225,7 @@ namespace math {
             auto B = fetch_tensor(stack);
             auto A = fetch_tensor(stack);
 
-            Y = create_undefined_tensor();
+            Y = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -4289,7 +4291,7 @@ namespace math {
 
             auto input = fetch_tensor(stack);
 
-            output = create_undefined_tensor();
+            output = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -4335,7 +4337,7 @@ namespace math {
 
             auto input = fetch_tensor(stack);
 
-            output = create_undefined_tensor();
+            output = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -4381,7 +4383,7 @@ namespace math {
 
             auto input = fetch_tensor(stack);
 
-            output = create_undefined_tensor();
+            output = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -4428,7 +4430,7 @@ namespace math {
 
             auto input = fetch_tensor(stack);
 
-            output = create_undefined_tensor();
+            output = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -4483,7 +4485,7 @@ namespace math {
             auto labels = fetch_tensor(stack);
             auto scores = fetch_tensor(stack);
 
-            output = create_undefined_tensor();
+            output = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -4544,7 +4546,7 @@ namespace math {
 
             auto input = fetch_tensor(stack);
 
-            output = create_undefined_tensor();
+            output = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -4590,7 +4592,7 @@ namespace math {
 
             auto data_0 = fetch_tensors(stack);
 
-            sum = create_undefined_tensor();
+            sum = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -4636,7 +4638,7 @@ namespace math {
 
             auto input = fetch_tensor(stack);
 
-            output = create_undefined_tensor();
+            output = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -4682,7 +4684,7 @@ namespace math {
 
             auto input = fetch_tensor(stack);
 
-            output = create_undefined_tensor();
+            output = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -4733,8 +4735,8 @@ namespace math {
             auto K = fetch_tensor(stack);
             auto X = fetch_tensor(stack);
 
-            Values = create_undefined_tensor();
-            Indices = create_undefined_tensor();
+            Values = create_undefined_user_tensor();
+            Indices = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -4797,7 +4799,7 @@ namespace math {
 
             auto input = fetch_tensor(stack);
 
-            output = create_undefined_tensor();
+            output = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -4843,7 +4845,7 @@ namespace math {
 
             auto input = fetch_tensor(stack);
 
-            output = create_undefined_tensor();
+            output = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -4889,7 +4891,7 @@ namespace math {
 
             auto input = fetch_tensor(stack);
 
-            output = create_undefined_tensor();
+            output = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -4935,7 +4937,7 @@ namespace math {
 
             auto input = fetch_tensor(stack);
 
-            output = create_undefined_tensor();
+            output = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -4981,7 +4983,7 @@ namespace math {
 
             auto input = fetch_tensor(stack);
 
-            output = create_undefined_tensor();
+            output = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -5028,7 +5030,7 @@ namespace math {
             auto B = fetch_tensor(stack);
             auto A = fetch_tensor(stack);
 
-            Y = create_undefined_tensor();
+            Y = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -5077,7 +5079,7 @@ namespace math {
             auto shape = fetch_tensor(stack);
             auto input = fetch_tensor(stack);
 
-            output = create_undefined_tensor();
+            output = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -5126,7 +5128,7 @@ namespace math {
 
             auto X = fetch_tensor(stack);
 
-            Y = create_undefined_tensor();
+            Y = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -5176,7 +5178,7 @@ namespace math {
 
             auto input = fetch_tensor(stack);
 
-            output = create_undefined_tensor();
+            output = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -5222,7 +5224,7 @@ namespace math {
 
             auto input = fetch_tensor(stack);
 
-            output = create_undefined_tensor();
+            output = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -5268,7 +5270,7 @@ namespace math {
 
             auto input = fetch_tensor(stack);
 
-            output = create_undefined_tensor();
+            output = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -5314,7 +5316,7 @@ namespace math {
 
             auto input = fetch_tensor(stack);
 
-            output = create_undefined_tensor();
+            output = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -5360,7 +5362,7 @@ namespace math {
 
             auto input = fetch_tensor(stack);
 
-            output = create_undefined_tensor();
+            output = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -5408,7 +5410,7 @@ namespace math {
             auto B = fetch_tensor(stack);
             auto A = fetch_tensor(stack);
 
-            C = create_undefined_tensor();
+            C = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -5461,7 +5463,7 @@ namespace math {
 
             auto X = fetch_tensor(stack);
 
-            Y = create_undefined_tensor();
+            Y = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -5514,7 +5516,7 @@ namespace math {
             auto B = fetch_tensor(stack);
             auto A = fetch_tensor(stack);
 
-            Y = create_undefined_tensor();
+            Y = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -5567,7 +5569,7 @@ namespace math {
 
             auto X = fetch_tensor(stack);
 
-            Y = create_undefined_tensor();
+            Y = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -5620,7 +5622,7 @@ namespace math {
             auto axis = fetch_tensor(stack);
             auto x = fetch_tensor(stack);
 
-            y = create_undefined_tensor();
+            y = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -5676,7 +5678,7 @@ namespace math {
 
             auto X = fetch_tensor(stack);
 
-            Y = create_undefined_tensor();
+            Y = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -5726,7 +5728,7 @@ namespace math {
             auto target = fetch_tensor(stack);
             auto input = fetch_tensor(stack);
 
-            loss = create_undefined_tensor();
+            loss = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -5784,7 +5786,7 @@ namespace math {
 
             auto X = fetch_tensor(stack);
 
-            Y = create_undefined_tensor();
+            Y = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -5830,7 +5832,7 @@ namespace math {
 
             auto X = fetch_tensor(stack);
 
-            Y = create_undefined_tensor();
+            Y = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -5882,7 +5884,7 @@ namespace nn {
 
             auto X = fetch_tensor(stack);
 
-            Y = create_undefined_tensor();
+            Y = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -5947,7 +5949,7 @@ namespace nn {
 
             auto X = fetch_tensor(stack);
 
-            Y = create_undefined_tensor();
+            Y = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -6015,7 +6017,7 @@ namespace nn {
             auto ratio = fetch_optional_tensor(stack);
             auto data = fetch_tensor(stack);
 
-            output = create_undefined_tensor();
+            output = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -6080,7 +6082,7 @@ namespace nn {
 
             auto X = fetch_tensor(stack);
 
-            Y = create_undefined_tensor();
+            Y = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -6156,7 +6158,7 @@ namespace nn {
 
             auto X = fetch_tensor(stack);
 
-            Y = create_undefined_tensor();
+            Y = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -6208,7 +6210,7 @@ namespace nn {
 
             auto input = fetch_tensor(stack);
 
-            output = create_undefined_tensor();
+            output = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -6270,7 +6272,7 @@ namespace nn {
             auto W = fetch_tensor(stack);
             auto X = fetch_tensor(stack);
 
-            Y = create_undefined_tensor();
+            Y = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -6344,7 +6346,7 @@ namespace nn {
 
             auto X = fetch_tensor(stack);
 
-            Y = create_undefined_tensor();
+            Y = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -6395,7 +6397,7 @@ namespace nn {
             auto I = fetch_tensor(stack);
             auto X = fetch_tensor(stack);
 
-            output = create_undefined_tensor();
+            output = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -6461,7 +6463,7 @@ namespace nn {
 
             auto X = fetch_tensor(stack);
 
-            Y = create_undefined_tensor();
+            Y = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -6532,7 +6534,7 @@ namespace nn {
             auto scale = fetch_tensor(stack);
             auto input = fetch_tensor(stack);
 
-            output = create_undefined_tensor();
+            output = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -6587,7 +6589,7 @@ namespace nn {
 
             auto input = fetch_tensor(stack);
 
-            output = create_undefined_tensor();
+            output = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -6637,7 +6639,7 @@ namespace nn {
 
             auto X = fetch_tensor(stack);
 
-            Y = create_undefined_tensor();
+            Y = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -6686,7 +6688,7 @@ namespace nn {
             auto rois = fetch_tensor(stack);
             auto X = fetch_tensor(stack);
 
-            Y = create_undefined_tensor();
+            Y = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -6749,7 +6751,7 @@ namespace nn {
             auto scale = fetch_tensor(stack);
             auto X = fetch_tensor(stack);
 
-            Y = create_undefined_tensor();
+            Y = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -6825,7 +6827,7 @@ namespace nn {
 
             auto X = fetch_tensor(stack);
 
-            Y = create_undefined_tensor();
+            Y = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -6889,7 +6891,7 @@ namespace nn {
 
             auto input = fetch_tensor(stack);
 
-            output = create_undefined_tensor();
+            output = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -6944,7 +6946,7 @@ namespace nn {
 
             auto X = fetch_tensor(stack);
 
-            Y = create_undefined_tensor();
+            Y = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -7003,7 +7005,7 @@ namespace nn {
             auto w = fetch_tensor(stack);
             auto x = fetch_tensor(stack);
 
-            y = create_undefined_tensor();
+            y = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -7093,7 +7095,7 @@ namespace nn {
             auto x_scale = fetch_tensor(stack);
             auto x = fetch_tensor(stack);
 
-            y = create_undefined_tensor();
+            y = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -7189,7 +7191,7 @@ namespace nn {
             auto W = fetch_tensor(stack);
             auto X = fetch_tensor(stack);
 
-            Y = create_undefined_tensor();
+            Y = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -7280,7 +7282,7 @@ namespace nn {
 
             auto X = fetch_tensor(stack);
 
-            Y = create_undefined_tensor();
+            Y = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -7359,7 +7361,7 @@ namespace object_detection {
             auto rois = fetch_tensor(stack);
             auto X = fetch_tensor(stack);
 
-            Y = create_undefined_tensor();
+            Y = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -7434,7 +7436,7 @@ namespace object_detection {
             auto scores = fetch_tensor(stack);
             auto boxes = fetch_tensor(stack);
 
-            selected_indices = create_undefined_tensor();
+            selected_indices = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -7497,7 +7499,7 @@ namespace quantization {
             auto y_scale = fetch_tensor(stack);
             auto x = fetch_tensor(stack);
 
-            y = create_undefined_tensor();
+            y = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -7553,9 +7555,9 @@ namespace quantization {
 
             auto x = fetch_tensor(stack);
 
-            y = create_undefined_tensor();
-            y_scale = create_undefined_tensor();
-            y_zero_point = create_undefined_tensor();
+            y = create_undefined_user_tensor();
+            y_scale = create_undefined_user_tensor();
+            y_zero_point = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -7610,7 +7612,7 @@ namespace quantization {
             auto x_scale = fetch_tensor(stack);
             auto x = fetch_tensor(stack);
 
-            y = create_undefined_tensor();
+            y = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -7668,7 +7670,7 @@ namespace reduction {
 
             auto data = fetch_tensor(stack);
 
-            reduced = create_undefined_tensor();
+            reduced = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -7724,7 +7726,7 @@ namespace reduction {
 
             auto data = fetch_tensor(stack);
 
-            reduced = create_undefined_tensor();
+            reduced = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -7780,7 +7782,7 @@ namespace reduction {
 
             auto data = fetch_tensor(stack);
 
-            reduced = create_undefined_tensor();
+            reduced = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -7837,7 +7839,7 @@ namespace reduction {
             auto axes = fetch_optional_tensor(stack);
             auto data = fetch_tensor(stack);
 
-            reduced = create_undefined_tensor();
+            reduced = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -7895,7 +7897,7 @@ namespace reduction {
 
             auto data = fetch_tensor(stack);
 
-            reduced = create_undefined_tensor();
+            reduced = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -7951,7 +7953,7 @@ namespace reduction {
 
             auto data = fetch_tensor(stack);
 
-            reduced = create_undefined_tensor();
+            reduced = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -8008,7 +8010,7 @@ namespace reduction {
 
             auto data = fetch_tensor(stack);
 
-            reduced = create_undefined_tensor();
+            reduced = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -8069,7 +8071,7 @@ namespace reduction {
 
             auto data = fetch_tensor(stack);
 
-            reduced = create_undefined_tensor();
+            reduced = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -8129,7 +8131,7 @@ namespace reduction {
 
             auto data = fetch_tensor(stack);
 
-            reduced = create_undefined_tensor();
+            reduced = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -8185,7 +8187,7 @@ namespace reduction {
 
             auto data = fetch_tensor(stack);
 
-            reduced = create_undefined_tensor();
+            reduced = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -8241,7 +8243,7 @@ namespace reduction {
 
             auto data = fetch_tensor(stack);
 
-            reduced = create_undefined_tensor();
+            reduced = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -8297,7 +8299,7 @@ namespace reduction {
 
             auto data = fetch_tensor(stack);
 
-            reduced = create_undefined_tensor();
+            reduced = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -8672,7 +8674,7 @@ namespace sequence {
             auto dtype = fetch_optional_int(stack);
 
 
-            output = create_undefined_tensor();
+            output = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -8723,7 +8725,7 @@ namespace sequence {
             auto split = fetch_optional_tensor(stack);
             auto input = fetch_tensor(stack);
 
-            output_sequence = create_undefined_tensor();
+            output_sequence = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -8780,7 +8782,7 @@ namespace sequence {
             auto position = fetch_tensor(stack);
             auto input_sequence = fetch_tensor(stack);
 
-            tensor = create_undefined_tensor();
+            tensor = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -8828,7 +8830,7 @@ namespace sequence {
 
             auto input_sequence = fetch_tensor(stack);
 
-            length = create_undefined_tensor();
+            length = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -8874,7 +8876,7 @@ namespace sequence {
 
             auto inputs = fetch_tensors(stack);
 
-            output_sequence = create_undefined_tensor();
+            output_sequence = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -8922,7 +8924,7 @@ namespace sequence {
             auto tensor = fetch_tensor(stack);
             auto input_sequence = fetch_tensor(stack);
 
-            output_sequence = create_undefined_tensor();
+            output_sequence = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -8973,7 +8975,7 @@ namespace sequence {
             auto position = fetch_optional_tensor(stack);
             auto input_sequence = fetch_tensor(stack);
 
-            output_sequence = create_undefined_tensor();
+            output_sequence = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -9023,7 +9025,7 @@ namespace sequence {
 
             auto input_sequence = fetch_tensor(stack);
 
-            concat_result = create_undefined_tensor();
+            concat_result = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -9078,7 +9080,7 @@ namespace tensor {
             auto target_type = fetch_tensor(stack);
             auto input = fetch_tensor(stack);
 
-            output = create_undefined_tensor();
+            output = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -9128,7 +9130,7 @@ namespace tensor {
 
             auto data = fetch_tensor(stack);
 
-            shape = create_undefined_tensor();
+            shape = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -9184,7 +9186,7 @@ namespace tensor {
             auto shape = fetch_tensor(stack);
             auto data = fetch_tensor(stack);
 
-            reshaped = create_undefined_tensor();
+            reshaped = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -9238,7 +9240,7 @@ namespace tensor {
 
             auto input = fetch_tensor(stack);
 
-            output = create_undefined_tensor();
+            output = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -9291,7 +9293,7 @@ namespace tensor {
 
             auto inputs = fetch_tensors(stack);
 
-            concat_result = create_undefined_tensor();
+            concat_result = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -9341,7 +9343,7 @@ namespace tensor {
             auto indices = fetch_tensor(stack);
             auto data = fetch_tensor(stack);
 
-            output = create_undefined_tensor();
+            output = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -9393,7 +9395,7 @@ namespace tensor {
 
             auto data = fetch_tensor(stack);
 
-            size = create_undefined_tensor();
+            size = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -9440,7 +9442,7 @@ namespace tensor {
 
             auto input = fetch_tensor(stack);
 
-            output = create_undefined_tensor();
+            output = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -9541,7 +9543,7 @@ namespace tensor {
 
             auto input = fetch_tensor(stack);
 
-            output = create_undefined_tensor();
+            output = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -9591,7 +9593,7 @@ namespace tensor {
             auto starts = fetch_tensor(stack);
             auto data = fetch_tensor(stack);
 
-            output = create_undefined_tensor();
+            output = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -9647,7 +9649,7 @@ namespace tensor {
             auto indices = fetch_tensor(stack);
             auto data = fetch_tensor(stack);
 
-            output = create_undefined_tensor();
+            output = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -9700,7 +9702,7 @@ namespace tensor {
 
             auto input = fetch_tensor(stack);
 
-            output = create_undefined_tensor();
+            output = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -9749,7 +9751,7 @@ namespace tensor {
             auto axes = fetch_optional_tensor(stack);
             auto data = fetch_tensor(stack);
 
-            squeezed = create_undefined_tensor();
+            squeezed = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -9802,7 +9804,7 @@ namespace tensor {
 
             auto X = fetch_tensor(stack);
 
-            Y = create_undefined_tensor();
+            Y = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -9865,7 +9867,7 @@ namespace tensor {
 
             auto X = fetch_tensor(stack);
 
-            Y = create_undefined_tensor();
+            Y = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -9912,7 +9914,7 @@ namespace tensor {
             auto repeats = fetch_tensor(stack);
             auto input = fetch_tensor(stack);
 
-            output = create_undefined_tensor();
+            output = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -9963,7 +9965,7 @@ namespace tensor {
             auto sequence_lens = fetch_tensor(stack);
             auto input = fetch_tensor(stack);
 
-            Y = create_undefined_tensor();
+            Y = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -10020,7 +10022,7 @@ namespace tensor {
 
             auto data = fetch_tensor(stack);
 
-            transposed = create_undefined_tensor();
+            transposed = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -10072,7 +10074,7 @@ namespace tensor {
             auto k = fetch_optional_tensor(stack);
             auto input = fetch_tensor(stack);
 
-            output = create_undefined_tensor();
+            output = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -10126,7 +10128,7 @@ namespace tensor {
             auto X = fetch_tensor(stack);
             auto condition = fetch_tensor(stack);
 
-            output = create_undefined_tensor();
+            output = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -10178,7 +10180,7 @@ namespace tensor {
             auto condition = fetch_tensor(stack);
             auto input = fetch_tensor(stack);
 
-            output = create_undefined_tensor();
+            output = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -10231,7 +10233,7 @@ namespace tensor {
             auto axes = fetch_tensor(stack);
             auto data = fetch_tensor(stack);
 
-            expanded = create_undefined_tensor();
+            expanded = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -10282,7 +10284,7 @@ namespace tensor {
             auto depth = fetch_tensor(stack);
             auto indices = fetch_tensor(stack);
 
-            output = create_undefined_tensor();
+            output = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -10336,7 +10338,7 @@ namespace tensor {
 
             auto X = fetch_tensor(stack);
 
-            Y = create_undefined_tensor();
+            Y = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -10384,7 +10386,7 @@ namespace tensor {
             auto indices = fetch_tensor(stack);
             auto data = fetch_tensor(stack);
 
-            output = create_undefined_tensor();
+            output = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -10443,7 +10445,7 @@ namespace tensor {
             auto roi = fetch_optional_tensor(stack);
             auto X = fetch_tensor(stack);
 
-            Y = create_undefined_tensor();
+            Y = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -10522,7 +10524,7 @@ namespace tensor {
             auto pads = fetch_tensor(stack);
             auto data = fetch_tensor(stack);
 
-            output = create_undefined_tensor();
+            output = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -10578,7 +10580,7 @@ namespace tensor {
 
             auto X = fetch_tensor(stack);
 
-            Y = create_undefined_tensor();
+            Y = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -10634,7 +10636,7 @@ namespace tensor {
             auto indices = fetch_tensor(stack);
             auto data = fetch_tensor(stack);
 
-            output = create_undefined_tensor();
+            output = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -10689,7 +10691,7 @@ namespace tensor {
             auto indices = fetch_tensor(stack);
             auto data = fetch_tensor(stack);
 
-            output = create_undefined_tensor();
+            output = create_undefined_user_tensor();
 
 
 #ifdef USING_ONNX_IMPL
@@ -10736,7 +10738,173 @@ namespace tensor {
 }
 
 
+//
+//  Registering all words
+//
+void register_all_onnx_defined_words( Runtime<TensorType>& runtime) {
 
+    runtime.new_nword("onnx_RandomNormalLike", generator::RandomNormalLike::creator);
+    runtime.new_nword("onnx_RandomNormal", generator::RandomNormal::creator);
+    runtime.new_nword("onnx_RandomUniform", generator::RandomUniform::creator);
+    runtime.new_nword("onnx_EyeLike", generator::EyeLike::creator);
+    runtime.new_nword("onnx_Bernoulli", generator::Bernoulli::creator);
+    runtime.new_nword("onnx_Multinomial", generator::Multinomial::creator);
+    runtime.new_nword("onnx_RandomUniformLike", generator::RandomUniformLike::creator);
+    runtime.new_nword("onnx_Range", generator::Range::creator);
+    runtime.new_nword("onnx_GreaterOrEqual", logical::GreaterOrEqual::creator);
+    runtime.new_nword("onnx_Or", logical::Or::creator);
+    runtime.new_nword("onnx_BitShift", logical::BitShift::creator);
+    runtime.new_nword("onnx_Greater", logical::Greater::creator);
+    runtime.new_nword("onnx_Xor", logical::Xor::creator);
+    runtime.new_nword("onnx_And", logical::And::creator);
+    runtime.new_nword("onnx_LessOrEqual", logical::LessOrEqual::creator);
+    runtime.new_nword("onnx_Not", logical::Not::creator);
+    runtime.new_nword("onnx_Equal", logical::Equal::creator);
+    runtime.new_nword("onnx_Less", logical::Less::creator);
+    runtime.new_nword("onnx_Reciprocal", math::Reciprocal::creator);
+    runtime.new_nword("onnx_LeakyRelu", math::LeakyRelu::creator);
+    runtime.new_nword("onnx_HardSigmoid", math::HardSigmoid::creator);
+    runtime.new_nword("onnx_Div", math::Div::creator);
+    runtime.new_nword("onnx_Pow", math::Pow::creator);
+    runtime.new_nword("onnx_Mul", math::Mul::creator);
+    runtime.new_nword("onnx_Min", math::Min::creator);
+    runtime.new_nword("onnx_Floor", math::Floor::creator);
+    runtime.new_nword("onnx_Mean", math::Mean::creator);
+    runtime.new_nword("onnx_Max", math::Max::creator);
+    runtime.new_nword("onnx_Round", math::Round::creator);
+    runtime.new_nword("onnx_Sigmoid", math::Sigmoid::creator);
+    runtime.new_nword("onnx_Relu", math::Relu::creator);
+    runtime.new_nword("onnx_LogSoftmax", math::LogSoftmax::creator);
+    runtime.new_nword("onnx_Ceil", math::Ceil::creator);
+    runtime.new_nword("onnx_Log", math::Log::creator);
+    runtime.new_nword("onnx_Neg", math::Neg::creator);
+    runtime.new_nword("onnx_Sub", math::Sub::creator);
+    runtime.new_nword("onnx_PRelu", math::PRelu::creator);
+    runtime.new_nword("onnx_Add", math::Add::creator);
+    runtime.new_nword("onnx_Selu", math::Selu::creator);
+    runtime.new_nword("onnx_Abs", math::Abs::creator);
+    runtime.new_nword("onnx_QLinearMatMul", math::QLinearMatMul::creator);
+    runtime.new_nword("onnx_Clip", math::Clip::creator);
+    runtime.new_nword("onnx_Einsum", math::Einsum::creator);
+    runtime.new_nword("onnx_Hardmax", math::Hardmax::creator);
+    runtime.new_nword("onnx_Sqrt", math::Sqrt::creator);
+    runtime.new_nword("onnx_Gemm", math::Gemm::creator);
+    runtime.new_nword("onnx_Cos", math::Cos::creator);
+    runtime.new_nword("onnx_Exp", math::Exp::creator);
+    runtime.new_nword("onnx_Tan", math::Tan::creator);
+    runtime.new_nword("onnx_Softmax", math::Softmax::creator);
+    runtime.new_nword("onnx_SoftmaxCrossEntropyLoss", math::SoftmaxCrossEntropyLoss::creator);
+    runtime.new_nword("onnx_Softsign", math::Softsign::creator);
+    runtime.new_nword("onnx_Sum", math::Sum::creator);
+    runtime.new_nword("onnx_Sinh", math::Sinh::creator);
+    runtime.new_nword("onnx_Tanh", math::Tanh::creator);
+    runtime.new_nword("onnx_TopK", math::TopK::creator);
+    runtime.new_nword("onnx_Acos", math::Acos::creator);
+    runtime.new_nword("onnx_Asin", math::Asin::creator);
+    runtime.new_nword("onnx_Atan", math::Atan::creator);
+    runtime.new_nword("onnx_Sign", math::Sign::creator);
+    runtime.new_nword("onnx_Sin", math::Sin::creator);
+    runtime.new_nword("onnx_MatMul", math::MatMul::creator);
+    runtime.new_nword("onnx_Expand", math::Expand::creator);
+    runtime.new_nword("onnx_Elu", math::Elu::creator);
+    runtime.new_nword("onnx_Cosh", math::Cosh::creator);
+    runtime.new_nword("onnx_Asinh", math::Asinh::creator);
+    runtime.new_nword("onnx_Acosh", math::Acosh::creator);
+    runtime.new_nword("onnx_Atanh", math::Atanh::creator);
+    runtime.new_nword("onnx_Erf", math::Erf::creator);
+    runtime.new_nword("onnx_Mod", math::Mod::creator);
+    runtime.new_nword("onnx_ThresholdedRelu", math::ThresholdedRelu::creator);
+    runtime.new_nword("onnx_MatMulInteger", math::MatMulInteger::creator);
+    runtime.new_nword("onnx_Celu", math::Celu::creator);
+    runtime.new_nword("onnx_CumSum", math::CumSum::creator);
+    runtime.new_nword("onnx_Softplus", math::Softplus::creator);
+    runtime.new_nword("onnx_NegativeLogLikelihoodLoss", math::NegativeLogLikelihoodLoss::creator);
+    runtime.new_nword("onnx_Det", math::Det::creator);
+    runtime.new_nword("onnx_HardSwish", math::HardSwish::creator);
+    runtime.new_nword("onnx_LRN", nn::LRN::creator);
+    runtime.new_nword("onnx_LpPool", nn::LpPool::creator);
+    runtime.new_nword("onnx_Dropout", nn::Dropout::creator);
+    runtime.new_nword("onnx_MaxPool", nn::MaxPool::creator);
+    runtime.new_nword("onnx_GlobalLpPool", nn::GlobalLpPool::creator);
+    runtime.new_nword("onnx_LpNormalization", nn::LpNormalization::creator);
+    runtime.new_nword("onnx_Conv", nn::Conv::creator);
+    runtime.new_nword("onnx_GlobalMaxPool", nn::GlobalMaxPool::creator);
+    runtime.new_nword("onnx_MaxUnpool", nn::MaxUnpool::creator);
+    runtime.new_nword("onnx_AveragePool", nn::AveragePool::creator);
+    runtime.new_nword("onnx_InstanceNormalization", nn::InstanceNormalization::creator);
+    runtime.new_nword("onnx_Flatten", nn::Flatten::creator);
+    runtime.new_nword("onnx_GlobalAveragePool", nn::GlobalAveragePool::creator);
+    runtime.new_nword("onnx_MaxRoiPool", nn::MaxRoiPool::creator);
+    runtime.new_nword("onnx_BatchNormalization", nn::BatchNormalization::creator);
+    runtime.new_nword("onnx_StringNormalizer", nn::StringNormalizer::creator);
+    runtime.new_nword("onnx_Shrink", nn::Shrink::creator);
+    runtime.new_nword("onnx_MeanVarianceNormalization", nn::MeanVarianceNormalization::creator);
+    runtime.new_nword("onnx_ConvInteger", nn::ConvInteger::creator);
+    runtime.new_nword("onnx_QLinearConv", nn::QLinearConv::creator);
+    runtime.new_nword("onnx_ConvTranspose", nn::ConvTranspose::creator);
+    runtime.new_nword("onnx_TfIdfVectorizer", nn::TfIdfVectorizer::creator);
+    runtime.new_nword("onnx_RoiAlign", object_detection::RoiAlign::creator);
+    runtime.new_nword("onnx_NonMaxSuppression", object_detection::NonMaxSuppression::creator);
+    runtime.new_nword("onnx_QuantizeLinear", quantization::QuantizeLinear::creator);
+    runtime.new_nword("onnx_DynamicQuantizeLinear", quantization::DynamicQuantizeLinear::creator);
+    runtime.new_nword("onnx_DequantizeLinear", quantization::DequantizeLinear::creator);
+    runtime.new_nword("onnx_ReduceProd", reduction::ReduceProd::creator);
+    runtime.new_nword("onnx_ReduceMin", reduction::ReduceMin::creator);
+    runtime.new_nword("onnx_ReduceSumSquare", reduction::ReduceSumSquare::creator);
+    runtime.new_nword("onnx_ReduceSum", reduction::ReduceSum::creator);
+    runtime.new_nword("onnx_ReduceLogSumExp", reduction::ReduceLogSumExp::creator);
+    runtime.new_nword("onnx_ReduceMax", reduction::ReduceMax::creator);
+    runtime.new_nword("onnx_ArgMax", reduction::ArgMax::creator);
+    runtime.new_nword("onnx_ArgMin", reduction::ArgMin::creator);
+    runtime.new_nword("onnx_ReduceLogSum", reduction::ReduceLogSum::creator);
+    runtime.new_nword("onnx_ReduceMean", reduction::ReduceMean::creator);
+    runtime.new_nword("onnx_ReduceL2", reduction::ReduceL2::creator);
+    runtime.new_nword("onnx_ReduceL1", reduction::ReduceL1::creator);
+    runtime.new_nword("onnx_LSTM", rnn::LSTM::creator);
+    runtime.new_nword("onnx_GRU", rnn::GRU::creator);
+    runtime.new_nword("onnx_RNN", rnn::RNN::creator);
+    runtime.new_nword("onnx_SequenceEmpty", sequence::SequenceEmpty::creator);
+    runtime.new_nword("onnx_SplitToSequence", sequence::SplitToSequence::creator);
+    runtime.new_nword("onnx_SequenceAt", sequence::SequenceAt::creator);
+    runtime.new_nword("onnx_SequenceLength", sequence::SequenceLength::creator);
+    runtime.new_nword("onnx_SequenceConstruct", sequence::SequenceConstruct::creator);
+    runtime.new_nword("onnx_SequenceInsert", sequence::SequenceInsert::creator);
+    runtime.new_nword("onnx_SequenceErase", sequence::SequenceErase::creator);
+    runtime.new_nword("onnx_ConcatFromSequence", sequence::ConcatFromSequence::creator);
+    runtime.new_nword("onnx_CastLike", tensor::CastLike::creator);
+    runtime.new_nword("onnx_Shape", tensor::Shape::creator);
+    runtime.new_nword("onnx_Reshape", tensor::Reshape::creator);
+    runtime.new_nword("onnx_DepthToSpace", tensor::DepthToSpace::creator);
+    runtime.new_nword("onnx_Concat", tensor::Concat::creator);
+    runtime.new_nword("onnx_Gather", tensor::Gather::creator);
+    runtime.new_nword("onnx_Size", tensor::Size::creator);
+    runtime.new_nword("onnx_Cast", tensor::Cast::creator);
+    runtime.new_nword("onnx_Split", tensor::Split::creator);
+    runtime.new_nword("onnx_Identity", tensor::Identity::creator);
+    runtime.new_nword("onnx_Slice", tensor::Slice::creator);
+    runtime.new_nword("onnx_GatherND", tensor::GatherND::creator);
+    runtime.new_nword("onnx_SpaceToDepth", tensor::SpaceToDepth::creator);
+    runtime.new_nword("onnx_Squeeze", tensor::Squeeze::creator);
+    runtime.new_nword("onnx_Unique", tensor::Unique::creator);
+    runtime.new_nword("onnx_IsNaN", tensor::IsNaN::creator);
+    runtime.new_nword("onnx_Tile", tensor::Tile::creator);
+    runtime.new_nword("onnx_ReverseSequence", tensor::ReverseSequence::creator);
+    runtime.new_nword("onnx_Transpose", tensor::Transpose::creator);
+    runtime.new_nword("onnx_Trilu", tensor::Trilu::creator);
+    runtime.new_nword("onnx_Where", tensor::Where::creator);
+    runtime.new_nword("onnx_Compress", tensor::Compress::creator);
+    runtime.new_nword("onnx_Unsqueeze", tensor::Unsqueeze::creator);
+    runtime.new_nword("onnx_OneHot", tensor::OneHot::creator);
+    runtime.new_nword("onnx_NonZero", tensor::NonZero::creator);
+    runtime.new_nword("onnx_ScatterND", tensor::ScatterND::creator);
+    runtime.new_nword("onnx_Resize", tensor::Resize::creator);
+    runtime.new_nword("onnx_Pad", tensor::Pad::creator);
+    runtime.new_nword("onnx_IsInf", tensor::IsInf::creator);
+    runtime.new_nword("onnx_GatherElements", tensor::GatherElements::creator);
+    runtime.new_nword("onnx_ScatterElements", tensor::ScatterElements::creator);
+
+
+}
 
 }
 #endif

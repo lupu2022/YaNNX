@@ -31,8 +31,21 @@ bool readline(const std::string& prop, std::string& code) {
     return false;
 }
 
+struct MyTensorType : public yannx_tt::TensorType {
+    MyTensorType() : yannx_tt::TensorType() {
+
+    }
+};
+
+namespace yannx_tt {
+    std::shared_ptr<TensorType> create_undefined_user_tensor() {
+        return std::make_shared<MyTensorType>();
+    }
+}
+
 int main(const int argc, const char* argv[] ) {
-    yannx::Runtime<yannx::TensorType> runtime;
+    yannx::Runtime<yannx_tt::TensorType> runtime;
+    yannx_tt::register_all_onnx_defined_words(runtime);
 
     // 0. load all code to one string
     std::string txt;
@@ -48,7 +61,7 @@ int main(const int argc, const char* argv[] ) {
 
     // 2. entering command loop
     std::string code;
-    std::shared_ptr<yannx::UserWord<yannx::TensorType>> executor;
+    std::shared_ptr<yannx::UserWord<yannx_tt::TensorType>> executor;
     while (readline(">> ", code)) {
         if ( code.find("b ") == 0) {
             code = code.substr(2);

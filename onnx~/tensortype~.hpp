@@ -28,7 +28,9 @@ using namespace onnx;
 //  https://github.com/onnx/onnx/blob/main/docs/Operators.md
 //
 
-namespace yannx {
+using namespace yannx;
+
+namespace yannx_tt {
 
 enum OperatorReturnType {
     YNX_OK = 0,
@@ -132,7 +134,7 @@ using tensor_t = std::shared_ptr<TensorType>;
 //
 //  User must be re-implement, return user side undefined tensor!
 //
-extern tensor_t create_undefined_tensor();
+extern tensor_t create_undefined_user_tensor();
 
 struct TensorType {
     TensorDataType dtype_;
@@ -469,7 +471,14 @@ static void put_optional_tensor(ValueStack<TensorType>& stack, std::variant<void
 
 #ONNX_IMPL#
 
+//
+//  Registering all words
+//
+void register_all_onnx_defined_words( Runtime<TensorType>& runtime) {
 
+#ONNX_REGISTER#
+
+}
 
 }
 #endif

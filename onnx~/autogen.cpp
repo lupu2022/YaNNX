@@ -356,7 +356,7 @@ std::string impl_generate(const OpSchema& op) {
                 std::string oname = allOutputs[i].GetName();
                 int opt = allOutputs[i].GetOption();
                 if ( opt == 0 ) {        // Single
-                    oss << "\t" << oname << " = create_undefined_tensor();" << std::endl;
+                    oss << "\t" << oname << " = create_undefined_user_tensor();" << std::endl;
                 }
             }
             std::string output_init = oss.str();
@@ -509,7 +509,24 @@ int main(int argc, char* argv[]) {
         oss.clear();
     }
 
-    // 3. writing final result to file
+    // 3. generating code for register native word
+    {
+        std::ostringstream oss;
+        for (auto i = operators_by_tag.begin(); i != operators_by_tag.end(); i++) {
+            auto tag = i->first;
+            for (size_t ii = 0; ii < i->second.size(); ii++) {
+                auto op_name = schemas[ i->second[ii] ].Name();
+                oss << "\truntime.new_nword(\"onnx_" << op_name << "\", ";
+                oss << tag << "::" << op_name << "::creator);" << std::endl;
+            }
+        }
+        std::string def_str = oss.str();
+        replace_all(def_str, "\t", "    ");
+        replace_all(result, "#ONNX_REGISTER#", def_str);
+        oss.clear();
+    }
+
+    // 4. writing final result to file
     std::ofstream ofs;
     ofs.open("tensortype.hpp");
     ofs << result;
