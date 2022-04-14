@@ -88,7 +88,11 @@ public:
         if ( cell_.index() == ValueType::T_Number ) {
             ss << std::get<0>(cell_) ;
         } else if ( cell_.index() == ValueType::T_String ) {
-            ss << std::get<1>(cell_);
+            if ( std::get<1>(cell_) == "" ) {
+                ss << "<none>";
+            } else {
+                ss << "\"" << std::get<1>(cell_) << "\"";
+            }
         } else {
             ss << "<tensor>:" << std::get<2>(cell_)->to_string();
         }
@@ -827,7 +831,7 @@ struct PrintAll : NativeWord<YT> {
         std::cout << "--- stack top ------" << std::endl;
         for (size_t i = 0; i < vec.size(); i++) {
             size_t ri = vec.size() - 1 - i;
-            std::cout << vec[ri].to_string() << std::endl;
+            std::cout << i << ":\t" << vec[ri].to_string() << std::endl;
         }
         std::cout << "---- bottom --------" << std::endl;
     }
@@ -836,7 +840,7 @@ struct PrintAll : NativeWord<YT> {
         std::cout << "--- stack top ------" << std::endl;
         for (size_t i = 0; i < vec.size(); i++) {
             size_t ri = vec.size() - 1 - i;
-            std::cout << vec[ri].to_string() << std::endl;
+            std::cout << i << ":\t" << vec[ri].to_string() << std::endl;
         }
         std::cout << "---- bottom --------" << std::endl;
     }
