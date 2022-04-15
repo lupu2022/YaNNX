@@ -356,7 +356,7 @@ std::string impl_generate(const OpSchema& op) {
                 std::string oname = allOutputs[i].GetName();
                 int opt = allOutputs[i].GetOption();
                 if ( opt == 0 ) {        // Single
-                    oss << "\t" << oname << " = create_undefined_user_tensor();" << std::endl;
+                    oss << "\t" << oname << " = TensorType::create_undefined_user_tensor();" << std::endl;
                 }
             }
             std::string output_init = oss.str();
@@ -516,7 +516,7 @@ int main(int argc, char* argv[]) {
             auto tag = i->first;
             for (size_t ii = 0; ii < i->second.size(); ii++) {
                 auto op_name = schemas[ i->second[ii] ].Name();
-                oss << "\truntime.new_nword(\"onnx_" << op_name << "\", ";
+                oss << "\truntime.new_nword(\"onnx." << op_name << "\", ";
                 oss << tag << "::" << op_name << "::creator);" << std::endl;
             }
         }

@@ -80,6 +80,16 @@ static const char* TensorDataTypeString[] = {
     "YNX_BFLOAT16"
 };
 
+TensorDataType datatype_from_string(const std::string& dt_str ) {
+    for (size_t i = 0; i < YNX_BFLOAT16; i++) {
+        if ( dt_str == TensorDataTypeString[i] ) {
+            return (TensorDataType)i;
+        }
+    }
+    return YNX_UNDEFINED;
+};
+
+
 #ifdef USING_ONNX_IMPL
 TensorDataType datatype_from_onnx( int dt ) {
     switch( dt ) {
@@ -131,11 +141,6 @@ TensorDataType datatype_from_onnx( int dt ) {
 struct TensorType;
 using tensor_t = std::shared_ptr<TensorType>;
 
-//
-//  User must be re-implement, return user side undefined tensor!
-//
-extern tensor_t create_undefined_user_tensor();
-
 struct TensorType {
     TensorDataType dtype_;
     std::vector<size_t> shape_;
@@ -163,6 +168,17 @@ struct TensorType {
         ss << "]";
         return ss.str();
     }
+
+    //
+    //  User must be re-implement, return user side undefined tensor!
+    //
+    enum TensorFlag {
+        TT_Constant,
+        TT_Variable,
+        TT_Parameter,
+    };
+    static tensor_t create_undefined_user_tensor();
+    static void register_user_tensor(tensor_t, TensorFlag flag = TT_Constant);
 
 #ONNX_DEF#
 
@@ -289,18 +305,16 @@ struct YNXInferenceContextImpl : public InferenceContext {
         return YNX_OK;
     }
     int check_output(size_t index, std::variant<void *, tensor_t>& v) {
-        /*
-
-        std::get<1>(v)->reset(dtype, shape);
-        */
+        tensor_t output = TensorType::create_undefined_user_tensor();
+        if ( check_output(index, output) == YNX_OK ) {
+            std::get<1>(v) = output;
+        }
         return YNX_OK;
     }
     int check_output(size_t index, std::vector<tensor_t>& v) {
         yannx_panic("FIXME: how to check Variadic type");
         return YNX_OUTPUT_ERROR;
     }
-
-
 
     // InferenceContext apis
     size_t getNumInputs() const override {
@@ -463,11 +477,73 @@ static void put_optional_tensor(ValueStack<TensorType>& stack, std::variant<void
     stack.push_tensor( std::get<1>(ot) );
 }
 
+// some help words, like Constant Parameter Variable
 #define NWORD_CREATOR_DEFINE_TENSORTYPE(CLS)                                                \
     static std::shared_ptr<NativeWord<TensorType> >   creator(Runtime<TensorType>& rt ) {   \
         std::shared_ptr<NativeWord<TensorType> > wd(new CLS());                             \
         return wd;                                                                          \
     }
+
+namespace common {
+    struct Constant : NativeWord<TensorType> {
+        tensor_t output;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            auto shape_ = fetch_ints(stack);
+            std::vector<size_t> shape;
+            for(size_t i = 0; i < shape_.size(); i++) {
+                shape.push_back( shape_[i] );
+            }
+
+            std::string dtype_string = fetch_string(stack);
+            auto dtype = datatype_from_string(dtype_string);
+
+            output = TensorType::create_undefined_user_tensor();
+            TensorType::register_user_tensor(output, TensorType::TT_Constant);
+            output->reset(dtype, shape);
+
+            put_tensor(stack, output);
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+            fetch_ints(stack);
+            fetch_string(stack);
+
+            put_tensor(stack, output);
+        }
+
+        NWORD_CREATOR_DEFINE_TENSORTYPE(Constant)
+    };
+
+    struct Variable : NativeWord<TensorType> {
+        tensor_t output;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            auto shape_ = fetch_ints(stack);
+            std::vector<size_t> shape;
+            for(size_t i = 0; i < shape_.size(); i++) {
+                shape.push_back( shape_[i] );
+            }
+
+            std::string dtype_string = fetch_string(stack);
+            auto dtype = datatype_from_string(dtype_string);
+
+            output = TensorType::create_undefined_user_tensor();
+            output->reset(dtype, shape);
+
+            put_tensor(stack, output);
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+            put_tensor(stack, output);
+        }
+
+        NWORD_CREATOR_DEFINE_TENSORTYPE(Variable)
+    };
+
+}
 
 #ONNX_IMPL#
 
@@ -475,6 +551,9 @@ static void put_optional_tensor(ValueStack<TensorType>& stack, std::variant<void
 //  Registering all words
 //
 void register_all_onnx_defined_words( Runtime<TensorType>& runtime) {
+
+    runtime.new_nword("NewConstant", common::Constant::creator);
+    runtime.new_nword("NewVariable", common::Variable::creator);
 
 #ONNX_REGISTER#
 

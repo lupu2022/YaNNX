@@ -33,13 +33,16 @@ bool readline(const std::string& prop, std::string& code) {
 
 struct MyTensorType : public yannx_tt::TensorType {
     MyTensorType() : yannx_tt::TensorType() {
-
     }
 };
 
 namespace yannx_tt {
-    std::shared_ptr<TensorType> create_undefined_user_tensor() {
+    std::shared_ptr<TensorType> TensorType::create_undefined_user_tensor() {
         return std::make_shared<MyTensorType>();
+    }
+
+    void  TensorType::register_user_tensor(std::shared_ptr<TensorType> tensor, TensorType::TensorFlag flag) {
+
     }
 }
 

@@ -169,7 +169,7 @@ struct ValueStack {
     }
     std::string pop_string() {
         auto v = pop();
-        return v.to_string();
+        return v.string();
     }
     const char* top_string() {
         auto v = top();
@@ -310,6 +310,12 @@ struct UserWord {
     using UserBinary = std::vector<SyntaxElement<YT> >;      // compiled
 
     UserWord(){}
+
+    const std::map<std::string, Value<YT>>& hash() {
+        return local_hash_;
+    }
+
+private:
     void boot(Runtime<YT>& rt, vmap_t* global_hash_) {
         if ( global_hash_ == nullptr) {
             global_hash_ = &local_hash_;
@@ -359,12 +365,8 @@ struct UserWord {
         }
     }
 
-private:
     UserBinary& bin(){
         return binary_;
-    }
-    vmap_t* hash() {
-        return &local_hash_;
     }
 
     UserBinary binary_;
