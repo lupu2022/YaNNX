@@ -581,11 +581,50 @@ private:
             _::tokenize_line(line,  tokens);
         }
 
-        // 1. begin parsing all
+        // 1. do somthing post processing
+        std::vector<std::string> _tokens;
+        int loop_flag = -1;
+        size_t i = 0;
+        while(i < tokens.size() ) {
+            if ( tokens[i] == "{" ) {
+                if ( loop_flag != -1 ) {
+                    loop_flag = i;
+                } else {
+                    yannx_panic("Find nested loop macro!");
+                }
+                i = i + 1;
+                continue;
+            }
+            if ( tokens[i] == "}" ) {
+                if ( i == tokens.size() - 1) {
+                    yannx_panic("Loop macro without immediately loop count!");
+                }
+                YNumber loop_count;
+                if ( ! _::parse_number( tokens[i+1], loop_count ) ) {
+                    yannx_panic("Loop macro must include a immediately loop count number!");
+                }
+                for(int c = 1; c < (int)loop_count; c++) {
+                    for(size_t j = loop_flag; j < i; j++) {
+                        _tokens.push_back( tokens[j] );
+                    }
+                }
+                loop_flag = -1;
+                i = i + 2;
+                continue;
+            }
+            _tokens.push_back( tokens[i] );
+            i = i + 1;
+        }
+        if ( loop_flag != -1 ) {
+            yannx_panic("Loop macro without ending!");
+        }
+        tokens = _tokens;
+
+        // 2. begin parsing all
         UserCode main_code;
         UserCode* target_code = &main_code;
         std::string target_name = "";
-        size_t i = 0;
+        i = 0;
         while (i < tokens.size()) {
             if ( tokens[i] == "def" ) {
                 // don't support word define nested
