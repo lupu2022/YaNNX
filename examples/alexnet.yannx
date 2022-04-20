@@ -1,0 +1,12 @@
+def Conv2d
+    "kernel_size" !
+    “in_size" !
+    "out_size" !
+    
+    ["kernel_size" @ dup "out_size" @ "in_size" @] NewConstant
+    ["out_size" @] NewConstant 
+    "auto_pad" none 1 ["kernel_size" @ "kernel_size" @] none none none
+    onnx.Conv
+end
+
+

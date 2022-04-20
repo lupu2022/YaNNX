@@ -466,11 +466,10 @@ private:
                 std::string state = "SYMBOL";
                 std::string current_str = "";
 
-                int tuple_flag = -1;
                 for (size_t i = 0; i < str_line.size(); i++) {
                     char cur = str_line[i];
                     if ( state == "SYMBOL") {
-                        if ( cur == ' ' || cur == '('  || cur == ')' || cur == '{' || cur == '}' ) {
+                        if ( cur == ' ' || cur == '('  || cur == ')' ) {
                             // ending of a symbol
                             if (current_str != "") {
                                 out.push_back(current_str);
@@ -478,6 +477,16 @@ private:
                             }
                             continue;
                         }
+                        if ( cur == '{' || cur == '}' || cur == '[' || cur == ']' ) {
+                            // ending of a symbol
+                            if (current_str != "") {
+                                out.push_back(current_str);
+                                current_str = "";
+                            }
+                            out.push_back( std::string(1, cur) );
+                            continue;
+                        }
+
                         if ( cur == '"' ) {
                             if (current_str != "") {
                                 yannx_panic("tokenize_line error!");
@@ -494,42 +503,6 @@ private:
 
                             state = "STRING";
                             current_str.push_back('\'');
-                            continue;
-                        }
-
-                        if ( cur == '[' ) {
-                            // ending of a symbol
-                            if (current_str != "") {
-                                out.push_back(current_str);
-                                current_str = "";
-                            }
-
-                            if ( tuple_flag != -1 ) {
-                                yannx_panic("tokenize_line error!");
-                            }
-                            tuple_flag = out.size();
-                            continue;
-                        }
-
-                        if ( cur == ']' ) {
-                            // ending of a symbol
-                            if (current_str != "") {
-                                out.push_back(current_str);
-                                current_str = "";
-                            }
-
-                            if ( tuple_flag == -1 ) {
-                                yannx_panic("tokenize_line error!");
-                            }
-                            int tuple_num = out.size() - tuple_flag;
-                            if ( tuple_num <= 0 ) {
-                                yannx_panic("tokenize_line error!");
-                            }
-                            std::ostringstream convert;
-                            convert << tuple_num;
-                            out.push_back( convert.str() );
-                            tuple_flag = -1;
-
                             continue;
                         }
 
@@ -564,16 +537,13 @@ private:
                 if ( state == "STRING" ) {
                     yannx_panic("tokenize_line error, string must end in one line!");
                 }
-                if ( tuple_flag != -1 ) {
-                    yannx_panic("tokenize_line error, tuple must end in one line!");
-                }
                 if (current_str != "") {
                     out.push_back(current_str);
                 }
             }
         };
 
-        // 0. removed comments
+        // 0. removed comments & tokenize
         std::vector<std::string> tokens;
         std::istringstream code_stream(txt);
         std::string line;
@@ -581,42 +551,74 @@ private:
             _::tokenize_line(line,  tokens);
         }
 
-        // 1. do somthing post processing
+        // 1. tokens post processing
         std::vector<std::string> _tokens;
-        int loop_flag = -1;
+        std::vector< std::tuple<size_t, char> > scope_flags;
         size_t i = 0;
         while(i < tokens.size() ) {
-            if ( tokens[i] == "{" ) {
-                if ( loop_flag != -1 ) {
-                    loop_flag = i;
-                } else {
-                    yannx_panic("Find nested loop macro!");
+            if ( tokens[i] == "[" ) {
+                if ( scope_flags.size() > 0 ) {
+                    if ( std::get<1>(scope_flags[0]) == '[') {
+                        yannx_panic("Found nested auto list");
+                    }
                 }
+                scope_flags.push_back( {tokens.size(), '['} );
+
+                _tokens.push_back("[");
                 i = i + 1;
                 continue;
             }
+            if ( tokens[i] == "{" ) {
+                if ( scope_flags.size() > 0 ) {
+                    yannx_panic("Found nested loop macro");
+                }
+                scope_flags.push_back( {tokens.size(), '{'} );
+
+                i = i + 1;
+                continue;
+            }
+            if ( tokens[i] == "]" ) {
+                if ( scope_flags.size() == 0) {
+                    yannx_panic("List without head!");
+                }
+                auto last = scope_flags.back();
+                if ( std::get<1>(last) != '[' ) {
+                    yannx_panic("List without head!");
+                }
+                scope_flags.pop_back();
+
+                _tokens.push_back("[");
+                i = i + 1;
+                continue;
+            }
+
             if ( tokens[i] == "}" ) {
-                if ( i == tokens.size() - 1) {
-                    yannx_panic("Loop macro without immediately loop count!");
+                if ( scope_flags.size() == 0) {
+                    yannx_panic("Loop without head!");
+                }
+                auto last = scope_flags.back();
+                if ( std::get<1>(last) != '{' ) {
+                    yannx_panic("Loop without head!");
                 }
                 YNumber loop_count;
                 if ( ! _::parse_number( tokens[i+1], loop_count ) ) {
                     yannx_panic("Loop macro must include a immediately loop count number!");
                 }
+                size_t loop_flag = std::get<0>(last);
                 for(int c = 1; c < (int)loop_count; c++) {
                     for(size_t j = loop_flag; j < i; j++) {
                         _tokens.push_back( tokens[j] );
                     }
                 }
-                loop_flag = -1;
+                scope_flags.pop_back();
                 i = i + 2;
                 continue;
             }
             _tokens.push_back( tokens[i] );
             i = i + 1;
         }
-        if ( loop_flag != -1 ) {
-            yannx_panic("Loop macro without ending!");
+        if ( scope_flags.size() != -0 ) {
+            yannx_panic("Loop list without ending!");
         }
         tokens = _tokens;
 
@@ -933,6 +935,41 @@ struct Swap : NativeWord<YT> {
     NWORD_CREATOR_DEFINE(Swap)
 };
 
+template<class YT>
+struct AutoList : NativeWord<YT> {
+    const bool isHead_;
+    AutoList(bool head): isHead_(head) { }
+
+    virtual void run(ValueStack<YT>& stack) {
+        if ( isHead_ ) {
+            int pos = stack.vec().size();
+            scopes().push_back(pos);
+        } else {
+            int cur_pos = stack.vec().size();
+            int last_pos = scopes().back();
+            scopes().pop_back();
+
+            stack.push_number(cur_pos - last_pos);
+        }
+    }
+
+    static std::shared_ptr<NativeWord<YT> > left_creator(Runtime<YT>& rt ) {
+        std::shared_ptr<NativeWord<YT> > wd(new AutoList<YT> (true));
+        return wd;
+    }
+    static std::shared_ptr<NativeWord<YT> > right_creator(Runtime<YT>& rt ) {
+        std::shared_ptr<NativeWord<YT> > wd(new AutoList<YT> (false));
+        return wd;
+    }
+
+private:
+    static std::vector<int>& scopes () {
+        static std::vector<int> scopes_;
+        return scopes_;
+    }
+};
+
+
 }   // namespace builtin
 
 template<class YT>
@@ -947,6 +984,9 @@ void Runtime<YT>::register_builtin_native_words() {
     new_nword("dup2", builtin::Dup2<YT>::creator);
     new_nword("swap", builtin::Swap<YT>::creator);
     new_nword("rot", builtin::Rot<YT>::creator);
+
+    new_nword("[", builtin::AutoList<YT>::left_creator);
+    new_nword("]", builtin::AutoList<YT>::right_creator);
 }
 
 }   // namespace yannx
