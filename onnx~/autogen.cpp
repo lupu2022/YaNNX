@@ -306,9 +306,7 @@ std::string impl_generate(const OpSchema& op) {
         std::ostringstream oss;
 
         auto allInputs = op.inputs();
-        for(size_t ri = 0; ri < allInputs.size(); ri++) {
-            size_t i = allInputs.size() - ri - 1;
-
+        for(size_t i = 0; i < allInputs.size(); i++) {
             std::string iname = allInputs[i].GetName();
             oss << "\tinfer_.new_input(" << iname << ");" << std::endl;
         }

@@ -1,12 +1,25 @@
-def Conv2d
+def conv2d
+    "stride_size" !
     "kernel_size" !
-    “in_size" !
     "out_size" !
+    "in_size" !
     
-    ["kernel_size" @ dup "out_size" @ "in_size" @] NewConstant
-    ["out_size" @] NewConstant 
-    "auto_pad" none 1 ["kernel_size" @ "kernel_size" @] none none none
-    onnx.Conv
+    ; W
+    "YNX_FLOAT" ["out_size" @ "in_size" @ "kernel_size" @ dup ] NewConstant         
+    ; B
+    "YNX_FLOAT" ["out_size" @] NewConstant                                      
+    
+    ; auto_pad, dilation, group, kernel, pads, strides
+    "NOTSET" [1 1] 1 ["kernel_size" @ dup] [0 0 0 0] ["stride_size" @ dup]             
+    onnx.Conv 
 end
 
 
+def test
+    "YNX_FLOAT" [1 4 256 256] NewConstant
+    4
+    16
+    3
+    2
+    conv2d
+end

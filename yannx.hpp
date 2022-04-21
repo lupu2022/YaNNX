@@ -124,7 +124,7 @@ struct ValueStack {
         pop();
     }
     void dup() {
-        auto v1 = pop();
+        auto v1 = top();
         push(v1);
     }
     void dup2() {
@@ -587,7 +587,7 @@ private:
                 }
                 scope_flags.pop_back();
 
-                _tokens.push_back("[");
+                _tokens.push_back("]");
                 i = i + 1;
                 continue;
             }
@@ -724,7 +724,7 @@ private:
             }
 
             // check none value
-            if ( token == "none" ) {
+            if ( token == "#" ) {
                 nobj.type_ = SyntaxElement<YT>::T_String;
                 nobj.v_string = "";
                 target_code->push_back(nobj);
