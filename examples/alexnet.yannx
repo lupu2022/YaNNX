@@ -1,4 +1,5 @@
 def conv2d
+    "padding" !
     "stride_size" !
     "kernel_size" !
     "out_size" !
@@ -10,16 +11,25 @@ def conv2d
     "YNX_FLOAT" ["out_size" @] NewConstant                                      
     
     ; auto_pad, dilation, group, kernel, pads, strides
-    "NOTSET" [1 1] 1 ["kernel_size" @ dup] [0 0 0 0] ["stride_size" @ dup]             
+    "NOTSET" [1 1] 1 ["kernel_size" @ dup] ["padding" @ dup dup dup] ["stride_size" @ dup]             
     onnx.Conv 
 end
 
+def max_pool2d
+    "stride_size" !
+    "kernel_size" !
+    
+    "NOTSET" 0 [1 1]            ; auto_pad, ceil_Mode, dilation
+    ["kernel_size" @ dup]       ; kernel_shape
+    [0 0 0 0]                   ; pads
+    0                           ; storage_order
+    ["stride_size" @ dup]       ; strides
+     
+    onnx.MaxPool
+    drop                        ; we don't want Indices
+end
 
 def test
-    "YNX_FLOAT" [1 4 256 256] NewConstant
-    4
-    16
-    3
-    2
-    conv2d
+    
+     
 end

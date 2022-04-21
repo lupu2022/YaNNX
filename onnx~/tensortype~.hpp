@@ -307,7 +307,7 @@ struct YNXInferenceContextImpl : public InferenceContext {
     int check_output(size_t index, std::variant<void *, tensor_t>& v) {
         tensor_t output = TensorType::create_undefined_user_tensor();
         if ( check_output(index, output) == YNX_OK ) {
-            std::get<1>(v) = output;
+            v = output;
         }
         return YNX_OK;
     }

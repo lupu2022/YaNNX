@@ -117,7 +117,7 @@ struct ValueStack {
     virtual Value<YT> pop() = 0;
     virtual void push(Value<YT> v) = 0;
     virtual void clear() = 0;
-    virtual const std::vector<Value<YT>>& vec();
+    virtual const std::vector<Value<YT> >& vec() = 0;
 
     // main control
     void drop() {
@@ -432,7 +432,7 @@ public:
     virtual void clear() {
         stack_.clear();
     }
-    virtual const std::vector<Value<YT>>& vec() {
+    virtual const std::vector<Value<YT> >& vec() {
         return stack_;
     }
 
