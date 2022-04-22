@@ -148,12 +148,12 @@ struct TensorType {
     TensorType() {
         dtype_ = TensorDataType::YNX_UNDEFINED;
     }
-    TensorType(TensorDataType dtype, std::vector<size_t>& shape) {
-        reset(dtype, shape);
-    }
     virtual void reset(TensorDataType dtype, std::vector<size_t>& shape) {
         dtype_ = dtype;
         shape_ = shape;
+    }
+    virtual void reset(TensorDataType dtype, double value) {
+        dtype_ = dtype;
     }
     virtual std::string to_string() {
         std::ostringstream ss;
@@ -172,13 +172,8 @@ struct TensorType {
     //
     //  User must be re-implement, return user side undefined tensor!
     //
-    enum TensorFlag {
-        TT_Constant,
-        TT_Variable,
-        TT_Parameter,
-    };
     static tensor_t create_undefined_user_tensor();
-    static void register_user_tensor(tensor_t, TensorFlag flag = TT_Constant);
+    static void register_user_tensor(tensor_t, int64_t flag);
 
 #ONNX_DEF#
 
@@ -501,7 +496,7 @@ namespace common {
             auto dtype = datatype_from_string(dtype_string);
 
             output = TensorType::create_undefined_user_tensor();
-            TensorType::register_user_tensor(output, TensorType::TT_Constant);
+            TensorType::register_user_tensor(output, 0);
             output->reset(dtype, shape);
 
             put_tensor(stack, output);
@@ -514,6 +509,29 @@ namespace common {
         }
 
         NWORD_CREATOR_DEFINE_TENSORTYPE(Constant)
+    };
+
+    struct ConstantScalar : NativeWord<TensorType> {
+        tensor_t output;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            auto value = fetch_float(stack);
+
+            std::string dtype_string = fetch_string(stack);
+            auto dtype = datatype_from_string(dtype_string);
+
+            output = TensorType::create_undefined_user_tensor();
+
+            std::vector<size_t> shape;
+            output->reset(dtype, value);
+            put_tensor(stack, output);
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+            put_tensor(stack, output);
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(ConstantScalar)
     };
 
     struct Variable : NativeWord<TensorType> {
@@ -542,7 +560,6 @@ namespace common {
 
         NWORD_CREATOR_DEFINE_TENSORTYPE(Variable)
     };
-
 }
 
 #ONNX_IMPL#
@@ -552,8 +569,9 @@ namespace common {
 //
 void register_all_onnx_defined_words( Runtime<TensorType>& runtime) {
 
-    runtime.new_nword("NewConstant", common::Constant::creator);
-    runtime.new_nword("NewVariable", common::Variable::creator);
+    runtime.new_nword("NewConstantTensor", common::Constant::creator);
+    runtime.new_nword("NewScalar", common::ConstantScalar::creator);
+    runtime.new_nword("NewTensor", common::Variable::creator);
 
 #ONNX_REGISTER#
 

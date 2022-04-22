@@ -16,20 +16,37 @@ def conv2d
 end
 
 def max_pool2d
-    "stride_size" !
-    "kernel_size" !
-    
     "NOTSET" 0 [1 1]            ; auto_pad, ceil_Mode, dilation
-    ["kernel_size" @ dup]       ; kernel_shape
+    [3 3]                       ; kernel_shape
     [0 0 0 0]                   ; pads
     0                           ; storage_order
-    ["stride_size" @ dup]       ; strides
+    [2 2]                       ; strides
      
     onnx.MaxPool
     drop                        ; we don't want Indices
 end
 
-def test
-    
-     
+def dropout
+    “YNX_FLOAT" NewScalar
+    # # onnx.Dropout 
 end
+
+def features
+    3 64 11 4 2 conv2d
+    onnx.Relu
+    max_pool2d
+    
+    64 192 5 1 2 conv2d
+    onnx.Relu
+    max_pool2d
+
+    192 384 3 1 1 conv2d
+    onnx.Relu
+    384 256 3 1 1 conv2d
+    onnx.Relu
+    256 256 3 1 1 conv2d
+    onnx.Relu
+    max_pool2d
+end
+
+

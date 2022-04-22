@@ -562,7 +562,7 @@ private:
                         yannx_panic("Found nested auto list");
                     }
                 }
-                scope_flags.push_back( {tokens.size(), '['} );
+                scope_flags.push_back( {i+1, '['} );
 
                 _tokens.push_back("[");
                 i = i + 1;
@@ -572,7 +572,7 @@ private:
                 if ( scope_flags.size() > 0 ) {
                     yannx_panic("Found nested loop macro");
                 }
-                scope_flags.push_back( {tokens.size(), '{'} );
+                scope_flags.push_back( {i+1, '{'} );
 
                 i = i + 1;
                 continue;
