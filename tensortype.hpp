@@ -147,12 +147,11 @@ struct TensorType {
 
     virtual TensorDataType dtype() = 0;
     virtual const std::vector<size_t>& shape() = 0;
-    virtual float scalar_value() = 0;
-    virtual const std::vector<float>& value() = 0;
+    virtual const void* value() = 0;
 
     virtual void reset(TensorDataType dtype, std::vector<size_t>& shape) = 0;
-    virtual void reset(TensorDataType dtype, std::vector<size_t>& shape, std::vector<float> value) = 0;
-    virtual void reset(TensorDataType dtype, float value) = 0;
+    virtual void reset(TensorDataType dtype, std::vector<size_t>& shape, const void* pdata) = 0;
+    virtual void reset(TensorDataType dtype, const void* pvalue) = 0;
 
     virtual std::string to_string() {
         std::ostringstream ss;
@@ -167,6 +166,8 @@ struct TensorType {
         ss << "]";
         return ss.str();
     }
+
+
 
     //
     //  User must be re-implement, return user side undefined tensor!
@@ -1687,8 +1688,6 @@ struct YNXInferenceContextImpl : public InferenceContext {
         size_t index = input_num_;
         input_types_[index] = proto;
 
-        //
-
         input_num_ ++;
     }
     void new_input(std::variant<void *, tensor_t> v) {
@@ -1958,7 +1957,7 @@ namespace common {
             auto dtype = datatype_from_string(dtype_string);
 
             output = TensorType::create_undefined_user_tensor();
-            output->reset(dtype, shape, values);
+            output->reset(dtype, shape, (void *)values.data());
             put_tensor(stack, output);
         }
         virtual void run(ValueStack<TensorType>& stack) {
@@ -1980,7 +1979,7 @@ namespace common {
 
             output = TensorType::create_undefined_user_tensor();
 
-            output->reset(dtype, value);
+            output->reset(dtype, (void *)&value);
             put_tensor(stack, output);
         }
         virtual void run(ValueStack<TensorType>& stack) {

@@ -42,7 +42,8 @@ size_t shape_items(const std::vector<size_t> shape) {
 struct MyTensorType : public yannx_tt::TensorType {
     yannx_tt::TensorDataType dtype_;
     std::vector<size_t> shape_;
-    std::vector<float> value_;
+    std::vector<float> fvalue_;
+    std::vector<int64_t> ivalue_;
 
     MyTensorType() {
         dtype_ = yannx_tt::YNX_UNDEFINED;
@@ -54,32 +55,29 @@ struct MyTensorType : public yannx_tt::TensorType {
     const std::vector<size_t>& shape() override {
         return shape_;
     }
-    float scalar_value() override {
-        if ( dtype_ == yannx_tt::YNX_UNDEFINED ) {
-            yannx_panic("Can't access scalar value from undefined tensor");
-        }
-        if ( shape_.size() != 0) {
-            yannx_panic("Can't access scalar value from normal tensor");
-        }
-        if ( value_.size() != 1) {
-            yannx_panic("Scalar internal error!");
-        }
-        return value_[0];
-    }
-    const std::vector<float>& value() override {
+
+    const void* value() override {
         if ( dtype_ == yannx_tt::YNX_UNDEFINED ) {
             yannx_panic("Can't access tensor value from undefined tensor");
         }
-        if ( shape_.size() == 0) {
-            yannx_panic("Can't access tensor value from scalar");
+        if ( ivalue_.size() == 0 && fvalue_.size() == 0) {
+            yannx_panic("Can't access tensor value from variable tensor ");
         }
-        /*
-        if ( value_.size() == 0) {
-            yannx_panic("Can't access tensor value from none constant");
+        if ( dtype_ == yannx_tt::YNX_FLOAT) {
+            if ( fvalue_.size() == 0) {
+                return nullptr;
+            }
+            return &fvalue_[0];
         }
-        */
-        return value_;
+        if ( dtype_ == yannx_tt::YNX_INT64) {
+            if ( ivalue_.size() == 0) {
+                return nullptr;
+            }
+            return &ivalue_[0];
+        }
+        return nullptr;
     }
+
     void reset(yannx_tt::TensorDataType dtype, std::vector<size_t>& shape) override {
         if ( dtype_ != yannx_tt::YNX_UNDEFINED ) {
             yannx_panic("Can't reset tensor more than once");
@@ -89,13 +87,8 @@ struct MyTensorType : public yannx_tt::TensorType {
 
         dtype_ = dtype;
         shape_ = shape;
-
-        /*
-        auto items = shape_items(shape);
-        value_.resize(items, 0);
-        */
     }
-    void reset(yannx_tt::TensorDataType dtype, std::vector<size_t>& shape, std::vector<float> value) override {
+    void reset(yannx_tt::TensorDataType dtype, std::vector<size_t>& shape, const void* pdata) override {
         if ( dtype_ != yannx_tt::YNX_UNDEFINED ) {
             yannx_panic("Can't reset tensor more than once");
         }
@@ -106,15 +99,39 @@ struct MyTensorType : public yannx_tt::TensorType {
         shape_ = shape;
 
         auto items = shape_items(shape);
-        yannx_assert( value.size() == items, "Filled data size error");
-        value_ = value;
+        if ( dtype == yannx_tt::YNX_FLOAT ) {
+            fvalue_.resize(items, 0.0);
+            const float* data = (const float*)pdata;
+            for (size_t i = 0; i < items; i++) {
+                fvalue_[i] = data[i];
+            }
+            return;
+        }
+        if ( dtype == yannx_tt::YNX_INT64 ) {
+            ivalue_.resize(items, 0.0);
+            const int64_t* data = (const int64_t *)pdata;
+            for (size_t i = 0; i < items; i++) {
+                ivalue_[i] = data[i];
+            }
+            return;
+        }
+        yannx_panic("Reset tensor with un-support data type!");
     }
-    void reset(yannx_tt::TensorDataType dtype, float value) override {
+    void reset(yannx_tt::TensorDataType dtype, const void* pvalue) override {
         if ( dtype_ != yannx_tt::YNX_UNDEFINED ) {
             yannx_panic("Can't reset tensor more than once");
         }
         dtype_ = dtype;
-        value_.push_back(value);
+
+        if ( dtype == yannx_tt::YNX_FLOAT ) {
+            fvalue_.push_back( *(const float *)pvalue);
+            return;
+        }
+        if ( dtype == yannx_tt::YNX_INT64 ) {
+            ivalue_.push_back( *(const int64_t *)pvalue);
+            return;
+        }
+        yannx_panic("Reset tensor(scalar) with un-support data type!");
     }
 };
 
