@@ -16,6 +16,7 @@
 #include <onnx/onnx_pb.h>
 #include <onnx/defs/schema.h>
 #include <onnx/defs/attr_proto_util.h>
+#include <onnx/defs/tensor_proto_util.h>
 #include <onnx/shape_inference/implementation.h>
 
 using namespace onnx;
@@ -202,6 +203,7 @@ InferenceFunction query_inference_function(const std::string& op_name) {
 struct YNXInferenceContextImpl : public InferenceContext {
     std::map<std::string, AttributeProto> attrs_;
     std::map<size_t, TypeProto> input_types_;
+    std::map<size_t, TensorProto> input_datas_;
     std::vector<TypeProto> output_types_;
 
     size_t input_num_;
@@ -253,6 +255,8 @@ struct YNXInferenceContextImpl : public InferenceContext {
         }
         size_t index = input_num_;
         input_types_[index] = proto;
+
+        //
 
         input_num_ ++;
     }
@@ -334,11 +338,11 @@ struct YNXInferenceContextImpl : public InferenceContext {
         }
         return nullptr;
     }
-
-    // Skipping these impl, FIXME TensorProto seems not be used by Type&Shape inference
     const TensorProto* getInputData(size_t index) const override {
         return nullptr;
     }
+
+    // Skipping these impl, FIXME TensorProto seems not be used by Type&Shape inference
     const TensorShapeProto* getSymbolicInput(size_t index) const override {
         return nullptr;
     }
@@ -553,6 +557,22 @@ namespace common {
         }
         NWORD_CREATOR_DEFINE_TENSORTYPE(Scalar)
     };
+
+    struct Register : NativeWord<TensorType> {
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            auto t = fetch_tensor(rt);
+            auto flag = fetch_int(rt);
+            TensorType::register_user_tensor(t, flag);
+            rt.push_tensor(t);
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+            auto t = fetch_tensor(stack);
+            fetch_int(stack);
+            stack.push_tensor(t);
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(Register)
+    };
+
 }
 
 #ONNX_IMPL#
@@ -565,6 +585,7 @@ void register_all_onnx_defined_words( Runtime<TensorType>& runtime) {
     runtime.new_nword("NewTensor", common::Tensor::creator);
     runtime.new_nword("NewScalar", common::Scalar::creator);
     runtime.new_nword("NewConstant", common::Constant::creator);
+    runtime.new_nword("Register", common::Register::creator);
 
 #ONNX_REGISTER#
 

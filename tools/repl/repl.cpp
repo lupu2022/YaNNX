@@ -73,9 +73,13 @@ struct MyTensorType : public yannx_tt::TensorType {
         if ( shape_.size() == 0) {
             yannx_panic("Can't access tensor value from scalar");
         }
+        /*
+        if ( value_.size() == 0) {
+            yannx_panic("Can't access tensor value from none constant");
+        }
+        */
         return value_;
     }
-
     void reset(yannx_tt::TensorDataType dtype, std::vector<size_t>& shape) override {
         if ( dtype_ != yannx_tt::YNX_UNDEFINED ) {
             yannx_panic("Can't reset tensor more than once");
@@ -86,9 +90,10 @@ struct MyTensorType : public yannx_tt::TensorType {
         dtype_ = dtype;
         shape_ = shape;
 
+        /*
         auto items = shape_items(shape);
         value_.resize(items, 0);
-
+        */
     }
     void reset(yannx_tt::TensorDataType dtype, std::vector<size_t>& shape, std::vector<float> value) override {
         if ( dtype_ != yannx_tt::YNX_UNDEFINED ) {
@@ -102,7 +107,6 @@ struct MyTensorType : public yannx_tt::TensorType {
 
         auto items = shape_items(shape);
         yannx_assert( value.size() == items, "Filled data size error");
-
         value_ = value;
     }
     void reset(yannx_tt::TensorDataType dtype, float value) override {
@@ -112,7 +116,6 @@ struct MyTensorType : public yannx_tt::TensorType {
         dtype_ = dtype;
         value_.push_back(value);
     }
-
 };
 
 namespace yannx_tt {
@@ -121,7 +124,6 @@ namespace yannx_tt {
     }
 
     void  TensorType::register_user_tensor(std::shared_ptr<TensorType> tensor, int64_t flag) {
-
     }
 }
 
