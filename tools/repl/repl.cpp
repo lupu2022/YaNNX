@@ -31,9 +31,88 @@ bool readline(const std::string& prop, std::string& code) {
     return false;
 }
 
-struct MyTensorType : public yannx_tt::TensorType {
-    MyTensorType() : yannx_tt::TensorType() {
+size_t shape_items(const std::vector<size_t> shape) {
+    size_t items = 1;
+    for(size_t i = 0; i < shape.size(); i++) {
+        items = items * shape[i];
     }
+    return items;
+}
+
+struct MyTensorType : public yannx_tt::TensorType {
+    yannx_tt::TensorDataType dtype_;
+    std::vector<size_t> shape_;
+    std::vector<float> value_;
+
+    MyTensorType() {
+        dtype_ = yannx_tt::YNX_UNDEFINED;
+    }
+
+    yannx_tt::TensorDataType dtype() override {
+        return dtype_;
+    }
+    const std::vector<size_t>& shape() override {
+        return shape_;
+    }
+    float scalar_value() override {
+        if ( dtype_ == yannx_tt::YNX_UNDEFINED ) {
+            yannx_panic("Can't access scalar value from undefined tensor");
+        }
+        if ( shape_.size() != 0) {
+            yannx_panic("Can't access scalar value from normal tensor");
+        }
+        if ( value_.size() != 1) {
+            yannx_panic("Scalar internal error!");
+        }
+        return value_[0];
+    }
+    const std::vector<float>& value() override {
+        if ( dtype_ == yannx_tt::YNX_UNDEFINED ) {
+            yannx_panic("Can't access tensor value from undefined tensor");
+        }
+        if ( shape_.size() == 0) {
+            yannx_panic("Can't access tensor value from scalar");
+        }
+        return value_;
+    }
+
+    void reset(yannx_tt::TensorDataType dtype, std::vector<size_t>& shape) override {
+        if ( dtype_ != yannx_tt::YNX_UNDEFINED ) {
+            yannx_panic("Can't reset tensor more than once");
+        }
+        yannx_assert( dtype != yannx_tt::YNX_UNDEFINED, "Can't reset tensor with undefined");
+        yannx_assert( shape.size() != 0, "Can't reset to scalar using this function");
+
+        dtype_ = dtype;
+        shape_ = shape;
+
+        auto items = shape_items(shape);
+        value_.resize(items, 0);
+
+    }
+    void reset(yannx_tt::TensorDataType dtype, std::vector<size_t>& shape, std::vector<float> value) override {
+        if ( dtype_ != yannx_tt::YNX_UNDEFINED ) {
+            yannx_panic("Can't reset tensor more than once");
+        }
+        yannx_assert( dtype != yannx_tt::YNX_UNDEFINED, "Can't reset tensor with undefined");
+        yannx_assert( shape.size() != 0, "Can't reset to scalar using this function");
+
+        dtype_ = dtype;
+        shape_ = shape;
+
+        auto items = shape_items(shape);
+        yannx_assert( value.size() == items, "Filled data size error");
+
+        value_ = value;
+    }
+    void reset(yannx_tt::TensorDataType dtype, float value) override {
+        if ( dtype_ != yannx_tt::YNX_UNDEFINED ) {
+            yannx_panic("Can't reset tensor more than once");
+        }
+        dtype_ = dtype;
+        value_.push_back(value);
+    }
+
 };
 
 namespace yannx_tt {
@@ -41,7 +120,7 @@ namespace yannx_tt {
         return std::make_shared<MyTensorType>();
     }
 
-    void  TensorType::register_user_tensor(std::shared_ptr<TensorType> tensor, TensorType::TensorFlag flag) {
+    void  TensorType::register_user_tensor(std::shared_ptr<TensorType> tensor, int64_t flag) {
 
     }
 }

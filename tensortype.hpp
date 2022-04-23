@@ -142,29 +142,24 @@ struct TensorType;
 using tensor_t = std::shared_ptr<TensorType>;
 
 struct TensorType {
-    TensorDataType dtype_;
-    std::vector<size_t> shape_;
+    TensorType() { }
 
-    TensorType() {
-        dtype_ = TensorDataType::YNX_UNDEFINED;
-    }
-    TensorType(TensorDataType dtype, std::vector<size_t>& shape) {
-        reset(dtype, shape);
-    }
-    virtual void reset(TensorDataType dtype, std::vector<size_t>& shape) {
-        dtype_ = dtype;
-        shape_ = shape;
-    }
-    virtual void reset(TensorDataType dtype, double value) {
-        dtype_ = dtype;
-    }
+    virtual TensorDataType dtype() = 0;
+    virtual const std::vector<size_t>& shape() = 0;
+    virtual float scalar_value() = 0;
+    virtual const std::vector<float>& value() = 0;
+
+    virtual void reset(TensorDataType dtype, std::vector<size_t>& shape) = 0;
+    virtual void reset(TensorDataType dtype, std::vector<size_t>& shape, std::vector<float> value) = 0;
+    virtual void reset(TensorDataType dtype, float value) = 0;
+
     virtual std::string to_string() {
         std::ostringstream ss;
-        ss << TensorDataTypeString[dtype_];
+        ss << TensorDataTypeString[ dtype() ];
         ss << ":[";
-        for (size_t i = 0; i < shape_.size(); i++) {
-            ss << shape_[i];
-            if (i != shape_.size() - 1) {
+        for (size_t i = 0; i < shape().size(); i++) {
+            ss << shape()[i];
+            if (i != shape().size() - 1) {
                 ss << " ";
             }
         }
@@ -175,13 +170,8 @@ struct TensorType {
     //
     //  User must be re-implement, return user side undefined tensor!
     //
-    enum TensorFlag {
-        TT_Constant,
-        TT_Variable,
-        TT_Parameter,
-    };
     static tensor_t create_undefined_user_tensor();
-    static void register_user_tensor(tensor_t, TensorFlag flag = TT_Constant);
+    static void register_user_tensor(tensor_t, int64_t flag);
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Abs
 	virtual OperatorReturnType onnx_Abs(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y) {
@@ -1683,14 +1673,14 @@ struct YNXInferenceContextImpl : public InferenceContext {
         TypeProto proto;
 
         TypeProto_Tensor* p_tensor = proto.mutable_tensor_type();
-        p_tensor->set_elem_type( t->dtype_ );
+        p_tensor->set_elem_type( t->dtype() );
         auto* shape = p_tensor->mutable_shape();
 
         shape->clear_dim();
-        for (size_t i = 0; i < t->shape_.size(); i++) {
+        for (size_t i = 0; i < t->shape().size(); i++) {
             shape->add_dim();
             auto dim = shape->mutable_dim(i);
-            dim->set_dim_value( t->shape_[i] );
+            dim->set_dim_value( t->shape()[i] );
         }
         size_t index = input_num_;
         input_types_[index] = proto;
@@ -1919,7 +1909,7 @@ static void put_optional_tensor(ValueStack<TensorType>& stack, std::variant<void
     }
 
 namespace common {
-    struct Constant : NativeWord<TensorType> {
+    struct Tensor : NativeWord<TensorType> {
         tensor_t output;
 
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
@@ -1935,22 +1925,45 @@ namespace common {
             auto dtype = datatype_from_string(dtype_string);
 
             output = TensorType::create_undefined_user_tensor();
-            TensorType::register_user_tensor(output, TensorType::TT_Constant);
             output->reset(dtype, shape);
 
             put_tensor(stack, output);
         }
         virtual void run(ValueStack<TensorType>& stack) {
-            fetch_ints(stack);
-            fetch_string(stack);
-
             put_tensor(stack, output);
         }
 
+        NWORD_CREATOR_DEFINE_TENSORTYPE(Tensor)
+    };
+
+    struct Constant : NativeWord<TensorType> {
+        tensor_t output;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            auto values = fetch_floats(stack);
+
+            auto shape_ = fetch_ints(stack);
+            std::vector<size_t> shape;
+            for(size_t i = 0; i < shape_.size(); i++) {
+                shape.push_back( shape_[i] );
+            }
+
+            std::string dtype_string = fetch_string(stack);
+            auto dtype = datatype_from_string(dtype_string);
+
+            output = TensorType::create_undefined_user_tensor();
+            output->reset(dtype, shape, values);
+            put_tensor(stack, output);
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+            put_tensor(stack, output);
+        }
         NWORD_CREATOR_DEFINE_TENSORTYPE(Constant)
     };
 
-    struct ConstantScalar : NativeWord<TensorType> {
+    struct Scalar : NativeWord<TensorType> {
         tensor_t output;
 
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
@@ -1963,42 +1976,13 @@ namespace common {
 
             output = TensorType::create_undefined_user_tensor();
 
-            std::vector<size_t> shape;
             output->reset(dtype, value);
             put_tensor(stack, output);
         }
         virtual void run(ValueStack<TensorType>& stack) {
             put_tensor(stack, output);
         }
-
-        NWORD_CREATOR_DEFINE_TENSORTYPE(ConstantScalar)
-    };
-
-    struct Variable : NativeWord<TensorType> {
-        tensor_t output;
-
-        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            ValueStack<TensorType>& stack = rt;
-
-            auto shape_ = fetch_ints(stack);
-            std::vector<size_t> shape;
-            for(size_t i = 0; i < shape_.size(); i++) {
-                shape.push_back( shape_[i] );
-            }
-
-            std::string dtype_string = fetch_string(stack);
-            auto dtype = datatype_from_string(dtype_string);
-
-            output = TensorType::create_undefined_user_tensor();
-            output->reset(dtype, shape);
-
-            put_tensor(stack, output);
-        }
-        virtual void run(ValueStack<TensorType>& stack) {
-            put_tensor(stack, output);
-        }
-
-        NWORD_CREATOR_DEFINE_TENSORTYPE(Variable)
+        NWORD_CREATOR_DEFINE_TENSORTYPE(Scalar)
     };
 }
 
@@ -10845,9 +10829,10 @@ namespace tensor {
 //
 void register_all_onnx_defined_words( Runtime<TensorType>& runtime) {
 
+    runtime.new_nword("NewTensor", common::Tensor::creator);
+    runtime.new_nword("NewScalar", common::Scalar::creator);
     runtime.new_nword("NewConstant", common::Constant::creator);
-    runtime.new_nword("NewVariable", common::Variable::creator);
-    runtime.new_nword("NewScalar", common::ConstantScalar::creator);
+
     runtime.new_nword("onnx.RandomNormalLike", generator::RandomNormalLike::creator);
     runtime.new_nword("onnx.RandomNormal", generator::RandomNormal::creator);
     runtime.new_nword("onnx.RandomUniform", generator::RandomUniform::creator);
