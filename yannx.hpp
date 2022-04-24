@@ -724,7 +724,7 @@ private:
             }
 
             // check none value
-            if ( token == "#" ) {
+            if ( token == "#" || token == "none" ) {
                 nobj.type_ = SyntaxElement<YT>::T_String;
                 nobj.v_string = "";
                 target_code->push_back(nobj);
