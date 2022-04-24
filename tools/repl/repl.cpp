@@ -53,7 +53,7 @@ struct MyTensorType : public yannx_tt::TensorType {
             yannx_panic("Can't access tensor value from undefined tensor");
         }
         if ( ivalue_.size() == 0 && fvalue_.size() == 0) {
-            yannx_panic("Can't access tensor value from variable tensor ");
+            return nullptr;
         }
         if ( dtype_ == yannx_tt::YNX_FLOAT) {
             if ( fvalue_.size() == 0) {

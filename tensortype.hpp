@@ -1723,7 +1723,6 @@ struct YNXInferenceContextImpl : public InferenceContext {
                 for (size_t i = 0; i < n; i++) {
                     t.add_int64_data( d[i] );
                 }
-
                 input_datas_[index] = t;
             }
         } else {
@@ -1883,6 +1882,7 @@ static std::vector<tensor_t> fetch_tensors(ValueStack<TensorType>& stack) {
 
 static std::variant<void *, float> fetch_optional_float(ValueStack<TensorType>& stack) {
     if ( stack.top().is_none() ) {
+        stack.pop();
         return std::variant<void *, float>(nullptr);
     }
     return std::variant<void *, float>( fetch_float(stack) );
@@ -1890,6 +1890,7 @@ static std::variant<void *, float> fetch_optional_float(ValueStack<TensorType>& 
 
 static std::variant<void *, int64_t> fetch_optional_int(ValueStack<TensorType>& stack) {
     if ( stack.top().is_none() ) {
+        stack.pop();
         return std::variant<void *, int64_t>(nullptr);
     }
     return std::variant<void *, int64_t>( fetch_int(stack) );
@@ -1897,6 +1898,7 @@ static std::variant<void *, int64_t> fetch_optional_int(ValueStack<TensorType>& 
 
 static std::variant<void *, std::string> fetch_optional_string(ValueStack<TensorType>& stack) {
     if ( stack.top().is_none() ) {
+        stack.pop();
         return std::variant<void *, std::string>(nullptr);
     }
     return std::variant<void *, std::string>( fetch_string(stack) );
@@ -1904,6 +1906,7 @@ static std::variant<void *, std::string> fetch_optional_string(ValueStack<Tensor
 
 static std::variant<void *, tensor_t> fetch_optional_tensor(ValueStack<TensorType>& stack) {
     if ( stack.top().is_none() ) {
+        stack.pop();
         return std::variant<void *, tensor_t>(nullptr);
     }
     return std::variant<void *, tensor_t>( fetch_tensor(stack) );
@@ -1911,6 +1914,7 @@ static std::variant<void *, tensor_t> fetch_optional_tensor(ValueStack<TensorTyp
 
 static std::variant<void *, std::vector<float> > fetch_optional_floats(ValueStack<TensorType>& stack) {
     if ( stack.top().is_none() ) {
+        stack.pop();
         return std::variant<void *, std::vector<float> >(nullptr);
     }
     return std::variant<void *, std::vector<float> >( fetch_floats(stack) );
@@ -1918,6 +1922,7 @@ static std::variant<void *, std::vector<float> > fetch_optional_floats(ValueStac
 
 static std::variant<void *, std::vector<int64_t> > fetch_optional_ints(ValueStack<TensorType>& stack) {
     if ( stack.top().is_none() ) {
+        stack.pop();
         return std::variant<void *, std::vector<int64_t> >(nullptr);
     }
     return std::variant<void *, std::vector<int64_t> >( fetch_ints(stack) );
@@ -1925,6 +1930,7 @@ static std::variant<void *, std::vector<int64_t> > fetch_optional_ints(ValueStac
 
 static std::variant<void *, std::vector<std::string> > fetch_optional_strings(ValueStack<TensorType>& stack) {
     if ( stack.top().is_none() ) {
+        stack.pop();
         return std::variant<void *, std::vector<std::string>> (nullptr);
     }
     return std::variant<void *, std::vector<std::string> >( fetch_strings(stack) );
@@ -1963,14 +1969,14 @@ namespace common {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
+            std::string dtype_string = fetch_string(stack);
+            auto dtype = datatype_from_string(dtype_string);
+
             auto shape_ = fetch_ints(stack);
             std::vector<size_t> shape;
             for(size_t i = 0; i < shape_.size(); i++) {
                 shape.push_back( shape_[i] );
             }
-
-            std::string dtype_string = fetch_string(stack);
-            auto dtype = datatype_from_string(dtype_string);
 
             output = TensorType::create_undefined_user_tensor();
             output->reset(dtype, shape);
@@ -1990,7 +1996,8 @@ namespace common {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            auto values = fetch_floats(stack);
+            std::string dtype_string = fetch_string(stack);
+            auto dtype = datatype_from_string(dtype_string);
 
             auto shape_ = fetch_ints(stack);
             std::vector<size_t> shape;
@@ -1999,15 +2006,22 @@ namespace common {
                 shape.push_back( shape_[i] );
                 items_ = items_ * shape_[i];
             }
-            if ( items_ != values.size() ) {
-                yannx_panic("Create constant Tensor error, data size not eq shape!");
-            }
-
-            std::string dtype_string = fetch_string(stack);
-            auto dtype = datatype_from_string(dtype_string);
 
             output = TensorType::create_undefined_user_tensor();
-            output->reset(dtype, shape, (void *)values.data());
+            if ( dtype == YNX_FLOAT) {
+                auto values = fetch_floats(stack);
+                if ( items_ != values.size() ) {
+                    yannx_panic("Create constant Tensor error, data size not eq shape!");
+                }
+                output->reset(dtype, shape, (void *)values.data());
+            }
+            if ( dtype == YNX_INT64) {
+                auto values = fetch_ints(stack);
+                if ( items_ != values.size() ) {
+                    yannx_panic("Create constant Tensor error, data size not eq shape!");
+                }
+                output->reset(dtype, shape, (void *)values.data());
+            }
             put_tensor(stack, output);
         }
         virtual void run(ValueStack<TensorType>& stack) {
@@ -2022,14 +2036,19 @@ namespace common {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            auto value = fetch_float(stack);
-
             std::string dtype_string = fetch_string(stack);
             auto dtype = datatype_from_string(dtype_string);
 
             output = TensorType::create_undefined_user_tensor();
 
-            output->reset(dtype, (void *)&value);
+            if ( dtype == YNX_FLOAT) {
+                auto value = fetch_float(stack);
+                output->reset(dtype, (void *)&value);
+            }
+            if ( dtype == YNX_INT64) {
+                auto value = fetch_int(stack);
+                output->reset(dtype, (void *)&value);
+            }
             put_tensor(stack, output);
         }
         virtual void run(ValueStack<TensorType>& stack) {

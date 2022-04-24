@@ -6,9 +6,9 @@ def conv2d
     "in_size" !
     
     ; W
-    "YNX_FLOAT" ["out_size" @ "in_size" @ "kernel_size" @ dup ] NewConstant         
+    ["out_size" @ "in_size" @ "kernel_size" @ dup ] "YNX_FLOAT" NewTensor 
     ; B
-    "YNX_FLOAT" ["out_size" @] NewConstant                                      
+    ["out_size" @] "YNX_FLOAT" NewTensor                                      
     
     ; auto_pad, dilation, group, kernel, pads, strides
     "NOTSET" [1 1] 1 ["kernel_size" @ dup] ["padding" @ dup dup dup] ["stride_size" @ dup]             
@@ -27,8 +27,22 @@ def max_pool2d
 end
 
 def dropout
-    “YNX_FLOAT" NewScalar
+    "YNX_FLOAT" NewScalar
     # # onnx.Dropout 
+    drop
+end
+
+def linear
+    "out_size" !
+    "in_size" !
+
+    ; W
+    ["in_size" @ "out_size" @ ] "YNX_FLOAT" NewTensor 
+    onnx.MatMul
+
+    ; B
+    ["out_size" @] "YNX_FLOAT" NewTensor                                      
+    onnx.Add
 end
 
 def features
@@ -49,4 +63,25 @@ def features
     max_pool2d
 end
 
+def classifier
+    0.5 dropout
+    1 onnx.Flatten
+    9216 4096 linear
+    onnx.Relu
+
+    0.5 dropout
+    4096 4096 linear
+    onnx.Relu
+    
+    4096 1000 linear
+end
+
+
+;;
+;;  input is batchx3x244x244, output is batchx1000 
+;; 
+def alexnet
+    features
+    classifier
+end
 
