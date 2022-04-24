@@ -1994,8 +1994,13 @@ namespace common {
 
             auto shape_ = fetch_ints(stack);
             std::vector<size_t> shape;
+            size_t items_ = 1;
             for(size_t i = 0; i < shape_.size(); i++) {
                 shape.push_back( shape_[i] );
+                items_ = items_ * shape_[i];
+            }
+            if ( items_ != values.size() ) {
+                yannx_panic("Create constant Tensor error, data size not eq shape!");
             }
 
             std::string dtype_string = fetch_string(stack);
