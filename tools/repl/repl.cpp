@@ -31,14 +31,6 @@ bool readline(const std::string& prop, std::string& code) {
     return false;
 }
 
-size_t shape_items(const std::vector<size_t> shape) {
-    size_t items = 1;
-    for(size_t i = 0; i < shape.size(); i++) {
-        items = items * shape[i];
-    }
-    return items;
-}
-
 struct MyTensorType : public yannx_tt::TensorType {
     yannx_tt::TensorDataType dtype_;
     std::vector<size_t> shape_;
@@ -98,19 +90,19 @@ struct MyTensorType : public yannx_tt::TensorType {
         dtype_ = dtype;
         shape_ = shape;
 
-        auto items = shape_items(shape);
+        auto items_ = items();
         if ( dtype == yannx_tt::YNX_FLOAT ) {
-            fvalue_.resize(items, 0.0);
+            fvalue_.resize(items_, 0.0);
             const float* data = (const float*)pdata;
-            for (size_t i = 0; i < items; i++) {
+            for (size_t i = 0; i < items_; i++) {
                 fvalue_[i] = data[i];
             }
             return;
         }
         if ( dtype == yannx_tt::YNX_INT64 ) {
-            ivalue_.resize(items, 0.0);
+            ivalue_.resize(items_, 0.0);
             const int64_t* data = (const int64_t *)pdata;
-            for (size_t i = 0; i < items; i++) {
+            for (size_t i = 0; i < items_; i++) {
                 ivalue_[i] = data[i];
             }
             return;
