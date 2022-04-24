@@ -167,6 +167,17 @@ struct TensorType {
         return ss.str();
     }
 
+    size_t items() {
+        if ( dtype() == YNX_UNDEFINED ) {
+            return 0;
+        }
+        size_t n = 1;
+        auto shape_ = shape();
+        for ( size_t i = 0; i < shape_.size(); i++) {
+            n = n * shape_[i];
+        }
+        return n;
+    }
 
 
     //
@@ -1688,6 +1699,37 @@ struct YNXInferenceContextImpl : public InferenceContext {
         size_t index = input_num_;
         input_types_[index] = proto;
 
+        // converting tensortype to onnx's tensorproto
+        if ( t->dtype() == YNX_FLOAT) {
+            const float *d = (const float *)t->value();
+            if ( d != nullptr ) {
+                auto n = t->items();
+                TensorProto t;
+                t.set_data_type( TensorProto_DataType_FLOAT );
+                t.clear_float_data();
+                for (size_t i = 0; i < n; i++) {
+                    t.add_float_data( d[i] );
+                }
+
+                input_datas_[index] = t;
+            }
+        } else if ( t->dtype() == YNX_INT64 ) {
+            const int64_t *d = (const int64_t *)t->value();
+            if ( d != nullptr ) {
+                auto n = t->items();
+                TensorProto t;
+                t.set_data_type( TensorProto_DataType_INT64 );
+                t.clear_int64_data();
+                for (size_t i = 0; i < n; i++) {
+                    t.add_int64_data( d[i] );
+                }
+
+                input_datas_[index] = t;
+            }
+        } else {
+            yannx_panic("Can't convert data type from tt to onnx!");
+        }
+
         input_num_ ++;
     }
     void new_input(std::variant<void *, tensor_t> v) {
@@ -1769,6 +1811,9 @@ struct YNXInferenceContextImpl : public InferenceContext {
         return nullptr;
     }
     const TensorProto* getInputData(size_t index) const override {
+        if ( input_datas_.find(index) != input_datas_.end() ) {
+            return &( input_datas_.find(index)->second );
+        }
         return nullptr;
     }
 
