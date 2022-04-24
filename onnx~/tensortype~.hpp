@@ -292,7 +292,6 @@ struct YNXInferenceContextImpl : public InferenceContext {
                 for (size_t i = 0; i < n; i++) {
                     t.add_int64_data( d[i] );
                 }
-                std::cout << " ############## " << index << std::endl;
                 input_datas_[index] = t;
             }
         } else {
