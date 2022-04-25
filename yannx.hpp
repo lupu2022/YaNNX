@@ -406,7 +406,7 @@ public:
         return executor;
     }
 
-    void run(std::shared_ptr<UserWord<YT>> executor ) {
+    void forward(std::shared_ptr<UserWord<YT>> executor ) {
         if ( executor == nullptr) {
             yannx_panic("Can't run in uncompiled mode");
         }
@@ -600,8 +600,15 @@ private:
                 if ( std::get<1>(last) != '{' ) {
                     yannx_panic("Loop without head!");
                 }
+
+                auto loop_token = tokens[i+1];
+                if ( loop_token.at(0) != '%' ) {
+                    yannx_panic("Loop macro loop count must begin with a %!");
+                }
+                loop_token = loop_token.substr(1);
+
                 YNumber loop_count;
-                if ( ! _::parse_number( tokens[i+1], loop_count ) ) {
+                if ( ! _::parse_number( loop_token, loop_count ) ) {
                     yannx_panic("Loop macro must include a immediately loop count number!");
                 }
                 size_t loop_flag = std::get<0>(last);

@@ -160,10 +160,10 @@ int main(const int argc, const char* argv[] ) {
             code = code.substr(2);
             std::cout << "boostrap: " << code << std::endl;
             executor = runtime.boostrap(code);
-        } else if ( code == "r" ) {
+        } else if ( code == "f" ) {
             if ( executor != nullptr) {
                 auto start = std::chrono::high_resolution_clock::now();
-                runtime.run( executor );
+                runtime.forward( executor );
                 auto stop = std::chrono::high_resolution_clock::now();
 
                 auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);

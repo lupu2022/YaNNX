@@ -7,7 +7,7 @@ def conv1x1
     "in_size" !
 
     ; W
-    ["out_size" @ "in_size" @ 3 3 ] "YNX_FLOAT" NewTensor 
+    ["out_size" @ "in_size" @ 3 3 ] "YNX_FLOAT" ynx.NewTensor 
     ; B
     #
 
@@ -22,7 +22,7 @@ def conv3x3
     "in_size" !
 
     ; W
-    ["out_size" @ "in_size" @ 3 3 ] "YNX_FLOAT" NewTensor 
+    ["out_size" @ "in_size" @ 3 3 ] "YNX_FLOAT" ynx.NewTensor 
     ; B
     #
 
@@ -33,7 +33,7 @@ end
 
 def conv7x7
     ; W
-    [64 3 7 7 ] "YNX_FLOAT" NewTensor 
+    [64 3 7 7 ] "YNX_FLOAT" ynx.NewTensor 
     ; B
     #
 
@@ -45,10 +45,10 @@ end
 def batch_norm
     "out_feature" !
 
-    ["out_feature" @] "YNX_FLOAT" NewTensor     ; scale
-    ["out_feature" @] "YNX_FLOAT" NewTensor     ; B
-    ["out_feature" @] "YNX_FLOAT" NewTensor     ; input_mean
-    ["out_feature" @] "YNX_FLOAT" NewTensor     ; input_var
+    ["out_feature" @] "YNX_FLOAT" ynx.NewTensor     ; scale
+    ["out_feature" @] "YNX_FLOAT" ynx.NewTensor     ; B
+    ["out_feature" @] "YNX_FLOAT" ynx.NewTensor     ; input_mean
+    ["out_feature" @] "YNX_FLOAT" ynx.NewTensor     ; input_var
     # # #
     
     onnx.BatchNormalization
@@ -80,18 +80,18 @@ def linear
     "in_size" !
 
     ; W
-    ["in_size" @ "out_size" @ ] "YNX_FLOAT" NewTensor 
+    ["in_size" @ "out_size" @ ] "YNX_FLOAT" ynx.NewTensor 
     onnx.MatMul
 
     ; B
-    ["out_size" @] "YNX_FLOAT" NewTensor                                      
+    ["out_size" @] "YNX_FLOAT" ynx.NewTensor                                      
     onnx.Add
 end
 
 ;
 ; the components fro ResNet
 ;
-def basic_block_downsample
+def BasicBlock_DownSample
     "outplanes" !
     "inplanes" !
 
@@ -110,7 +110,7 @@ def basic_block_downsample
     onnx.Relu
 end
 
-def basic_block
+def BasicBlock
     "outplanes" !
     "inplanes" !
 
@@ -121,7 +121,7 @@ def basic_block
     "outplanes" @ batch_norm
 end
 
-def resLayer0
+def ResLayer0
     conv7x7
     64 batch_norm
     onnx.Relu
@@ -133,22 +133,22 @@ end
 ;
 def Resnet34
     ;layer 0
-    resLayer0
+    ResLayer0
     
     ;layer 1
-    { 64 64 BasicBlock }3
+    { 64 64 BasicBlock } %3
 
     ;layer 2
     64 128 BasicBlock_DownSample
-    { 128 128 BasicBlock }3
+    { 128 128 BasicBlock } %3
 
     ; layer 3
     128 256 BasicBlock_DownSample
-    { 128 128 BasicBlock }5
+    { 128 128 BasicBlock } %5
 
     ; layer 4
-    128 256 BasicBlock_DownSample
-    { 128 128 BasicBlock }2
+    256 512 BasicBlock_DownSample
+    { 512 512 BasicBlock } %2
 
     ; output
     avg_pool2d
