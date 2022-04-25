@@ -159,16 +159,17 @@ const char* word_template =  R"~~(
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
+#OUTPUT_BOOT#
 #ATTR#
 #INPUT#
-#OUTPUT_INIT#
 
 #ifdef USING_ONNX_IMPL
+#OUTPUT_ONNX#
 #ATTR_ONNX#
 #INPUT_ONNX#
             auto f = query_inference_function("#WORDNAME#");
             infer_.do_inference(f);
-#OUTPUT_INIT_ONNX#
+#OUTPUT_CHECK_ONNX#
 #endif
 
             if ( #CALL_API# != YNX_OK ) {
@@ -178,6 +179,8 @@ const char* word_template =  R"~~(
 #RETURN_OUTPUT#
         }
         virtual void run(ValueStack<TensorType>& stack) {
+
+#OUTPUT_RUN#
 #ATTR#
 #INPUT#
 
@@ -261,7 +264,6 @@ std::string impl_generate(const OpSchema& op) {
     }
     {
         std::ostringstream oss;
-        oss << "\tYNXInferenceContextImpl infer_(" << op.outputs().size() << ");" << std::endl;
         auto infos = op.attributes();
         for ( auto i = infos.rbegin(); i != infos.rend(); i++) {
             int opt = (i->second.required == 0);
@@ -313,7 +315,6 @@ std::string impl_generate(const OpSchema& op) {
         auto input_code = oss.str();
         replace_all(input_code, "\t", "            ");
         replace_all(code, "#INPUT_ONNX#", input_code);
-
     }
 
     //processing output
@@ -321,31 +322,83 @@ std::string impl_generate(const OpSchema& op) {
         auto allOutputs = op.outputs();
         {
             std::ostringstream oss;
-            for(size_t i = 0; i < allOutputs.size(); i++) {
-                int opt = allOutputs[i].GetOption();
-                std::string oname = allOutputs[i].GetName();
+            for(size_t ri = 0; ri < allOutputs.size(); ri++) {
+                size_t i = allOutputs.size() - ri - 1;
 
-                if ( opt == 0 ) {        // Single
+                std::string oname = allOutputs[i].GetName();
+                int opt = allOutputs[i].GetOption();
+                if ( opt == 0 ) {           // Single
                     oss << "\ttensor_t " << oname << ";" << std::endl;
-                } else if ( opt == 1) {  // Optional
+                } else if ( opt == 1 ) {    // Optional
                     oss << "\tstd::variant<void *, tensor_t> " << oname << ";" << std::endl;
-                } else {                 // Variadic
+                } else {                    // Variadic
                     oss << "\tstd::vector<tensor_t>" << oname << ";" << std::endl;
                 }
             }
-            std::string output_def = oss.str();
-            replace_all(output_def, "\t", "        ");
-            replace_all(code, "#OUTPUT_DEF#", output_def);
+            std::string output_init = oss.str();
+            replace_all(output_init, "\t", "        ");
+            replace_all(code, "#OUTPUT_DEF#", output_init);
+        }
+        {
+            std::ostringstream oss;
+            for(size_t ri = 0; ri < allOutputs.size(); ri++) {
+                size_t i = allOutputs.size() - ri - 1;
+
+                std::string oname = allOutputs[i].GetName();
+                int opt = allOutputs[i].GetOption();
+
+                if ( opt == 0 ) {
+                    oss << "\t" << oname << " = TensorType::create_undefined_user_tensor();" << std::endl;
+                } else if ( opt == 1) {
+                    oss << "\tif ( fetch_bool(stack) == true) {" << std::endl;
+                    oss << "\t    " << oname << " = TensorType::create_undefined_user_tensor();" << std::endl;
+                    oss << "\t}" << std::endl;
+                } else {
+
+                }
+            }
+            std::string output_init = oss.str();
+            replace_all(output_init, "\t", "            ");
+            replace_all(code, "#OUTPUT_BOOT#", output_init);
         }
 
         {
             std::ostringstream oss;
-            for(size_t i = 0; i < allOutputs.size(); i++) {
-                oss << "\tinfer_.check_output(" << i << ", " << allOutputs[i].GetName() << ");" << std::endl;
+            for(size_t ri = 0; ri < allOutputs.size(); ri++) {
+                size_t i = allOutputs.size() - ri - 1;
+
+                std::string oname = allOutputs[i].GetName();
+                int opt = allOutputs[i].GetOption();
+                if ( opt == 1 ) {
+                    oss << "\tfetch_bool(stack);" << std::endl;
+                }
             }
             std::string output_init = oss.str();
             replace_all(output_init, "\t", "            ");
-            replace_all(code, "#OUTPUT_INIT_ONNX#", output_init);
+            replace_all(code, "#OUTPUT_RUN#", output_init);
+        }
+
+        {
+            std::ostringstream oss;
+            oss << "\tstd::vector<size_t> outputs_;" << std::endl;
+            for(size_t i = 0; i < allOutputs.size(); i++) {
+                std::string oname = allOutputs[i].GetName();
+                int opt = allOutputs[i].GetOption();
+                if ( opt == 0 ) {           // Single
+                    oss << "\toutputs_.push_back(" << i << ");" << std::endl;
+                } else if ( opt == 1 ) {    // Optional
+                    oss << "\tif ( " << oname << ".index() != 0) {" << std::endl;
+                    oss << "\t    outputs_.push_back("  << i << ");" << std::endl;
+                    oss << "\t}" << std::endl;
+                } else {                    // Variadic
+                    oss << "\toutputs_.push_back(" << i << ");" << std::endl;
+                }
+            }
+            oss << "\tYNXInferenceContextImpl infer_(outputs_);" << std::endl;
+
+            std::string output_init = oss.str();
+            replace_all(output_init, "\t", "            ");
+            replace_all(code, "#OUTPUT_ONNX#", output_init);
         }
 
         {
@@ -353,13 +406,19 @@ std::string impl_generate(const OpSchema& op) {
             for(size_t i = 0; i < allOutputs.size(); i++) {
                 std::string oname = allOutputs[i].GetName();
                 int opt = allOutputs[i].GetOption();
-                if ( opt == 0 ) {        // Single
-                    oss << "\t" << oname << " = TensorType::create_undefined_user_tensor();" << std::endl;
+                if ( opt == 0 ) {           // Single
+                    oss << "\tinfer_.check_output(" << i << ", " << oname << ");" << std::endl;
+                } else if ( opt == 1 ) {    // Optional
+                    oss << "\tif ( " << oname << ".index() != 0) {" << std::endl;
+                    oss << "\t    infer_.check_output(" << i << ", " << oname << ");" << std::endl;
+                    oss << "\t}" << std::endl;
+                } else {                    // Variadic
+                    oss << "\tinfer_.check_output(" << i << ", " << oname << ");" << std::endl;
                 }
             }
             std::string output_init = oss.str();
             replace_all(output_init, "\t", "            ");
-            replace_all(code, "#OUTPUT_INIT#", output_init);
+            replace_all(code, "#OUTPUT_CHECK_ONNX#", output_init);
         }
     }
 
@@ -411,11 +470,14 @@ std::string impl_generate(const OpSchema& op) {
         std::ostringstream oss;
         auto allOutputs = op.outputs();
         for(size_t i = 0; i < allOutputs.size(); i++) {
+            std::string oname = allOutputs[i].GetName();
             int opt = allOutputs[i].GetOption();
             if ( opt == 0 ) {
-                oss << "\tput_tensor(stack, " << allOutputs[i].GetName() << ");" << std::endl;
+                oss << "\tput_tensor(stack, " << oname << ");" << std::endl;
             } else if ( opt == 1) {
-                oss << "\tput_optional_tensor(stack, " << allOutputs[i].GetName() << ");" << std::endl;
+                oss << "\tif ( " << oname << ".index() != 0) {" << std::endl;
+                oss << "\t    put_optional_tensor(stack, " << allOutputs[i].GetName() << ");" << std::endl;
+                oss << "\t}" << std::endl;
             } else {
                 oss << "\tput_tensors(stack, " << allOutputs[i].GetName() << ");" << std::endl;
             }

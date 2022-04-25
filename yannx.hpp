@@ -731,9 +731,26 @@ private:
             }
 
             // check none value
-            if ( token == "#" || token == "none" ) {
+            if ( token == "none" ) {
                 nobj.type_ = SyntaxElement<YT>::T_String;
                 nobj.v_string = "";
+                target_code->push_back(nobj);
+
+                i = i + 1;
+                continue;
+            }
+            // check boolean
+            if ( token == "true" ) {
+                nobj.type_ = SyntaxElement<YT>::T_Number;
+                nobj.v_number = 1;
+                target_code->push_back(nobj);
+
+                i = i + 1;
+                continue;
+            }
+            if ( token == "false" ) {
+                nobj.type_ = SyntaxElement<YT>::T_Number;
+                nobj.v_number = 0;
                 target_code->push_back(nobj);
 
                 i = i + 1;

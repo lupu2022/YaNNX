@@ -18,18 +18,18 @@ end
 def max_pool2d
     "NOTSET" 0 [1 1]            ; auto_pad, ceil_Mode, dilation
     [3 3]                       ; kernel_shape
-    [1 1 1 1]                   ; pads
+    [0 0 0 0]                   ; pads
     0                           ; storage_order
     [2 2]                       ; strides
-     
+    true                        ; we dpnt' want Indices 
+    
     onnx.MaxPool
-    drop                        ; we don't want Indices
+    drop
 end
 
 def dropout
     "YNX_FLOAT" ynx.NewScalar
-    # # onnx.Dropout 
-    drop
+    none none false onnx.Dropout
 end
 
 def linear
@@ -47,13 +47,14 @@ end
 
 def Features
     3 64 11 4 2 conv2d
-    onnx.Relu
-    max_pool2d
-    
-    64 192 5 1 2 conv2d
+    ?? 
     onnx.Relu
     max_pool2d
 
+    64 192 5 1 2 conv2d
+    onnx.Relu
+    max_pool2d
+    
     192 384 3 1 1 conv2d
     onnx.Relu
     384 256 3 1 1 conv2d
@@ -61,6 +62,8 @@ def Features
     256 256 3 1 1 conv2d
     onnx.Relu
     max_pool2d
+
+    ??
 end
 
 def Classifier
@@ -80,8 +83,12 @@ end
 ;;
 ;;  input is batchx3x244x244, output is batchx1000 
 ;; 
-def Alexnet
+def AlexNet
     Features
     Classifier
 end
 
+def test
+    [4 3 224 224] "YNX_FLOAT" ynx.NewTensor
+    AlexNet
+end

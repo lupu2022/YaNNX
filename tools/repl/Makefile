@@ -9,7 +9,7 @@ LINK = -L${ONNX_PATH}/lib  -L${PROTOBUF_PATH}/lib -lonnx -lonnx_proto -lprotobuf
 all: $(TARGET)
 
 $(TARGET): repl.cpp ../../yannx.hpp ../../tensortype.hpp
-	g++ $(FLAGS) -o $@ $^ $(INC) $(LINK) 
+	g++ $(FLAGS) $^ $(INC) $(LINK) -o $@  
 
 run: $(TARGET)
 	LD_LIBRARY_PATH=$(ONNX_PATH)/lib:$(PROTOBUF_PATH)/lib:$LD_LIBRARY_PATH gdb ./$(TARGET) 

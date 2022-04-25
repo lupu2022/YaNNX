@@ -156,3 +156,8 @@ def Resnet34
     512 1000 linear   
 end
 
+def test
+    [4 3 244 244] "YNX_FLOAT" ynx.NewTensor
+    Resnet34
+end
+

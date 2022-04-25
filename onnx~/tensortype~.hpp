@@ -216,14 +216,15 @@ struct YNXInferenceContextImpl : public InferenceContext {
     std::map<std::string, AttributeProto> attrs_;
     std::map<size_t, TypeProto> input_types_;
     std::map<size_t, TensorProto> input_datas_;
-    std::vector<TypeProto> output_types_;
+    std::map<size_t, TypeProto> output_types_;
 
     size_t input_num_;
-    const size_t output_num_;
-
-    YNXInferenceContextImpl(size_t output_num) : output_num_(output_num) {
+    YNXInferenceContextImpl(std::vector<size_t> outs_) {
         input_num_ = 0;
-        output_types_.resize( output_num_);
+        for (size_t i = 0; i < outs_.size(); i++) {
+            TypeProto t;
+            output_types_[ outs_[i] ] = t;
+        }
     }
 
     // setup interfaces
@@ -338,15 +339,11 @@ struct YNXInferenceContextImpl : public InferenceContext {
         }
 
         t->reset(dtype, shape);
-
         return YNX_OK;
     }
     int check_output(size_t index, std::variant<void *, tensor_t>& v) {
-        tensor_t output = TensorType::create_undefined_user_tensor();
-        if ( check_output(index, output) == YNX_OK ) {
-            v = output;
-        }
-        return YNX_OK;
+        yannx_assert(v.index() == 1, "Can't check output from a none tensor!");
+        return check_output(index, std::get<1>(v));
     }
     int check_output(size_t index, std::vector<tensor_t>& v) {
         yannx_panic("FIXME: how to check Variadic type");
@@ -372,15 +369,15 @@ struct YNXInferenceContextImpl : public InferenceContext {
         }
         return nullptr;
     }
-    TypeProto* getOutputType(size_t index) override {
-        if ( index < output_types_.size() ) {
-            return  &output_types_[index];
-        }
-        return nullptr;
-    }
     const TensorProto* getInputData(size_t index) const override {
         if ( input_datas_.find(index) != input_datas_.end() ) {
             return &( input_datas_.find(index)->second );
+        }
+        return nullptr;
+    }
+    TypeProto* getOutputType(size_t index) override {
+        if ( output_types_.find(index) != output_types_.end() ) {
+            return &( output_types_.find(index)->second );
         }
         return nullptr;
     }
@@ -401,6 +398,15 @@ struct YNXInferenceContextImpl : public InferenceContext {
 //
 //  some common help functions, and none-auto operators
 //
+static bool fetch_bool(ValueStack<TensorType>& stack) {
+    float v = stack.pop_number();
+    if ( v == 1) {
+        return true;
+    }
+    yannx_assert(v == 0, "boolean must be 1 or 0!");
+    return false;
+}
+
 static float fetch_float(ValueStack<TensorType>& stack) {
     float v = stack.pop_number();
     return v;
