@@ -21,10 +21,9 @@ def max_pool2d
     [0 0 0 0]                   ; pads
     0                           ; storage_order
     [2 2]                       ; strides
-    true                        ; we dpnt' want Indices 
+    false                        ; we dpnt' want Indices 
     
     onnx.MaxPool
-    drop
 end
 
 def dropout
@@ -47,7 +46,6 @@ end
 
 def Features
     3 64 11 4 2 conv2d
-    ?? 
     onnx.Relu
     max_pool2d
 
@@ -62,8 +60,6 @@ def Features
     256 256 3 1 1 conv2d
     onnx.Relu
     max_pool2d
-
-    ??
 end
 
 def Classifier
