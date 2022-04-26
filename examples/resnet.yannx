@@ -130,23 +130,19 @@ end
 ;
 ; completed network
 ;
-def Resnet34
-    ;layer 0
-    ResLayer0
-   
-    ;layer 1
-    { 64 64 BasicBlock } %3
 
-    ;layer 2
-    64 128 BasicBlock_DownSample
+def Resnet34
+    ResLayer0                       ; layer 0
+   
+    { 64 64 BasicBlock } %3         ; layer 1
+
+    64 128 BasicBlock_DownSample    ; layer 2
     { 128 128 BasicBlock } %3
 
-    ; layer 3
-    128 256 BasicBlock_DownSample
-    { 128 128 BasicBlock } %5
+    128 256 BasicBlock_DownSample   ; layer 3
+    { 256 256 BasicBlock } %5       
 
-    ; layer 4
-    256 512 BasicBlock_DownSample
+    256 512 BasicBlock_DownSample   ; layer 4
     { 512 512 BasicBlock } %2
 
     ; output
@@ -154,6 +150,7 @@ def Resnet34
     1 onnx.Flatten
     512 1000 linear   
 end
+
 
 def test
     [4 3 224 224] "YNX_FLOAT" ynx.NewTensor
