@@ -559,6 +559,8 @@ namespace common {
             put_tensor(stack, output);
         }
         virtual void run(ValueStack<TensorType>& stack) {
+            fetch_string(stack);
+            fetch_ints(stack);
             put_tensor(stack, output);
         }
 
@@ -600,6 +602,10 @@ namespace common {
             put_tensor(stack, output);
         }
         virtual void run(ValueStack<TensorType>& stack) {
+            fetch_string(stack);
+            fetch_ints(stack);
+            fetch_floats(stack);
+
             put_tensor(stack, output);
         }
         NWORD_CREATOR_DEFINE_TENSORTYPE(Constant)
@@ -627,6 +633,8 @@ namespace common {
             put_tensor(stack, output);
         }
         virtual void run(ValueStack<TensorType>& stack) {
+            fetch_string(stack);
+            fetch_float(stack);
             put_tensor(stack, output);
         }
         NWORD_CREATOR_DEFINE_TENSORTYPE(Scalar)
