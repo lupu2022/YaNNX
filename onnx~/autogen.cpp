@@ -322,6 +322,7 @@ std::string impl_generate(const OpSchema& op) {
         auto allOutputs = op.outputs();
         {
             std::ostringstream oss;
+            bool find_variadic = false;
             for(size_t ri = 0; ri < allOutputs.size(); ri++) {
                 size_t i = allOutputs.size() - ri - 1;
 
@@ -332,7 +333,14 @@ std::string impl_generate(const OpSchema& op) {
                 } else if ( opt == 1 ) {    // Optional
                     oss << "\tstd::variant<void *, tensor_t> " << oname << ";" << std::endl;
                 } else {                    // Variadic
-                    oss << "\tstd::vector<tensor_t>" << oname << ";" << std::endl;
+                    oss << "\tstd::vector<tensor_t> " << oname << ";" << std::endl;
+                    find_variadic = true;
+                }
+            }
+            if ( find_variadic ) {
+                if ( allOutputs.size() != 1) {
+                    std::cout << "Error: There is only one Variadic ouput!" << std::endl;
+                    exit(0);
                 }
             }
             std::string output_init = oss.str();
@@ -354,7 +362,7 @@ std::string impl_generate(const OpSchema& op) {
                     oss << "\t    " << oname << " = TensorType::create_undefined_user_tensor();" << std::endl;
                     oss << "\t}" << std::endl;
                 } else {
-
+                    oss << "\t" << oname << ".resize( fetch_int(stack) );" << std::endl;
                 }
             }
             std::string output_init = oss.str();
@@ -391,7 +399,9 @@ std::string impl_generate(const OpSchema& op) {
                     oss << "\t    outputs_.push_back("  << i << ");" << std::endl;
                     oss << "\t}" << std::endl;
                 } else {                    // Variadic
-                    oss << "\toutputs_.push_back(" << i << ");" << std::endl;
+                    oss << "\tfor ( size_t i = 0; i < " << oname << ".size(); i++) {" << std::endl;
+                    oss << "\t    outputs_.push_back(i);" << std::endl;
+                    oss << "\t}" << std::endl;
                 }
             }
             oss << "\tYNXInferenceContextImpl infer_(outputs_);" << std::endl;
@@ -410,10 +420,12 @@ std::string impl_generate(const OpSchema& op) {
                     oss << "\tinfer_.check_output(" << i << ", " << oname << ");" << std::endl;
                 } else if ( opt == 1 ) {    // Optional
                     oss << "\tif ( " << oname << ".index() != 0) {" << std::endl;
-                    oss << "\t    infer_.check_output(" << i << ", " << oname << ");" << std::endl;
+                    oss << "\t    infer_.check_output(" << i << ", std::get<1>(" << oname << "));" << std::endl;
                     oss << "\t}" << std::endl;
                 } else {                    // Variadic
-                    oss << "\tinfer_.check_output(" << i << ", " << oname << ");" << std::endl;
+                    oss << "\tfor ( size_t i = 0; i < " << oname << ".size(); i++) {" << std::endl;
+                    oss << "\t    infer_.check_output(i, " << oname << "[i]);" << std::endl;
+                    oss << "\t}" << std::endl;
                 }
             }
             std::string output_init = oss.str();

@@ -1772,14 +1772,6 @@ struct YNXInferenceContextImpl : public InferenceContext {
         t->reset(dtype, shape);
         return YNX_OK;
     }
-    int check_output(size_t index, std::variant<void *, tensor_t>& v) {
-        yannx_assert(v.index() == 1, "Can't check output from a none tensor!");
-        return check_output(index, std::get<1>(v));
-    }
-    int check_output(size_t index, std::vector<tensor_t>& v) {
-        yannx_panic("FIXME: how to check Variadic type");
-        return YNX_OUTPUT_ERROR;
-    }
 
     // InferenceContext apis
     size_t getNumInputs() const override {
@@ -2073,14 +2065,14 @@ namespace common {
 
     struct Register : NativeWord<TensorType> {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            auto t = fetch_tensor(rt);
             auto flag = fetch_int(rt);
+            auto t = fetch_tensor(rt);
             TensorType::register_user_tensor(t, flag);
             rt.push_tensor(t);
         }
         virtual void run(ValueStack<TensorType>& stack) {
-            auto t = fetch_tensor(stack);
             fetch_int(stack);
+            auto t = fetch_tensor(stack);
             stack.push_tensor(t);
         }
         NWORD_CREATOR_DEFINE_TENSORTYPE(Register)
@@ -4952,7 +4944,7 @@ namespace math {
             infer_.do_inference(f);
             infer_.check_output(0, output);
             if ( log_prob.index() != 0) {
-                infer_.check_output(1, log_prob);
+                infer_.check_output(1, std::get<1>(log_prob));
             }
 
 #endif
@@ -6645,7 +6637,7 @@ namespace nn {
             infer_.do_inference(f);
             infer_.check_output(0, output);
             if ( mask.index() != 0) {
-                infer_.check_output(1, mask);
+                infer_.check_output(1, std::get<1>(mask));
             }
 
 #endif
@@ -6742,7 +6734,7 @@ namespace nn {
             infer_.do_inference(f);
             infer_.check_output(0, Y);
             if ( Indices.index() != 0) {
-                infer_.check_output(1, Indices);
+                infer_.check_output(1, std::get<1>(Indices));
             }
 
 #endif
@@ -7479,10 +7471,10 @@ namespace nn {
             infer_.do_inference(f);
             infer_.check_output(0, Y);
             if ( running_mean.index() != 0) {
-                infer_.check_output(1, running_mean);
+                infer_.check_output(1, std::get<1>(running_mean));
             }
             if ( running_var.index() != 0) {
-                infer_.check_output(2, running_var);
+                infer_.check_output(2, std::get<1>(running_var));
             }
 
 #endif
@@ -9274,13 +9266,13 @@ namespace rnn {
             auto f = query_inference_function("LSTM");
             infer_.do_inference(f);
             if ( Y.index() != 0) {
-                infer_.check_output(0, Y);
+                infer_.check_output(0, std::get<1>(Y));
             }
             if ( Y_h.index() != 0) {
-                infer_.check_output(1, Y_h);
+                infer_.check_output(1, std::get<1>(Y_h));
             }
             if ( Y_c.index() != 0) {
-                infer_.check_output(2, Y_c);
+                infer_.check_output(2, std::get<1>(Y_c));
             }
 
 #endif
@@ -9420,10 +9412,10 @@ namespace rnn {
             auto f = query_inference_function("GRU");
             infer_.do_inference(f);
             if ( Y.index() != 0) {
-                infer_.check_output(0, Y);
+                infer_.check_output(0, std::get<1>(Y));
             }
             if ( Y_h.index() != 0) {
-                infer_.check_output(1, Y_h);
+                infer_.check_output(1, std::get<1>(Y_h));
             }
 
 #endif
@@ -9550,10 +9542,10 @@ namespace rnn {
             auto f = query_inference_function("RNN");
             infer_.do_inference(f);
             if ( Y.index() != 0) {
-                infer_.check_output(0, Y);
+                infer_.check_output(0, std::get<1>(Y));
             }
             if ( Y_h.index() != 0) {
-                infer_.check_output(1, Y_h);
+                infer_.check_output(1, std::get<1>(Y_h));
             }
 
 #endif
@@ -10506,11 +10498,12 @@ namespace tensor {
 
 
     struct Split : NativeWord<TensorType> {
-        std::vector<tensor_t>outputs;
+        std::vector<tensor_t> outputs;
 
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
+            outputs.resize( fetch_int(stack) );
 
             auto axis = fetch_optional_int(stack);
 
@@ -10520,7 +10513,9 @@ namespace tensor {
 
 #ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
-            outputs_.push_back(0);
+            for ( size_t i = 0; i < outputs.size(); i++) {
+                outputs_.push_back(i);
+            }
             YNXInferenceContextImpl infer_(outputs_);
 
             if ( axis.index() != 0) {
@@ -10532,7 +10527,9 @@ namespace tensor {
 
             auto f = query_inference_function("Split");
             infer_.do_inference(f);
-            infer_.check_output(0, outputs);
+            for ( size_t i = 0; i < outputs.size(); i++) {
+                infer_.check_output(i, outputs[i]);
+            }
 
 #endif
 
@@ -10897,13 +10894,13 @@ namespace tensor {
             infer_.do_inference(f);
             infer_.check_output(0, Y);
             if ( indices.index() != 0) {
-                infer_.check_output(1, indices);
+                infer_.check_output(1, std::get<1>(indices));
             }
             if ( inverse_indices.index() != 0) {
-                infer_.check_output(2, inverse_indices);
+                infer_.check_output(2, std::get<1>(inverse_indices));
             }
             if ( counts.index() != 0) {
-                infer_.check_output(3, counts);
+                infer_.check_output(3, std::get<1>(counts));
             }
 
 #endif

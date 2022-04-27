@@ -341,14 +341,6 @@ struct YNXInferenceContextImpl : public InferenceContext {
         t->reset(dtype, shape);
         return YNX_OK;
     }
-    int check_output(size_t index, std::variant<void *, tensor_t>& v) {
-        yannx_assert(v.index() == 1, "Can't check output from a none tensor!");
-        return check_output(index, std::get<1>(v));
-    }
-    int check_output(size_t index, std::vector<tensor_t>& v) {
-        yannx_panic("FIXME: how to check Variadic type");
-        return YNX_OUTPUT_ERROR;
-    }
 
     // InferenceContext apis
     size_t getNumInputs() const override {
@@ -642,14 +634,14 @@ namespace common {
 
     struct Register : NativeWord<TensorType> {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            auto t = fetch_tensor(rt);
             auto flag = fetch_int(rt);
+            auto t = fetch_tensor(rt);
             TensorType::register_user_tensor(t, flag);
             rt.push_tensor(t);
         }
         virtual void run(ValueStack<TensorType>& stack) {
-            auto t = fetch_tensor(stack);
             fetch_int(stack);
+            auto t = fetch_tensor(stack);
             stack.push_tensor(t);
         }
         NWORD_CREATOR_DEFINE_TENSORTYPE(Register)
