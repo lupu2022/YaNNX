@@ -1231,7 +1231,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#RoiAlign
-	virtual OperatorReturnType onnx_RoiAlign(/*inputs:*/ tensor_t X, tensor_t rois, tensor_t batch_indices, /*outputs:*/ tensor_t Y, /*attributes:*/ std::variant<void *, std::string > mode, std::variant<void *, int64_t > output_height, std::variant<void *, int64_t > output_width, std::variant<void *, int64_t > sampling_ratio, std::variant<void *, float > spatial_scale) {
+	virtual OperatorReturnType onnx_RoiAlign(/*inputs:*/ tensor_t X, tensor_t rois, tensor_t batch_indices, /*outputs:*/ tensor_t Y, /*attributes:*/ std::variant<void *, std::string > coordinate_transformation_mode, std::variant<void *, std::string > mode, std::variant<void *, int64_t > output_height, std::variant<void *, int64_t > output_width, std::variant<void *, int64_t > sampling_ratio, std::variant<void *, float > spatial_scale) {
 #ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
 #else
@@ -8104,6 +8104,7 @@ namespace object_detection {
             auto output_width = fetch_optional_int(stack);
             auto output_height = fetch_optional_int(stack);
             auto mode = fetch_optional_string(stack);
+            auto coordinate_transformation_mode = fetch_optional_string(stack);
 
             auto batch_indices = fetch_tensor(stack);
             auto rois = fetch_tensor(stack);
@@ -8130,6 +8131,9 @@ namespace object_detection {
             if ( mode.index() != 0) {
                 infer_.new_attr("mode", std::get<1>(mode) );
             }
+            if ( coordinate_transformation_mode.index() != 0) {
+                infer_.new_attr("coordinate_transformation_mode", std::get<1>(coordinate_transformation_mode) );
+            }
 
             infer_.new_input(X);
             infer_.new_input(rois);
@@ -8141,7 +8145,7 @@ namespace object_detection {
 
 #endif
 
-            if ( X->onnx_RoiAlign(X, rois, batch_indices, Y, mode, output_height, output_width, sampling_ratio, spatial_scale) != YNX_OK ) {
+            if ( X->onnx_RoiAlign(X, rois, batch_indices, Y, coordinate_transformation_mode, mode, output_height, output_width, sampling_ratio, spatial_scale) != YNX_OK ) {
                 yannx_panic("API: RoiAlign  return error!");
             }
 
@@ -8156,13 +8160,14 @@ namespace object_detection {
             auto output_width = fetch_optional_int(stack);
             auto output_height = fetch_optional_int(stack);
             auto mode = fetch_optional_string(stack);
+            auto coordinate_transformation_mode = fetch_optional_string(stack);
 
             auto batch_indices = fetch_tensor(stack);
             auto rois = fetch_tensor(stack);
             auto X = fetch_tensor(stack);
 
 
-            if ( X->onnx_RoiAlign(X, rois, batch_indices, Y, mode, output_height, output_width, sampling_ratio, spatial_scale) != YNX_OK ) {
+            if ( X->onnx_RoiAlign(X, rois, batch_indices, Y, coordinate_transformation_mode, mode, output_height, output_width, sampling_ratio, spatial_scale) != YNX_OK ) {
                 yannx_panic("API: RoiAlign  return error!");
             }
 
