@@ -11918,10 +11918,10 @@ namespace tensor {
 //
 void register_all_onnx_defined_words( Runtime<TensorType>& runtime) {
 
-    runtime.new_nword("ynx.NewTensor", common::Tensor::creator);
-    runtime.new_nword("ynx.NewScalar", common::Scalar::creator);
-    runtime.new_nword("ynx.NewConstant", common::Constant::creator);
-    runtime.new_nword("ynx.Register", common::Register::creator);
+    runtime.new_nword("ynx.NewTensor~", common::Tensor::creator);
+    runtime.new_nword("ynx.NewScalar~", common::Scalar::creator);
+    runtime.new_nword("ynx.NewConstant~", common::Constant::creator);
+    runtime.new_nword("ynx.Register~", common::Register::creator);
 
     runtime.new_nword("onnx.RandomNormalLike", generator::RandomNormalLike::creator);
     runtime.new_nword("onnx.RandomNormal", generator::RandomNormal::creator);

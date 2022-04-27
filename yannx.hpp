@@ -1000,6 +1000,9 @@ template<class YT>
 void Runtime<YT>::register_builtin_native_words() {
     new_nword("@", builtin::Get<YT>::creator);
     new_nword("!", builtin::Set<YT>::creator);
+    new_nword("get~", builtin::Get<YT>::creator);
+    new_nword("set~", builtin::Set<YT>::creator);
+
     new_nword("?", builtin::PrintOne<YT>::creator);
     new_nword("??", builtin::PrintAll<YT>::creator);
 

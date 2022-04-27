@@ -7,10 +7,10 @@ def conv2d
     
     ; W
     ["out_size" @ "in_size" @ "kernel_size" @ dup ] 
-    "YNX_FLOAT" ynx.NewTensor 0 ynx.Register
+    "YNX_FLOAT" ynx.NewTensor~ 0 ynx.Register~
 
     ; B
-    ["out_size" @] "YNX_FLOAT" ynx.NewTensor 0 ynx.Register                                      
+    ["out_size" @] "YNX_FLOAT" ynx.NewTensor~ 0 ynx.Register~                                      
     
     ; auto_pad, dilation, group, kernel, pads, strides
     "NOTSET" [1 1] 1 ["kernel_size" @ dup] ["padding" @ dup dup dup] ["stride_size" @ dup]             
@@ -29,7 +29,7 @@ def max_pool2d
 end
 
 def dropout
-    "YNX_FLOAT" ynx.NewScalar
+    "YNX_FLOAT" ynx.NewScalar~
     none none false onnx.Dropout
 end
 
@@ -38,11 +38,11 @@ def linear
     "in_size" !
 
     ; W
-    ["in_size" @ "out_size" @ ] "YNX_FLOAT" ynx.NewTensor 0 ynx.Register 
+    ["in_size" @ "out_size" @ ] "YNX_FLOAT" ynx.NewTensor~ 0 ynx.Register~ 
     onnx.MatMul
 
     ; B
-    ["out_size" @] "YNX_FLOAT" ynx.NewTensor 0 ynx.Register 
+    ["out_size" @] "YNX_FLOAT" ynx.NewTensor~ 0 ynx.Register~ 
     onnx.Add
 end
 
@@ -87,6 +87,6 @@ def AlexNet
 end
 
 def test
-    [4 3 224 224] "YNX_FLOAT" ynx.NewTensor
+    [4 3 224 224] "YNX_FLOAT" ynx.NewTensor~
     AlexNet
 end
