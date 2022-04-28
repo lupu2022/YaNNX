@@ -1,5 +1,9 @@
 .vscode
-tools/repl/repl
-onnx~/autogen
 
+onnx~/autogen
 onnx~/tensortype.hpp
+
+tools/repl/repl
+
+backend/test_dnnl
+backend/test_cuda

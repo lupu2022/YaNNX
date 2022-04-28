@@ -1,0 +1,18 @@
+.PHONY: all
+
+TARGET = test_dnnl
+
+FLAGS = -std=c++17 -Wall -g -DONNX_NAMESPACE=onnx -DONNX_ML=0 
+INC = -I.. -I${ONNX_PATH}/include -I$(PROTOBUF_PATH)/include -I${DNNL_PATH}/include 
+LINK = -L${ONNX_PATH}/lib  -L${PROTOBUF_PATH}/lib -L${DNNL_PATH}/lib -lonnx -lonnx_proto -lprotobuf -ldnnl -lpthread 
+
+all: $(TARGET)
+
+$(TARGET): test_dnnl.cpp dnnl/impl.hpp 
+	g++ $(FLAGS) test_dnnl.cpp $(INC) $(LINK) -o $@  
+
+run: $(TARGET)
+	LD_LIBRARY_PATH=$(ONNX_PATH)/lib:$(PROTOBUF_PATH)/lib:${DNNL_PATH}/lib:$LD_LIBRARY_PATH ./$(TARGET) 
+
+clean:
+	rm -f $(TARGET)

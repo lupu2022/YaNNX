@@ -5,20 +5,24 @@
 #include <cstring>
 #include <cmath>
 
+#include <yannx.hpp>
+#include <tensortype.hpp>
+
 #include "dnnl_help.hpp"
 
 namespace yannx { namespace dnnl {
 
-template <DataType _DTYPE_>
-struct CPUTensor : public TensorCalculusAPI {
+template <tt::TensorDataType _DTYPE_>
+struct CPUTensor : public yanxx::tt::TensorType  {
     ~CPUTensor() {
         release();
     }
-    // buila a dense plain layout tensor
-    CPUTensor(const ShapeType& shape) : shape_(shape.vec()), strides_(shape.dense_strides()) {
-        tt_assert(shape_.size() != 0, "Can't build tensor with zero shape!");
 
-        DataType tt_dtype = _DTYPE_;
+    // buila a dense plain layout tensor
+    CPUTensor(const std::vector<size_t>& shape) : shape_(shape) {
+        yannx_assert(shape_.size() != 0, "Can't build tensor with zero shape!");
+
+        tt::TensorDataType tt_dtype = _DTYPE_;
         dtype_ = dnnl_help::tt_type_to_dnnl_type(tt_dtype);
 
         pd_ = nullptr;
@@ -31,11 +35,10 @@ struct CPUTensor : public TensorCalculusAPI {
     }
 
     // buila arbitrary layout tensor with memory
-    CPUTensor(const ShapeType& shape, dnnl_memory_t mem, dnnl_primitive_desc_t pd)
-        : shape_(shape.vec()), strides_(shape.dense_strides()) {
-        tt_assert(shape_.size() != 0, "Can't build tensor with zero shape!");
+    CPUTensor(const std::vector<size_t>& shape, dnnl_memory_t mem, dnnl_primitive_desc_t pd) : shape_(shape) {
+        yannx_assert(shape_.size() != 0, "Can't build tensor with zero shape!");
 
-        DataType tt_dtype = _DTYPE_;
+        tt::TensorDataType tt_dtype = _DTYPE_;
         dtype_ = dnnl_help::tt_type_to_dnnl_type(tt_dtype);
 
         pd_ = pd;
@@ -46,9 +49,6 @@ struct CPUTensor : public TensorCalculusAPI {
                                                 dtype_,
                                                 dnnl_help::ndim_to_mem_plain_tag(shape_.size())));
     }
-
-public:
-    #include "api.inc"
 
 private:
     // fast access
@@ -74,16 +74,6 @@ private:
     }
     const std::vector<size_t>& shape() {
         return shape_;
-    }
-    const std::vector<size_t>& strides() {
-        return strides_;
-    }
-    uint64_t items() {
-        uint64_t total = 1;
-        for (size_t i = 0; i < shape().size(); i++) {
-            total = total * shape()[i];
-        }
-        return total;
     }
 
     // layout management
@@ -153,19 +143,8 @@ private:
     dnnl_data_type_t                dtype_;
 
     const std::vector<size_t>     shape_;
-    const std::vector<size_t>     strides_;
-
-    friend dnnl_memory_t combo_scale_shift(cpu_float_t* scale, cpu_float_t* shift);
-
-    // access member for <int> to <float> each other
-    friend struct CPUTensor<DataType::Float>;
-    //friend struct CPUTensor<DataType::Int>;
 };
 
-using cpu_float_t = tt::dnnl::CPUTensor<DataType::Float>;
-cpu_float_t* build_dense_plain_float(const ShapeType& shape);
-
 }}
-
 
 #endif
