@@ -40,7 +40,7 @@ namespace yannx { namespace dnnl { namespace dnnl_help {
     }
 
     inline dnnl_data_type_t tt_type_to_dnnl_type(tt::TensorDataType dtype) {
-        if (dtype == TensorDataType::YNX_FLOAT) {
+        if (dtype == tt::YNX_FLOAT) {
             return dnnl_f32;
         }
         yannx_panic("Can't be here!");

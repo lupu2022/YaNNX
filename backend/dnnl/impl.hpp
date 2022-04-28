@@ -13,7 +13,7 @@
 namespace yannx { namespace dnnl {
 
 template <tt::TensorDataType _DTYPE_>
-struct CPUTensor : public yanxx::tt::TensorType  {
+struct CPUTensor : public yannx::tt::TensorType  {
     ~CPUTensor() {
         release();
     }

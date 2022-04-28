@@ -2,7 +2,7 @@
 //  this file is geneated by onnx~/autogen
 //
 
-#ifndef _YANXX_TENSORTYPE_HPP_
+#ifndef _YANNX_TENSORTYPE_HPP_
 #define _YANNX_TENSORTYPE_HPP_
 
 #include <vector>
