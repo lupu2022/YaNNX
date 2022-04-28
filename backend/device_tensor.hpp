@@ -146,6 +146,17 @@ private:
 
 namespace yannx { namespace tt {
 
+std::shared_ptr<TensorType> TensorType::create_undefined_user_tensor() {
+    auto* p = new DeviceTensor(DeviceTensor::DEVICE_CPU);
+    std::shared_ptr<TensorType> ret(p);
+    return ret;
+}
+
+void  TensorType::register_user_tensor(std::shared_ptr<TensorType> tensor, int64_t flag) {
+
+}
+
+
 // reset to a normal tensor
 void DeviceTensor::reset(TensorDataType dtype, std::vector<size_t>& shape) {
     yannx_assert(dtype == YNX_UNDEFINED, "Can't reset a typed tensor!");

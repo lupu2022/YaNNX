@@ -22,7 +22,6 @@
 using namespace onnx;
 #endif
 
-
 //
 //  A simple onnx based (type and shape inference only, or a pure dummy tensor ) Tensor.following ONNX IR
 //  https://github.com/onnx/onnx/blob/main/docs/IR.md
@@ -142,6 +141,7 @@ using tensor_t = std::shared_ptr<TensorType>;
 
 struct TensorType {
     TensorType() { }
+    virtual ~TensorType() {}
 
     virtual TensorDataType dtype() = 0;
     virtual const std::vector<size_t>& shape() = 0;
@@ -176,7 +176,6 @@ struct TensorType {
         }
         return n;
     }
-
 
     //
     //  User must be re-implement, return user side undefined tensor!
