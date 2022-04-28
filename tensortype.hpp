@@ -29,9 +29,7 @@ using namespace onnx;
 //  https://github.com/onnx/onnx/blob/main/docs/Operators.md
 //
 
-using namespace yannx;
-
-namespace yannx_tt {
+namespace yannx { namespace tt {
 
 enum OperatorReturnType {
     YNX_OK = 0,
@@ -12091,5 +12089,5 @@ void register_all_onnx_defined_words( Runtime<TensorType>& runtime) {
 
 }
 
-}
+}}
 #endif

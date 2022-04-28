@@ -31,17 +31,17 @@ bool readline(const std::string& prop, std::string& code) {
     return false;
 }
 
-struct MyTensorType : public yannx_tt::TensorType {
-    yannx_tt::TensorDataType dtype_;
+struct MyTensorType : public yannx::tt::TensorType {
+    yannx::tt::TensorDataType dtype_;
     std::vector<size_t> shape_;
     std::vector<float> fvalue_;
     std::vector<int64_t> ivalue_;
 
     MyTensorType() {
-        dtype_ = yannx_tt::YNX_UNDEFINED;
+        dtype_ = yannx::tt::YNX_UNDEFINED;
     }
 
-    yannx_tt::TensorDataType dtype() override {
+    yannx::tt::TensorDataType dtype() override {
         return dtype_;
     }
     const std::vector<size_t>& shape() override {
@@ -49,19 +49,19 @@ struct MyTensorType : public yannx_tt::TensorType {
     }
 
     const void* value() override {
-        if ( dtype_ == yannx_tt::YNX_UNDEFINED ) {
+        if ( dtype_ == yannx::tt::YNX_UNDEFINED ) {
             yannx_panic("Can't access tensor value from undefined tensor");
         }
         if ( ivalue_.size() == 0 && fvalue_.size() == 0) {
             return nullptr;
         }
-        if ( dtype_ == yannx_tt::YNX_FLOAT) {
+        if ( dtype_ == yannx::tt::YNX_FLOAT) {
             if ( fvalue_.size() == 0) {
                 return nullptr;
             }
             return &fvalue_[0];
         }
-        if ( dtype_ == yannx_tt::YNX_INT64) {
+        if ( dtype_ == yannx::tt::YNX_INT64) {
             if ( ivalue_.size() == 0) {
                 return nullptr;
             }
@@ -70,28 +70,28 @@ struct MyTensorType : public yannx_tt::TensorType {
         return nullptr;
     }
 
-    void reset(yannx_tt::TensorDataType dtype, std::vector<size_t>& shape) override {
-        if ( dtype_ != yannx_tt::YNX_UNDEFINED ) {
+    void reset(yannx::tt::TensorDataType dtype, std::vector<size_t>& shape) override {
+        if ( dtype_ != yannx::tt::YNX_UNDEFINED ) {
             yannx_panic("Can't reset tensor more than once");
         }
-        yannx_assert( dtype != yannx_tt::YNX_UNDEFINED, "Can't reset tensor with undefined");
+        yannx_assert( dtype != yannx::tt::YNX_UNDEFINED, "Can't reset tensor with undefined");
         yannx_assert( shape.size() != 0, "Can't reset to scalar using this function");
 
         dtype_ = dtype;
         shape_ = shape;
     }
-    void reset(yannx_tt::TensorDataType dtype, std::vector<size_t>& shape, const void* pdata) override {
-        if ( dtype_ != yannx_tt::YNX_UNDEFINED ) {
+    void reset(yannx::tt::TensorDataType dtype, std::vector<size_t>& shape, const void* pdata) override {
+        if ( dtype_ != yannx::tt::YNX_UNDEFINED ) {
             yannx_panic("Can't reset tensor more than once");
         }
-        yannx_assert( dtype != yannx_tt::YNX_UNDEFINED, "Can't reset tensor with undefined");
+        yannx_assert( dtype != yannx::tt::YNX_UNDEFINED, "Can't reset tensor with undefined");
         yannx_assert( shape.size() != 0, "Can't reset to scalar using this function");
 
         dtype_ = dtype;
         shape_ = shape;
 
         auto items_ = items();
-        if ( dtype == yannx_tt::YNX_FLOAT ) {
+        if ( dtype == yannx::tt::YNX_FLOAT ) {
             fvalue_.resize(items_, 0.0);
             const float* data = (const float*)pdata;
             for (size_t i = 0; i < items_; i++) {
@@ -99,7 +99,7 @@ struct MyTensorType : public yannx_tt::TensorType {
             }
             return;
         }
-        if ( dtype == yannx_tt::YNX_INT64 ) {
+        if ( dtype == yannx::tt::YNX_INT64 ) {
             ivalue_.resize(items_, 0.0);
             const int64_t* data = (const int64_t *)pdata;
             for (size_t i = 0; i < items_; i++) {
@@ -109,17 +109,17 @@ struct MyTensorType : public yannx_tt::TensorType {
         }
         yannx_panic("Reset tensor with un-support data type!");
     }
-    void reset(yannx_tt::TensorDataType dtype, const void* pvalue) override {
-        if ( dtype_ != yannx_tt::YNX_UNDEFINED ) {
+    void reset(yannx::tt::TensorDataType dtype, const void* pvalue) override {
+        if ( dtype_ != yannx::tt::YNX_UNDEFINED ) {
             yannx_panic("Can't reset tensor more than once");
         }
         dtype_ = dtype;
 
-        if ( dtype == yannx_tt::YNX_FLOAT ) {
+        if ( dtype == yannx::tt::YNX_FLOAT ) {
             fvalue_.push_back( *(const float *)pvalue);
             return;
         }
-        if ( dtype == yannx_tt::YNX_INT64 ) {
+        if ( dtype == yannx::tt::YNX_INT64 ) {
             ivalue_.push_back( *(const int64_t *)pvalue);
             return;
         }
@@ -127,7 +127,7 @@ struct MyTensorType : public yannx_tt::TensorType {
     }
 };
 
-namespace yannx_tt {
+namespace yannx::tt {
     std::shared_ptr<TensorType> TensorType::create_undefined_user_tensor() {
         return std::make_shared<MyTensorType>();
     }
@@ -137,8 +137,8 @@ namespace yannx_tt {
 }
 
 int main(const int argc, const char* argv[] ) {
-    yannx::Runtime<yannx_tt::TensorType> runtime;
-    yannx_tt::register_all_onnx_defined_words(runtime);
+    yannx::Runtime<yannx::tt::TensorType> runtime;
+    yannx::tt::register_all_onnx_defined_words(runtime);
 
     // 0. load all code to one string
     std::string txt;
@@ -154,7 +154,7 @@ int main(const int argc, const char* argv[] ) {
 
     // 2. entering command loop
     std::string code;
-    std::shared_ptr<yannx::UserWord<yannx_tt::TensorType>> executor;
+    std::shared_ptr<yannx::UserWord<yannx::tt::TensorType>> executor;
     while (readline(">> ", code)) {
         if ( code.find("b ") == 0) {
             code = code.substr(2);
