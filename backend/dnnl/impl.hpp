@@ -13,16 +13,22 @@
 namespace yannx { namespace dnnl {
 
 template <tt::TensorDataType _DTYPE_>
-struct CPUTensor : public yannx::tt::TensorType  {
+struct CPUTensor : public tt::TensorType  {
     ~CPUTensor() {
         release();
     }
 
+    CPUTensor() {
+        tt::TensorDataType tt_dtype = _DTYPE_;
+    }
+
     // buila a dense plain layout tensor
     CPUTensor(const std::vector<size_t>& shape) : shape_(shape) {
-        yannx_assert(shape_.size() != 0, "Can't build tensor with zero shape!");
-
         tt::TensorDataType tt_dtype = _DTYPE_;
+
+        yannx_assert(shape_.size() != 0, "Can't build tensor with zero shape!");
+        yannx_assert(tt_dtype != tt::YNX_UNDEFINED);
+
         dtype_ = dnnl_help::tt_type_to_dnnl_type(tt_dtype);
 
         pd_ = nullptr;
