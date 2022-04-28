@@ -18,16 +18,12 @@ struct CPUTensor : public tt::TensorType  {
         release();
     }
 
-    CPUTensor() {
-        tt::TensorDataType tt_dtype = _DTYPE_;
-    }
-
     // buila a dense plain layout tensor
     CPUTensor(const std::vector<size_t>& shape) : shape_(shape) {
         tt::TensorDataType tt_dtype = _DTYPE_;
 
         yannx_assert(shape_.size() != 0, "Can't build tensor with zero shape!");
-        yannx_assert(tt_dtype != tt::YNX_UNDEFINED);
+        yannx_assert(tt_dtype != tt::YNX_UNDEFINED, "Can't implement a undefined CPU tensor");
 
         dtype_ = dnnl_help::tt_type_to_dnnl_type(tt_dtype);
 
@@ -56,6 +52,14 @@ struct CPUTensor : public tt::TensorType  {
                                                 dnnl_help::ndim_to_mem_plain_tag(shape_.size())));
     }
 
+    // we don't need call these interface , it is via DeviceTensor
+    void reset(tt::TensorDataType dtype, std::vector<size_t>& shape) override {}
+    void reset(tt::TensorDataType dtype, std::vector<size_t>& shape, const void* pdata) override {}
+    void reset(tt::TensorDataType dtype, const void* pvalue) override {}
+    tt::TensorDataType dtype() override { return _DTYPE_; }
+    const std::vector<size_t>& shape() override { return shape_; }
+    const void* value() override { return nullptr; }
+
 private:
     // fast access
     dnnl_data_type_t dnnl_dtype() {
@@ -77,9 +81,6 @@ private:
             DNNL_CHECK(dnnl_primitive_desc_destroy(pd_));
         }
         pd_ = pd;
-    }
-    const std::vector<size_t>& shape() {
-        return shape_;
     }
 
     // layout management

@@ -153,6 +153,86 @@ std::string api_generate(const OpSchema& op) {
     return oss.str();
 }
 
+std::string api_impl_generate(const OpSchema& op) {
+    std::vector<std::string> tokens;
+    std::vector<std::string> tokens2;
+
+    std::string op_name = op.Name();
+    auto allInputs = op.inputs();
+    for(size_t i = 0; i < allInputs.size(); i++) {
+        std::ostringstream oss;
+
+        std::string iname = allInputs[i].GetName();
+        std::string pt = TensorParameterType[ allInputs[i].GetOption() ];
+
+        if ( i == 0 ) {
+            oss << "/*inputs:*/ ";
+        }
+        oss << pt << " " << iname;
+        tokens.push_back( oss.str() );
+
+        tokens2.push_back(iname);
+    }
+
+    auto allOutputs = op.outputs();
+    for(size_t i = 0; i < allOutputs.size(); i++) {
+        std::ostringstream oss;
+
+        std::string oname = allOutputs[i].GetName();
+        std::string pt = TensorParameterType[ allOutputs[i].GetOption() ];
+
+        if ( i == 0 ) {
+            oss << "/*outputs:*/ ";
+        }
+        oss << pt << " " << oname;
+        tokens.push_back( oss.str() );
+
+        tokens2.push_back(oname);
+    }
+
+    auto allAttributes = op.attributes();
+    for (auto i = allAttributes.begin(); i != allAttributes.end(); i++) {
+        std::ostringstream oss;
+
+        std::string attr_name = i->first;
+        std::string type = attribute_type_name( i->second.type );
+        if ( i == allAttributes.begin() ) {
+            oss << "/*attributes:*/ ";
+        }
+
+        if ( i->second.required ) {
+            oss << type << " " << attr_name;
+        } else {
+            oss << "std::variant<void *, " << type << " > " << attr_name;
+        }
+
+        tokens.push_back( oss.str() );
+
+        tokens2.push_back( attr_name );
+    }
+
+    std::ostringstream oss;
+    oss << "// https://github.com/onnx/onnx/blob/main/docs/Operators.md#" << op_name << std::endl;
+    oss << "OperatorReturnType onnx_" << op_name << "(";
+    for (size_t i = 0; i < tokens.size(); i++) {
+        oss << tokens[i] ;
+        if ( i != tokens.size() - 1) {
+            oss << ", ";
+        }
+    }
+    oss << ") override {" << std::endl;
+    oss << "    return impl()->onnx_" << op_name <<  "(";
+    for (size_t i = 0; i < tokens2.size(); i++) {
+        oss << tokens2[i] ;
+        if ( i != tokens2.size() - 1) {
+            oss << ", ";
+        }
+    }
+    oss << ");" << std::endl;
+    oss << "}" << std::endl;
+    return oss.str();
+}
+
 const char* word_template =  R"~~(
     struct #WORDNAME# : NativeWord<TensorType> {
 #OUTPUT_DEF#
@@ -599,9 +679,24 @@ int main(int argc, char* argv[]) {
     }
 
     // 4. writing final result to file
-    std::ofstream ofs;
-    ofs.open("tensortype.hpp");
-    ofs << result;
-    ofs.close();
+    {
+        std::ofstream ofs;
+        ofs.open("tensortype.hpp");
+        ofs << result;
+        ofs.close();
+    }
+
+    // 5. writing a auto api impl list
+    {
+        std::ostringstream oss;
+        for (auto ii = operators_by_name.begin(); ii != operators_by_name.end(); ii++) {
+            std::string api_code = api_impl_generate( schemas[ ii->second ] );
+            oss << api_code << std::endl;
+        }
+        std::ofstream ofs;
+        ofs.open("api_impl.inc");
+        ofs << oss.str();
+        ofs.close();
+    }
 }
 

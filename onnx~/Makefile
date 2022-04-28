@@ -14,6 +14,7 @@ $(TARGET): autogen.cpp
 install: $(TARGET)
 	LD_LIBRARY_PATH=$(ONNX_PATH)/lib:$(PROTOBUF_PATH)/lib:$LD_LIBRARY_PATH ./$(TARGET)
 	mv tensortype.hpp ../tensortype.hpp
+	mv api_impl.inc ../backend/api_impl.inc
 
 clean:
 	rm -f $(TARGET)
