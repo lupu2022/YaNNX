@@ -39,6 +39,15 @@ struct DNNLTensor : public tt::TensorType  {
     // buila plain tensor with filled value
     DNNLTensor(const std::vector<size_t>& shape, const void* pdata) : DNNLTensor(shape) {
         tt::TensorDataType tt_dtype = _DTYPE_;
+
+        if ( tt_dtype == tt::YNX_FLOAT ) {
+            float* dst = (float *)plain_ptr();
+            const float* src = (const float *)pdata;
+            memcpy(dst, src, num_items() * sizeof(float) );
+            return;
+        }
+
+        yannx_panic("Can't build tensor with un-supported type!");
     }
 
     // buila arbitrary layout tensor with memory

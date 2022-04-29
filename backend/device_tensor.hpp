@@ -45,11 +45,7 @@ public:
     std::vector<T> value_;
     std::vector<size_t> shape_;
 
-    const void* value() override {
-        return (const void*)value_.data();
-    }
-
-    void reset(tt::TensorDataType dtype, std::vector<size_t>& shape) override {
+    ValueOnlyTensor(std::vector<size_t>& shape) {
         shape_ = shape;
         size_t n = 1;
         for (size_t i = 0; i < shape_.size(); i++) {
@@ -57,7 +53,7 @@ public:
         }
         value_.resize(n);
     }
-    void reset(tt::TensorDataType dtype, std::vector<size_t>& shape, const void* pdata) override {
+    ValueOnlyTensor(std::vector<size_t>& shape, const void* pdata) {
         shape_ = shape;
         size_t n = 1;
         for (size_t i = 0; i < shape_.size(); i++) {
@@ -65,16 +61,32 @@ public:
         }
         memcpy( value_.data(), pdata, sizeof(T) * n );
     }
-
-    void reset(tt::TensorDataType dtype, const void* pvalue) override {
+    ValueOnlyTensor(const void* pvalue) {
         value_.resize(1);
         value_[0] = *(const T*)pvalue;
     }
 
+    // value is only you need
+    const void* value() override {
+        return (const void*)value_.data();
+    }
+
+    // we don't need these functions, call these via DeviceTensor
+    void reset(tt::TensorDataType dtype, std::vector<size_t>& shape) override {
+        yannx_panic("Can't call this interface!");
+    }
+    void reset(tt::TensorDataType dtype, std::vector<size_t>& shape, const void* pdata) override {
+        yannx_panic("Can't call this interface!");
+    }
+    void reset(tt::TensorDataType dtype, const void* pvalue) override {
+        yannx_panic("Can't call this interface!");
+    }
     tt::TensorDataType dtype() override { return _DTYPE_; }
     const std::vector<size_t>& shape() override { return shape_; }
 };
 
+// for scalar or un-supported data type
+using value_float_t = ValueOnlyTensor<float, TensorDataType::YNX_FLOAT>;
 using value_int64_t = ValueOnlyTensor<int64_t, TensorDataType::YNX_INT64>;
 
 struct DeviceTensor: public TensorType  {
@@ -129,12 +141,10 @@ private:
             return (TensorType *) std::get<DNNL_FLOAT>(impl_).get();
         }
 #endif
-
-#ifdef _USE_CUDA_GPU_
-        if ( impl_.index() == CUDA_FLOAT ) {
-            return (TensorType *) std::get<CUDA_FLOAT>(impl_).get();
+        if ( impl_.index() == VALUE_INT64 ) {
+            return (TensorType *) std::get<VALUE_INT64>(impl_).get();
         }
-#endif
+
         yannx_panic("Can't get impl from a UNKNOW_ANY tensor");
         return nullptr;
     }
@@ -150,11 +160,13 @@ private:
         UNKNOW_ANY = 0,
         DNNL_FLOAT,
         CUDA_FLOAT,
+        VALUE_FLOAT,
         VALUE_INT64
     };
     using TensorImpl = std::variant< void *,
                                      std::unique_ptr<dnnl_float_t>,
                                      std::unique_ptr<cuda_float_t>,
+                                     std::unique_ptr<value_float_t>,
                                      std::unique_ptr<value_int64_t> >;
     TensorImpl impl_;
 };
@@ -184,26 +196,62 @@ void  TensorType::register_user_tensor(std::shared_ptr<TensorType> tensor, int64
 // reset to a normal tensor
 void DeviceTensor::reset(TensorDataType dtype, std::vector<size_t>& shape) {
     yannx_assert(dtype == YNX_UNDEFINED, "Can't reset a typed tensor!");
+    yannx_assert(shape.size() > 0, "Can't reset a typed tensor with zero shape!");
+    yannx_assert(impl_.index() == UNKNOW_ANY, "Can't reset a setted tensor!");
+
+#ifdef _USE_DNNL_CPU_
     if ( device_ == DEVICE_CPU ) {
         if ( dtype == YNX_FLOAT ) {
-            impl_ = std::make_unique<yannx::dnnl::DNNLTensor<YNX_FLOAT>>(shape);
+            impl_ = std::make_unique<dnnl_float_t>(shape);
         }
         return;
     }
-    if ( device_ >= DEVICE_CUDA_0 && device_ <= DEVICE_CUDA_X ) {
+#endif
+    if ( dtype == YNX_INT64 ) {
+        impl_ = std::make_unique<value_int64_t>(shape);
         return;
     }
+
+    yannx_panic("Can't be here: DeviceTensor::reset");
 }
 
 // reset to a normal tensor with filled data
 void DeviceTensor::reset(TensorDataType dtype, std::vector<size_t>& shape, const void* pdata) {
     yannx_assert(dtype == YNX_UNDEFINED, "Can't reset a typed tensor!");
+    yannx_assert(shape.size() > 0, "Can't reset a typed tensor with zero shape!");
+    yannx_assert(impl_.index() == UNKNOW_ANY, "Can't reset a setted tensor!");
 
+#ifdef _USE_DNNL_CPU_
+    if ( device_ == DEVICE_CPU ) {
+        if ( dtype == YNX_FLOAT ) {
+            impl_ = std::make_unique<dnnl_float_t>(shape, pdata);
+        }
+        return;
+    }
+#endif
+    if ( dtype == YNX_INT64) {
+        impl_ = std::make_unique<value_int64_t>(shape, pdata);
+        return;
+    }
+
+    yannx_panic("Can't be here: DeviceTensor::reset");
 }
 
 // reset to a scalar tensor
 void DeviceTensor::reset(TensorDataType dtype, const void* pvalue) {
     yannx_assert(dtype == YNX_UNDEFINED, "Can't reset a typed tensor!");
+    yannx_assert(impl_.index() == UNKNOW_ANY, "Can't reset a setted tensor!");
+
+    if ( dtype == YNX_FLOAT) {
+        impl_ = std::make_unique<value_float_t>(pvalue);
+        return;
+    }
+    if ( dtype == YNX_INT64) {
+        impl_ = std::make_unique<value_int64_t>(pvalue);
+        return;
+    }
+
+    yannx_panic("Can't be here: DeviceTensor::reset");
 }
 
 }} // end of namespace
