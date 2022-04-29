@@ -165,9 +165,6 @@ std::string api_impl_generate(const OpSchema& op) {
         std::string iname = allInputs[i].GetName();
         std::string pt = TensorParameterType[ allInputs[i].GetOption() ];
 
-        if ( i == 0 ) {
-            oss << "/*inputs:*/ ";
-        }
         oss << pt << " " << iname;
         tokens.push_back( oss.str() );
 
@@ -181,9 +178,6 @@ std::string api_impl_generate(const OpSchema& op) {
         std::string oname = allOutputs[i].GetName();
         std::string pt = TensorParameterType[ allOutputs[i].GetOption() ];
 
-        if ( i == 0 ) {
-            oss << "/*outputs:*/ ";
-        }
         oss << pt << " " << oname;
         tokens.push_back( oss.str() );
 
@@ -196,10 +190,6 @@ std::string api_impl_generate(const OpSchema& op) {
 
         std::string attr_name = i->first;
         std::string type = attribute_type_name( i->second.type );
-        if ( i == allAttributes.begin() ) {
-            oss << "/*attributes:*/ ";
-        }
-
         if ( i->second.required ) {
             oss << type << " " << attr_name;
         } else {
@@ -212,7 +202,6 @@ std::string api_impl_generate(const OpSchema& op) {
     }
 
     std::ostringstream oss;
-    oss << "// https://github.com/onnx/onnx/blob/main/docs/Operators.md#" << op_name << std::endl;
     oss << "OperatorReturnType onnx_" << op_name << "(";
     for (size_t i = 0; i < tokens.size(); i++) {
         oss << tokens[i] ;

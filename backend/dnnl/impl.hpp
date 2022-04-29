@@ -13,13 +13,13 @@
 namespace yannx { namespace dnnl {
 
 template <tt::TensorDataType _DTYPE_>
-struct CPUTensor : public tt::TensorType  {
-    ~CPUTensor() {
+struct DNNLTensor : public tt::TensorType  {
+    ~DNNLTensor() {
         release();
     }
 
     // buila a dense plain layout tensor
-    CPUTensor(const std::vector<size_t>& shape) : shape_(shape) {
+    DNNLTensor(const std::vector<size_t>& shape) : shape_(shape) {
         tt::TensorDataType tt_dtype = _DTYPE_;
 
         yannx_assert(shape_.size() != 0, "Can't build tensor with zero shape!");
@@ -36,8 +36,13 @@ struct CPUTensor : public tt::TensorType  {
         DNNL_CHECK(dnnl_memory_create(&mem_, &plain_md_, dnnl_help::DNNL_ENGINE_DEFAULT, DNNL_MEMORY_ALLOCATE));
     }
 
+    // buila plain tensor with filled value
+    DNNLTensor(const std::vector<size_t>& shape, const void* pdata) : DNNLTensor(shape) {
+        tt::TensorDataType tt_dtype = _DTYPE_;
+    }
+
     // buila arbitrary layout tensor with memory
-    CPUTensor(const std::vector<size_t>& shape, dnnl_memory_t mem, dnnl_primitive_desc_t pd) : shape_(shape) {
+    DNNLTensor(const std::vector<size_t>& shape, dnnl_memory_t mem, dnnl_primitive_desc_t pd) : shape_(shape) {
         yannx_assert(shape_.size() != 0, "Can't build tensor with zero shape!");
 
         tt::TensorDataType tt_dtype = _DTYPE_;
@@ -52,13 +57,19 @@ struct CPUTensor : public tt::TensorType  {
                                                 dnnl_help::ndim_to_mem_plain_tag(shape_.size())));
     }
 
+
+
+    // only one real overrided function
+    const void* value() override {
+        return plain_ptr();
+    }
+
     // we don't need call these interface , it is via DeviceTensor
     void reset(tt::TensorDataType dtype, std::vector<size_t>& shape) override {}
     void reset(tt::TensorDataType dtype, std::vector<size_t>& shape, const void* pdata) override {}
     void reset(tt::TensorDataType dtype, const void* pvalue) override {}
     tt::TensorDataType dtype() override { return _DTYPE_; }
     const std::vector<size_t>& shape() override { return shape_; }
-    const void* value() override { return nullptr; }
 
 private:
     // fast access
@@ -81,6 +92,15 @@ private:
             DNNL_CHECK(dnnl_primitive_desc_destroy(pd_));
         }
         pd_ = pd;
+    }
+
+    // some help functions
+    size_t num_items() {
+        size_t n = 1;
+        for (size_t i = 0; i < shape_.size(); i++) {
+            n = n * shape_[i];
+        }
+        return n;
     }
 
     // layout management

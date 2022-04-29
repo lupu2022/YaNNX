@@ -26,8 +26,8 @@
 
 namespace yannx { namespace dnnl { namespace dnnl_help {
 
-    extern dnnl_engine_t DNNL_ENGINE_DEFAULT;
-    extern dnnl_stream_t DNNL_STREAM_DEFAULT;
+    dnnl_engine_t DNNL_ENGINE_DEFAULT = nullptr;
+    dnnl_stream_t DNNL_STREAM_DEFAULT = nullptr;
 
     inline void dnnl_begin(uint64_t seed = 0) {
         DNNL_CHECK(dnnl_engine_create(&dnnl_help::DNNL_ENGINE_DEFAULT, dnnl_cpu, 0));
