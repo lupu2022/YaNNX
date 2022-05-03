@@ -78,8 +78,9 @@ struct DNNLTensor : public tt::TensorType  {
     tt::TensorDataType dtype() override { return _DTYPE_; }
     const std::vector<size_t>& shape() override { return shape_; }
 
-public:
     // real tensor computing API
+public:
+    // two item binary operator : A op B = C
     tt::OperatorReturnType onnx_Add(tt::tensor_t A, tt::tensor_t B, tt::tensor_t C) override {
         return dnnl_binary_operator(A, B, C, dnnl_binary_add);
     }
@@ -93,6 +94,24 @@ public:
         return dnnl_binary_operator(A, B, C, dnnl_binary_sub);
     }
 
+    // element wise operator : Y = op(X)
+    tt::OperatorReturnType onnx_Abs(tt::tensor_t X, tt::tensor_t Y) override {
+        return dnnl_eltwise_operator(X, Y, dnnl_eltwise_abs, 0.0, 0.0);
+    }
+    tt::OperatorReturnType onnx_HardSwish(tt::tensor_t X, tt::tensor_t Y) override {
+        return dnnl_eltwise_operator(X, Y, dnnl_eltwise_hardswish, 0.0, 0.0);
+    }
+    tt::OperatorReturnType onnx_Relu(tt::tensor_t X, tt::tensor_t Y) override {
+        return dnnl_eltwise_operator(X, Y, dnnl_eltwise_relu, 0.0, 0.0);
+    }
+    tt::OperatorReturnType onnx_Sigmoid(tt::tensor_t X, tt::tensor_t Y) override {
+        return dnnl_eltwise_operator(X, Y, dnnl_eltwise_logistic, 0.0, 0.0);
+    }
+    tt::OperatorReturnType onnx_Sqrt(tt::tensor_t X, tt::tensor_t Y) override {
+        return dnnl_eltwise_operator(X, Y, dnnl_eltwise_sqrt, 0.0, 0.0);
+    }
+
+
 private:
     // help functions for computing API
     inline DNNLTensor<_DTYPE_>* dnnl(tt::tensor_t& t) {
@@ -100,6 +119,8 @@ private:
         return p;
     }
     tt::OperatorReturnType dnnl_binary_operator(tt::tensor_t A, tt::tensor_t B, tt::tensor_t C, dnnl_alg_kind_t algo);
+    tt::OperatorReturnType dnnl_eltwise_operator(tt::tensor_t X, tt::tensor_t Y, dnnl_alg_kind_t algo, float alpha, float beta);
+
 
 private:
     // fast access
@@ -203,6 +224,7 @@ private:
 };
 
 #include "binary.hpp"
+#include "eltwise.hpp"
 
 }}
 

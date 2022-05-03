@@ -68,7 +68,7 @@ public:
 
     // value is only you need
     const void* value() override {
-        return (const void*)value_.data();
+        return (const void*)(value_.data());
     }
 
     // we don't need these functions, call these via DeviceTensor
@@ -88,7 +88,7 @@ public:
 // for scalar or un-supported data type
 using value_float_t = ValueOnlyTensor<float, TensorDataType::YNX_FLOAT>;
 using value_int64_t = ValueOnlyTensor<int64_t, TensorDataType::YNX_INT64>;
-using value_bool_t = ValueOnlyTensor<bool, TensorDataType::YNX_BOOL>;
+using value_bool_t = ValueOnlyTensor<unsigned char, TensorDataType::YNX_BOOL>;
 
 struct DeviceTensor: public TensorType  {
 public:
