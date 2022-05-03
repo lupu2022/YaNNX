@@ -66,8 +66,6 @@ struct DNNLTensor : public tt::TensorType  {
                                                 dnnl_help::ndim_to_mem_plain_tag(shape_.size())));
     }
 
-
-
     // only one real overrided function
     const void* value() override {
         return plain_ptr();
@@ -79,6 +77,29 @@ struct DNNLTensor : public tt::TensorType  {
     void reset(tt::TensorDataType dtype, const void* pvalue) override {}
     tt::TensorDataType dtype() override { return _DTYPE_; }
     const std::vector<size_t>& shape() override { return shape_; }
+
+public:
+    // real tensor computing API
+    tt::OperatorReturnType onnx_Add(tt::tensor_t A, tt::tensor_t B, tt::tensor_t C) override {
+        return dnnl_binary_operator(A, B, C, dnnl_binary_add);
+    }
+    tt::OperatorReturnType onnx_Mul(tt::tensor_t A, tt::tensor_t B, tt::tensor_t C) override {
+        return dnnl_binary_operator(A, B, C, dnnl_binary_mul);
+    }
+    tt::OperatorReturnType onnx_Div(tt::tensor_t A, tt::tensor_t B, tt::tensor_t C) override {
+        return dnnl_binary_operator(A, B, C, dnnl_binary_div);
+    }
+    tt::OperatorReturnType onnx_Sub(tt::tensor_t A, tt::tensor_t B, tt::tensor_t C) override {
+        return dnnl_binary_operator(A, B, C, dnnl_binary_sub);
+    }
+
+private:
+    // help functions for computing API
+    inline DNNLTensor<_DTYPE_>* dnnl(tt::tensor_t& t) {
+        auto* p = (DNNLTensor<_DTYPE_> *)t.get();
+        return p;
+    }
+    tt::OperatorReturnType dnnl_binary_operator(tt::tensor_t A, tt::tensor_t B, tt::tensor_t C, dnnl_alg_kind_t algo);
 
 private:
     // fast access
@@ -180,6 +201,8 @@ private:
 
     const std::vector<size_t>     shape_;
 };
+
+#include "binary.hpp"
 
 }}
 

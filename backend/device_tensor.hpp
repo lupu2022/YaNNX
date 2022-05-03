@@ -88,6 +88,7 @@ public:
 // for scalar or un-supported data type
 using value_float_t = ValueOnlyTensor<float, TensorDataType::YNX_FLOAT>;
 using value_int64_t = ValueOnlyTensor<int64_t, TensorDataType::YNX_INT64>;
+using value_bool_t = ValueOnlyTensor<bool, TensorDataType::YNX_BOOL>;
 
 struct DeviceTensor: public TensorType  {
 public:
@@ -161,13 +162,15 @@ private:
         DNNL_FLOAT,
         CUDA_FLOAT,
         VALUE_FLOAT,
-        VALUE_INT64
+        VALUE_INT64,
+        VALUE_BOOL,
     };
     using TensorImpl = std::variant< void *,
                                      std::unique_ptr<dnnl_float_t>,
                                      std::unique_ptr<cuda_float_t>,
                                      std::unique_ptr<value_float_t>,
-                                     std::unique_ptr<value_int64_t> >;
+                                     std::unique_ptr<value_int64_t>,
+                                     std::unique_ptr<value_bool_t> >;
     TensorImpl impl_;
 };
 
