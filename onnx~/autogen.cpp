@@ -122,14 +122,6 @@ std::string api_generate(const OpSchema& op) {
         if ( i == allAttributes.begin() ) {
             oss << "/*attributes:*/ ";
         }
-
-        /*
-        if ( i->second.required ) {
-            oss << type << " " << attr_name;
-        } else {
-            oss << "std::variant<void *, " << type << " > " << attr_name;
-        }
-        */
         oss << type << " " << attr_name;
 
         tokens.push_back( oss.str() );
@@ -388,16 +380,6 @@ std::string impl_generate(const OpSchema& op) {
         std::ostringstream oss;
         auto infos = op.attributes();
         for ( auto i = infos.rbegin(); i != infos.rend(); i++) {
-            /*
-            int opt = (i->second.required == 0);
-            if ( opt ) {
-                oss << "\tif ( " << i->first << ".index() != 0) {" << std::endl;
-                oss << "\t    infer_.new_attr(\""  << i->first << "\", std::get<1>(" << i->first <<  ") );" << std::endl;
-                oss << "\t}" << std::endl;
-            } else {
-                oss << "\tinfer_.new_attr(\""  << i->first << "\", " << i->first <<  ");" << std::endl;
-            }
-            */
             oss << "\tinfer_.new_attr(\""  << i->first << "\", " << i->first <<  ");" << std::endl;
         }
 
