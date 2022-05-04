@@ -444,28 +444,52 @@ static std::vector<tensor_t> fetch_tensors(ValueStack<TensorType>& stack) {
     return v;
 }
 
-static std::variant<void *, float> fetch_optional_float(ValueStack<TensorType>& stack) {
+static float fetch_optional_float(ValueStack<TensorType>& stack, float default_value) {
     if ( stack.top().is_none() ) {
         stack.pop();
-        return std::variant<void *, float>(nullptr);
+        return default_value;
     }
-    return std::variant<void *, float>( fetch_float(stack) );
+    return fetch_float(stack);
 }
 
-static std::variant<void *, int64_t> fetch_optional_int(ValueStack<TensorType>& stack) {
+static int64_t fetch_optional_int(ValueStack<TensorType>& stack, int64_t default_value) {
     if ( stack.top().is_none() ) {
         stack.pop();
-        return std::variant<void *, int64_t>(nullptr);
+        return default_value;
     }
-    return std::variant<void *, int64_t>( fetch_int(stack) );
+    return fetch_int(stack);
 }
 
-static std::variant<void *, std::string> fetch_optional_string(ValueStack<TensorType>& stack) {
+static std::string fetch_optional_string(ValueStack<TensorType>& stack, std::string default_value ) {
     if ( stack.top().is_none() ) {
         stack.pop();
-        return std::variant<void *, std::string>(nullptr);
+        return default_value;
     }
-    return std::variant<void *, std::string>( fetch_string(stack) );
+    return fetch_string(stack);
+}
+
+static std::vector<float> fetch_optional_floats(ValueStack<TensorType>& stack, std::vector<float> default_value) {
+    if ( stack.top().is_none() ) {
+        stack.pop();
+        return default_value;
+    }
+    return fetch_floats(stack);
+}
+
+static std::vector<int64_t> fetch_optional_ints(ValueStack<TensorType>& stack, std::vector<int64_t> default_value) {
+    if ( stack.top().is_none() ) {
+        stack.pop();
+        return default_value;
+    }
+    return fetch_ints(stack);
+}
+
+static std::vector<std::string> fetch_optional_strings(ValueStack<TensorType>& stack, std::vector<std::string> default_value) {
+    if ( stack.top().is_none() ) {
+        stack.pop();
+        return default_value;
+    }
+    return fetch_strings(stack);
 }
 
 static std::variant<void *, tensor_t> fetch_optional_tensor(ValueStack<TensorType>& stack) {
@@ -474,30 +498,6 @@ static std::variant<void *, tensor_t> fetch_optional_tensor(ValueStack<TensorTyp
         return std::variant<void *, tensor_t>(nullptr);
     }
     return std::variant<void *, tensor_t>( fetch_tensor(stack) );
-}
-
-static std::variant<void *, std::vector<float> > fetch_optional_floats(ValueStack<TensorType>& stack) {
-    if ( stack.top().is_none() ) {
-        stack.pop();
-        return std::variant<void *, std::vector<float> >(nullptr);
-    }
-    return std::variant<void *, std::vector<float> >( fetch_floats(stack) );
-}
-
-static std::variant<void *, std::vector<int64_t> > fetch_optional_ints(ValueStack<TensorType>& stack) {
-    if ( stack.top().is_none() ) {
-        stack.pop();
-        return std::variant<void *, std::vector<int64_t> >(nullptr);
-    }
-    return std::variant<void *, std::vector<int64_t> >( fetch_ints(stack) );
-}
-
-static std::variant<void *, std::vector<std::string> > fetch_optional_strings(ValueStack<TensorType>& stack) {
-    if ( stack.top().is_none() ) {
-        stack.pop();
-        return std::variant<void *, std::vector<std::string>> (nullptr);
-    }
-    return std::variant<void *, std::vector<std::string> >( fetch_strings(stack) );
 }
 
 static void put_tensor(ValueStack<TensorType>& stack, tensor_t t) {

@@ -123,11 +123,14 @@ std::string api_generate(const OpSchema& op) {
             oss << "/*attributes:*/ ";
         }
 
+        /*
         if ( i->second.required ) {
             oss << type << " " << attr_name;
         } else {
             oss << "std::variant<void *, " << type << " > " << attr_name;
         }
+        */
+        oss << type << " " << attr_name;
 
         tokens.push_back( oss.str() );
     }
@@ -190,14 +193,9 @@ std::string api_impl_generate(const OpSchema& op) {
 
         std::string attr_name = i->first;
         std::string type = attribute_type_name( i->second.type );
-        if ( i->second.required ) {
-            oss << type << " " << attr_name;
-        } else {
-            oss << "std::variant<void *, " << type << " > " << attr_name;
-        }
+        oss << type << " " << attr_name;
 
         tokens.push_back( oss.str() );
-
         tokens2.push_back( attr_name );
     }
 
@@ -220,6 +218,58 @@ std::string api_impl_generate(const OpSchema& op) {
     oss << ");" << std::endl;
     oss << "}" << std::endl;
     return oss.str();
+}
+
+std::string attrToString(int type, AttributeProto attr) {
+    std::stringstream ss;
+    switch(type) {
+        case AttributeProto_AttributeType_FLOAT:
+            ss << attr.f();
+            break;
+        case AttributeProto_AttributeType_INT:
+            ss << attr.i();
+            break;
+        case AttributeProto_AttributeType_STRING:
+            ss << "\"" << attr.s() << "\"";
+            break;
+        case AttributeProto_AttributeType_FLOATS:
+            {
+                auto vs = attr.floats();
+                ss << "{";
+                for(int i = 0; i < vs.size(); i++) {
+                    ss << vs[i] << ", ";
+                }
+                ss << "}";
+            }
+            break;
+        case AttributeProto_AttributeType_INTS:
+            {
+                auto vs = attr.ints();
+                ss << "{";
+                for(int i = 0; i < vs.size(); i++) {
+                    ss << vs[i] << ", ";
+                }
+                ss << "}";
+            }
+            break;
+        case AttributeProto_AttributeType_STRINGS:
+            {
+                auto vs = attr.strings();
+                ss << "{";
+                for(int i = 0; i < vs.size(); i++) {
+                    ss << "\"" << vs[i] << "\", ";
+                }
+                ss << "}";
+            }
+            break;
+        default:
+            {
+                std::cout << "attributes don't supported type" << std::endl;
+                exit(0);
+            }
+            break;
+    }
+    return ss.str();
 }
 
 const char* word_template =  R"~~(
@@ -278,46 +328,49 @@ std::string impl_generate(const OpSchema& op) {
             std::string aname = i->first;
             int t = i->second.type;
             int opt = (i->second.required == 0);
-
+            std::string default_value = "";
+            if ( opt ) {
+                default_value = attrToString(t, i->second.default_value);
+            }
             switch ( t ) {
                 case AttributeProto_AttributeType_FLOAT:
                     if (opt) {
-                        oss << "\tauto " << aname << " = fetch_optional_float(stack);" << std::endl;
+                        oss << "\tauto " << aname << " = fetch_optional_float(stack, " << default_value << ");" << std::endl;
                     } else {
                         oss << "\tauto " << aname << " = fetch_float(stack);" << std::endl;
                     }
                     break;
                 case AttributeProto_AttributeType_INT:
                     if (opt) {
-                        oss << "\tauto " << aname << " = fetch_optional_int(stack);" << std::endl;
+                        oss << "\tauto " << aname << " = fetch_optional_int(stack, " << default_value << ");" << std::endl;
                     } else {
                         oss << "\tauto " << aname << " = fetch_int(stack);" << std::endl;
                     }
                     break;
                 case AttributeProto_AttributeType_STRING:
                     if (opt) {
-                        oss << "\tauto " << aname << " = fetch_optional_string(stack);" << std::endl;
+                        oss << "\tauto " << aname << " = fetch_optional_string(stack, " << default_value << ");" << std::endl;
                     } else {
                         oss << "\tauto " << aname << " = fetch_string(stack);" << std::endl;
                     }
                     break;
                 case AttributeProto_AttributeType_FLOATS:
                     if (opt) {
-                        oss << "\tauto " << aname << " = fetch_optional_floats(stack);" << std::endl;
+                        oss << "\tauto " << aname << " = fetch_optional_floats(stack, " << default_value << ");" << std::endl;
                     } else {
                         oss << "\tauto " << aname << " = fetch_floats(stack);" << std::endl;
                     }
                     break;
                 case AttributeProto_AttributeType_INTS:
                     if (opt) {
-                        oss << "\tauto " << aname << " = fetch_optional_ints(stack);" << std::endl;
+                        oss << "\tauto " << aname << " = fetch_optional_ints(stack, " << default_value << ");" << std::endl;
                     } else {
                         oss << "\tauto " << aname << " = fetch_ints(stack);" << std::endl;
                     }
                     break;
                 case AttributeProto_AttributeType_STRINGS:
                     if (opt) {
-                        oss << "\tauto " << aname << " = fetch_optional_strings(stack);" << std::endl;
+                        oss << "\tauto " << aname << " = fetch_optional_strings(stack, " << default_value << ");" << std::endl;
                     } else {
                         oss << "\tauto " << aname << " = fetch_strings(stack);" << std::endl;
                     }
@@ -335,6 +388,7 @@ std::string impl_generate(const OpSchema& op) {
         std::ostringstream oss;
         auto infos = op.attributes();
         for ( auto i = infos.rbegin(); i != infos.rend(); i++) {
+            /*
             int opt = (i->second.required == 0);
             if ( opt ) {
                 oss << "\tif ( " << i->first << ".index() != 0) {" << std::endl;
@@ -343,6 +397,8 @@ std::string impl_generate(const OpSchema& op) {
             } else {
                 oss << "\tinfer_.new_attr(\""  << i->first << "\", " << i->first <<  ");" << std::endl;
             }
+            */
+            oss << "\tinfer_.new_attr(\""  << i->first << "\", " << i->first <<  ");" << std::endl;
         }
 
         auto attr_code = oss.str();

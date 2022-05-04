@@ -229,7 +229,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#ArgMax
-	virtual OperatorReturnType onnx_ArgMax(/*inputs:*/ tensor_t data, /*outputs:*/ tensor_t reduced, /*attributes:*/ std::variant<void *, int64_t > axis, std::variant<void *, int64_t > keepdims, std::variant<void *, int64_t > select_last_index) {
+	virtual OperatorReturnType onnx_ArgMax(/*inputs:*/ tensor_t data, /*outputs:*/ tensor_t reduced, /*attributes:*/ int64_t axis, int64_t keepdims, int64_t select_last_index) {
 #ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
 #else
@@ -238,7 +238,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#ArgMin
-	virtual OperatorReturnType onnx_ArgMin(/*inputs:*/ tensor_t data, /*outputs:*/ tensor_t reduced, /*attributes:*/ std::variant<void *, int64_t > axis, std::variant<void *, int64_t > keepdims, std::variant<void *, int64_t > select_last_index) {
+	virtual OperatorReturnType onnx_ArgMin(/*inputs:*/ tensor_t data, /*outputs:*/ tensor_t reduced, /*attributes:*/ int64_t axis, int64_t keepdims, int64_t select_last_index) {
 #ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
 #else
@@ -283,7 +283,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#AveragePool
-	virtual OperatorReturnType onnx_AveragePool(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y, /*attributes:*/ std::variant<void *, std::string > auto_pad, std::variant<void *, int64_t > ceil_mode, std::variant<void *, int64_t > count_include_pad, std::vector<int64_t> kernel_shape, std::variant<void *, std::vector<int64_t> > pads, std::variant<void *, std::vector<int64_t> > strides) {
+	virtual OperatorReturnType onnx_AveragePool(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y, /*attributes:*/ std::string auto_pad, int64_t ceil_mode, int64_t count_include_pad, std::vector<int64_t> kernel_shape, std::vector<int64_t> pads, std::vector<int64_t> strides) {
 #ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
 #else
@@ -292,7 +292,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#BatchNormalization
-	virtual OperatorReturnType onnx_BatchNormalization(/*inputs:*/ tensor_t X, tensor_t scale, tensor_t B, tensor_t input_mean, tensor_t input_var, /*outputs:*/ tensor_t Y, std::variant<void *, tensor_t>& running_mean, std::variant<void *, tensor_t>& running_var, /*attributes:*/ std::variant<void *, float > epsilon, std::variant<void *, float > momentum, std::variant<void *, int64_t > training_mode) {
+	virtual OperatorReturnType onnx_BatchNormalization(/*inputs:*/ tensor_t X, tensor_t scale, tensor_t B, tensor_t input_mean, tensor_t input_var, /*outputs:*/ tensor_t Y, std::variant<void *, tensor_t>& running_mean, std::variant<void *, tensor_t>& running_var, /*attributes:*/ float epsilon, float momentum, int64_t training_mode) {
 #ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
 #else
@@ -301,7 +301,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Bernoulli
-	virtual OperatorReturnType onnx_Bernoulli(/*inputs:*/ tensor_t input, /*outputs:*/ tensor_t output, /*attributes:*/ std::variant<void *, int64_t > dtype, std::variant<void *, float > seed) {
+	virtual OperatorReturnType onnx_Bernoulli(/*inputs:*/ tensor_t input, /*outputs:*/ tensor_t output, /*attributes:*/ int64_t dtype, float seed) {
 #ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
 #else
@@ -346,7 +346,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Celu
-	virtual OperatorReturnType onnx_Celu(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y, /*attributes:*/ std::variant<void *, float > alpha) {
+	virtual OperatorReturnType onnx_Celu(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y, /*attributes:*/ float alpha) {
 #ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
 #else
@@ -364,7 +364,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Compress
-	virtual OperatorReturnType onnx_Compress(/*inputs:*/ tensor_t input, tensor_t condition, /*outputs:*/ tensor_t output, /*attributes:*/ std::variant<void *, int64_t > axis) {
+	virtual OperatorReturnType onnx_Compress(/*inputs:*/ tensor_t input, tensor_t condition, /*outputs:*/ tensor_t output, /*attributes:*/ int64_t axis) {
 #ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
 #else
@@ -382,7 +382,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#ConcatFromSequence
-	virtual OperatorReturnType onnx_ConcatFromSequence(/*inputs:*/ tensor_t input_sequence, /*outputs:*/ tensor_t concat_result, /*attributes:*/ int64_t axis, std::variant<void *, int64_t > new_axis) {
+	virtual OperatorReturnType onnx_ConcatFromSequence(/*inputs:*/ tensor_t input_sequence, /*outputs:*/ tensor_t concat_result, /*attributes:*/ int64_t axis, int64_t new_axis) {
 #ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
 #else
@@ -391,7 +391,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Conv
-	virtual OperatorReturnType onnx_Conv(/*inputs:*/ tensor_t X, tensor_t W, std::variant<void *, tensor_t>& B, /*outputs:*/ tensor_t Y, /*attributes:*/ std::variant<void *, std::string > auto_pad, std::variant<void *, std::vector<int64_t> > dilations, std::variant<void *, int64_t > group, std::variant<void *, std::vector<int64_t> > kernel_shape, std::variant<void *, std::vector<int64_t> > pads, std::variant<void *, std::vector<int64_t> > strides) {
+	virtual OperatorReturnType onnx_Conv(/*inputs:*/ tensor_t X, tensor_t W, std::variant<void *, tensor_t>& B, /*outputs:*/ tensor_t Y, /*attributes:*/ std::string auto_pad, std::vector<int64_t> dilations, int64_t group, std::vector<int64_t> kernel_shape, std::vector<int64_t> pads, std::vector<int64_t> strides) {
 #ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
 #else
@@ -400,7 +400,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#ConvInteger
-	virtual OperatorReturnType onnx_ConvInteger(/*inputs:*/ tensor_t x, tensor_t w, std::variant<void *, tensor_t>& x_zero_point, std::variant<void *, tensor_t>& w_zero_point, /*outputs:*/ tensor_t y, /*attributes:*/ std::variant<void *, std::string > auto_pad, std::variant<void *, std::vector<int64_t> > dilations, std::variant<void *, int64_t > group, std::variant<void *, std::vector<int64_t> > kernel_shape, std::variant<void *, std::vector<int64_t> > pads, std::variant<void *, std::vector<int64_t> > strides) {
+	virtual OperatorReturnType onnx_ConvInteger(/*inputs:*/ tensor_t x, tensor_t w, std::variant<void *, tensor_t>& x_zero_point, std::variant<void *, tensor_t>& w_zero_point, /*outputs:*/ tensor_t y, /*attributes:*/ std::string auto_pad, std::vector<int64_t> dilations, int64_t group, std::vector<int64_t> kernel_shape, std::vector<int64_t> pads, std::vector<int64_t> strides) {
 #ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
 #else
@@ -409,7 +409,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#ConvTranspose
-	virtual OperatorReturnType onnx_ConvTranspose(/*inputs:*/ tensor_t X, tensor_t W, std::variant<void *, tensor_t>& B, /*outputs:*/ tensor_t Y, /*attributes:*/ std::variant<void *, std::string > auto_pad, std::variant<void *, std::vector<int64_t> > dilations, std::variant<void *, int64_t > group, std::variant<void *, std::vector<int64_t> > kernel_shape, std::variant<void *, std::vector<int64_t> > output_padding, std::variant<void *, std::vector<int64_t> > output_shape, std::variant<void *, std::vector<int64_t> > pads, std::variant<void *, std::vector<int64_t> > strides) {
+	virtual OperatorReturnType onnx_ConvTranspose(/*inputs:*/ tensor_t X, tensor_t W, std::variant<void *, tensor_t>& B, /*outputs:*/ tensor_t Y, /*attributes:*/ std::string auto_pad, std::vector<int64_t> dilations, int64_t group, std::vector<int64_t> kernel_shape, std::vector<int64_t> output_padding, std::vector<int64_t> output_shape, std::vector<int64_t> pads, std::vector<int64_t> strides) {
 #ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
 #else
@@ -436,7 +436,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#CumSum
-	virtual OperatorReturnType onnx_CumSum(/*inputs:*/ tensor_t x, tensor_t axis, /*outputs:*/ tensor_t y, /*attributes:*/ std::variant<void *, int64_t > exclusive, std::variant<void *, int64_t > reverse) {
+	virtual OperatorReturnType onnx_CumSum(/*inputs:*/ tensor_t x, tensor_t axis, /*outputs:*/ tensor_t y, /*attributes:*/ int64_t exclusive, int64_t reverse) {
 #ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
 #else
@@ -445,7 +445,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#DepthToSpace
-	virtual OperatorReturnType onnx_DepthToSpace(/*inputs:*/ tensor_t input, /*outputs:*/ tensor_t output, /*attributes:*/ int64_t blocksize, std::variant<void *, std::string > mode) {
+	virtual OperatorReturnType onnx_DepthToSpace(/*inputs:*/ tensor_t input, /*outputs:*/ tensor_t output, /*attributes:*/ int64_t blocksize, std::string mode) {
 #ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
 #else
@@ -454,7 +454,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#DequantizeLinear
-	virtual OperatorReturnType onnx_DequantizeLinear(/*inputs:*/ tensor_t x, tensor_t x_scale, std::variant<void *, tensor_t>& x_zero_point, /*outputs:*/ tensor_t y, /*attributes:*/ std::variant<void *, int64_t > axis) {
+	virtual OperatorReturnType onnx_DequantizeLinear(/*inputs:*/ tensor_t x, tensor_t x_scale, std::variant<void *, tensor_t>& x_zero_point, /*outputs:*/ tensor_t y, /*attributes:*/ int64_t axis) {
 #ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
 #else
@@ -481,7 +481,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Dropout
-	virtual OperatorReturnType onnx_Dropout(/*inputs:*/ tensor_t data, std::variant<void *, tensor_t>& ratio, std::variant<void *, tensor_t>& training_mode, /*outputs:*/ tensor_t output, std::variant<void *, tensor_t>& mask, /*attributes:*/ std::variant<void *, int64_t > seed) {
+	virtual OperatorReturnType onnx_Dropout(/*inputs:*/ tensor_t data, std::variant<void *, tensor_t>& ratio, std::variant<void *, tensor_t>& training_mode, /*outputs:*/ tensor_t output, std::variant<void *, tensor_t>& mask, /*attributes:*/ int64_t seed) {
 #ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
 #else
@@ -508,7 +508,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Elu
-	virtual OperatorReturnType onnx_Elu(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y, /*attributes:*/ std::variant<void *, float > alpha) {
+	virtual OperatorReturnType onnx_Elu(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y, /*attributes:*/ float alpha) {
 #ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
 #else
@@ -553,7 +553,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#EyeLike
-	virtual OperatorReturnType onnx_EyeLike(/*inputs:*/ tensor_t input, /*outputs:*/ tensor_t output, /*attributes:*/ std::variant<void *, int64_t > dtype, std::variant<void *, int64_t > k) {
+	virtual OperatorReturnType onnx_EyeLike(/*inputs:*/ tensor_t input, /*outputs:*/ tensor_t output, /*attributes:*/ int64_t dtype, int64_t k) {
 #ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
 #else
@@ -562,7 +562,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Flatten
-	virtual OperatorReturnType onnx_Flatten(/*inputs:*/ tensor_t input, /*outputs:*/ tensor_t output, /*attributes:*/ std::variant<void *, int64_t > axis) {
+	virtual OperatorReturnType onnx_Flatten(/*inputs:*/ tensor_t input, /*outputs:*/ tensor_t output, /*attributes:*/ int64_t axis) {
 #ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
 #else
@@ -580,7 +580,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#GRU
-	virtual OperatorReturnType onnx_GRU(/*inputs:*/ tensor_t X, tensor_t W, tensor_t R, std::variant<void *, tensor_t>& B, std::variant<void *, tensor_t>& sequence_lens, std::variant<void *, tensor_t>& initial_h, /*outputs:*/ std::variant<void *, tensor_t>& Y, std::variant<void *, tensor_t>& Y_h, /*attributes:*/ std::variant<void *, std::vector<float> > activation_alpha, std::variant<void *, std::vector<float> > activation_beta, std::variant<void *, std::vector<std::string> > activations, std::variant<void *, float > clip, std::variant<void *, std::string > direction, std::variant<void *, int64_t > hidden_size, std::variant<void *, int64_t > layout, std::variant<void *, int64_t > linear_before_reset) {
+	virtual OperatorReturnType onnx_GRU(/*inputs:*/ tensor_t X, tensor_t W, tensor_t R, std::variant<void *, tensor_t>& B, std::variant<void *, tensor_t>& sequence_lens, std::variant<void *, tensor_t>& initial_h, /*outputs:*/ std::variant<void *, tensor_t>& Y, std::variant<void *, tensor_t>& Y_h, /*attributes:*/ std::vector<float> activation_alpha, std::vector<float> activation_beta, std::vector<std::string> activations, float clip, std::string direction, int64_t hidden_size, int64_t layout, int64_t linear_before_reset) {
 #ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
 #else
@@ -589,7 +589,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Gather
-	virtual OperatorReturnType onnx_Gather(/*inputs:*/ tensor_t data, tensor_t indices, /*outputs:*/ tensor_t output, /*attributes:*/ std::variant<void *, int64_t > axis) {
+	virtual OperatorReturnType onnx_Gather(/*inputs:*/ tensor_t data, tensor_t indices, /*outputs:*/ tensor_t output, /*attributes:*/ int64_t axis) {
 #ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
 #else
@@ -598,7 +598,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#GatherElements
-	virtual OperatorReturnType onnx_GatherElements(/*inputs:*/ tensor_t data, tensor_t indices, /*outputs:*/ tensor_t output, /*attributes:*/ std::variant<void *, int64_t > axis) {
+	virtual OperatorReturnType onnx_GatherElements(/*inputs:*/ tensor_t data, tensor_t indices, /*outputs:*/ tensor_t output, /*attributes:*/ int64_t axis) {
 #ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
 #else
@@ -607,7 +607,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#GatherND
-	virtual OperatorReturnType onnx_GatherND(/*inputs:*/ tensor_t data, tensor_t indices, /*outputs:*/ tensor_t output, /*attributes:*/ std::variant<void *, int64_t > batch_dims) {
+	virtual OperatorReturnType onnx_GatherND(/*inputs:*/ tensor_t data, tensor_t indices, /*outputs:*/ tensor_t output, /*attributes:*/ int64_t batch_dims) {
 #ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
 #else
@@ -616,7 +616,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Gemm
-	virtual OperatorReturnType onnx_Gemm(/*inputs:*/ tensor_t A, tensor_t B, std::variant<void *, tensor_t>& C, /*outputs:*/ tensor_t Y, /*attributes:*/ std::variant<void *, float > alpha, std::variant<void *, float > beta, std::variant<void *, int64_t > transA, std::variant<void *, int64_t > transB) {
+	virtual OperatorReturnType onnx_Gemm(/*inputs:*/ tensor_t A, tensor_t B, std::variant<void *, tensor_t>& C, /*outputs:*/ tensor_t Y, /*attributes:*/ float alpha, float beta, int64_t transA, int64_t transB) {
 #ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
 #else
@@ -634,7 +634,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#GlobalLpPool
-	virtual OperatorReturnType onnx_GlobalLpPool(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y, /*attributes:*/ std::variant<void *, int64_t > p) {
+	virtual OperatorReturnType onnx_GlobalLpPool(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y, /*attributes:*/ int64_t p) {
 #ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
 #else
@@ -670,7 +670,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#HardSigmoid
-	virtual OperatorReturnType onnx_HardSigmoid(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y, /*attributes:*/ std::variant<void *, float > alpha, std::variant<void *, float > beta) {
+	virtual OperatorReturnType onnx_HardSigmoid(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y, /*attributes:*/ float alpha, float beta) {
 #ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
 #else
@@ -688,7 +688,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Hardmax
-	virtual OperatorReturnType onnx_Hardmax(/*inputs:*/ tensor_t input, /*outputs:*/ tensor_t output, /*attributes:*/ std::variant<void *, int64_t > axis) {
+	virtual OperatorReturnType onnx_Hardmax(/*inputs:*/ tensor_t input, /*outputs:*/ tensor_t output, /*attributes:*/ int64_t axis) {
 #ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
 #else
@@ -706,7 +706,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#InstanceNormalization
-	virtual OperatorReturnType onnx_InstanceNormalization(/*inputs:*/ tensor_t input, tensor_t scale, tensor_t B, /*outputs:*/ tensor_t output, /*attributes:*/ std::variant<void *, float > epsilon) {
+	virtual OperatorReturnType onnx_InstanceNormalization(/*inputs:*/ tensor_t input, tensor_t scale, tensor_t B, /*outputs:*/ tensor_t output, /*attributes:*/ float epsilon) {
 #ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
 #else
@@ -715,7 +715,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#IsInf
-	virtual OperatorReturnType onnx_IsInf(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y, /*attributes:*/ std::variant<void *, int64_t > detect_negative, std::variant<void *, int64_t > detect_positive) {
+	virtual OperatorReturnType onnx_IsInf(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y, /*attributes:*/ int64_t detect_negative, int64_t detect_positive) {
 #ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
 #else
@@ -733,7 +733,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#LRN
-	virtual OperatorReturnType onnx_LRN(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y, /*attributes:*/ std::variant<void *, float > alpha, std::variant<void *, float > beta, std::variant<void *, float > bias, int64_t size) {
+	virtual OperatorReturnType onnx_LRN(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y, /*attributes:*/ float alpha, float beta, float bias, int64_t size) {
 #ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
 #else
@@ -742,7 +742,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#LSTM
-	virtual OperatorReturnType onnx_LSTM(/*inputs:*/ tensor_t X, tensor_t W, tensor_t R, std::variant<void *, tensor_t>& B, std::variant<void *, tensor_t>& sequence_lens, std::variant<void *, tensor_t>& initial_h, std::variant<void *, tensor_t>& initial_c, std::variant<void *, tensor_t>& P, /*outputs:*/ std::variant<void *, tensor_t>& Y, std::variant<void *, tensor_t>& Y_h, std::variant<void *, tensor_t>& Y_c, /*attributes:*/ std::variant<void *, std::vector<float> > activation_alpha, std::variant<void *, std::vector<float> > activation_beta, std::variant<void *, std::vector<std::string> > activations, std::variant<void *, float > clip, std::variant<void *, std::string > direction, std::variant<void *, int64_t > hidden_size, std::variant<void *, int64_t > input_forget, std::variant<void *, int64_t > layout) {
+	virtual OperatorReturnType onnx_LSTM(/*inputs:*/ tensor_t X, tensor_t W, tensor_t R, std::variant<void *, tensor_t>& B, std::variant<void *, tensor_t>& sequence_lens, std::variant<void *, tensor_t>& initial_h, std::variant<void *, tensor_t>& initial_c, std::variant<void *, tensor_t>& P, /*outputs:*/ std::variant<void *, tensor_t>& Y, std::variant<void *, tensor_t>& Y_h, std::variant<void *, tensor_t>& Y_c, /*attributes:*/ std::vector<float> activation_alpha, std::vector<float> activation_beta, std::vector<std::string> activations, float clip, std::string direction, int64_t hidden_size, int64_t input_forget, int64_t layout) {
 #ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
 #else
@@ -751,7 +751,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#LeakyRelu
-	virtual OperatorReturnType onnx_LeakyRelu(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y, /*attributes:*/ std::variant<void *, float > alpha) {
+	virtual OperatorReturnType onnx_LeakyRelu(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y, /*attributes:*/ float alpha) {
 #ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
 #else
@@ -787,7 +787,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#LogSoftmax
-	virtual OperatorReturnType onnx_LogSoftmax(/*inputs:*/ tensor_t input, /*outputs:*/ tensor_t output, /*attributes:*/ std::variant<void *, int64_t > axis) {
+	virtual OperatorReturnType onnx_LogSoftmax(/*inputs:*/ tensor_t input, /*outputs:*/ tensor_t output, /*attributes:*/ int64_t axis) {
 #ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
 #else
@@ -796,7 +796,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#LpNormalization
-	virtual OperatorReturnType onnx_LpNormalization(/*inputs:*/ tensor_t input, /*outputs:*/ tensor_t output, /*attributes:*/ std::variant<void *, int64_t > axis, std::variant<void *, int64_t > p) {
+	virtual OperatorReturnType onnx_LpNormalization(/*inputs:*/ tensor_t input, /*outputs:*/ tensor_t output, /*attributes:*/ int64_t axis, int64_t p) {
 #ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
 #else
@@ -805,7 +805,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#LpPool
-	virtual OperatorReturnType onnx_LpPool(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y, /*attributes:*/ std::variant<void *, std::string > auto_pad, std::vector<int64_t> kernel_shape, std::variant<void *, int64_t > p, std::variant<void *, std::vector<int64_t> > pads, std::variant<void *, std::vector<int64_t> > strides) {
+	virtual OperatorReturnType onnx_LpPool(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y, /*attributes:*/ std::string auto_pad, std::vector<int64_t> kernel_shape, int64_t p, std::vector<int64_t> pads, std::vector<int64_t> strides) {
 #ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
 #else
@@ -841,7 +841,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#MaxPool
-	virtual OperatorReturnType onnx_MaxPool(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y, std::variant<void *, tensor_t>& Indices, /*attributes:*/ std::variant<void *, std::string > auto_pad, std::variant<void *, int64_t > ceil_mode, std::variant<void *, std::vector<int64_t> > dilations, std::vector<int64_t> kernel_shape, std::variant<void *, std::vector<int64_t> > pads, std::variant<void *, int64_t > storage_order, std::variant<void *, std::vector<int64_t> > strides) {
+	virtual OperatorReturnType onnx_MaxPool(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y, std::variant<void *, tensor_t>& Indices, /*attributes:*/ std::string auto_pad, int64_t ceil_mode, std::vector<int64_t> dilations, std::vector<int64_t> kernel_shape, std::vector<int64_t> pads, int64_t storage_order, std::vector<int64_t> strides) {
 #ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
 #else
@@ -850,7 +850,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#MaxRoiPool
-	virtual OperatorReturnType onnx_MaxRoiPool(/*inputs:*/ tensor_t X, tensor_t rois, /*outputs:*/ tensor_t Y, /*attributes:*/ std::vector<int64_t> pooled_shape, std::variant<void *, float > spatial_scale) {
+	virtual OperatorReturnType onnx_MaxRoiPool(/*inputs:*/ tensor_t X, tensor_t rois, /*outputs:*/ tensor_t Y, /*attributes:*/ std::vector<int64_t> pooled_shape, float spatial_scale) {
 #ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
 #else
@@ -859,7 +859,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#MaxUnpool
-	virtual OperatorReturnType onnx_MaxUnpool(/*inputs:*/ tensor_t X, tensor_t I, std::variant<void *, tensor_t>& output_shape, /*outputs:*/ tensor_t output, /*attributes:*/ std::vector<int64_t> kernel_shape, std::variant<void *, std::vector<int64_t> > pads, std::variant<void *, std::vector<int64_t> > strides) {
+	virtual OperatorReturnType onnx_MaxUnpool(/*inputs:*/ tensor_t X, tensor_t I, std::variant<void *, tensor_t>& output_shape, /*outputs:*/ tensor_t output, /*attributes:*/ std::vector<int64_t> kernel_shape, std::vector<int64_t> pads, std::vector<int64_t> strides) {
 #ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
 #else
@@ -877,7 +877,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#MeanVarianceNormalization
-	virtual OperatorReturnType onnx_MeanVarianceNormalization(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y, /*attributes:*/ std::variant<void *, std::vector<int64_t> > axes) {
+	virtual OperatorReturnType onnx_MeanVarianceNormalization(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y, /*attributes:*/ std::vector<int64_t> axes) {
 #ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
 #else
@@ -895,7 +895,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Mod
-	virtual OperatorReturnType onnx_Mod(/*inputs:*/ tensor_t A, tensor_t B, /*outputs:*/ tensor_t C, /*attributes:*/ std::variant<void *, int64_t > fmod) {
+	virtual OperatorReturnType onnx_Mod(/*inputs:*/ tensor_t A, tensor_t B, /*outputs:*/ tensor_t C, /*attributes:*/ int64_t fmod) {
 #ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
 #else
@@ -913,7 +913,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Multinomial
-	virtual OperatorReturnType onnx_Multinomial(/*inputs:*/ tensor_t input, /*outputs:*/ tensor_t output, /*attributes:*/ std::variant<void *, int64_t > dtype, std::variant<void *, int64_t > sample_size, std::variant<void *, float > seed) {
+	virtual OperatorReturnType onnx_Multinomial(/*inputs:*/ tensor_t input, /*outputs:*/ tensor_t output, /*attributes:*/ int64_t dtype, int64_t sample_size, float seed) {
 #ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
 #else
@@ -931,7 +931,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#NegativeLogLikelihoodLoss
-	virtual OperatorReturnType onnx_NegativeLogLikelihoodLoss(/*inputs:*/ tensor_t input, tensor_t target, std::variant<void *, tensor_t>& weight, /*outputs:*/ tensor_t loss, /*attributes:*/ std::variant<void *, int64_t > ignore_index, std::variant<void *, std::string > reduction) {
+	virtual OperatorReturnType onnx_NegativeLogLikelihoodLoss(/*inputs:*/ tensor_t input, tensor_t target, std::variant<void *, tensor_t>& weight, /*outputs:*/ tensor_t loss, /*attributes:*/ int64_t ignore_index, std::string reduction) {
 #ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
 #else
@@ -940,7 +940,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#NonMaxSuppression
-	virtual OperatorReturnType onnx_NonMaxSuppression(/*inputs:*/ tensor_t boxes, tensor_t scores, std::variant<void *, tensor_t>& max_output_boxes_per_class, std::variant<void *, tensor_t>& iou_threshold, std::variant<void *, tensor_t>& score_threshold, /*outputs:*/ tensor_t selected_indices, /*attributes:*/ std::variant<void *, int64_t > center_point_box) {
+	virtual OperatorReturnType onnx_NonMaxSuppression(/*inputs:*/ tensor_t boxes, tensor_t scores, std::variant<void *, tensor_t>& max_output_boxes_per_class, std::variant<void *, tensor_t>& iou_threshold, std::variant<void *, tensor_t>& score_threshold, /*outputs:*/ tensor_t selected_indices, /*attributes:*/ int64_t center_point_box) {
 #ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
 #else
@@ -967,7 +967,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#OneHot
-	virtual OperatorReturnType onnx_OneHot(/*inputs:*/ tensor_t indices, tensor_t depth, tensor_t values, /*outputs:*/ tensor_t output, /*attributes:*/ std::variant<void *, int64_t > axis) {
+	virtual OperatorReturnType onnx_OneHot(/*inputs:*/ tensor_t indices, tensor_t depth, tensor_t values, /*outputs:*/ tensor_t output, /*attributes:*/ int64_t axis) {
 #ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
 #else
@@ -994,7 +994,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Pad
-	virtual OperatorReturnType onnx_Pad(/*inputs:*/ tensor_t data, tensor_t pads, std::variant<void *, tensor_t>& constant_value, /*outputs:*/ tensor_t output, /*attributes:*/ std::variant<void *, std::string > mode) {
+	virtual OperatorReturnType onnx_Pad(/*inputs:*/ tensor_t data, tensor_t pads, std::variant<void *, tensor_t>& constant_value, /*outputs:*/ tensor_t output, /*attributes:*/ std::string mode) {
 #ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
 #else
@@ -1012,7 +1012,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#QLinearConv
-	virtual OperatorReturnType onnx_QLinearConv(/*inputs:*/ tensor_t x, tensor_t x_scale, tensor_t x_zero_point, tensor_t w, tensor_t w_scale, tensor_t w_zero_point, tensor_t y_scale, tensor_t y_zero_point, std::variant<void *, tensor_t>& B, /*outputs:*/ tensor_t y, /*attributes:*/ std::variant<void *, std::string > auto_pad, std::variant<void *, std::vector<int64_t> > dilations, std::variant<void *, int64_t > group, std::variant<void *, std::vector<int64_t> > kernel_shape, std::variant<void *, std::vector<int64_t> > pads, std::variant<void *, std::vector<int64_t> > strides) {
+	virtual OperatorReturnType onnx_QLinearConv(/*inputs:*/ tensor_t x, tensor_t x_scale, tensor_t x_zero_point, tensor_t w, tensor_t w_scale, tensor_t w_zero_point, tensor_t y_scale, tensor_t y_zero_point, std::variant<void *, tensor_t>& B, /*outputs:*/ tensor_t y, /*attributes:*/ std::string auto_pad, std::vector<int64_t> dilations, int64_t group, std::vector<int64_t> kernel_shape, std::vector<int64_t> pads, std::vector<int64_t> strides) {
 #ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
 #else
@@ -1030,7 +1030,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#QuantizeLinear
-	virtual OperatorReturnType onnx_QuantizeLinear(/*inputs:*/ tensor_t x, tensor_t y_scale, std::variant<void *, tensor_t>& y_zero_point, /*outputs:*/ tensor_t y, /*attributes:*/ std::variant<void *, int64_t > axis) {
+	virtual OperatorReturnType onnx_QuantizeLinear(/*inputs:*/ tensor_t x, tensor_t y_scale, std::variant<void *, tensor_t>& y_zero_point, /*outputs:*/ tensor_t y, /*attributes:*/ int64_t axis) {
 #ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
 #else
@@ -1039,7 +1039,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#RNN
-	virtual OperatorReturnType onnx_RNN(/*inputs:*/ tensor_t X, tensor_t W, tensor_t R, std::variant<void *, tensor_t>& B, std::variant<void *, tensor_t>& sequence_lens, std::variant<void *, tensor_t>& initial_h, /*outputs:*/ std::variant<void *, tensor_t>& Y, std::variant<void *, tensor_t>& Y_h, /*attributes:*/ std::variant<void *, std::vector<float> > activation_alpha, std::variant<void *, std::vector<float> > activation_beta, std::variant<void *, std::vector<std::string> > activations, std::variant<void *, float > clip, std::variant<void *, std::string > direction, std::variant<void *, int64_t > hidden_size, std::variant<void *, int64_t > layout) {
+	virtual OperatorReturnType onnx_RNN(/*inputs:*/ tensor_t X, tensor_t W, tensor_t R, std::variant<void *, tensor_t>& B, std::variant<void *, tensor_t>& sequence_lens, std::variant<void *, tensor_t>& initial_h, /*outputs:*/ std::variant<void *, tensor_t>& Y, std::variant<void *, tensor_t>& Y_h, /*attributes:*/ std::vector<float> activation_alpha, std::vector<float> activation_beta, std::vector<std::string> activations, float clip, std::string direction, int64_t hidden_size, int64_t layout) {
 #ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
 #else
@@ -1048,7 +1048,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#RandomNormal
-	virtual OperatorReturnType onnx_RandomNormal(/*outputs:*/ tensor_t output, /*attributes:*/ std::variant<void *, int64_t > dtype, std::variant<void *, float > mean, std::variant<void *, float > scale, std::variant<void *, float > seed, std::vector<int64_t> shape) {
+	virtual OperatorReturnType onnx_RandomNormal(/*outputs:*/ tensor_t output, /*attributes:*/ int64_t dtype, float mean, float scale, float seed, std::vector<int64_t> shape) {
 #ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
 #else
@@ -1057,7 +1057,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#RandomNormalLike
-	virtual OperatorReturnType onnx_RandomNormalLike(/*inputs:*/ tensor_t input, /*outputs:*/ tensor_t output, /*attributes:*/ std::variant<void *, int64_t > dtype, std::variant<void *, float > mean, std::variant<void *, float > scale, std::variant<void *, float > seed) {
+	virtual OperatorReturnType onnx_RandomNormalLike(/*inputs:*/ tensor_t input, /*outputs:*/ tensor_t output, /*attributes:*/ int64_t dtype, float mean, float scale, float seed) {
 #ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
 #else
@@ -1066,7 +1066,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#RandomUniform
-	virtual OperatorReturnType onnx_RandomUniform(/*outputs:*/ tensor_t output, /*attributes:*/ std::variant<void *, int64_t > dtype, std::variant<void *, float > high, std::variant<void *, float > low, std::variant<void *, float > seed, std::vector<int64_t> shape) {
+	virtual OperatorReturnType onnx_RandomUniform(/*outputs:*/ tensor_t output, /*attributes:*/ int64_t dtype, float high, float low, float seed, std::vector<int64_t> shape) {
 #ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
 #else
@@ -1075,7 +1075,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#RandomUniformLike
-	virtual OperatorReturnType onnx_RandomUniformLike(/*inputs:*/ tensor_t input, /*outputs:*/ tensor_t output, /*attributes:*/ std::variant<void *, int64_t > dtype, std::variant<void *, float > high, std::variant<void *, float > low, std::variant<void *, float > seed) {
+	virtual OperatorReturnType onnx_RandomUniformLike(/*inputs:*/ tensor_t input, /*outputs:*/ tensor_t output, /*attributes:*/ int64_t dtype, float high, float low, float seed) {
 #ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
 #else
@@ -1102,7 +1102,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#ReduceL1
-	virtual OperatorReturnType onnx_ReduceL1(/*inputs:*/ tensor_t data, /*outputs:*/ tensor_t reduced, /*attributes:*/ std::variant<void *, std::vector<int64_t> > axes, std::variant<void *, int64_t > keepdims) {
+	virtual OperatorReturnType onnx_ReduceL1(/*inputs:*/ tensor_t data, /*outputs:*/ tensor_t reduced, /*attributes:*/ std::vector<int64_t> axes, int64_t keepdims) {
 #ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
 #else
@@ -1111,7 +1111,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#ReduceL2
-	virtual OperatorReturnType onnx_ReduceL2(/*inputs:*/ tensor_t data, /*outputs:*/ tensor_t reduced, /*attributes:*/ std::variant<void *, std::vector<int64_t> > axes, std::variant<void *, int64_t > keepdims) {
+	virtual OperatorReturnType onnx_ReduceL2(/*inputs:*/ tensor_t data, /*outputs:*/ tensor_t reduced, /*attributes:*/ std::vector<int64_t> axes, int64_t keepdims) {
 #ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
 #else
@@ -1120,7 +1120,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#ReduceLogSum
-	virtual OperatorReturnType onnx_ReduceLogSum(/*inputs:*/ tensor_t data, /*outputs:*/ tensor_t reduced, /*attributes:*/ std::variant<void *, std::vector<int64_t> > axes, std::variant<void *, int64_t > keepdims) {
+	virtual OperatorReturnType onnx_ReduceLogSum(/*inputs:*/ tensor_t data, /*outputs:*/ tensor_t reduced, /*attributes:*/ std::vector<int64_t> axes, int64_t keepdims) {
 #ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
 #else
@@ -1129,7 +1129,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#ReduceLogSumExp
-	virtual OperatorReturnType onnx_ReduceLogSumExp(/*inputs:*/ tensor_t data, /*outputs:*/ tensor_t reduced, /*attributes:*/ std::variant<void *, std::vector<int64_t> > axes, std::variant<void *, int64_t > keepdims) {
+	virtual OperatorReturnType onnx_ReduceLogSumExp(/*inputs:*/ tensor_t data, /*outputs:*/ tensor_t reduced, /*attributes:*/ std::vector<int64_t> axes, int64_t keepdims) {
 #ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
 #else
@@ -1138,7 +1138,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#ReduceMax
-	virtual OperatorReturnType onnx_ReduceMax(/*inputs:*/ tensor_t data, /*outputs:*/ tensor_t reduced, /*attributes:*/ std::variant<void *, std::vector<int64_t> > axes, std::variant<void *, int64_t > keepdims) {
+	virtual OperatorReturnType onnx_ReduceMax(/*inputs:*/ tensor_t data, /*outputs:*/ tensor_t reduced, /*attributes:*/ std::vector<int64_t> axes, int64_t keepdims) {
 #ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
 #else
@@ -1147,7 +1147,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#ReduceMean
-	virtual OperatorReturnType onnx_ReduceMean(/*inputs:*/ tensor_t data, /*outputs:*/ tensor_t reduced, /*attributes:*/ std::variant<void *, std::vector<int64_t> > axes, std::variant<void *, int64_t > keepdims) {
+	virtual OperatorReturnType onnx_ReduceMean(/*inputs:*/ tensor_t data, /*outputs:*/ tensor_t reduced, /*attributes:*/ std::vector<int64_t> axes, int64_t keepdims) {
 #ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
 #else
@@ -1156,7 +1156,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#ReduceMin
-	virtual OperatorReturnType onnx_ReduceMin(/*inputs:*/ tensor_t data, /*outputs:*/ tensor_t reduced, /*attributes:*/ std::variant<void *, std::vector<int64_t> > axes, std::variant<void *, int64_t > keepdims) {
+	virtual OperatorReturnType onnx_ReduceMin(/*inputs:*/ tensor_t data, /*outputs:*/ tensor_t reduced, /*attributes:*/ std::vector<int64_t> axes, int64_t keepdims) {
 #ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
 #else
@@ -1165,7 +1165,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#ReduceProd
-	virtual OperatorReturnType onnx_ReduceProd(/*inputs:*/ tensor_t data, /*outputs:*/ tensor_t reduced, /*attributes:*/ std::variant<void *, std::vector<int64_t> > axes, std::variant<void *, int64_t > keepdims) {
+	virtual OperatorReturnType onnx_ReduceProd(/*inputs:*/ tensor_t data, /*outputs:*/ tensor_t reduced, /*attributes:*/ std::vector<int64_t> axes, int64_t keepdims) {
 #ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
 #else
@@ -1174,7 +1174,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#ReduceSum
-	virtual OperatorReturnType onnx_ReduceSum(/*inputs:*/ tensor_t data, std::variant<void *, tensor_t>& axes, /*outputs:*/ tensor_t reduced, /*attributes:*/ std::variant<void *, int64_t > keepdims, std::variant<void *, int64_t > noop_with_empty_axes) {
+	virtual OperatorReturnType onnx_ReduceSum(/*inputs:*/ tensor_t data, std::variant<void *, tensor_t>& axes, /*outputs:*/ tensor_t reduced, /*attributes:*/ int64_t keepdims, int64_t noop_with_empty_axes) {
 #ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
 #else
@@ -1183,7 +1183,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#ReduceSumSquare
-	virtual OperatorReturnType onnx_ReduceSumSquare(/*inputs:*/ tensor_t data, /*outputs:*/ tensor_t reduced, /*attributes:*/ std::variant<void *, std::vector<int64_t> > axes, std::variant<void *, int64_t > keepdims) {
+	virtual OperatorReturnType onnx_ReduceSumSquare(/*inputs:*/ tensor_t data, /*outputs:*/ tensor_t reduced, /*attributes:*/ std::vector<int64_t> axes, int64_t keepdims) {
 #ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
 #else
@@ -1201,7 +1201,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Reshape
-	virtual OperatorReturnType onnx_Reshape(/*inputs:*/ tensor_t data, tensor_t shape, /*outputs:*/ tensor_t reshaped, /*attributes:*/ std::variant<void *, int64_t > allowzero) {
+	virtual OperatorReturnType onnx_Reshape(/*inputs:*/ tensor_t data, tensor_t shape, /*outputs:*/ tensor_t reshaped, /*attributes:*/ int64_t allowzero) {
 #ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
 #else
@@ -1210,7 +1210,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Resize
-	virtual OperatorReturnType onnx_Resize(/*inputs:*/ tensor_t X, std::variant<void *, tensor_t>& roi, std::variant<void *, tensor_t>& scales, std::variant<void *, tensor_t>& sizes, /*outputs:*/ tensor_t Y, /*attributes:*/ std::variant<void *, std::string > coordinate_transformation_mode, std::variant<void *, float > cubic_coeff_a, std::variant<void *, int64_t > exclude_outside, std::variant<void *, float > extrapolation_value, std::variant<void *, std::string > mode, std::variant<void *, std::string > nearest_mode) {
+	virtual OperatorReturnType onnx_Resize(/*inputs:*/ tensor_t X, std::variant<void *, tensor_t>& roi, std::variant<void *, tensor_t>& scales, std::variant<void *, tensor_t>& sizes, /*outputs:*/ tensor_t Y, /*attributes:*/ std::string coordinate_transformation_mode, float cubic_coeff_a, int64_t exclude_outside, float extrapolation_value, std::string mode, std::string nearest_mode) {
 #ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
 #else
@@ -1219,7 +1219,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#ReverseSequence
-	virtual OperatorReturnType onnx_ReverseSequence(/*inputs:*/ tensor_t input, tensor_t sequence_lens, /*outputs:*/ tensor_t Y, /*attributes:*/ std::variant<void *, int64_t > batch_axis, std::variant<void *, int64_t > time_axis) {
+	virtual OperatorReturnType onnx_ReverseSequence(/*inputs:*/ tensor_t input, tensor_t sequence_lens, /*outputs:*/ tensor_t Y, /*attributes:*/ int64_t batch_axis, int64_t time_axis) {
 #ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
 #else
@@ -1228,7 +1228,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#RoiAlign
-	virtual OperatorReturnType onnx_RoiAlign(/*inputs:*/ tensor_t X, tensor_t rois, tensor_t batch_indices, /*outputs:*/ tensor_t Y, /*attributes:*/ std::variant<void *, std::string > coordinate_transformation_mode, std::variant<void *, std::string > mode, std::variant<void *, int64_t > output_height, std::variant<void *, int64_t > output_width, std::variant<void *, int64_t > sampling_ratio, std::variant<void *, float > spatial_scale) {
+	virtual OperatorReturnType onnx_RoiAlign(/*inputs:*/ tensor_t X, tensor_t rois, tensor_t batch_indices, /*outputs:*/ tensor_t Y, /*attributes:*/ std::string coordinate_transformation_mode, std::string mode, int64_t output_height, int64_t output_width, int64_t sampling_ratio, float spatial_scale) {
 #ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
 #else
@@ -1246,7 +1246,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#ScatterElements
-	virtual OperatorReturnType onnx_ScatterElements(/*inputs:*/ tensor_t data, tensor_t indices, tensor_t updates, /*outputs:*/ tensor_t output, /*attributes:*/ std::variant<void *, int64_t > axis) {
+	virtual OperatorReturnType onnx_ScatterElements(/*inputs:*/ tensor_t data, tensor_t indices, tensor_t updates, /*outputs:*/ tensor_t output, /*attributes:*/ int64_t axis) {
 #ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
 #else
@@ -1264,7 +1264,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Selu
-	virtual OperatorReturnType onnx_Selu(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y, /*attributes:*/ std::variant<void *, float > alpha, std::variant<void *, float > gamma) {
+	virtual OperatorReturnType onnx_Selu(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y, /*attributes:*/ float alpha, float gamma) {
 #ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
 #else
@@ -1291,7 +1291,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#SequenceEmpty
-	virtual OperatorReturnType onnx_SequenceEmpty(/*outputs:*/ tensor_t output, /*attributes:*/ std::variant<void *, int64_t > dtype) {
+	virtual OperatorReturnType onnx_SequenceEmpty(/*outputs:*/ tensor_t output, /*attributes:*/ int64_t dtype) {
 #ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
 #else
@@ -1327,7 +1327,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Shape
-	virtual OperatorReturnType onnx_Shape(/*inputs:*/ tensor_t data, /*outputs:*/ tensor_t shape, /*attributes:*/ std::variant<void *, int64_t > end, std::variant<void *, int64_t > start) {
+	virtual OperatorReturnType onnx_Shape(/*inputs:*/ tensor_t data, /*outputs:*/ tensor_t shape, /*attributes:*/ int64_t end, int64_t start) {
 #ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
 #else
@@ -1336,7 +1336,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Shrink
-	virtual OperatorReturnType onnx_Shrink(/*inputs:*/ tensor_t input, /*outputs:*/ tensor_t output, /*attributes:*/ std::variant<void *, float > bias, std::variant<void *, float > lambd) {
+	virtual OperatorReturnType onnx_Shrink(/*inputs:*/ tensor_t input, /*outputs:*/ tensor_t output, /*attributes:*/ float bias, float lambd) {
 #ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
 #else
@@ -1399,7 +1399,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Softmax
-	virtual OperatorReturnType onnx_Softmax(/*inputs:*/ tensor_t input, /*outputs:*/ tensor_t output, /*attributes:*/ std::variant<void *, int64_t > axis) {
+	virtual OperatorReturnType onnx_Softmax(/*inputs:*/ tensor_t input, /*outputs:*/ tensor_t output, /*attributes:*/ int64_t axis) {
 #ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
 #else
@@ -1408,7 +1408,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#SoftmaxCrossEntropyLoss
-	virtual OperatorReturnType onnx_SoftmaxCrossEntropyLoss(/*inputs:*/ tensor_t scores, tensor_t labels, std::variant<void *, tensor_t>& weights, /*outputs:*/ tensor_t output, std::variant<void *, tensor_t>& log_prob, /*attributes:*/ std::variant<void *, int64_t > ignore_index, std::variant<void *, std::string > reduction) {
+	virtual OperatorReturnType onnx_SoftmaxCrossEntropyLoss(/*inputs:*/ tensor_t scores, tensor_t labels, std::variant<void *, tensor_t>& weights, /*outputs:*/ tensor_t output, std::variant<void *, tensor_t>& log_prob, /*attributes:*/ int64_t ignore_index, std::string reduction) {
 #ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
 #else
@@ -1444,7 +1444,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Split
-	virtual OperatorReturnType onnx_Split(/*inputs:*/ tensor_t input, std::variant<void *, tensor_t>& split, /*outputs:*/ std::vector<tensor_t>& outputs, /*attributes:*/ std::variant<void *, int64_t > axis) {
+	virtual OperatorReturnType onnx_Split(/*inputs:*/ tensor_t input, std::variant<void *, tensor_t>& split, /*outputs:*/ std::vector<tensor_t>& outputs, /*attributes:*/ int64_t axis) {
 #ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
 #else
@@ -1453,7 +1453,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#SplitToSequence
-	virtual OperatorReturnType onnx_SplitToSequence(/*inputs:*/ tensor_t input, std::variant<void *, tensor_t>& split, /*outputs:*/ tensor_t output_sequence, /*attributes:*/ std::variant<void *, int64_t > axis, std::variant<void *, int64_t > keepdims) {
+	virtual OperatorReturnType onnx_SplitToSequence(/*inputs:*/ tensor_t input, std::variant<void *, tensor_t>& split, /*outputs:*/ tensor_t output_sequence, /*attributes:*/ int64_t axis, int64_t keepdims) {
 #ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
 #else
@@ -1480,7 +1480,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#StringNormalizer
-	virtual OperatorReturnType onnx_StringNormalizer(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y, /*attributes:*/ std::variant<void *, std::string > case_change_action, std::variant<void *, int64_t > is_case_sensitive, std::variant<void *, std::string > locale, std::variant<void *, std::vector<std::string> > stopwords) {
+	virtual OperatorReturnType onnx_StringNormalizer(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y, /*attributes:*/ std::string case_change_action, int64_t is_case_sensitive, std::string locale, std::vector<std::string> stopwords) {
 #ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
 #else
@@ -1525,7 +1525,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#TfIdfVectorizer
-	virtual OperatorReturnType onnx_TfIdfVectorizer(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y, /*attributes:*/ int64_t max_gram_length, int64_t max_skip_count, int64_t min_gram_length, std::string mode, std::vector<int64_t> ngram_counts, std::vector<int64_t> ngram_indexes, std::variant<void *, std::vector<int64_t> > pool_int64s, std::variant<void *, std::vector<std::string> > pool_strings, std::variant<void *, std::vector<float> > weights) {
+	virtual OperatorReturnType onnx_TfIdfVectorizer(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y, /*attributes:*/ int64_t max_gram_length, int64_t max_skip_count, int64_t min_gram_length, std::string mode, std::vector<int64_t> ngram_counts, std::vector<int64_t> ngram_indexes, std::vector<int64_t> pool_int64s, std::vector<std::string> pool_strings, std::vector<float> weights) {
 #ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
 #else
@@ -1534,7 +1534,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#ThresholdedRelu
-	virtual OperatorReturnType onnx_ThresholdedRelu(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y, /*attributes:*/ std::variant<void *, float > alpha) {
+	virtual OperatorReturnType onnx_ThresholdedRelu(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y, /*attributes:*/ float alpha) {
 #ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
 #else
@@ -1552,7 +1552,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#TopK
-	virtual OperatorReturnType onnx_TopK(/*inputs:*/ tensor_t X, tensor_t K, /*outputs:*/ tensor_t Values, tensor_t Indices, /*attributes:*/ std::variant<void *, int64_t > axis, std::variant<void *, int64_t > largest, std::variant<void *, int64_t > sorted) {
+	virtual OperatorReturnType onnx_TopK(/*inputs:*/ tensor_t X, tensor_t K, /*outputs:*/ tensor_t Values, tensor_t Indices, /*attributes:*/ int64_t axis, int64_t largest, int64_t sorted) {
 #ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
 #else
@@ -1561,7 +1561,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Transpose
-	virtual OperatorReturnType onnx_Transpose(/*inputs:*/ tensor_t data, /*outputs:*/ tensor_t transposed, /*attributes:*/ std::variant<void *, std::vector<int64_t> > perm) {
+	virtual OperatorReturnType onnx_Transpose(/*inputs:*/ tensor_t data, /*outputs:*/ tensor_t transposed, /*attributes:*/ std::vector<int64_t> perm) {
 #ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
 #else
@@ -1570,7 +1570,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Trilu
-	virtual OperatorReturnType onnx_Trilu(/*inputs:*/ tensor_t input, std::variant<void *, tensor_t>& k, /*outputs:*/ tensor_t output, /*attributes:*/ std::variant<void *, int64_t > upper) {
+	virtual OperatorReturnType onnx_Trilu(/*inputs:*/ tensor_t input, std::variant<void *, tensor_t>& k, /*outputs:*/ tensor_t output, /*attributes:*/ int64_t upper) {
 #ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
 #else
@@ -1579,7 +1579,7 @@ struct TensorType {
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Unique
-	virtual OperatorReturnType onnx_Unique(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y, std::variant<void *, tensor_t>& indices, std::variant<void *, tensor_t>& inverse_indices, std::variant<void *, tensor_t>& counts, /*attributes:*/ std::variant<void *, int64_t > axis, std::variant<void *, int64_t > sorted) {
+	virtual OperatorReturnType onnx_Unique(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y, std::variant<void *, tensor_t>& indices, std::variant<void *, tensor_t>& inverse_indices, std::variant<void *, tensor_t>& counts, /*attributes:*/ int64_t axis, int64_t sorted) {
 #ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
 #else
@@ -1875,28 +1875,52 @@ static std::vector<tensor_t> fetch_tensors(ValueStack<TensorType>& stack) {
     return v;
 }
 
-static std::variant<void *, float> fetch_optional_float(ValueStack<TensorType>& stack) {
+static float fetch_optional_float(ValueStack<TensorType>& stack, float default_value) {
     if ( stack.top().is_none() ) {
         stack.pop();
-        return std::variant<void *, float>(nullptr);
+        return default_value;
     }
-    return std::variant<void *, float>( fetch_float(stack) );
+    return fetch_float(stack);
 }
 
-static std::variant<void *, int64_t> fetch_optional_int(ValueStack<TensorType>& stack) {
+static int64_t fetch_optional_int(ValueStack<TensorType>& stack, int64_t default_value) {
     if ( stack.top().is_none() ) {
         stack.pop();
-        return std::variant<void *, int64_t>(nullptr);
+        return default_value;
     }
-    return std::variant<void *, int64_t>( fetch_int(stack) );
+    return fetch_int(stack);
 }
 
-static std::variant<void *, std::string> fetch_optional_string(ValueStack<TensorType>& stack) {
+static std::string fetch_optional_string(ValueStack<TensorType>& stack, std::string default_value ) {
     if ( stack.top().is_none() ) {
         stack.pop();
-        return std::variant<void *, std::string>(nullptr);
+        return default_value;
     }
-    return std::variant<void *, std::string>( fetch_string(stack) );
+    return fetch_string(stack);
+}
+
+static std::vector<float> fetch_optional_floats(ValueStack<TensorType>& stack, std::vector<float> default_value) {
+    if ( stack.top().is_none() ) {
+        stack.pop();
+        return default_value;
+    }
+    return fetch_floats(stack);
+}
+
+static std::vector<int64_t> fetch_optional_ints(ValueStack<TensorType>& stack, std::vector<int64_t> default_value) {
+    if ( stack.top().is_none() ) {
+        stack.pop();
+        return default_value;
+    }
+    return fetch_ints(stack);
+}
+
+static std::vector<std::string> fetch_optional_strings(ValueStack<TensorType>& stack, std::vector<std::string> default_value) {
+    if ( stack.top().is_none() ) {
+        stack.pop();
+        return default_value;
+    }
+    return fetch_strings(stack);
 }
 
 static std::variant<void *, tensor_t> fetch_optional_tensor(ValueStack<TensorType>& stack) {
@@ -1905,30 +1929,6 @@ static std::variant<void *, tensor_t> fetch_optional_tensor(ValueStack<TensorTyp
         return std::variant<void *, tensor_t>(nullptr);
     }
     return std::variant<void *, tensor_t>( fetch_tensor(stack) );
-}
-
-static std::variant<void *, std::vector<float> > fetch_optional_floats(ValueStack<TensorType>& stack) {
-    if ( stack.top().is_none() ) {
-        stack.pop();
-        return std::variant<void *, std::vector<float> >(nullptr);
-    }
-    return std::variant<void *, std::vector<float> >( fetch_floats(stack) );
-}
-
-static std::variant<void *, std::vector<int64_t> > fetch_optional_ints(ValueStack<TensorType>& stack) {
-    if ( stack.top().is_none() ) {
-        stack.pop();
-        return std::variant<void *, std::vector<int64_t> >(nullptr);
-    }
-    return std::variant<void *, std::vector<int64_t> >( fetch_ints(stack) );
-}
-
-static std::variant<void *, std::vector<std::string> > fetch_optional_strings(ValueStack<TensorType>& stack) {
-    if ( stack.top().is_none() ) {
-        stack.pop();
-        return std::variant<void *, std::vector<std::string>> (nullptr);
-    }
-    return std::variant<void *, std::vector<std::string> >( fetch_strings(stack) );
 }
 
 static void put_tensor(ValueStack<TensorType>& stack, tensor_t t) {
@@ -2087,10 +2087,10 @@ namespace generator {
 
             output = TensorType::create_undefined_user_tensor();
 
-            auto seed = fetch_optional_float(stack);
-            auto scale = fetch_optional_float(stack);
-            auto mean = fetch_optional_float(stack);
-            auto dtype = fetch_optional_int(stack);
+            auto seed = fetch_optional_float(stack, 0);
+            auto scale = fetch_optional_float(stack, 1);
+            auto mean = fetch_optional_float(stack, 0);
+            auto dtype = fetch_optional_int(stack, 0);
 
             auto input = fetch_tensor(stack);
 
@@ -2100,18 +2100,10 @@ namespace generator {
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
 
-            if ( seed.index() != 0) {
-                infer_.new_attr("seed", std::get<1>(seed) );
-            }
-            if ( scale.index() != 0) {
-                infer_.new_attr("scale", std::get<1>(scale) );
-            }
-            if ( mean.index() != 0) {
-                infer_.new_attr("mean", std::get<1>(mean) );
-            }
-            if ( dtype.index() != 0) {
-                infer_.new_attr("dtype", std::get<1>(dtype) );
-            }
+            infer_.new_attr("seed", seed);
+            infer_.new_attr("scale", scale);
+            infer_.new_attr("mean", mean);
+            infer_.new_attr("dtype", dtype);
 
             infer_.new_input(input);
 
@@ -2131,10 +2123,10 @@ namespace generator {
         virtual void run(ValueStack<TensorType>& stack) {
 
 
-            auto seed = fetch_optional_float(stack);
-            auto scale = fetch_optional_float(stack);
-            auto mean = fetch_optional_float(stack);
-            auto dtype = fetch_optional_int(stack);
+            auto seed = fetch_optional_float(stack, 0);
+            auto scale = fetch_optional_float(stack, 1);
+            auto mean = fetch_optional_float(stack, 0);
+            auto dtype = fetch_optional_int(stack, 0);
 
             auto input = fetch_tensor(stack);
 
@@ -2159,10 +2151,10 @@ namespace generator {
             output = TensorType::create_undefined_user_tensor();
 
             auto shape = fetch_ints(stack);
-            auto seed = fetch_optional_float(stack);
-            auto scale = fetch_optional_float(stack);
-            auto mean = fetch_optional_float(stack);
-            auto dtype = fetch_optional_int(stack);
+            auto seed = fetch_optional_float(stack, 0);
+            auto scale = fetch_optional_float(stack, 1);
+            auto mean = fetch_optional_float(stack, 0);
+            auto dtype = fetch_optional_int(stack, 1);
 
 
 
@@ -2172,18 +2164,10 @@ namespace generator {
             YNXInferenceContextImpl infer_(outputs_);
 
             infer_.new_attr("shape", shape);
-            if ( seed.index() != 0) {
-                infer_.new_attr("seed", std::get<1>(seed) );
-            }
-            if ( scale.index() != 0) {
-                infer_.new_attr("scale", std::get<1>(scale) );
-            }
-            if ( mean.index() != 0) {
-                infer_.new_attr("mean", std::get<1>(mean) );
-            }
-            if ( dtype.index() != 0) {
-                infer_.new_attr("dtype", std::get<1>(dtype) );
-            }
+            infer_.new_attr("seed", seed);
+            infer_.new_attr("scale", scale);
+            infer_.new_attr("mean", mean);
+            infer_.new_attr("dtype", dtype);
 
 
             auto f = query_inference_function("RandomNormal");
@@ -2203,10 +2187,10 @@ namespace generator {
 
 
             auto shape = fetch_ints(stack);
-            auto seed = fetch_optional_float(stack);
-            auto scale = fetch_optional_float(stack);
-            auto mean = fetch_optional_float(stack);
-            auto dtype = fetch_optional_int(stack);
+            auto seed = fetch_optional_float(stack, 0);
+            auto scale = fetch_optional_float(stack, 1);
+            auto mean = fetch_optional_float(stack, 0);
+            auto dtype = fetch_optional_int(stack, 1);
 
 
 
@@ -2230,10 +2214,10 @@ namespace generator {
             output = TensorType::create_undefined_user_tensor();
 
             auto shape = fetch_ints(stack);
-            auto seed = fetch_optional_float(stack);
-            auto low = fetch_optional_float(stack);
-            auto high = fetch_optional_float(stack);
-            auto dtype = fetch_optional_int(stack);
+            auto seed = fetch_optional_float(stack, 0);
+            auto low = fetch_optional_float(stack, 0);
+            auto high = fetch_optional_float(stack, 1);
+            auto dtype = fetch_optional_int(stack, 1);
 
 
 
@@ -2243,18 +2227,10 @@ namespace generator {
             YNXInferenceContextImpl infer_(outputs_);
 
             infer_.new_attr("shape", shape);
-            if ( seed.index() != 0) {
-                infer_.new_attr("seed", std::get<1>(seed) );
-            }
-            if ( low.index() != 0) {
-                infer_.new_attr("low", std::get<1>(low) );
-            }
-            if ( high.index() != 0) {
-                infer_.new_attr("high", std::get<1>(high) );
-            }
-            if ( dtype.index() != 0) {
-                infer_.new_attr("dtype", std::get<1>(dtype) );
-            }
+            infer_.new_attr("seed", seed);
+            infer_.new_attr("low", low);
+            infer_.new_attr("high", high);
+            infer_.new_attr("dtype", dtype);
 
 
             auto f = query_inference_function("RandomUniform");
@@ -2274,10 +2250,10 @@ namespace generator {
 
 
             auto shape = fetch_ints(stack);
-            auto seed = fetch_optional_float(stack);
-            auto low = fetch_optional_float(stack);
-            auto high = fetch_optional_float(stack);
-            auto dtype = fetch_optional_int(stack);
+            auto seed = fetch_optional_float(stack, 0);
+            auto low = fetch_optional_float(stack, 0);
+            auto high = fetch_optional_float(stack, 1);
+            auto dtype = fetch_optional_int(stack, 1);
 
 
 
@@ -2300,8 +2276,8 @@ namespace generator {
 
             output = TensorType::create_undefined_user_tensor();
 
-            auto k = fetch_optional_int(stack);
-            auto dtype = fetch_optional_int(stack);
+            auto k = fetch_optional_int(stack, 0);
+            auto dtype = fetch_optional_int(stack, 0);
 
             auto input = fetch_tensor(stack);
 
@@ -2311,12 +2287,8 @@ namespace generator {
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
 
-            if ( k.index() != 0) {
-                infer_.new_attr("k", std::get<1>(k) );
-            }
-            if ( dtype.index() != 0) {
-                infer_.new_attr("dtype", std::get<1>(dtype) );
-            }
+            infer_.new_attr("k", k);
+            infer_.new_attr("dtype", dtype);
 
             infer_.new_input(input);
 
@@ -2336,8 +2308,8 @@ namespace generator {
         virtual void run(ValueStack<TensorType>& stack) {
 
 
-            auto k = fetch_optional_int(stack);
-            auto dtype = fetch_optional_int(stack);
+            auto k = fetch_optional_int(stack, 0);
+            auto dtype = fetch_optional_int(stack, 0);
 
             auto input = fetch_tensor(stack);
 
@@ -2361,8 +2333,8 @@ namespace generator {
 
             output = TensorType::create_undefined_user_tensor();
 
-            auto seed = fetch_optional_float(stack);
-            auto dtype = fetch_optional_int(stack);
+            auto seed = fetch_optional_float(stack, 0);
+            auto dtype = fetch_optional_int(stack, 0);
 
             auto input = fetch_tensor(stack);
 
@@ -2372,12 +2344,8 @@ namespace generator {
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
 
-            if ( seed.index() != 0) {
-                infer_.new_attr("seed", std::get<1>(seed) );
-            }
-            if ( dtype.index() != 0) {
-                infer_.new_attr("dtype", std::get<1>(dtype) );
-            }
+            infer_.new_attr("seed", seed);
+            infer_.new_attr("dtype", dtype);
 
             infer_.new_input(input);
 
@@ -2397,8 +2365,8 @@ namespace generator {
         virtual void run(ValueStack<TensorType>& stack) {
 
 
-            auto seed = fetch_optional_float(stack);
-            auto dtype = fetch_optional_int(stack);
+            auto seed = fetch_optional_float(stack, 0);
+            auto dtype = fetch_optional_int(stack, 0);
 
             auto input = fetch_tensor(stack);
 
@@ -2422,9 +2390,9 @@ namespace generator {
 
             output = TensorType::create_undefined_user_tensor();
 
-            auto seed = fetch_optional_float(stack);
-            auto sample_size = fetch_optional_int(stack);
-            auto dtype = fetch_optional_int(stack);
+            auto seed = fetch_optional_float(stack, 0);
+            auto sample_size = fetch_optional_int(stack, 1);
+            auto dtype = fetch_optional_int(stack, 6);
 
             auto input = fetch_tensor(stack);
 
@@ -2434,15 +2402,9 @@ namespace generator {
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
 
-            if ( seed.index() != 0) {
-                infer_.new_attr("seed", std::get<1>(seed) );
-            }
-            if ( sample_size.index() != 0) {
-                infer_.new_attr("sample_size", std::get<1>(sample_size) );
-            }
-            if ( dtype.index() != 0) {
-                infer_.new_attr("dtype", std::get<1>(dtype) );
-            }
+            infer_.new_attr("seed", seed);
+            infer_.new_attr("sample_size", sample_size);
+            infer_.new_attr("dtype", dtype);
 
             infer_.new_input(input);
 
@@ -2462,9 +2424,9 @@ namespace generator {
         virtual void run(ValueStack<TensorType>& stack) {
 
 
-            auto seed = fetch_optional_float(stack);
-            auto sample_size = fetch_optional_int(stack);
-            auto dtype = fetch_optional_int(stack);
+            auto seed = fetch_optional_float(stack, 0);
+            auto sample_size = fetch_optional_int(stack, 1);
+            auto dtype = fetch_optional_int(stack, 6);
 
             auto input = fetch_tensor(stack);
 
@@ -2488,10 +2450,10 @@ namespace generator {
 
             output = TensorType::create_undefined_user_tensor();
 
-            auto seed = fetch_optional_float(stack);
-            auto low = fetch_optional_float(stack);
-            auto high = fetch_optional_float(stack);
-            auto dtype = fetch_optional_int(stack);
+            auto seed = fetch_optional_float(stack, 0);
+            auto low = fetch_optional_float(stack, 0);
+            auto high = fetch_optional_float(stack, 1);
+            auto dtype = fetch_optional_int(stack, 0);
 
             auto input = fetch_tensor(stack);
 
@@ -2501,18 +2463,10 @@ namespace generator {
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
 
-            if ( seed.index() != 0) {
-                infer_.new_attr("seed", std::get<1>(seed) );
-            }
-            if ( low.index() != 0) {
-                infer_.new_attr("low", std::get<1>(low) );
-            }
-            if ( high.index() != 0) {
-                infer_.new_attr("high", std::get<1>(high) );
-            }
-            if ( dtype.index() != 0) {
-                infer_.new_attr("dtype", std::get<1>(dtype) );
-            }
+            infer_.new_attr("seed", seed);
+            infer_.new_attr("low", low);
+            infer_.new_attr("high", high);
+            infer_.new_attr("dtype", dtype);
 
             infer_.new_input(input);
 
@@ -2532,10 +2486,10 @@ namespace generator {
         virtual void run(ValueStack<TensorType>& stack) {
 
 
-            auto seed = fetch_optional_float(stack);
-            auto low = fetch_optional_float(stack);
-            auto high = fetch_optional_float(stack);
-            auto dtype = fetch_optional_int(stack);
+            auto seed = fetch_optional_float(stack, 0);
+            auto low = fetch_optional_float(stack, 0);
+            auto high = fetch_optional_float(stack, 1);
+            auto dtype = fetch_optional_int(stack, 0);
 
             auto input = fetch_tensor(stack);
 
@@ -3211,7 +3165,7 @@ namespace math {
 
             Y = TensorType::create_undefined_user_tensor();
 
-            auto alpha = fetch_optional_float(stack);
+            auto alpha = fetch_optional_float(stack, 0.01);
 
             auto X = fetch_tensor(stack);
 
@@ -3221,9 +3175,7 @@ namespace math {
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
 
-            if ( alpha.index() != 0) {
-                infer_.new_attr("alpha", std::get<1>(alpha) );
-            }
+            infer_.new_attr("alpha", alpha);
 
             infer_.new_input(X);
 
@@ -3243,7 +3195,7 @@ namespace math {
         virtual void run(ValueStack<TensorType>& stack) {
 
 
-            auto alpha = fetch_optional_float(stack);
+            auto alpha = fetch_optional_float(stack, 0.01);
 
             auto X = fetch_tensor(stack);
 
@@ -3267,8 +3219,8 @@ namespace math {
 
             Y = TensorType::create_undefined_user_tensor();
 
-            auto beta = fetch_optional_float(stack);
-            auto alpha = fetch_optional_float(stack);
+            auto beta = fetch_optional_float(stack, 0.5);
+            auto alpha = fetch_optional_float(stack, 0.2);
 
             auto X = fetch_tensor(stack);
 
@@ -3278,12 +3230,8 @@ namespace math {
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
 
-            if ( beta.index() != 0) {
-                infer_.new_attr("beta", std::get<1>(beta) );
-            }
-            if ( alpha.index() != 0) {
-                infer_.new_attr("alpha", std::get<1>(alpha) );
-            }
+            infer_.new_attr("beta", beta);
+            infer_.new_attr("alpha", alpha);
 
             infer_.new_input(X);
 
@@ -3303,8 +3251,8 @@ namespace math {
         virtual void run(ValueStack<TensorType>& stack) {
 
 
-            auto beta = fetch_optional_float(stack);
-            auto alpha = fetch_optional_float(stack);
+            auto beta = fetch_optional_float(stack, 0.5);
+            auto alpha = fetch_optional_float(stack, 0.2);
 
             auto X = fetch_tensor(stack);
 
@@ -3847,7 +3795,7 @@ namespace math {
 
             output = TensorType::create_undefined_user_tensor();
 
-            auto axis = fetch_optional_int(stack);
+            auto axis = fetch_optional_int(stack, -1);
 
             auto input = fetch_tensor(stack);
 
@@ -3857,9 +3805,7 @@ namespace math {
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
 
-            if ( axis.index() != 0) {
-                infer_.new_attr("axis", std::get<1>(axis) );
-            }
+            infer_.new_attr("axis", axis);
 
             infer_.new_input(input);
 
@@ -3879,7 +3825,7 @@ namespace math {
         virtual void run(ValueStack<TensorType>& stack) {
 
 
-            auto axis = fetch_optional_int(stack);
+            auto axis = fetch_optional_int(stack, -1);
 
             auto input = fetch_tensor(stack);
 
@@ -4218,8 +4164,8 @@ namespace math {
 
             Y = TensorType::create_undefined_user_tensor();
 
-            auto gamma = fetch_optional_float(stack);
-            auto alpha = fetch_optional_float(stack);
+            auto gamma = fetch_optional_float(stack, 1.0507);
+            auto alpha = fetch_optional_float(stack, 1.67326);
 
             auto X = fetch_tensor(stack);
 
@@ -4229,12 +4175,8 @@ namespace math {
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
 
-            if ( gamma.index() != 0) {
-                infer_.new_attr("gamma", std::get<1>(gamma) );
-            }
-            if ( alpha.index() != 0) {
-                infer_.new_attr("alpha", std::get<1>(alpha) );
-            }
+            infer_.new_attr("gamma", gamma);
+            infer_.new_attr("alpha", alpha);
 
             infer_.new_input(X);
 
@@ -4254,8 +4196,8 @@ namespace math {
         virtual void run(ValueStack<TensorType>& stack) {
 
 
-            auto gamma = fetch_optional_float(stack);
-            auto alpha = fetch_optional_float(stack);
+            auto gamma = fetch_optional_float(stack, 1.0507);
+            auto alpha = fetch_optional_float(stack, 1.67326);
 
             auto X = fetch_tensor(stack);
 
@@ -4513,7 +4455,7 @@ namespace math {
 
             output = TensorType::create_undefined_user_tensor();
 
-            auto axis = fetch_optional_int(stack);
+            auto axis = fetch_optional_int(stack, -1);
 
             auto input = fetch_tensor(stack);
 
@@ -4523,9 +4465,7 @@ namespace math {
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
 
-            if ( axis.index() != 0) {
-                infer_.new_attr("axis", std::get<1>(axis) );
-            }
+            infer_.new_attr("axis", axis);
 
             infer_.new_input(input);
 
@@ -4545,7 +4485,7 @@ namespace math {
         virtual void run(ValueStack<TensorType>& stack) {
 
 
-            auto axis = fetch_optional_int(stack);
+            auto axis = fetch_optional_int(stack, -1);
 
             auto input = fetch_tensor(stack);
 
@@ -4620,10 +4560,10 @@ namespace math {
 
             Y = TensorType::create_undefined_user_tensor();
 
-            auto transB = fetch_optional_int(stack);
-            auto transA = fetch_optional_int(stack);
-            auto beta = fetch_optional_float(stack);
-            auto alpha = fetch_optional_float(stack);
+            auto transB = fetch_optional_int(stack, 0);
+            auto transA = fetch_optional_int(stack, 0);
+            auto beta = fetch_optional_float(stack, 1);
+            auto alpha = fetch_optional_float(stack, 1);
 
             auto C = fetch_optional_tensor(stack);
             auto B = fetch_tensor(stack);
@@ -4635,18 +4575,10 @@ namespace math {
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
 
-            if ( transB.index() != 0) {
-                infer_.new_attr("transB", std::get<1>(transB) );
-            }
-            if ( transA.index() != 0) {
-                infer_.new_attr("transA", std::get<1>(transA) );
-            }
-            if ( beta.index() != 0) {
-                infer_.new_attr("beta", std::get<1>(beta) );
-            }
-            if ( alpha.index() != 0) {
-                infer_.new_attr("alpha", std::get<1>(alpha) );
-            }
+            infer_.new_attr("transB", transB);
+            infer_.new_attr("transA", transA);
+            infer_.new_attr("beta", beta);
+            infer_.new_attr("alpha", alpha);
 
             infer_.new_input(A);
             infer_.new_input(B);
@@ -4668,10 +4600,10 @@ namespace math {
         virtual void run(ValueStack<TensorType>& stack) {
 
 
-            auto transB = fetch_optional_int(stack);
-            auto transA = fetch_optional_int(stack);
-            auto beta = fetch_optional_float(stack);
-            auto alpha = fetch_optional_float(stack);
+            auto transB = fetch_optional_int(stack, 0);
+            auto transA = fetch_optional_int(stack, 0);
+            auto beta = fetch_optional_float(stack, 1);
+            auto alpha = fetch_optional_float(stack, 1);
 
             auto C = fetch_optional_tensor(stack);
             auto B = fetch_tensor(stack);
@@ -4850,7 +4782,7 @@ namespace math {
 
             output = TensorType::create_undefined_user_tensor();
 
-            auto axis = fetch_optional_int(stack);
+            auto axis = fetch_optional_int(stack, -1);
 
             auto input = fetch_tensor(stack);
 
@@ -4860,9 +4792,7 @@ namespace math {
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
 
-            if ( axis.index() != 0) {
-                infer_.new_attr("axis", std::get<1>(axis) );
-            }
+            infer_.new_attr("axis", axis);
 
             infer_.new_input(input);
 
@@ -4882,7 +4812,7 @@ namespace math {
         virtual void run(ValueStack<TensorType>& stack) {
 
 
-            auto axis = fetch_optional_int(stack);
+            auto axis = fetch_optional_int(stack, -1);
 
             auto input = fetch_tensor(stack);
 
@@ -4910,8 +4840,8 @@ namespace math {
             }
             output = TensorType::create_undefined_user_tensor();
 
-            auto reduction = fetch_optional_string(stack);
-            auto ignore_index = fetch_optional_int(stack);
+            auto reduction = fetch_optional_string(stack, "mean");
+            auto ignore_index = fetch_optional_int(stack, 0);
 
             auto weights = fetch_optional_tensor(stack);
             auto labels = fetch_tensor(stack);
@@ -4926,12 +4856,8 @@ namespace math {
             }
             YNXInferenceContextImpl infer_(outputs_);
 
-            if ( reduction.index() != 0) {
-                infer_.new_attr("reduction", std::get<1>(reduction) );
-            }
-            if ( ignore_index.index() != 0) {
-                infer_.new_attr("ignore_index", std::get<1>(ignore_index) );
-            }
+            infer_.new_attr("reduction", reduction);
+            infer_.new_attr("ignore_index", ignore_index);
 
             infer_.new_input(scores);
             infer_.new_input(labels);
@@ -4960,8 +4886,8 @@ namespace math {
 
             fetch_bool(stack);
 
-            auto reduction = fetch_optional_string(stack);
-            auto ignore_index = fetch_optional_int(stack);
+            auto reduction = fetch_optional_string(stack, "mean");
+            auto ignore_index = fetch_optional_int(stack, 0);
 
             auto weights = fetch_optional_tensor(stack);
             auto labels = fetch_tensor(stack);
@@ -5196,9 +5122,9 @@ namespace math {
             Indices = TensorType::create_undefined_user_tensor();
             Values = TensorType::create_undefined_user_tensor();
 
-            auto sorted = fetch_optional_int(stack);
-            auto largest = fetch_optional_int(stack);
-            auto axis = fetch_optional_int(stack);
+            auto sorted = fetch_optional_int(stack, 1);
+            auto largest = fetch_optional_int(stack, 1);
+            auto axis = fetch_optional_int(stack, -1);
 
             auto K = fetch_tensor(stack);
             auto X = fetch_tensor(stack);
@@ -5210,15 +5136,9 @@ namespace math {
             outputs_.push_back(1);
             YNXInferenceContextImpl infer_(outputs_);
 
-            if ( sorted.index() != 0) {
-                infer_.new_attr("sorted", std::get<1>(sorted) );
-            }
-            if ( largest.index() != 0) {
-                infer_.new_attr("largest", std::get<1>(largest) );
-            }
-            if ( axis.index() != 0) {
-                infer_.new_attr("axis", std::get<1>(axis) );
-            }
+            infer_.new_attr("sorted", sorted);
+            infer_.new_attr("largest", largest);
+            infer_.new_attr("axis", axis);
 
             infer_.new_input(X);
             infer_.new_input(K);
@@ -5241,9 +5161,9 @@ namespace math {
         virtual void run(ValueStack<TensorType>& stack) {
 
 
-            auto sorted = fetch_optional_int(stack);
-            auto largest = fetch_optional_int(stack);
-            auto axis = fetch_optional_int(stack);
+            auto sorted = fetch_optional_int(stack, 1);
+            auto largest = fetch_optional_int(stack, 1);
+            auto axis = fetch_optional_int(stack, -1);
 
             auto K = fetch_tensor(stack);
             auto X = fetch_tensor(stack);
@@ -5632,7 +5552,7 @@ namespace math {
 
             Y = TensorType::create_undefined_user_tensor();
 
-            auto alpha = fetch_optional_float(stack);
+            auto alpha = fetch_optional_float(stack, 1);
 
             auto X = fetch_tensor(stack);
 
@@ -5642,9 +5562,7 @@ namespace math {
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
 
-            if ( alpha.index() != 0) {
-                infer_.new_attr("alpha", std::get<1>(alpha) );
-            }
+            infer_.new_attr("alpha", alpha);
 
             infer_.new_input(X);
 
@@ -5664,7 +5582,7 @@ namespace math {
         virtual void run(ValueStack<TensorType>& stack) {
 
 
-            auto alpha = fetch_optional_float(stack);
+            auto alpha = fetch_optional_float(stack, 1);
 
             auto X = fetch_tensor(stack);
 
@@ -5943,7 +5861,7 @@ namespace math {
 
             C = TensorType::create_undefined_user_tensor();
 
-            auto fmod = fetch_optional_int(stack);
+            auto fmod = fetch_optional_int(stack, 0);
 
             auto B = fetch_tensor(stack);
             auto A = fetch_tensor(stack);
@@ -5954,9 +5872,7 @@ namespace math {
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
 
-            if ( fmod.index() != 0) {
-                infer_.new_attr("fmod", std::get<1>(fmod) );
-            }
+            infer_.new_attr("fmod", fmod);
 
             infer_.new_input(A);
             infer_.new_input(B);
@@ -5977,7 +5893,7 @@ namespace math {
         virtual void run(ValueStack<TensorType>& stack) {
 
 
-            auto fmod = fetch_optional_int(stack);
+            auto fmod = fetch_optional_int(stack, 0);
 
             auto B = fetch_tensor(stack);
             auto A = fetch_tensor(stack);
@@ -6002,7 +5918,7 @@ namespace math {
 
             Y = TensorType::create_undefined_user_tensor();
 
-            auto alpha = fetch_optional_float(stack);
+            auto alpha = fetch_optional_float(stack, 1);
 
             auto X = fetch_tensor(stack);
 
@@ -6012,9 +5928,7 @@ namespace math {
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
 
-            if ( alpha.index() != 0) {
-                infer_.new_attr("alpha", std::get<1>(alpha) );
-            }
+            infer_.new_attr("alpha", alpha);
 
             infer_.new_input(X);
 
@@ -6034,7 +5948,7 @@ namespace math {
         virtual void run(ValueStack<TensorType>& stack) {
 
 
-            auto alpha = fetch_optional_float(stack);
+            auto alpha = fetch_optional_float(stack, 1);
 
             auto X = fetch_tensor(stack);
 
@@ -6118,7 +6032,7 @@ namespace math {
 
             Y = TensorType::create_undefined_user_tensor();
 
-            auto alpha = fetch_optional_float(stack);
+            auto alpha = fetch_optional_float(stack, 1);
 
             auto X = fetch_tensor(stack);
 
@@ -6128,9 +6042,7 @@ namespace math {
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
 
-            if ( alpha.index() != 0) {
-                infer_.new_attr("alpha", std::get<1>(alpha) );
-            }
+            infer_.new_attr("alpha", alpha);
 
             infer_.new_input(X);
 
@@ -6150,7 +6062,7 @@ namespace math {
         virtual void run(ValueStack<TensorType>& stack) {
 
 
-            auto alpha = fetch_optional_float(stack);
+            auto alpha = fetch_optional_float(stack, 1);
 
             auto X = fetch_tensor(stack);
 
@@ -6174,8 +6086,8 @@ namespace math {
 
             y = TensorType::create_undefined_user_tensor();
 
-            auto reverse = fetch_optional_int(stack);
-            auto exclusive = fetch_optional_int(stack);
+            auto reverse = fetch_optional_int(stack, 0);
+            auto exclusive = fetch_optional_int(stack, 0);
 
             auto axis = fetch_tensor(stack);
             auto x = fetch_tensor(stack);
@@ -6186,12 +6098,8 @@ namespace math {
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
 
-            if ( reverse.index() != 0) {
-                infer_.new_attr("reverse", std::get<1>(reverse) );
-            }
-            if ( exclusive.index() != 0) {
-                infer_.new_attr("exclusive", std::get<1>(exclusive) );
-            }
+            infer_.new_attr("reverse", reverse);
+            infer_.new_attr("exclusive", exclusive);
 
             infer_.new_input(x);
             infer_.new_input(axis);
@@ -6212,8 +6120,8 @@ namespace math {
         virtual void run(ValueStack<TensorType>& stack) {
 
 
-            auto reverse = fetch_optional_int(stack);
-            auto exclusive = fetch_optional_int(stack);
+            auto reverse = fetch_optional_int(stack, 0);
+            auto exclusive = fetch_optional_int(stack, 0);
 
             auto axis = fetch_tensor(stack);
             auto x = fetch_tensor(stack);
@@ -6289,8 +6197,8 @@ namespace math {
 
             loss = TensorType::create_undefined_user_tensor();
 
-            auto reduction = fetch_optional_string(stack);
-            auto ignore_index = fetch_optional_int(stack);
+            auto reduction = fetch_optional_string(stack, "mean");
+            auto ignore_index = fetch_optional_int(stack, 0);
 
             auto weight = fetch_optional_tensor(stack);
             auto target = fetch_tensor(stack);
@@ -6302,12 +6210,8 @@ namespace math {
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
 
-            if ( reduction.index() != 0) {
-                infer_.new_attr("reduction", std::get<1>(reduction) );
-            }
-            if ( ignore_index.index() != 0) {
-                infer_.new_attr("ignore_index", std::get<1>(ignore_index) );
-            }
+            infer_.new_attr("reduction", reduction);
+            infer_.new_attr("ignore_index", ignore_index);
 
             infer_.new_input(input);
             infer_.new_input(target);
@@ -6329,8 +6233,8 @@ namespace math {
         virtual void run(ValueStack<TensorType>& stack) {
 
 
-            auto reduction = fetch_optional_string(stack);
-            auto ignore_index = fetch_optional_int(stack);
+            auto reduction = fetch_optional_string(stack, "mean");
+            auto ignore_index = fetch_optional_int(stack, 0);
 
             auto weight = fetch_optional_tensor(stack);
             auto target = fetch_tensor(stack);
@@ -6461,9 +6365,9 @@ namespace nn {
             Y = TensorType::create_undefined_user_tensor();
 
             auto size = fetch_int(stack);
-            auto bias = fetch_optional_float(stack);
-            auto beta = fetch_optional_float(stack);
-            auto alpha = fetch_optional_float(stack);
+            auto bias = fetch_optional_float(stack, 1);
+            auto beta = fetch_optional_float(stack, 0.75);
+            auto alpha = fetch_optional_float(stack, 0.0001);
 
             auto X = fetch_tensor(stack);
 
@@ -6474,15 +6378,9 @@ namespace nn {
             YNXInferenceContextImpl infer_(outputs_);
 
             infer_.new_attr("size", size);
-            if ( bias.index() != 0) {
-                infer_.new_attr("bias", std::get<1>(bias) );
-            }
-            if ( beta.index() != 0) {
-                infer_.new_attr("beta", std::get<1>(beta) );
-            }
-            if ( alpha.index() != 0) {
-                infer_.new_attr("alpha", std::get<1>(alpha) );
-            }
+            infer_.new_attr("bias", bias);
+            infer_.new_attr("beta", beta);
+            infer_.new_attr("alpha", alpha);
 
             infer_.new_input(X);
 
@@ -6503,9 +6401,9 @@ namespace nn {
 
 
             auto size = fetch_int(stack);
-            auto bias = fetch_optional_float(stack);
-            auto beta = fetch_optional_float(stack);
-            auto alpha = fetch_optional_float(stack);
+            auto bias = fetch_optional_float(stack, 1);
+            auto beta = fetch_optional_float(stack, 0.75);
+            auto alpha = fetch_optional_float(stack, 0.0001);
 
             auto X = fetch_tensor(stack);
 
@@ -6529,11 +6427,11 @@ namespace nn {
 
             Y = TensorType::create_undefined_user_tensor();
 
-            auto strides = fetch_optional_ints(stack);
-            auto pads = fetch_optional_ints(stack);
-            auto p = fetch_optional_int(stack);
+            auto strides = fetch_optional_ints(stack, {});
+            auto pads = fetch_optional_ints(stack, {});
+            auto p = fetch_optional_int(stack, 2);
             auto kernel_shape = fetch_ints(stack);
-            auto auto_pad = fetch_optional_string(stack);
+            auto auto_pad = fetch_optional_string(stack, "NOTSET");
 
             auto X = fetch_tensor(stack);
 
@@ -6543,19 +6441,11 @@ namespace nn {
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
 
-            if ( strides.index() != 0) {
-                infer_.new_attr("strides", std::get<1>(strides) );
-            }
-            if ( pads.index() != 0) {
-                infer_.new_attr("pads", std::get<1>(pads) );
-            }
-            if ( p.index() != 0) {
-                infer_.new_attr("p", std::get<1>(p) );
-            }
+            infer_.new_attr("strides", strides);
+            infer_.new_attr("pads", pads);
+            infer_.new_attr("p", p);
             infer_.new_attr("kernel_shape", kernel_shape);
-            if ( auto_pad.index() != 0) {
-                infer_.new_attr("auto_pad", std::get<1>(auto_pad) );
-            }
+            infer_.new_attr("auto_pad", auto_pad);
 
             infer_.new_input(X);
 
@@ -6575,11 +6465,11 @@ namespace nn {
         virtual void run(ValueStack<TensorType>& stack) {
 
 
-            auto strides = fetch_optional_ints(stack);
-            auto pads = fetch_optional_ints(stack);
-            auto p = fetch_optional_int(stack);
+            auto strides = fetch_optional_ints(stack, {});
+            auto pads = fetch_optional_ints(stack, {});
+            auto p = fetch_optional_int(stack, 2);
             auto kernel_shape = fetch_ints(stack);
-            auto auto_pad = fetch_optional_string(stack);
+            auto auto_pad = fetch_optional_string(stack, "NOTSET");
 
             auto X = fetch_tensor(stack);
 
@@ -6607,7 +6497,7 @@ namespace nn {
             }
             output = TensorType::create_undefined_user_tensor();
 
-            auto seed = fetch_optional_int(stack);
+            auto seed = fetch_optional_int(stack, 0);
 
             auto training_mode = fetch_optional_tensor(stack);
             auto ratio = fetch_optional_tensor(stack);
@@ -6622,9 +6512,7 @@ namespace nn {
             }
             YNXInferenceContextImpl infer_(outputs_);
 
-            if ( seed.index() != 0) {
-                infer_.new_attr("seed", std::get<1>(seed) );
-            }
+            infer_.new_attr("seed", seed);
 
             infer_.new_input(data);
             infer_.new_input(ratio);
@@ -6653,7 +6541,7 @@ namespace nn {
 
             fetch_bool(stack);
 
-            auto seed = fetch_optional_int(stack);
+            auto seed = fetch_optional_int(stack, 0);
 
             auto training_mode = fetch_optional_tensor(stack);
             auto ratio = fetch_optional_tensor(stack);
@@ -6686,13 +6574,13 @@ namespace nn {
             }
             Y = TensorType::create_undefined_user_tensor();
 
-            auto strides = fetch_optional_ints(stack);
-            auto storage_order = fetch_optional_int(stack);
-            auto pads = fetch_optional_ints(stack);
+            auto strides = fetch_optional_ints(stack, {});
+            auto storage_order = fetch_optional_int(stack, 0);
+            auto pads = fetch_optional_ints(stack, {});
             auto kernel_shape = fetch_ints(stack);
-            auto dilations = fetch_optional_ints(stack);
-            auto ceil_mode = fetch_optional_int(stack);
-            auto auto_pad = fetch_optional_string(stack);
+            auto dilations = fetch_optional_ints(stack, {});
+            auto ceil_mode = fetch_optional_int(stack, 0);
+            auto auto_pad = fetch_optional_string(stack, "NOTSET");
 
             auto X = fetch_tensor(stack);
 
@@ -6705,25 +6593,13 @@ namespace nn {
             }
             YNXInferenceContextImpl infer_(outputs_);
 
-            if ( strides.index() != 0) {
-                infer_.new_attr("strides", std::get<1>(strides) );
-            }
-            if ( storage_order.index() != 0) {
-                infer_.new_attr("storage_order", std::get<1>(storage_order) );
-            }
-            if ( pads.index() != 0) {
-                infer_.new_attr("pads", std::get<1>(pads) );
-            }
+            infer_.new_attr("strides", strides);
+            infer_.new_attr("storage_order", storage_order);
+            infer_.new_attr("pads", pads);
             infer_.new_attr("kernel_shape", kernel_shape);
-            if ( dilations.index() != 0) {
-                infer_.new_attr("dilations", std::get<1>(dilations) );
-            }
-            if ( ceil_mode.index() != 0) {
-                infer_.new_attr("ceil_mode", std::get<1>(ceil_mode) );
-            }
-            if ( auto_pad.index() != 0) {
-                infer_.new_attr("auto_pad", std::get<1>(auto_pad) );
-            }
+            infer_.new_attr("dilations", dilations);
+            infer_.new_attr("ceil_mode", ceil_mode);
+            infer_.new_attr("auto_pad", auto_pad);
 
             infer_.new_input(X);
 
@@ -6750,13 +6626,13 @@ namespace nn {
 
             fetch_bool(stack);
 
-            auto strides = fetch_optional_ints(stack);
-            auto storage_order = fetch_optional_int(stack);
-            auto pads = fetch_optional_ints(stack);
+            auto strides = fetch_optional_ints(stack, {});
+            auto storage_order = fetch_optional_int(stack, 0);
+            auto pads = fetch_optional_ints(stack, {});
             auto kernel_shape = fetch_ints(stack);
-            auto dilations = fetch_optional_ints(stack);
-            auto ceil_mode = fetch_optional_int(stack);
-            auto auto_pad = fetch_optional_string(stack);
+            auto dilations = fetch_optional_ints(stack, {});
+            auto ceil_mode = fetch_optional_int(stack, 0);
+            auto auto_pad = fetch_optional_string(stack, "NOTSET");
 
             auto X = fetch_tensor(stack);
 
@@ -6783,7 +6659,7 @@ namespace nn {
 
             Y = TensorType::create_undefined_user_tensor();
 
-            auto p = fetch_optional_int(stack);
+            auto p = fetch_optional_int(stack, 2);
 
             auto X = fetch_tensor(stack);
 
@@ -6793,9 +6669,7 @@ namespace nn {
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
 
-            if ( p.index() != 0) {
-                infer_.new_attr("p", std::get<1>(p) );
-            }
+            infer_.new_attr("p", p);
 
             infer_.new_input(X);
 
@@ -6815,7 +6689,7 @@ namespace nn {
         virtual void run(ValueStack<TensorType>& stack) {
 
 
-            auto p = fetch_optional_int(stack);
+            auto p = fetch_optional_int(stack, 2);
 
             auto X = fetch_tensor(stack);
 
@@ -6839,8 +6713,8 @@ namespace nn {
 
             output = TensorType::create_undefined_user_tensor();
 
-            auto p = fetch_optional_int(stack);
-            auto axis = fetch_optional_int(stack);
+            auto p = fetch_optional_int(stack, 2);
+            auto axis = fetch_optional_int(stack, -1);
 
             auto input = fetch_tensor(stack);
 
@@ -6850,12 +6724,8 @@ namespace nn {
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
 
-            if ( p.index() != 0) {
-                infer_.new_attr("p", std::get<1>(p) );
-            }
-            if ( axis.index() != 0) {
-                infer_.new_attr("axis", std::get<1>(axis) );
-            }
+            infer_.new_attr("p", p);
+            infer_.new_attr("axis", axis);
 
             infer_.new_input(input);
 
@@ -6875,8 +6745,8 @@ namespace nn {
         virtual void run(ValueStack<TensorType>& stack) {
 
 
-            auto p = fetch_optional_int(stack);
-            auto axis = fetch_optional_int(stack);
+            auto p = fetch_optional_int(stack, 2);
+            auto axis = fetch_optional_int(stack, -1);
 
             auto input = fetch_tensor(stack);
 
@@ -6900,12 +6770,12 @@ namespace nn {
 
             Y = TensorType::create_undefined_user_tensor();
 
-            auto strides = fetch_optional_ints(stack);
-            auto pads = fetch_optional_ints(stack);
-            auto kernel_shape = fetch_optional_ints(stack);
-            auto group = fetch_optional_int(stack);
-            auto dilations = fetch_optional_ints(stack);
-            auto auto_pad = fetch_optional_string(stack);
+            auto strides = fetch_optional_ints(stack, {});
+            auto pads = fetch_optional_ints(stack, {});
+            auto kernel_shape = fetch_optional_ints(stack, {});
+            auto group = fetch_optional_int(stack, 1);
+            auto dilations = fetch_optional_ints(stack, {});
+            auto auto_pad = fetch_optional_string(stack, "NOTSET");
 
             auto B = fetch_optional_tensor(stack);
             auto W = fetch_tensor(stack);
@@ -6917,24 +6787,12 @@ namespace nn {
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
 
-            if ( strides.index() != 0) {
-                infer_.new_attr("strides", std::get<1>(strides) );
-            }
-            if ( pads.index() != 0) {
-                infer_.new_attr("pads", std::get<1>(pads) );
-            }
-            if ( kernel_shape.index() != 0) {
-                infer_.new_attr("kernel_shape", std::get<1>(kernel_shape) );
-            }
-            if ( group.index() != 0) {
-                infer_.new_attr("group", std::get<1>(group) );
-            }
-            if ( dilations.index() != 0) {
-                infer_.new_attr("dilations", std::get<1>(dilations) );
-            }
-            if ( auto_pad.index() != 0) {
-                infer_.new_attr("auto_pad", std::get<1>(auto_pad) );
-            }
+            infer_.new_attr("strides", strides);
+            infer_.new_attr("pads", pads);
+            infer_.new_attr("kernel_shape", kernel_shape);
+            infer_.new_attr("group", group);
+            infer_.new_attr("dilations", dilations);
+            infer_.new_attr("auto_pad", auto_pad);
 
             infer_.new_input(X);
             infer_.new_input(W);
@@ -6956,12 +6814,12 @@ namespace nn {
         virtual void run(ValueStack<TensorType>& stack) {
 
 
-            auto strides = fetch_optional_ints(stack);
-            auto pads = fetch_optional_ints(stack);
-            auto kernel_shape = fetch_optional_ints(stack);
-            auto group = fetch_optional_int(stack);
-            auto dilations = fetch_optional_ints(stack);
-            auto auto_pad = fetch_optional_string(stack);
+            auto strides = fetch_optional_ints(stack, {});
+            auto pads = fetch_optional_ints(stack, {});
+            auto kernel_shape = fetch_optional_ints(stack, {});
+            auto group = fetch_optional_int(stack, 1);
+            auto dilations = fetch_optional_ints(stack, {});
+            auto auto_pad = fetch_optional_string(stack, "NOTSET");
 
             auto B = fetch_optional_tensor(stack);
             auto W = fetch_tensor(stack);
@@ -7038,8 +6896,8 @@ namespace nn {
 
             output = TensorType::create_undefined_user_tensor();
 
-            auto strides = fetch_optional_ints(stack);
-            auto pads = fetch_optional_ints(stack);
+            auto strides = fetch_optional_ints(stack, {});
+            auto pads = fetch_optional_ints(stack, {});
             auto kernel_shape = fetch_ints(stack);
 
             auto output_shape = fetch_optional_tensor(stack);
@@ -7052,12 +6910,8 @@ namespace nn {
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
 
-            if ( strides.index() != 0) {
-                infer_.new_attr("strides", std::get<1>(strides) );
-            }
-            if ( pads.index() != 0) {
-                infer_.new_attr("pads", std::get<1>(pads) );
-            }
+            infer_.new_attr("strides", strides);
+            infer_.new_attr("pads", pads);
             infer_.new_attr("kernel_shape", kernel_shape);
 
             infer_.new_input(X);
@@ -7080,8 +6934,8 @@ namespace nn {
         virtual void run(ValueStack<TensorType>& stack) {
 
 
-            auto strides = fetch_optional_ints(stack);
-            auto pads = fetch_optional_ints(stack);
+            auto strides = fetch_optional_ints(stack, {});
+            auto pads = fetch_optional_ints(stack, {});
             auto kernel_shape = fetch_ints(stack);
 
             auto output_shape = fetch_optional_tensor(stack);
@@ -7108,12 +6962,12 @@ namespace nn {
 
             Y = TensorType::create_undefined_user_tensor();
 
-            auto strides = fetch_optional_ints(stack);
-            auto pads = fetch_optional_ints(stack);
+            auto strides = fetch_optional_ints(stack, {});
+            auto pads = fetch_optional_ints(stack, {});
             auto kernel_shape = fetch_ints(stack);
-            auto count_include_pad = fetch_optional_int(stack);
-            auto ceil_mode = fetch_optional_int(stack);
-            auto auto_pad = fetch_optional_string(stack);
+            auto count_include_pad = fetch_optional_int(stack, 0);
+            auto ceil_mode = fetch_optional_int(stack, 0);
+            auto auto_pad = fetch_optional_string(stack, "NOTSET");
 
             auto X = fetch_tensor(stack);
 
@@ -7123,22 +6977,12 @@ namespace nn {
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
 
-            if ( strides.index() != 0) {
-                infer_.new_attr("strides", std::get<1>(strides) );
-            }
-            if ( pads.index() != 0) {
-                infer_.new_attr("pads", std::get<1>(pads) );
-            }
+            infer_.new_attr("strides", strides);
+            infer_.new_attr("pads", pads);
             infer_.new_attr("kernel_shape", kernel_shape);
-            if ( count_include_pad.index() != 0) {
-                infer_.new_attr("count_include_pad", std::get<1>(count_include_pad) );
-            }
-            if ( ceil_mode.index() != 0) {
-                infer_.new_attr("ceil_mode", std::get<1>(ceil_mode) );
-            }
-            if ( auto_pad.index() != 0) {
-                infer_.new_attr("auto_pad", std::get<1>(auto_pad) );
-            }
+            infer_.new_attr("count_include_pad", count_include_pad);
+            infer_.new_attr("ceil_mode", ceil_mode);
+            infer_.new_attr("auto_pad", auto_pad);
 
             infer_.new_input(X);
 
@@ -7158,12 +7002,12 @@ namespace nn {
         virtual void run(ValueStack<TensorType>& stack) {
 
 
-            auto strides = fetch_optional_ints(stack);
-            auto pads = fetch_optional_ints(stack);
+            auto strides = fetch_optional_ints(stack, {});
+            auto pads = fetch_optional_ints(stack, {});
             auto kernel_shape = fetch_ints(stack);
-            auto count_include_pad = fetch_optional_int(stack);
-            auto ceil_mode = fetch_optional_int(stack);
-            auto auto_pad = fetch_optional_string(stack);
+            auto count_include_pad = fetch_optional_int(stack, 0);
+            auto ceil_mode = fetch_optional_int(stack, 0);
+            auto auto_pad = fetch_optional_string(stack, "NOTSET");
 
             auto X = fetch_tensor(stack);
 
@@ -7187,7 +7031,7 @@ namespace nn {
 
             output = TensorType::create_undefined_user_tensor();
 
-            auto epsilon = fetch_optional_float(stack);
+            auto epsilon = fetch_optional_float(stack, 1e-05);
 
             auto B = fetch_tensor(stack);
             auto scale = fetch_tensor(stack);
@@ -7199,9 +7043,7 @@ namespace nn {
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
 
-            if ( epsilon.index() != 0) {
-                infer_.new_attr("epsilon", std::get<1>(epsilon) );
-            }
+            infer_.new_attr("epsilon", epsilon);
 
             infer_.new_input(input);
             infer_.new_input(scale);
@@ -7223,7 +7065,7 @@ namespace nn {
         virtual void run(ValueStack<TensorType>& stack) {
 
 
-            auto epsilon = fetch_optional_float(stack);
+            auto epsilon = fetch_optional_float(stack, 1e-05);
 
             auto B = fetch_tensor(stack);
             auto scale = fetch_tensor(stack);
@@ -7249,7 +7091,7 @@ namespace nn {
 
             output = TensorType::create_undefined_user_tensor();
 
-            auto axis = fetch_optional_int(stack);
+            auto axis = fetch_optional_int(stack, 1);
 
             auto input = fetch_tensor(stack);
 
@@ -7259,9 +7101,7 @@ namespace nn {
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
 
-            if ( axis.index() != 0) {
-                infer_.new_attr("axis", std::get<1>(axis) );
-            }
+            infer_.new_attr("axis", axis);
 
             infer_.new_input(input);
 
@@ -7281,7 +7121,7 @@ namespace nn {
         virtual void run(ValueStack<TensorType>& stack) {
 
 
-            auto axis = fetch_optional_int(stack);
+            auto axis = fetch_optional_int(stack, 1);
 
             auto input = fetch_tensor(stack);
 
@@ -7356,7 +7196,7 @@ namespace nn {
 
             Y = TensorType::create_undefined_user_tensor();
 
-            auto spatial_scale = fetch_optional_float(stack);
+            auto spatial_scale = fetch_optional_float(stack, 1);
             auto pooled_shape = fetch_ints(stack);
 
             auto rois = fetch_tensor(stack);
@@ -7368,9 +7208,7 @@ namespace nn {
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
 
-            if ( spatial_scale.index() != 0) {
-                infer_.new_attr("spatial_scale", std::get<1>(spatial_scale) );
-            }
+            infer_.new_attr("spatial_scale", spatial_scale);
             infer_.new_attr("pooled_shape", pooled_shape);
 
             infer_.new_input(X);
@@ -7392,7 +7230,7 @@ namespace nn {
         virtual void run(ValueStack<TensorType>& stack) {
 
 
-            auto spatial_scale = fetch_optional_float(stack);
+            auto spatial_scale = fetch_optional_float(stack, 1);
             auto pooled_shape = fetch_ints(stack);
 
             auto rois = fetch_tensor(stack);
@@ -7426,9 +7264,9 @@ namespace nn {
             }
             Y = TensorType::create_undefined_user_tensor();
 
-            auto training_mode = fetch_optional_int(stack);
-            auto momentum = fetch_optional_float(stack);
-            auto epsilon = fetch_optional_float(stack);
+            auto training_mode = fetch_optional_int(stack, 0);
+            auto momentum = fetch_optional_float(stack, 0.9);
+            auto epsilon = fetch_optional_float(stack, 1e-05);
 
             auto input_var = fetch_tensor(stack);
             auto input_mean = fetch_tensor(stack);
@@ -7448,15 +7286,9 @@ namespace nn {
             }
             YNXInferenceContextImpl infer_(outputs_);
 
-            if ( training_mode.index() != 0) {
-                infer_.new_attr("training_mode", std::get<1>(training_mode) );
-            }
-            if ( momentum.index() != 0) {
-                infer_.new_attr("momentum", std::get<1>(momentum) );
-            }
-            if ( epsilon.index() != 0) {
-                infer_.new_attr("epsilon", std::get<1>(epsilon) );
-            }
+            infer_.new_attr("training_mode", training_mode);
+            infer_.new_attr("momentum", momentum);
+            infer_.new_attr("epsilon", epsilon);
 
             infer_.new_input(X);
             infer_.new_input(scale);
@@ -7494,9 +7326,9 @@ namespace nn {
             fetch_bool(stack);
             fetch_bool(stack);
 
-            auto training_mode = fetch_optional_int(stack);
-            auto momentum = fetch_optional_float(stack);
-            auto epsilon = fetch_optional_float(stack);
+            auto training_mode = fetch_optional_int(stack, 0);
+            auto momentum = fetch_optional_float(stack, 0.9);
+            auto epsilon = fetch_optional_float(stack, 1e-05);
 
             auto input_var = fetch_tensor(stack);
             auto input_mean = fetch_tensor(stack);
@@ -7530,10 +7362,10 @@ namespace nn {
 
             Y = TensorType::create_undefined_user_tensor();
 
-            auto stopwords = fetch_optional_strings(stack);
-            auto locale = fetch_optional_string(stack);
-            auto is_case_sensitive = fetch_optional_int(stack);
-            auto case_change_action = fetch_optional_string(stack);
+            auto stopwords = fetch_optional_strings(stack, {});
+            auto locale = fetch_optional_string(stack, "");
+            auto is_case_sensitive = fetch_optional_int(stack, 0);
+            auto case_change_action = fetch_optional_string(stack, "NONE");
 
             auto X = fetch_tensor(stack);
 
@@ -7543,18 +7375,10 @@ namespace nn {
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
 
-            if ( stopwords.index() != 0) {
-                infer_.new_attr("stopwords", std::get<1>(stopwords) );
-            }
-            if ( locale.index() != 0) {
-                infer_.new_attr("locale", std::get<1>(locale) );
-            }
-            if ( is_case_sensitive.index() != 0) {
-                infer_.new_attr("is_case_sensitive", std::get<1>(is_case_sensitive) );
-            }
-            if ( case_change_action.index() != 0) {
-                infer_.new_attr("case_change_action", std::get<1>(case_change_action) );
-            }
+            infer_.new_attr("stopwords", stopwords);
+            infer_.new_attr("locale", locale);
+            infer_.new_attr("is_case_sensitive", is_case_sensitive);
+            infer_.new_attr("case_change_action", case_change_action);
 
             infer_.new_input(X);
 
@@ -7574,10 +7398,10 @@ namespace nn {
         virtual void run(ValueStack<TensorType>& stack) {
 
 
-            auto stopwords = fetch_optional_strings(stack);
-            auto locale = fetch_optional_string(stack);
-            auto is_case_sensitive = fetch_optional_int(stack);
-            auto case_change_action = fetch_optional_string(stack);
+            auto stopwords = fetch_optional_strings(stack, {});
+            auto locale = fetch_optional_string(stack, "");
+            auto is_case_sensitive = fetch_optional_int(stack, 0);
+            auto case_change_action = fetch_optional_string(stack, "NONE");
 
             auto X = fetch_tensor(stack);
 
@@ -7601,8 +7425,8 @@ namespace nn {
 
             output = TensorType::create_undefined_user_tensor();
 
-            auto lambd = fetch_optional_float(stack);
-            auto bias = fetch_optional_float(stack);
+            auto lambd = fetch_optional_float(stack, 0.5);
+            auto bias = fetch_optional_float(stack, 0);
 
             auto input = fetch_tensor(stack);
 
@@ -7612,12 +7436,8 @@ namespace nn {
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
 
-            if ( lambd.index() != 0) {
-                infer_.new_attr("lambd", std::get<1>(lambd) );
-            }
-            if ( bias.index() != 0) {
-                infer_.new_attr("bias", std::get<1>(bias) );
-            }
+            infer_.new_attr("lambd", lambd);
+            infer_.new_attr("bias", bias);
 
             infer_.new_input(input);
 
@@ -7637,8 +7457,8 @@ namespace nn {
         virtual void run(ValueStack<TensorType>& stack) {
 
 
-            auto lambd = fetch_optional_float(stack);
-            auto bias = fetch_optional_float(stack);
+            auto lambd = fetch_optional_float(stack, 0.5);
+            auto bias = fetch_optional_float(stack, 0);
 
             auto input = fetch_tensor(stack);
 
@@ -7662,7 +7482,7 @@ namespace nn {
 
             Y = TensorType::create_undefined_user_tensor();
 
-            auto axes = fetch_optional_ints(stack);
+            auto axes = fetch_optional_ints(stack, {0, 2, 3, });
 
             auto X = fetch_tensor(stack);
 
@@ -7672,9 +7492,7 @@ namespace nn {
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
 
-            if ( axes.index() != 0) {
-                infer_.new_attr("axes", std::get<1>(axes) );
-            }
+            infer_.new_attr("axes", axes);
 
             infer_.new_input(X);
 
@@ -7694,7 +7512,7 @@ namespace nn {
         virtual void run(ValueStack<TensorType>& stack) {
 
 
-            auto axes = fetch_optional_ints(stack);
+            auto axes = fetch_optional_ints(stack, {0, 2, 3, });
 
             auto X = fetch_tensor(stack);
 
@@ -7718,12 +7536,12 @@ namespace nn {
 
             y = TensorType::create_undefined_user_tensor();
 
-            auto strides = fetch_optional_ints(stack);
-            auto pads = fetch_optional_ints(stack);
-            auto kernel_shape = fetch_optional_ints(stack);
-            auto group = fetch_optional_int(stack);
-            auto dilations = fetch_optional_ints(stack);
-            auto auto_pad = fetch_optional_string(stack);
+            auto strides = fetch_optional_ints(stack, {});
+            auto pads = fetch_optional_ints(stack, {});
+            auto kernel_shape = fetch_optional_ints(stack, {});
+            auto group = fetch_optional_int(stack, 1);
+            auto dilations = fetch_optional_ints(stack, {});
+            auto auto_pad = fetch_optional_string(stack, "NOTSET");
 
             auto w_zero_point = fetch_optional_tensor(stack);
             auto x_zero_point = fetch_optional_tensor(stack);
@@ -7736,24 +7554,12 @@ namespace nn {
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
 
-            if ( strides.index() != 0) {
-                infer_.new_attr("strides", std::get<1>(strides) );
-            }
-            if ( pads.index() != 0) {
-                infer_.new_attr("pads", std::get<1>(pads) );
-            }
-            if ( kernel_shape.index() != 0) {
-                infer_.new_attr("kernel_shape", std::get<1>(kernel_shape) );
-            }
-            if ( group.index() != 0) {
-                infer_.new_attr("group", std::get<1>(group) );
-            }
-            if ( dilations.index() != 0) {
-                infer_.new_attr("dilations", std::get<1>(dilations) );
-            }
-            if ( auto_pad.index() != 0) {
-                infer_.new_attr("auto_pad", std::get<1>(auto_pad) );
-            }
+            infer_.new_attr("strides", strides);
+            infer_.new_attr("pads", pads);
+            infer_.new_attr("kernel_shape", kernel_shape);
+            infer_.new_attr("group", group);
+            infer_.new_attr("dilations", dilations);
+            infer_.new_attr("auto_pad", auto_pad);
 
             infer_.new_input(x);
             infer_.new_input(w);
@@ -7776,12 +7582,12 @@ namespace nn {
         virtual void run(ValueStack<TensorType>& stack) {
 
 
-            auto strides = fetch_optional_ints(stack);
-            auto pads = fetch_optional_ints(stack);
-            auto kernel_shape = fetch_optional_ints(stack);
-            auto group = fetch_optional_int(stack);
-            auto dilations = fetch_optional_ints(stack);
-            auto auto_pad = fetch_optional_string(stack);
+            auto strides = fetch_optional_ints(stack, {});
+            auto pads = fetch_optional_ints(stack, {});
+            auto kernel_shape = fetch_optional_ints(stack, {});
+            auto group = fetch_optional_int(stack, 1);
+            auto dilations = fetch_optional_ints(stack, {});
+            auto auto_pad = fetch_optional_string(stack, "NOTSET");
 
             auto w_zero_point = fetch_optional_tensor(stack);
             auto x_zero_point = fetch_optional_tensor(stack);
@@ -7808,12 +7614,12 @@ namespace nn {
 
             y = TensorType::create_undefined_user_tensor();
 
-            auto strides = fetch_optional_ints(stack);
-            auto pads = fetch_optional_ints(stack);
-            auto kernel_shape = fetch_optional_ints(stack);
-            auto group = fetch_optional_int(stack);
-            auto dilations = fetch_optional_ints(stack);
-            auto auto_pad = fetch_optional_string(stack);
+            auto strides = fetch_optional_ints(stack, {});
+            auto pads = fetch_optional_ints(stack, {});
+            auto kernel_shape = fetch_optional_ints(stack, {});
+            auto group = fetch_optional_int(stack, 1);
+            auto dilations = fetch_optional_ints(stack, {});
+            auto auto_pad = fetch_optional_string(stack, "NOTSET");
 
             auto B = fetch_optional_tensor(stack);
             auto y_zero_point = fetch_tensor(stack);
@@ -7831,24 +7637,12 @@ namespace nn {
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
 
-            if ( strides.index() != 0) {
-                infer_.new_attr("strides", std::get<1>(strides) );
-            }
-            if ( pads.index() != 0) {
-                infer_.new_attr("pads", std::get<1>(pads) );
-            }
-            if ( kernel_shape.index() != 0) {
-                infer_.new_attr("kernel_shape", std::get<1>(kernel_shape) );
-            }
-            if ( group.index() != 0) {
-                infer_.new_attr("group", std::get<1>(group) );
-            }
-            if ( dilations.index() != 0) {
-                infer_.new_attr("dilations", std::get<1>(dilations) );
-            }
-            if ( auto_pad.index() != 0) {
-                infer_.new_attr("auto_pad", std::get<1>(auto_pad) );
-            }
+            infer_.new_attr("strides", strides);
+            infer_.new_attr("pads", pads);
+            infer_.new_attr("kernel_shape", kernel_shape);
+            infer_.new_attr("group", group);
+            infer_.new_attr("dilations", dilations);
+            infer_.new_attr("auto_pad", auto_pad);
 
             infer_.new_input(x);
             infer_.new_input(x_scale);
@@ -7876,12 +7670,12 @@ namespace nn {
         virtual void run(ValueStack<TensorType>& stack) {
 
 
-            auto strides = fetch_optional_ints(stack);
-            auto pads = fetch_optional_ints(stack);
-            auto kernel_shape = fetch_optional_ints(stack);
-            auto group = fetch_optional_int(stack);
-            auto dilations = fetch_optional_ints(stack);
-            auto auto_pad = fetch_optional_string(stack);
+            auto strides = fetch_optional_ints(stack, {});
+            auto pads = fetch_optional_ints(stack, {});
+            auto kernel_shape = fetch_optional_ints(stack, {});
+            auto group = fetch_optional_int(stack, 1);
+            auto dilations = fetch_optional_ints(stack, {});
+            auto auto_pad = fetch_optional_string(stack, "NOTSET");
 
             auto B = fetch_optional_tensor(stack);
             auto y_zero_point = fetch_tensor(stack);
@@ -7913,14 +7707,14 @@ namespace nn {
 
             Y = TensorType::create_undefined_user_tensor();
 
-            auto strides = fetch_optional_ints(stack);
-            auto pads = fetch_optional_ints(stack);
-            auto output_shape = fetch_optional_ints(stack);
-            auto output_padding = fetch_optional_ints(stack);
-            auto kernel_shape = fetch_optional_ints(stack);
-            auto group = fetch_optional_int(stack);
-            auto dilations = fetch_optional_ints(stack);
-            auto auto_pad = fetch_optional_string(stack);
+            auto strides = fetch_optional_ints(stack, {});
+            auto pads = fetch_optional_ints(stack, {});
+            auto output_shape = fetch_optional_ints(stack, {});
+            auto output_padding = fetch_optional_ints(stack, {});
+            auto kernel_shape = fetch_optional_ints(stack, {});
+            auto group = fetch_optional_int(stack, 1);
+            auto dilations = fetch_optional_ints(stack, {});
+            auto auto_pad = fetch_optional_string(stack, "NOTSET");
 
             auto B = fetch_optional_tensor(stack);
             auto W = fetch_tensor(stack);
@@ -7932,30 +7726,14 @@ namespace nn {
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
 
-            if ( strides.index() != 0) {
-                infer_.new_attr("strides", std::get<1>(strides) );
-            }
-            if ( pads.index() != 0) {
-                infer_.new_attr("pads", std::get<1>(pads) );
-            }
-            if ( output_shape.index() != 0) {
-                infer_.new_attr("output_shape", std::get<1>(output_shape) );
-            }
-            if ( output_padding.index() != 0) {
-                infer_.new_attr("output_padding", std::get<1>(output_padding) );
-            }
-            if ( kernel_shape.index() != 0) {
-                infer_.new_attr("kernel_shape", std::get<1>(kernel_shape) );
-            }
-            if ( group.index() != 0) {
-                infer_.new_attr("group", std::get<1>(group) );
-            }
-            if ( dilations.index() != 0) {
-                infer_.new_attr("dilations", std::get<1>(dilations) );
-            }
-            if ( auto_pad.index() != 0) {
-                infer_.new_attr("auto_pad", std::get<1>(auto_pad) );
-            }
+            infer_.new_attr("strides", strides);
+            infer_.new_attr("pads", pads);
+            infer_.new_attr("output_shape", output_shape);
+            infer_.new_attr("output_padding", output_padding);
+            infer_.new_attr("kernel_shape", kernel_shape);
+            infer_.new_attr("group", group);
+            infer_.new_attr("dilations", dilations);
+            infer_.new_attr("auto_pad", auto_pad);
 
             infer_.new_input(X);
             infer_.new_input(W);
@@ -7977,14 +7755,14 @@ namespace nn {
         virtual void run(ValueStack<TensorType>& stack) {
 
 
-            auto strides = fetch_optional_ints(stack);
-            auto pads = fetch_optional_ints(stack);
-            auto output_shape = fetch_optional_ints(stack);
-            auto output_padding = fetch_optional_ints(stack);
-            auto kernel_shape = fetch_optional_ints(stack);
-            auto group = fetch_optional_int(stack);
-            auto dilations = fetch_optional_ints(stack);
-            auto auto_pad = fetch_optional_string(stack);
+            auto strides = fetch_optional_ints(stack, {});
+            auto pads = fetch_optional_ints(stack, {});
+            auto output_shape = fetch_optional_ints(stack, {});
+            auto output_padding = fetch_optional_ints(stack, {});
+            auto kernel_shape = fetch_optional_ints(stack, {});
+            auto group = fetch_optional_int(stack, 1);
+            auto dilations = fetch_optional_ints(stack, {});
+            auto auto_pad = fetch_optional_string(stack, "NOTSET");
 
             auto B = fetch_optional_tensor(stack);
             auto W = fetch_tensor(stack);
@@ -8010,9 +7788,9 @@ namespace nn {
 
             Y = TensorType::create_undefined_user_tensor();
 
-            auto weights = fetch_optional_floats(stack);
-            auto pool_strings = fetch_optional_strings(stack);
-            auto pool_int64s = fetch_optional_ints(stack);
+            auto weights = fetch_optional_floats(stack, {});
+            auto pool_strings = fetch_optional_strings(stack, {});
+            auto pool_int64s = fetch_optional_ints(stack, {});
             auto ngram_indexes = fetch_ints(stack);
             auto ngram_counts = fetch_ints(stack);
             auto mode = fetch_string(stack);
@@ -8028,15 +7806,9 @@ namespace nn {
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
 
-            if ( weights.index() != 0) {
-                infer_.new_attr("weights", std::get<1>(weights) );
-            }
-            if ( pool_strings.index() != 0) {
-                infer_.new_attr("pool_strings", std::get<1>(pool_strings) );
-            }
-            if ( pool_int64s.index() != 0) {
-                infer_.new_attr("pool_int64s", std::get<1>(pool_int64s) );
-            }
+            infer_.new_attr("weights", weights);
+            infer_.new_attr("pool_strings", pool_strings);
+            infer_.new_attr("pool_int64s", pool_int64s);
             infer_.new_attr("ngram_indexes", ngram_indexes);
             infer_.new_attr("ngram_counts", ngram_counts);
             infer_.new_attr("mode", mode);
@@ -8062,9 +7834,9 @@ namespace nn {
         virtual void run(ValueStack<TensorType>& stack) {
 
 
-            auto weights = fetch_optional_floats(stack);
-            auto pool_strings = fetch_optional_strings(stack);
-            auto pool_int64s = fetch_optional_ints(stack);
+            auto weights = fetch_optional_floats(stack, {});
+            auto pool_strings = fetch_optional_strings(stack, {});
+            auto pool_int64s = fetch_optional_ints(stack, {});
             auto ngram_indexes = fetch_ints(stack);
             auto ngram_counts = fetch_ints(stack);
             auto mode = fetch_string(stack);
@@ -8096,12 +7868,12 @@ namespace object_detection {
 
             Y = TensorType::create_undefined_user_tensor();
 
-            auto spatial_scale = fetch_optional_float(stack);
-            auto sampling_ratio = fetch_optional_int(stack);
-            auto output_width = fetch_optional_int(stack);
-            auto output_height = fetch_optional_int(stack);
-            auto mode = fetch_optional_string(stack);
-            auto coordinate_transformation_mode = fetch_optional_string(stack);
+            auto spatial_scale = fetch_optional_float(stack, 1);
+            auto sampling_ratio = fetch_optional_int(stack, 0);
+            auto output_width = fetch_optional_int(stack, 1);
+            auto output_height = fetch_optional_int(stack, 1);
+            auto mode = fetch_optional_string(stack, "avg");
+            auto coordinate_transformation_mode = fetch_optional_string(stack, "half_pixel");
 
             auto batch_indices = fetch_tensor(stack);
             auto rois = fetch_tensor(stack);
@@ -8113,24 +7885,12 @@ namespace object_detection {
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
 
-            if ( spatial_scale.index() != 0) {
-                infer_.new_attr("spatial_scale", std::get<1>(spatial_scale) );
-            }
-            if ( sampling_ratio.index() != 0) {
-                infer_.new_attr("sampling_ratio", std::get<1>(sampling_ratio) );
-            }
-            if ( output_width.index() != 0) {
-                infer_.new_attr("output_width", std::get<1>(output_width) );
-            }
-            if ( output_height.index() != 0) {
-                infer_.new_attr("output_height", std::get<1>(output_height) );
-            }
-            if ( mode.index() != 0) {
-                infer_.new_attr("mode", std::get<1>(mode) );
-            }
-            if ( coordinate_transformation_mode.index() != 0) {
-                infer_.new_attr("coordinate_transformation_mode", std::get<1>(coordinate_transformation_mode) );
-            }
+            infer_.new_attr("spatial_scale", spatial_scale);
+            infer_.new_attr("sampling_ratio", sampling_ratio);
+            infer_.new_attr("output_width", output_width);
+            infer_.new_attr("output_height", output_height);
+            infer_.new_attr("mode", mode);
+            infer_.new_attr("coordinate_transformation_mode", coordinate_transformation_mode);
 
             infer_.new_input(X);
             infer_.new_input(rois);
@@ -8152,12 +7912,12 @@ namespace object_detection {
         virtual void run(ValueStack<TensorType>& stack) {
 
 
-            auto spatial_scale = fetch_optional_float(stack);
-            auto sampling_ratio = fetch_optional_int(stack);
-            auto output_width = fetch_optional_int(stack);
-            auto output_height = fetch_optional_int(stack);
-            auto mode = fetch_optional_string(stack);
-            auto coordinate_transformation_mode = fetch_optional_string(stack);
+            auto spatial_scale = fetch_optional_float(stack, 1);
+            auto sampling_ratio = fetch_optional_int(stack, 0);
+            auto output_width = fetch_optional_int(stack, 1);
+            auto output_height = fetch_optional_int(stack, 1);
+            auto mode = fetch_optional_string(stack, "avg");
+            auto coordinate_transformation_mode = fetch_optional_string(stack, "half_pixel");
 
             auto batch_indices = fetch_tensor(stack);
             auto rois = fetch_tensor(stack);
@@ -8183,7 +7943,7 @@ namespace object_detection {
 
             selected_indices = TensorType::create_undefined_user_tensor();
 
-            auto center_point_box = fetch_optional_int(stack);
+            auto center_point_box = fetch_optional_int(stack, 0);
 
             auto score_threshold = fetch_optional_tensor(stack);
             auto iou_threshold = fetch_optional_tensor(stack);
@@ -8197,9 +7957,7 @@ namespace object_detection {
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
 
-            if ( center_point_box.index() != 0) {
-                infer_.new_attr("center_point_box", std::get<1>(center_point_box) );
-            }
+            infer_.new_attr("center_point_box", center_point_box);
 
             infer_.new_input(boxes);
             infer_.new_input(scores);
@@ -8223,7 +7981,7 @@ namespace object_detection {
         virtual void run(ValueStack<TensorType>& stack) {
 
 
-            auto center_point_box = fetch_optional_int(stack);
+            auto center_point_box = fetch_optional_int(stack, 0);
 
             auto score_threshold = fetch_optional_tensor(stack);
             auto iou_threshold = fetch_optional_tensor(stack);
@@ -8253,7 +8011,7 @@ namespace quantization {
 
             y = TensorType::create_undefined_user_tensor();
 
-            auto axis = fetch_optional_int(stack);
+            auto axis = fetch_optional_int(stack, 1);
 
             auto y_zero_point = fetch_optional_tensor(stack);
             auto y_scale = fetch_tensor(stack);
@@ -8265,9 +8023,7 @@ namespace quantization {
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
 
-            if ( axis.index() != 0) {
-                infer_.new_attr("axis", std::get<1>(axis) );
-            }
+            infer_.new_attr("axis", axis);
 
             infer_.new_input(x);
             infer_.new_input(y_scale);
@@ -8289,7 +8045,7 @@ namespace quantization {
         virtual void run(ValueStack<TensorType>& stack) {
 
 
-            auto axis = fetch_optional_int(stack);
+            auto axis = fetch_optional_int(stack, 1);
 
             auto y_zero_point = fetch_optional_tensor(stack);
             auto y_scale = fetch_tensor(stack);
@@ -8378,7 +8134,7 @@ namespace quantization {
 
             y = TensorType::create_undefined_user_tensor();
 
-            auto axis = fetch_optional_int(stack);
+            auto axis = fetch_optional_int(stack, 1);
 
             auto x_zero_point = fetch_optional_tensor(stack);
             auto x_scale = fetch_tensor(stack);
@@ -8390,9 +8146,7 @@ namespace quantization {
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
 
-            if ( axis.index() != 0) {
-                infer_.new_attr("axis", std::get<1>(axis) );
-            }
+            infer_.new_attr("axis", axis);
 
             infer_.new_input(x);
             infer_.new_input(x_scale);
@@ -8414,7 +8168,7 @@ namespace quantization {
         virtual void run(ValueStack<TensorType>& stack) {
 
 
-            auto axis = fetch_optional_int(stack);
+            auto axis = fetch_optional_int(stack, 1);
 
             auto x_zero_point = fetch_optional_tensor(stack);
             auto x_scale = fetch_tensor(stack);
@@ -8442,8 +8196,8 @@ namespace reduction {
 
             reduced = TensorType::create_undefined_user_tensor();
 
-            auto keepdims = fetch_optional_int(stack);
-            auto axes = fetch_optional_ints(stack);
+            auto keepdims = fetch_optional_int(stack, 1);
+            auto axes = fetch_optional_ints(stack, {});
 
             auto data = fetch_tensor(stack);
 
@@ -8453,12 +8207,8 @@ namespace reduction {
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
 
-            if ( keepdims.index() != 0) {
-                infer_.new_attr("keepdims", std::get<1>(keepdims) );
-            }
-            if ( axes.index() != 0) {
-                infer_.new_attr("axes", std::get<1>(axes) );
-            }
+            infer_.new_attr("keepdims", keepdims);
+            infer_.new_attr("axes", axes);
 
             infer_.new_input(data);
 
@@ -8478,8 +8228,8 @@ namespace reduction {
         virtual void run(ValueStack<TensorType>& stack) {
 
 
-            auto keepdims = fetch_optional_int(stack);
-            auto axes = fetch_optional_ints(stack);
+            auto keepdims = fetch_optional_int(stack, 1);
+            auto axes = fetch_optional_ints(stack, {});
 
             auto data = fetch_tensor(stack);
 
@@ -8503,8 +8253,8 @@ namespace reduction {
 
             reduced = TensorType::create_undefined_user_tensor();
 
-            auto keepdims = fetch_optional_int(stack);
-            auto axes = fetch_optional_ints(stack);
+            auto keepdims = fetch_optional_int(stack, 1);
+            auto axes = fetch_optional_ints(stack, {});
 
             auto data = fetch_tensor(stack);
 
@@ -8514,12 +8264,8 @@ namespace reduction {
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
 
-            if ( keepdims.index() != 0) {
-                infer_.new_attr("keepdims", std::get<1>(keepdims) );
-            }
-            if ( axes.index() != 0) {
-                infer_.new_attr("axes", std::get<1>(axes) );
-            }
+            infer_.new_attr("keepdims", keepdims);
+            infer_.new_attr("axes", axes);
 
             infer_.new_input(data);
 
@@ -8539,8 +8285,8 @@ namespace reduction {
         virtual void run(ValueStack<TensorType>& stack) {
 
 
-            auto keepdims = fetch_optional_int(stack);
-            auto axes = fetch_optional_ints(stack);
+            auto keepdims = fetch_optional_int(stack, 1);
+            auto axes = fetch_optional_ints(stack, {});
 
             auto data = fetch_tensor(stack);
 
@@ -8564,8 +8310,8 @@ namespace reduction {
 
             reduced = TensorType::create_undefined_user_tensor();
 
-            auto keepdims = fetch_optional_int(stack);
-            auto axes = fetch_optional_ints(stack);
+            auto keepdims = fetch_optional_int(stack, 1);
+            auto axes = fetch_optional_ints(stack, {});
 
             auto data = fetch_tensor(stack);
 
@@ -8575,12 +8321,8 @@ namespace reduction {
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
 
-            if ( keepdims.index() != 0) {
-                infer_.new_attr("keepdims", std::get<1>(keepdims) );
-            }
-            if ( axes.index() != 0) {
-                infer_.new_attr("axes", std::get<1>(axes) );
-            }
+            infer_.new_attr("keepdims", keepdims);
+            infer_.new_attr("axes", axes);
 
             infer_.new_input(data);
 
@@ -8600,8 +8342,8 @@ namespace reduction {
         virtual void run(ValueStack<TensorType>& stack) {
 
 
-            auto keepdims = fetch_optional_int(stack);
-            auto axes = fetch_optional_ints(stack);
+            auto keepdims = fetch_optional_int(stack, 1);
+            auto axes = fetch_optional_ints(stack, {});
 
             auto data = fetch_tensor(stack);
 
@@ -8625,8 +8367,8 @@ namespace reduction {
 
             reduced = TensorType::create_undefined_user_tensor();
 
-            auto noop_with_empty_axes = fetch_optional_int(stack);
-            auto keepdims = fetch_optional_int(stack);
+            auto noop_with_empty_axes = fetch_optional_int(stack, 0);
+            auto keepdims = fetch_optional_int(stack, 1);
 
             auto axes = fetch_optional_tensor(stack);
             auto data = fetch_tensor(stack);
@@ -8637,12 +8379,8 @@ namespace reduction {
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
 
-            if ( noop_with_empty_axes.index() != 0) {
-                infer_.new_attr("noop_with_empty_axes", std::get<1>(noop_with_empty_axes) );
-            }
-            if ( keepdims.index() != 0) {
-                infer_.new_attr("keepdims", std::get<1>(keepdims) );
-            }
+            infer_.new_attr("noop_with_empty_axes", noop_with_empty_axes);
+            infer_.new_attr("keepdims", keepdims);
 
             infer_.new_input(data);
             infer_.new_input(axes);
@@ -8663,8 +8401,8 @@ namespace reduction {
         virtual void run(ValueStack<TensorType>& stack) {
 
 
-            auto noop_with_empty_axes = fetch_optional_int(stack);
-            auto keepdims = fetch_optional_int(stack);
+            auto noop_with_empty_axes = fetch_optional_int(stack, 0);
+            auto keepdims = fetch_optional_int(stack, 1);
 
             auto axes = fetch_optional_tensor(stack);
             auto data = fetch_tensor(stack);
@@ -8689,8 +8427,8 @@ namespace reduction {
 
             reduced = TensorType::create_undefined_user_tensor();
 
-            auto keepdims = fetch_optional_int(stack);
-            auto axes = fetch_optional_ints(stack);
+            auto keepdims = fetch_optional_int(stack, 1);
+            auto axes = fetch_optional_ints(stack, {});
 
             auto data = fetch_tensor(stack);
 
@@ -8700,12 +8438,8 @@ namespace reduction {
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
 
-            if ( keepdims.index() != 0) {
-                infer_.new_attr("keepdims", std::get<1>(keepdims) );
-            }
-            if ( axes.index() != 0) {
-                infer_.new_attr("axes", std::get<1>(axes) );
-            }
+            infer_.new_attr("keepdims", keepdims);
+            infer_.new_attr("axes", axes);
 
             infer_.new_input(data);
 
@@ -8725,8 +8459,8 @@ namespace reduction {
         virtual void run(ValueStack<TensorType>& stack) {
 
 
-            auto keepdims = fetch_optional_int(stack);
-            auto axes = fetch_optional_ints(stack);
+            auto keepdims = fetch_optional_int(stack, 1);
+            auto axes = fetch_optional_ints(stack, {});
 
             auto data = fetch_tensor(stack);
 
@@ -8750,8 +8484,8 @@ namespace reduction {
 
             reduced = TensorType::create_undefined_user_tensor();
 
-            auto keepdims = fetch_optional_int(stack);
-            auto axes = fetch_optional_ints(stack);
+            auto keepdims = fetch_optional_int(stack, 1);
+            auto axes = fetch_optional_ints(stack, {});
 
             auto data = fetch_tensor(stack);
 
@@ -8761,12 +8495,8 @@ namespace reduction {
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
 
-            if ( keepdims.index() != 0) {
-                infer_.new_attr("keepdims", std::get<1>(keepdims) );
-            }
-            if ( axes.index() != 0) {
-                infer_.new_attr("axes", std::get<1>(axes) );
-            }
+            infer_.new_attr("keepdims", keepdims);
+            infer_.new_attr("axes", axes);
 
             infer_.new_input(data);
 
@@ -8786,8 +8516,8 @@ namespace reduction {
         virtual void run(ValueStack<TensorType>& stack) {
 
 
-            auto keepdims = fetch_optional_int(stack);
-            auto axes = fetch_optional_ints(stack);
+            auto keepdims = fetch_optional_int(stack, 1);
+            auto axes = fetch_optional_ints(stack, {});
 
             auto data = fetch_tensor(stack);
 
@@ -8811,9 +8541,9 @@ namespace reduction {
 
             reduced = TensorType::create_undefined_user_tensor();
 
-            auto select_last_index = fetch_optional_int(stack);
-            auto keepdims = fetch_optional_int(stack);
-            auto axis = fetch_optional_int(stack);
+            auto select_last_index = fetch_optional_int(stack, 0);
+            auto keepdims = fetch_optional_int(stack, 1);
+            auto axis = fetch_optional_int(stack, 0);
 
             auto data = fetch_tensor(stack);
 
@@ -8823,15 +8553,9 @@ namespace reduction {
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
 
-            if ( select_last_index.index() != 0) {
-                infer_.new_attr("select_last_index", std::get<1>(select_last_index) );
-            }
-            if ( keepdims.index() != 0) {
-                infer_.new_attr("keepdims", std::get<1>(keepdims) );
-            }
-            if ( axis.index() != 0) {
-                infer_.new_attr("axis", std::get<1>(axis) );
-            }
+            infer_.new_attr("select_last_index", select_last_index);
+            infer_.new_attr("keepdims", keepdims);
+            infer_.new_attr("axis", axis);
 
             infer_.new_input(data);
 
@@ -8851,9 +8575,9 @@ namespace reduction {
         virtual void run(ValueStack<TensorType>& stack) {
 
 
-            auto select_last_index = fetch_optional_int(stack);
-            auto keepdims = fetch_optional_int(stack);
-            auto axis = fetch_optional_int(stack);
+            auto select_last_index = fetch_optional_int(stack, 0);
+            auto keepdims = fetch_optional_int(stack, 1);
+            auto axis = fetch_optional_int(stack, 0);
 
             auto data = fetch_tensor(stack);
 
@@ -8877,9 +8601,9 @@ namespace reduction {
 
             reduced = TensorType::create_undefined_user_tensor();
 
-            auto select_last_index = fetch_optional_int(stack);
-            auto keepdims = fetch_optional_int(stack);
-            auto axis = fetch_optional_int(stack);
+            auto select_last_index = fetch_optional_int(stack, 0);
+            auto keepdims = fetch_optional_int(stack, 1);
+            auto axis = fetch_optional_int(stack, 0);
 
             auto data = fetch_tensor(stack);
 
@@ -8889,15 +8613,9 @@ namespace reduction {
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
 
-            if ( select_last_index.index() != 0) {
-                infer_.new_attr("select_last_index", std::get<1>(select_last_index) );
-            }
-            if ( keepdims.index() != 0) {
-                infer_.new_attr("keepdims", std::get<1>(keepdims) );
-            }
-            if ( axis.index() != 0) {
-                infer_.new_attr("axis", std::get<1>(axis) );
-            }
+            infer_.new_attr("select_last_index", select_last_index);
+            infer_.new_attr("keepdims", keepdims);
+            infer_.new_attr("axis", axis);
 
             infer_.new_input(data);
 
@@ -8917,9 +8635,9 @@ namespace reduction {
         virtual void run(ValueStack<TensorType>& stack) {
 
 
-            auto select_last_index = fetch_optional_int(stack);
-            auto keepdims = fetch_optional_int(stack);
-            auto axis = fetch_optional_int(stack);
+            auto select_last_index = fetch_optional_int(stack, 0);
+            auto keepdims = fetch_optional_int(stack, 1);
+            auto axis = fetch_optional_int(stack, 0);
 
             auto data = fetch_tensor(stack);
 
@@ -8943,8 +8661,8 @@ namespace reduction {
 
             reduced = TensorType::create_undefined_user_tensor();
 
-            auto keepdims = fetch_optional_int(stack);
-            auto axes = fetch_optional_ints(stack);
+            auto keepdims = fetch_optional_int(stack, 1);
+            auto axes = fetch_optional_ints(stack, {});
 
             auto data = fetch_tensor(stack);
 
@@ -8954,12 +8672,8 @@ namespace reduction {
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
 
-            if ( keepdims.index() != 0) {
-                infer_.new_attr("keepdims", std::get<1>(keepdims) );
-            }
-            if ( axes.index() != 0) {
-                infer_.new_attr("axes", std::get<1>(axes) );
-            }
+            infer_.new_attr("keepdims", keepdims);
+            infer_.new_attr("axes", axes);
 
             infer_.new_input(data);
 
@@ -8979,8 +8693,8 @@ namespace reduction {
         virtual void run(ValueStack<TensorType>& stack) {
 
 
-            auto keepdims = fetch_optional_int(stack);
-            auto axes = fetch_optional_ints(stack);
+            auto keepdims = fetch_optional_int(stack, 1);
+            auto axes = fetch_optional_ints(stack, {});
 
             auto data = fetch_tensor(stack);
 
@@ -9004,8 +8718,8 @@ namespace reduction {
 
             reduced = TensorType::create_undefined_user_tensor();
 
-            auto keepdims = fetch_optional_int(stack);
-            auto axes = fetch_optional_ints(stack);
+            auto keepdims = fetch_optional_int(stack, 1);
+            auto axes = fetch_optional_ints(stack, {});
 
             auto data = fetch_tensor(stack);
 
@@ -9015,12 +8729,8 @@ namespace reduction {
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
 
-            if ( keepdims.index() != 0) {
-                infer_.new_attr("keepdims", std::get<1>(keepdims) );
-            }
-            if ( axes.index() != 0) {
-                infer_.new_attr("axes", std::get<1>(axes) );
-            }
+            infer_.new_attr("keepdims", keepdims);
+            infer_.new_attr("axes", axes);
 
             infer_.new_input(data);
 
@@ -9040,8 +8750,8 @@ namespace reduction {
         virtual void run(ValueStack<TensorType>& stack) {
 
 
-            auto keepdims = fetch_optional_int(stack);
-            auto axes = fetch_optional_ints(stack);
+            auto keepdims = fetch_optional_int(stack, 1);
+            auto axes = fetch_optional_ints(stack, {});
 
             auto data = fetch_tensor(stack);
 
@@ -9065,8 +8775,8 @@ namespace reduction {
 
             reduced = TensorType::create_undefined_user_tensor();
 
-            auto keepdims = fetch_optional_int(stack);
-            auto axes = fetch_optional_ints(stack);
+            auto keepdims = fetch_optional_int(stack, 1);
+            auto axes = fetch_optional_ints(stack, {});
 
             auto data = fetch_tensor(stack);
 
@@ -9076,12 +8786,8 @@ namespace reduction {
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
 
-            if ( keepdims.index() != 0) {
-                infer_.new_attr("keepdims", std::get<1>(keepdims) );
-            }
-            if ( axes.index() != 0) {
-                infer_.new_attr("axes", std::get<1>(axes) );
-            }
+            infer_.new_attr("keepdims", keepdims);
+            infer_.new_attr("axes", axes);
 
             infer_.new_input(data);
 
@@ -9101,8 +8807,8 @@ namespace reduction {
         virtual void run(ValueStack<TensorType>& stack) {
 
 
-            auto keepdims = fetch_optional_int(stack);
-            auto axes = fetch_optional_ints(stack);
+            auto keepdims = fetch_optional_int(stack, 1);
+            auto axes = fetch_optional_ints(stack, {});
 
             auto data = fetch_tensor(stack);
 
@@ -9126,8 +8832,8 @@ namespace reduction {
 
             reduced = TensorType::create_undefined_user_tensor();
 
-            auto keepdims = fetch_optional_int(stack);
-            auto axes = fetch_optional_ints(stack);
+            auto keepdims = fetch_optional_int(stack, 1);
+            auto axes = fetch_optional_ints(stack, {});
 
             auto data = fetch_tensor(stack);
 
@@ -9137,12 +8843,8 @@ namespace reduction {
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
 
-            if ( keepdims.index() != 0) {
-                infer_.new_attr("keepdims", std::get<1>(keepdims) );
-            }
-            if ( axes.index() != 0) {
-                infer_.new_attr("axes", std::get<1>(axes) );
-            }
+            infer_.new_attr("keepdims", keepdims);
+            infer_.new_attr("axes", axes);
 
             infer_.new_input(data);
 
@@ -9162,8 +8864,8 @@ namespace reduction {
         virtual void run(ValueStack<TensorType>& stack) {
 
 
-            auto keepdims = fetch_optional_int(stack);
-            auto axes = fetch_optional_ints(stack);
+            auto keepdims = fetch_optional_int(stack, 1);
+            auto axes = fetch_optional_ints(stack, {});
 
             auto data = fetch_tensor(stack);
 
@@ -9199,14 +8901,14 @@ namespace rnn {
                 Y = TensorType::create_undefined_user_tensor();
             }
 
-            auto layout = fetch_optional_int(stack);
-            auto input_forget = fetch_optional_int(stack);
-            auto hidden_size = fetch_optional_int(stack);
-            auto direction = fetch_optional_string(stack);
-            auto clip = fetch_optional_float(stack);
-            auto activations = fetch_optional_strings(stack);
-            auto activation_beta = fetch_optional_floats(stack);
-            auto activation_alpha = fetch_optional_floats(stack);
+            auto layout = fetch_optional_int(stack, 0);
+            auto input_forget = fetch_optional_int(stack, 0);
+            auto hidden_size = fetch_optional_int(stack, 0);
+            auto direction = fetch_optional_string(stack, "forward");
+            auto clip = fetch_optional_float(stack, 0);
+            auto activations = fetch_optional_strings(stack, {});
+            auto activation_beta = fetch_optional_floats(stack, {});
+            auto activation_alpha = fetch_optional_floats(stack, {});
 
             auto P = fetch_optional_tensor(stack);
             auto initial_c = fetch_optional_tensor(stack);
@@ -9231,30 +8933,14 @@ namespace rnn {
             }
             YNXInferenceContextImpl infer_(outputs_);
 
-            if ( layout.index() != 0) {
-                infer_.new_attr("layout", std::get<1>(layout) );
-            }
-            if ( input_forget.index() != 0) {
-                infer_.new_attr("input_forget", std::get<1>(input_forget) );
-            }
-            if ( hidden_size.index() != 0) {
-                infer_.new_attr("hidden_size", std::get<1>(hidden_size) );
-            }
-            if ( direction.index() != 0) {
-                infer_.new_attr("direction", std::get<1>(direction) );
-            }
-            if ( clip.index() != 0) {
-                infer_.new_attr("clip", std::get<1>(clip) );
-            }
-            if ( activations.index() != 0) {
-                infer_.new_attr("activations", std::get<1>(activations) );
-            }
-            if ( activation_beta.index() != 0) {
-                infer_.new_attr("activation_beta", std::get<1>(activation_beta) );
-            }
-            if ( activation_alpha.index() != 0) {
-                infer_.new_attr("activation_alpha", std::get<1>(activation_alpha) );
-            }
+            infer_.new_attr("layout", layout);
+            infer_.new_attr("input_forget", input_forget);
+            infer_.new_attr("hidden_size", hidden_size);
+            infer_.new_attr("direction", direction);
+            infer_.new_attr("clip", clip);
+            infer_.new_attr("activations", activations);
+            infer_.new_attr("activation_beta", activation_beta);
+            infer_.new_attr("activation_alpha", activation_alpha);
 
             infer_.new_input(X);
             infer_.new_input(W);
@@ -9300,14 +8986,14 @@ namespace rnn {
             fetch_bool(stack);
             fetch_bool(stack);
 
-            auto layout = fetch_optional_int(stack);
-            auto input_forget = fetch_optional_int(stack);
-            auto hidden_size = fetch_optional_int(stack);
-            auto direction = fetch_optional_string(stack);
-            auto clip = fetch_optional_float(stack);
-            auto activations = fetch_optional_strings(stack);
-            auto activation_beta = fetch_optional_floats(stack);
-            auto activation_alpha = fetch_optional_floats(stack);
+            auto layout = fetch_optional_int(stack, 0);
+            auto input_forget = fetch_optional_int(stack, 0);
+            auto hidden_size = fetch_optional_int(stack, 0);
+            auto direction = fetch_optional_string(stack, "forward");
+            auto clip = fetch_optional_float(stack, 0);
+            auto activations = fetch_optional_strings(stack, {});
+            auto activation_beta = fetch_optional_floats(stack, {});
+            auto activation_alpha = fetch_optional_floats(stack, {});
 
             auto P = fetch_optional_tensor(stack);
             auto initial_c = fetch_optional_tensor(stack);
@@ -9352,14 +9038,14 @@ namespace rnn {
                 Y = TensorType::create_undefined_user_tensor();
             }
 
-            auto linear_before_reset = fetch_optional_int(stack);
-            auto layout = fetch_optional_int(stack);
-            auto hidden_size = fetch_optional_int(stack);
-            auto direction = fetch_optional_string(stack);
-            auto clip = fetch_optional_float(stack);
-            auto activations = fetch_optional_strings(stack);
-            auto activation_beta = fetch_optional_floats(stack);
-            auto activation_alpha = fetch_optional_floats(stack);
+            auto linear_before_reset = fetch_optional_int(stack, 0);
+            auto layout = fetch_optional_int(stack, 0);
+            auto hidden_size = fetch_optional_int(stack, 0);
+            auto direction = fetch_optional_string(stack, "forward");
+            auto clip = fetch_optional_float(stack, 0);
+            auto activations = fetch_optional_strings(stack, {});
+            auto activation_beta = fetch_optional_floats(stack, {});
+            auto activation_alpha = fetch_optional_floats(stack, {});
 
             auto initial_h = fetch_optional_tensor(stack);
             auto sequence_lens = fetch_optional_tensor(stack);
@@ -9379,30 +9065,14 @@ namespace rnn {
             }
             YNXInferenceContextImpl infer_(outputs_);
 
-            if ( linear_before_reset.index() != 0) {
-                infer_.new_attr("linear_before_reset", std::get<1>(linear_before_reset) );
-            }
-            if ( layout.index() != 0) {
-                infer_.new_attr("layout", std::get<1>(layout) );
-            }
-            if ( hidden_size.index() != 0) {
-                infer_.new_attr("hidden_size", std::get<1>(hidden_size) );
-            }
-            if ( direction.index() != 0) {
-                infer_.new_attr("direction", std::get<1>(direction) );
-            }
-            if ( clip.index() != 0) {
-                infer_.new_attr("clip", std::get<1>(clip) );
-            }
-            if ( activations.index() != 0) {
-                infer_.new_attr("activations", std::get<1>(activations) );
-            }
-            if ( activation_beta.index() != 0) {
-                infer_.new_attr("activation_beta", std::get<1>(activation_beta) );
-            }
-            if ( activation_alpha.index() != 0) {
-                infer_.new_attr("activation_alpha", std::get<1>(activation_alpha) );
-            }
+            infer_.new_attr("linear_before_reset", linear_before_reset);
+            infer_.new_attr("layout", layout);
+            infer_.new_attr("hidden_size", hidden_size);
+            infer_.new_attr("direction", direction);
+            infer_.new_attr("clip", clip);
+            infer_.new_attr("activations", activations);
+            infer_.new_attr("activation_beta", activation_beta);
+            infer_.new_attr("activation_alpha", activation_alpha);
 
             infer_.new_input(X);
             infer_.new_input(W);
@@ -9439,14 +9109,14 @@ namespace rnn {
             fetch_bool(stack);
             fetch_bool(stack);
 
-            auto linear_before_reset = fetch_optional_int(stack);
-            auto layout = fetch_optional_int(stack);
-            auto hidden_size = fetch_optional_int(stack);
-            auto direction = fetch_optional_string(stack);
-            auto clip = fetch_optional_float(stack);
-            auto activations = fetch_optional_strings(stack);
-            auto activation_beta = fetch_optional_floats(stack);
-            auto activation_alpha = fetch_optional_floats(stack);
+            auto linear_before_reset = fetch_optional_int(stack, 0);
+            auto layout = fetch_optional_int(stack, 0);
+            auto hidden_size = fetch_optional_int(stack, 0);
+            auto direction = fetch_optional_string(stack, "forward");
+            auto clip = fetch_optional_float(stack, 0);
+            auto activations = fetch_optional_strings(stack, {});
+            auto activation_beta = fetch_optional_floats(stack, {});
+            auto activation_alpha = fetch_optional_floats(stack, {});
 
             auto initial_h = fetch_optional_tensor(stack);
             auto sequence_lens = fetch_optional_tensor(stack);
@@ -9486,13 +9156,13 @@ namespace rnn {
                 Y = TensorType::create_undefined_user_tensor();
             }
 
-            auto layout = fetch_optional_int(stack);
-            auto hidden_size = fetch_optional_int(stack);
-            auto direction = fetch_optional_string(stack);
-            auto clip = fetch_optional_float(stack);
-            auto activations = fetch_optional_strings(stack);
-            auto activation_beta = fetch_optional_floats(stack);
-            auto activation_alpha = fetch_optional_floats(stack);
+            auto layout = fetch_optional_int(stack, 0);
+            auto hidden_size = fetch_optional_int(stack, 0);
+            auto direction = fetch_optional_string(stack, "forward");
+            auto clip = fetch_optional_float(stack, 0);
+            auto activations = fetch_optional_strings(stack, {"Tanh", "Tanh", });
+            auto activation_beta = fetch_optional_floats(stack, {});
+            auto activation_alpha = fetch_optional_floats(stack, {});
 
             auto initial_h = fetch_optional_tensor(stack);
             auto sequence_lens = fetch_optional_tensor(stack);
@@ -9512,27 +9182,13 @@ namespace rnn {
             }
             YNXInferenceContextImpl infer_(outputs_);
 
-            if ( layout.index() != 0) {
-                infer_.new_attr("layout", std::get<1>(layout) );
-            }
-            if ( hidden_size.index() != 0) {
-                infer_.new_attr("hidden_size", std::get<1>(hidden_size) );
-            }
-            if ( direction.index() != 0) {
-                infer_.new_attr("direction", std::get<1>(direction) );
-            }
-            if ( clip.index() != 0) {
-                infer_.new_attr("clip", std::get<1>(clip) );
-            }
-            if ( activations.index() != 0) {
-                infer_.new_attr("activations", std::get<1>(activations) );
-            }
-            if ( activation_beta.index() != 0) {
-                infer_.new_attr("activation_beta", std::get<1>(activation_beta) );
-            }
-            if ( activation_alpha.index() != 0) {
-                infer_.new_attr("activation_alpha", std::get<1>(activation_alpha) );
-            }
+            infer_.new_attr("layout", layout);
+            infer_.new_attr("hidden_size", hidden_size);
+            infer_.new_attr("direction", direction);
+            infer_.new_attr("clip", clip);
+            infer_.new_attr("activations", activations);
+            infer_.new_attr("activation_beta", activation_beta);
+            infer_.new_attr("activation_alpha", activation_alpha);
 
             infer_.new_input(X);
             infer_.new_input(W);
@@ -9569,13 +9225,13 @@ namespace rnn {
             fetch_bool(stack);
             fetch_bool(stack);
 
-            auto layout = fetch_optional_int(stack);
-            auto hidden_size = fetch_optional_int(stack);
-            auto direction = fetch_optional_string(stack);
-            auto clip = fetch_optional_float(stack);
-            auto activations = fetch_optional_strings(stack);
-            auto activation_beta = fetch_optional_floats(stack);
-            auto activation_alpha = fetch_optional_floats(stack);
+            auto layout = fetch_optional_int(stack, 0);
+            auto hidden_size = fetch_optional_int(stack, 0);
+            auto direction = fetch_optional_string(stack, "forward");
+            auto clip = fetch_optional_float(stack, 0);
+            auto activations = fetch_optional_strings(stack, {"Tanh", "Tanh", });
+            auto activation_beta = fetch_optional_floats(stack, {});
+            auto activation_alpha = fetch_optional_floats(stack, {});
 
             auto initial_h = fetch_optional_tensor(stack);
             auto sequence_lens = fetch_optional_tensor(stack);
@@ -9611,7 +9267,7 @@ namespace sequence {
 
             output = TensorType::create_undefined_user_tensor();
 
-            auto dtype = fetch_optional_int(stack);
+            auto dtype = fetch_optional_int(stack, 0);
 
 
 
@@ -9620,9 +9276,7 @@ namespace sequence {
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
 
-            if ( dtype.index() != 0) {
-                infer_.new_attr("dtype", std::get<1>(dtype) );
-            }
+            infer_.new_attr("dtype", dtype);
 
 
             auto f = query_inference_function("SequenceEmpty");
@@ -9641,7 +9295,7 @@ namespace sequence {
         virtual void run(ValueStack<TensorType>& stack) {
 
 
-            auto dtype = fetch_optional_int(stack);
+            auto dtype = fetch_optional_int(stack, 0);
 
 
 
@@ -9664,8 +9318,8 @@ namespace sequence {
 
             output_sequence = TensorType::create_undefined_user_tensor();
 
-            auto keepdims = fetch_optional_int(stack);
-            auto axis = fetch_optional_int(stack);
+            auto keepdims = fetch_optional_int(stack, 1);
+            auto axis = fetch_optional_int(stack, 0);
 
             auto split = fetch_optional_tensor(stack);
             auto input = fetch_tensor(stack);
@@ -9676,12 +9330,8 @@ namespace sequence {
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
 
-            if ( keepdims.index() != 0) {
-                infer_.new_attr("keepdims", std::get<1>(keepdims) );
-            }
-            if ( axis.index() != 0) {
-                infer_.new_attr("axis", std::get<1>(axis) );
-            }
+            infer_.new_attr("keepdims", keepdims);
+            infer_.new_attr("axis", axis);
 
             infer_.new_input(input);
             infer_.new_input(split);
@@ -9702,8 +9352,8 @@ namespace sequence {
         virtual void run(ValueStack<TensorType>& stack) {
 
 
-            auto keepdims = fetch_optional_int(stack);
-            auto axis = fetch_optional_int(stack);
+            auto keepdims = fetch_optional_int(stack, 1);
+            auto axis = fetch_optional_int(stack, 0);
 
             auto split = fetch_optional_tensor(stack);
             auto input = fetch_tensor(stack);
@@ -9995,7 +9645,7 @@ namespace sequence {
 
             concat_result = TensorType::create_undefined_user_tensor();
 
-            auto new_axis = fetch_optional_int(stack);
+            auto new_axis = fetch_optional_int(stack, 0);
             auto axis = fetch_int(stack);
 
             auto input_sequence = fetch_tensor(stack);
@@ -10006,9 +9656,7 @@ namespace sequence {
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
 
-            if ( new_axis.index() != 0) {
-                infer_.new_attr("new_axis", std::get<1>(new_axis) );
-            }
+            infer_.new_attr("new_axis", new_axis);
             infer_.new_attr("axis", axis);
 
             infer_.new_input(input_sequence);
@@ -10029,7 +9677,7 @@ namespace sequence {
         virtual void run(ValueStack<TensorType>& stack) {
 
 
-            auto new_axis = fetch_optional_int(stack);
+            auto new_axis = fetch_optional_int(stack, 0);
             auto axis = fetch_int(stack);
 
             auto input_sequence = fetch_tensor(stack);
@@ -10110,8 +9758,8 @@ namespace tensor {
 
             shape = TensorType::create_undefined_user_tensor();
 
-            auto start = fetch_optional_int(stack);
-            auto end = fetch_optional_int(stack);
+            auto start = fetch_optional_int(stack, 0);
+            auto end = fetch_optional_int(stack, 0);
 
             auto data = fetch_tensor(stack);
 
@@ -10121,12 +9769,8 @@ namespace tensor {
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
 
-            if ( start.index() != 0) {
-                infer_.new_attr("start", std::get<1>(start) );
-            }
-            if ( end.index() != 0) {
-                infer_.new_attr("end", std::get<1>(end) );
-            }
+            infer_.new_attr("start", start);
+            infer_.new_attr("end", end);
 
             infer_.new_input(data);
 
@@ -10146,8 +9790,8 @@ namespace tensor {
         virtual void run(ValueStack<TensorType>& stack) {
 
 
-            auto start = fetch_optional_int(stack);
-            auto end = fetch_optional_int(stack);
+            auto start = fetch_optional_int(stack, 0);
+            auto end = fetch_optional_int(stack, 0);
 
             auto data = fetch_tensor(stack);
 
@@ -10171,7 +9815,7 @@ namespace tensor {
 
             reshaped = TensorType::create_undefined_user_tensor();
 
-            auto allowzero = fetch_optional_int(stack);
+            auto allowzero = fetch_optional_int(stack, 0);
 
             auto shape = fetch_tensor(stack);
             auto data = fetch_tensor(stack);
@@ -10182,9 +9826,7 @@ namespace tensor {
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
 
-            if ( allowzero.index() != 0) {
-                infer_.new_attr("allowzero", std::get<1>(allowzero) );
-            }
+            infer_.new_attr("allowzero", allowzero);
 
             infer_.new_input(data);
             infer_.new_input(shape);
@@ -10205,7 +9847,7 @@ namespace tensor {
         virtual void run(ValueStack<TensorType>& stack) {
 
 
-            auto allowzero = fetch_optional_int(stack);
+            auto allowzero = fetch_optional_int(stack, 0);
 
             auto shape = fetch_tensor(stack);
             auto data = fetch_tensor(stack);
@@ -10230,7 +9872,7 @@ namespace tensor {
 
             output = TensorType::create_undefined_user_tensor();
 
-            auto mode = fetch_optional_string(stack);
+            auto mode = fetch_optional_string(stack, "DCR");
             auto blocksize = fetch_int(stack);
 
             auto input = fetch_tensor(stack);
@@ -10241,9 +9883,7 @@ namespace tensor {
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
 
-            if ( mode.index() != 0) {
-                infer_.new_attr("mode", std::get<1>(mode) );
-            }
+            infer_.new_attr("mode", mode);
             infer_.new_attr("blocksize", blocksize);
 
             infer_.new_input(input);
@@ -10264,7 +9904,7 @@ namespace tensor {
         virtual void run(ValueStack<TensorType>& stack) {
 
 
-            auto mode = fetch_optional_string(stack);
+            auto mode = fetch_optional_string(stack, "DCR");
             auto blocksize = fetch_int(stack);
 
             auto input = fetch_tensor(stack);
@@ -10343,7 +9983,7 @@ namespace tensor {
 
             output = TensorType::create_undefined_user_tensor();
 
-            auto axis = fetch_optional_int(stack);
+            auto axis = fetch_optional_int(stack, 0);
 
             auto indices = fetch_tensor(stack);
             auto data = fetch_tensor(stack);
@@ -10354,9 +9994,7 @@ namespace tensor {
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
 
-            if ( axis.index() != 0) {
-                infer_.new_attr("axis", std::get<1>(axis) );
-            }
+            infer_.new_attr("axis", axis);
 
             infer_.new_input(data);
             infer_.new_input(indices);
@@ -10377,7 +10015,7 @@ namespace tensor {
         virtual void run(ValueStack<TensorType>& stack) {
 
 
-            auto axis = fetch_optional_int(stack);
+            auto axis = fetch_optional_int(stack, 0);
 
             auto indices = fetch_tensor(stack);
             auto data = fetch_tensor(stack);
@@ -10507,7 +10145,7 @@ namespace tensor {
 
             outputs.resize( fetch_int(stack) );
 
-            auto axis = fetch_optional_int(stack);
+            auto axis = fetch_optional_int(stack, 0);
 
             auto split = fetch_optional_tensor(stack);
             auto input = fetch_tensor(stack);
@@ -10520,9 +10158,7 @@ namespace tensor {
             }
             YNXInferenceContextImpl infer_(outputs_);
 
-            if ( axis.index() != 0) {
-                infer_.new_attr("axis", std::get<1>(axis) );
-            }
+            infer_.new_attr("axis", axis);
 
             infer_.new_input(input);
             infer_.new_input(split);
@@ -10545,7 +10181,7 @@ namespace tensor {
         virtual void run(ValueStack<TensorType>& stack) {
 
 
-            auto axis = fetch_optional_int(stack);
+            auto axis = fetch_optional_int(stack, 0);
 
             auto split = fetch_optional_tensor(stack);
             auto input = fetch_tensor(stack);
@@ -10684,7 +10320,7 @@ namespace tensor {
 
             output = TensorType::create_undefined_user_tensor();
 
-            auto batch_dims = fetch_optional_int(stack);
+            auto batch_dims = fetch_optional_int(stack, 0);
 
             auto indices = fetch_tensor(stack);
             auto data = fetch_tensor(stack);
@@ -10695,9 +10331,7 @@ namespace tensor {
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
 
-            if ( batch_dims.index() != 0) {
-                infer_.new_attr("batch_dims", std::get<1>(batch_dims) );
-            }
+            infer_.new_attr("batch_dims", batch_dims);
 
             infer_.new_input(data);
             infer_.new_input(indices);
@@ -10718,7 +10352,7 @@ namespace tensor {
         virtual void run(ValueStack<TensorType>& stack) {
 
 
-            auto batch_dims = fetch_optional_int(stack);
+            auto batch_dims = fetch_optional_int(stack, 0);
 
             auto indices = fetch_tensor(stack);
             auto data = fetch_tensor(stack);
@@ -10863,8 +10497,8 @@ namespace tensor {
             }
             Y = TensorType::create_undefined_user_tensor();
 
-            auto sorted = fetch_optional_int(stack);
-            auto axis = fetch_optional_int(stack);
+            auto sorted = fetch_optional_int(stack, 1);
+            auto axis = fetch_optional_int(stack, 0);
 
             auto X = fetch_tensor(stack);
 
@@ -10883,12 +10517,8 @@ namespace tensor {
             }
             YNXInferenceContextImpl infer_(outputs_);
 
-            if ( sorted.index() != 0) {
-                infer_.new_attr("sorted", std::get<1>(sorted) );
-            }
-            if ( axis.index() != 0) {
-                infer_.new_attr("axis", std::get<1>(axis) );
-            }
+            infer_.new_attr("sorted", sorted);
+            infer_.new_attr("axis", axis);
 
             infer_.new_input(X);
 
@@ -10929,8 +10559,8 @@ namespace tensor {
             fetch_bool(stack);
             fetch_bool(stack);
 
-            auto sorted = fetch_optional_int(stack);
-            auto axis = fetch_optional_int(stack);
+            auto sorted = fetch_optional_int(stack, 1);
+            auto axis = fetch_optional_int(stack, 0);
 
             auto X = fetch_tensor(stack);
 
@@ -11068,8 +10698,8 @@ namespace tensor {
 
             Y = TensorType::create_undefined_user_tensor();
 
-            auto time_axis = fetch_optional_int(stack);
-            auto batch_axis = fetch_optional_int(stack);
+            auto time_axis = fetch_optional_int(stack, 0);
+            auto batch_axis = fetch_optional_int(stack, 1);
 
             auto sequence_lens = fetch_tensor(stack);
             auto input = fetch_tensor(stack);
@@ -11080,12 +10710,8 @@ namespace tensor {
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
 
-            if ( time_axis.index() != 0) {
-                infer_.new_attr("time_axis", std::get<1>(time_axis) );
-            }
-            if ( batch_axis.index() != 0) {
-                infer_.new_attr("batch_axis", std::get<1>(batch_axis) );
-            }
+            infer_.new_attr("time_axis", time_axis);
+            infer_.new_attr("batch_axis", batch_axis);
 
             infer_.new_input(input);
             infer_.new_input(sequence_lens);
@@ -11106,8 +10732,8 @@ namespace tensor {
         virtual void run(ValueStack<TensorType>& stack) {
 
 
-            auto time_axis = fetch_optional_int(stack);
-            auto batch_axis = fetch_optional_int(stack);
+            auto time_axis = fetch_optional_int(stack, 0);
+            auto batch_axis = fetch_optional_int(stack, 1);
 
             auto sequence_lens = fetch_tensor(stack);
             auto input = fetch_tensor(stack);
@@ -11132,7 +10758,7 @@ namespace tensor {
 
             transposed = TensorType::create_undefined_user_tensor();
 
-            auto perm = fetch_optional_ints(stack);
+            auto perm = fetch_optional_ints(stack, {});
 
             auto data = fetch_tensor(stack);
 
@@ -11142,9 +10768,7 @@ namespace tensor {
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
 
-            if ( perm.index() != 0) {
-                infer_.new_attr("perm", std::get<1>(perm) );
-            }
+            infer_.new_attr("perm", perm);
 
             infer_.new_input(data);
 
@@ -11164,7 +10788,7 @@ namespace tensor {
         virtual void run(ValueStack<TensorType>& stack) {
 
 
-            auto perm = fetch_optional_ints(stack);
+            auto perm = fetch_optional_ints(stack, {});
 
             auto data = fetch_tensor(stack);
 
@@ -11188,7 +10812,7 @@ namespace tensor {
 
             output = TensorType::create_undefined_user_tensor();
 
-            auto upper = fetch_optional_int(stack);
+            auto upper = fetch_optional_int(stack, 1);
 
             auto k = fetch_optional_tensor(stack);
             auto input = fetch_tensor(stack);
@@ -11199,9 +10823,7 @@ namespace tensor {
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
 
-            if ( upper.index() != 0) {
-                infer_.new_attr("upper", std::get<1>(upper) );
-            }
+            infer_.new_attr("upper", upper);
 
             infer_.new_input(input);
             infer_.new_input(k);
@@ -11222,7 +10844,7 @@ namespace tensor {
         virtual void run(ValueStack<TensorType>& stack) {
 
 
-            auto upper = fetch_optional_int(stack);
+            auto upper = fetch_optional_int(stack, 1);
 
             auto k = fetch_optional_tensor(stack);
             auto input = fetch_tensor(stack);
@@ -11304,7 +10926,7 @@ namespace tensor {
 
             output = TensorType::create_undefined_user_tensor();
 
-            auto axis = fetch_optional_int(stack);
+            auto axis = fetch_optional_int(stack, 0);
 
             auto condition = fetch_tensor(stack);
             auto input = fetch_tensor(stack);
@@ -11315,9 +10937,7 @@ namespace tensor {
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
 
-            if ( axis.index() != 0) {
-                infer_.new_attr("axis", std::get<1>(axis) );
-            }
+            infer_.new_attr("axis", axis);
 
             infer_.new_input(input);
             infer_.new_input(condition);
@@ -11338,7 +10958,7 @@ namespace tensor {
         virtual void run(ValueStack<TensorType>& stack) {
 
 
-            auto axis = fetch_optional_int(stack);
+            auto axis = fetch_optional_int(stack, 0);
 
             auto condition = fetch_tensor(stack);
             auto input = fetch_tensor(stack);
@@ -11417,7 +11037,7 @@ namespace tensor {
 
             output = TensorType::create_undefined_user_tensor();
 
-            auto axis = fetch_optional_int(stack);
+            auto axis = fetch_optional_int(stack, -1);
 
             auto values = fetch_tensor(stack);
             auto depth = fetch_tensor(stack);
@@ -11429,9 +11049,7 @@ namespace tensor {
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
 
-            if ( axis.index() != 0) {
-                infer_.new_attr("axis", std::get<1>(axis) );
-            }
+            infer_.new_attr("axis", axis);
 
             infer_.new_input(indices);
             infer_.new_input(depth);
@@ -11453,7 +11071,7 @@ namespace tensor {
         virtual void run(ValueStack<TensorType>& stack) {
 
 
-            auto axis = fetch_optional_int(stack);
+            auto axis = fetch_optional_int(stack, -1);
 
             auto values = fetch_tensor(stack);
             auto depth = fetch_tensor(stack);
@@ -11587,12 +11205,12 @@ namespace tensor {
 
             Y = TensorType::create_undefined_user_tensor();
 
-            auto nearest_mode = fetch_optional_string(stack);
-            auto mode = fetch_optional_string(stack);
-            auto extrapolation_value = fetch_optional_float(stack);
-            auto exclude_outside = fetch_optional_int(stack);
-            auto cubic_coeff_a = fetch_optional_float(stack);
-            auto coordinate_transformation_mode = fetch_optional_string(stack);
+            auto nearest_mode = fetch_optional_string(stack, "round_prefer_floor");
+            auto mode = fetch_optional_string(stack, "nearest");
+            auto extrapolation_value = fetch_optional_float(stack, 0);
+            auto exclude_outside = fetch_optional_int(stack, 0);
+            auto cubic_coeff_a = fetch_optional_float(stack, -0.75);
+            auto coordinate_transformation_mode = fetch_optional_string(stack, "half_pixel");
 
             auto sizes = fetch_optional_tensor(stack);
             auto scales = fetch_optional_tensor(stack);
@@ -11605,24 +11223,12 @@ namespace tensor {
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
 
-            if ( nearest_mode.index() != 0) {
-                infer_.new_attr("nearest_mode", std::get<1>(nearest_mode) );
-            }
-            if ( mode.index() != 0) {
-                infer_.new_attr("mode", std::get<1>(mode) );
-            }
-            if ( extrapolation_value.index() != 0) {
-                infer_.new_attr("extrapolation_value", std::get<1>(extrapolation_value) );
-            }
-            if ( exclude_outside.index() != 0) {
-                infer_.new_attr("exclude_outside", std::get<1>(exclude_outside) );
-            }
-            if ( cubic_coeff_a.index() != 0) {
-                infer_.new_attr("cubic_coeff_a", std::get<1>(cubic_coeff_a) );
-            }
-            if ( coordinate_transformation_mode.index() != 0) {
-                infer_.new_attr("coordinate_transformation_mode", std::get<1>(coordinate_transformation_mode) );
-            }
+            infer_.new_attr("nearest_mode", nearest_mode);
+            infer_.new_attr("mode", mode);
+            infer_.new_attr("extrapolation_value", extrapolation_value);
+            infer_.new_attr("exclude_outside", exclude_outside);
+            infer_.new_attr("cubic_coeff_a", cubic_coeff_a);
+            infer_.new_attr("coordinate_transformation_mode", coordinate_transformation_mode);
 
             infer_.new_input(X);
             infer_.new_input(roi);
@@ -11645,12 +11251,12 @@ namespace tensor {
         virtual void run(ValueStack<TensorType>& stack) {
 
 
-            auto nearest_mode = fetch_optional_string(stack);
-            auto mode = fetch_optional_string(stack);
-            auto extrapolation_value = fetch_optional_float(stack);
-            auto exclude_outside = fetch_optional_int(stack);
-            auto cubic_coeff_a = fetch_optional_float(stack);
-            auto coordinate_transformation_mode = fetch_optional_string(stack);
+            auto nearest_mode = fetch_optional_string(stack, "round_prefer_floor");
+            auto mode = fetch_optional_string(stack, "nearest");
+            auto extrapolation_value = fetch_optional_float(stack, 0);
+            auto exclude_outside = fetch_optional_int(stack, 0);
+            auto cubic_coeff_a = fetch_optional_float(stack, -0.75);
+            auto coordinate_transformation_mode = fetch_optional_string(stack, "half_pixel");
 
             auto sizes = fetch_optional_tensor(stack);
             auto scales = fetch_optional_tensor(stack);
@@ -11677,7 +11283,7 @@ namespace tensor {
 
             output = TensorType::create_undefined_user_tensor();
 
-            auto mode = fetch_optional_string(stack);
+            auto mode = fetch_optional_string(stack, "constant");
 
             auto constant_value = fetch_optional_tensor(stack);
             auto pads = fetch_tensor(stack);
@@ -11689,9 +11295,7 @@ namespace tensor {
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
 
-            if ( mode.index() != 0) {
-                infer_.new_attr("mode", std::get<1>(mode) );
-            }
+            infer_.new_attr("mode", mode);
 
             infer_.new_input(data);
             infer_.new_input(pads);
@@ -11713,7 +11317,7 @@ namespace tensor {
         virtual void run(ValueStack<TensorType>& stack) {
 
 
-            auto mode = fetch_optional_string(stack);
+            auto mode = fetch_optional_string(stack, "constant");
 
             auto constant_value = fetch_optional_tensor(stack);
             auto pads = fetch_tensor(stack);
@@ -11739,8 +11343,8 @@ namespace tensor {
 
             Y = TensorType::create_undefined_user_tensor();
 
-            auto detect_positive = fetch_optional_int(stack);
-            auto detect_negative = fetch_optional_int(stack);
+            auto detect_positive = fetch_optional_int(stack, 1);
+            auto detect_negative = fetch_optional_int(stack, 1);
 
             auto X = fetch_tensor(stack);
 
@@ -11750,12 +11354,8 @@ namespace tensor {
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
 
-            if ( detect_positive.index() != 0) {
-                infer_.new_attr("detect_positive", std::get<1>(detect_positive) );
-            }
-            if ( detect_negative.index() != 0) {
-                infer_.new_attr("detect_negative", std::get<1>(detect_negative) );
-            }
+            infer_.new_attr("detect_positive", detect_positive);
+            infer_.new_attr("detect_negative", detect_negative);
 
             infer_.new_input(X);
 
@@ -11775,8 +11375,8 @@ namespace tensor {
         virtual void run(ValueStack<TensorType>& stack) {
 
 
-            auto detect_positive = fetch_optional_int(stack);
-            auto detect_negative = fetch_optional_int(stack);
+            auto detect_positive = fetch_optional_int(stack, 1);
+            auto detect_negative = fetch_optional_int(stack, 1);
 
             auto X = fetch_tensor(stack);
 
@@ -11800,7 +11400,7 @@ namespace tensor {
 
             output = TensorType::create_undefined_user_tensor();
 
-            auto axis = fetch_optional_int(stack);
+            auto axis = fetch_optional_int(stack, 0);
 
             auto indices = fetch_tensor(stack);
             auto data = fetch_tensor(stack);
@@ -11811,9 +11411,7 @@ namespace tensor {
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
 
-            if ( axis.index() != 0) {
-                infer_.new_attr("axis", std::get<1>(axis) );
-            }
+            infer_.new_attr("axis", axis);
 
             infer_.new_input(data);
             infer_.new_input(indices);
@@ -11834,7 +11432,7 @@ namespace tensor {
         virtual void run(ValueStack<TensorType>& stack) {
 
 
-            auto axis = fetch_optional_int(stack);
+            auto axis = fetch_optional_int(stack, 0);
 
             auto indices = fetch_tensor(stack);
             auto data = fetch_tensor(stack);
@@ -11859,7 +11457,7 @@ namespace tensor {
 
             output = TensorType::create_undefined_user_tensor();
 
-            auto axis = fetch_optional_int(stack);
+            auto axis = fetch_optional_int(stack, 0);
 
             auto updates = fetch_tensor(stack);
             auto indices = fetch_tensor(stack);
@@ -11871,9 +11469,7 @@ namespace tensor {
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
 
-            if ( axis.index() != 0) {
-                infer_.new_attr("axis", std::get<1>(axis) );
-            }
+            infer_.new_attr("axis", axis);
 
             infer_.new_input(data);
             infer_.new_input(indices);
@@ -11895,7 +11491,7 @@ namespace tensor {
         virtual void run(ValueStack<TensorType>& stack) {
 
 
-            auto axis = fetch_optional_int(stack);
+            auto axis = fetch_optional_int(stack, 0);
 
             auto updates = fetch_tensor(stack);
             auto indices = fetch_tensor(stack);
