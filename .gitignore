@@ -5,5 +5,4 @@ onnx~/tensortype.hpp
 
 tools/repl/repl
 
-backend/test_dnnl
-backend/test_cuda
+backend/test_backend
