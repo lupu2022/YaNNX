@@ -32,6 +32,7 @@ tt::OperatorReturnType DNNLTensor<_DTYPE_>::dnnl_eltwise_operator(tt::tensor_t X
 
         // destory prim and pd
         dnnl_help::release_prim(eltwise, eltwise_pd);
+        return tt::YNX_OK;
     }
     yannx_panic("Don't support data type");
     return tt::YNX_TODO_ERROR;
