@@ -21,20 +21,14 @@ namespace yannx {
 namespace dnnl {
     template <tt::TensorDataType _DTYPE_> struct DNNLTensor;
 }
-using dnnl_float_t = yannx::dnnl::DNNLTensor<tt::TensorDataType::YNX_FLOAT>;
-#else
-struct DNNL_FloatTensor{};
-using dnnl_float_t = DNNL_FloatTensor;
+using device_float_t = yannx::dnnl::DNNLTensor<tt::TensorDataType::YNX_FLOAT>;
 #endif
 
 #ifdef _USE_CUDA_GPU_
 namespace cuda {
     template <tt::TensorDataType _DTYPE_> struct CUDATensor;
 }
-using cuda_float_t = yannx::cuda::CUDATensor<tt::TensorDataType::YNX_FLOAT>;
-#else
-struct CUDA_FloatTensor{};
-using cuda_float_t = CUDA_FloatTensor;
+using device_float_t = yannx::cuda::CUDATensor<tt::TensorDataType::YNX_FLOAT>;
 #endif
 
 namespace tt {
@@ -92,27 +86,14 @@ using value_bool_t = ValueOnlyTensor<unsigned char, TensorDataType::YNX_BOOL>;
 
 struct DeviceTensor: public TensorType  {
 public:
-    enum DeviceType {
-        DEVICE_CPU = 0,
-        DEVICE_CUDA_0 = 1,
-        DEVICE_CUDA_1 = 2,
-        DEVICE_CUDA_2 = 3,
-        DEVICE_CUDA_3 = 4,
-        DEVICE_CUDA_X = 100,
-    };
-
-public:
     // init functions, return an undefined tensor
-    DeviceTensor(DeviceType device) : device_(device), dtype_(tt::TensorDataType::YNX_UNDEFINED), impl_((void*)NULL) {
+    DeviceTensor() : dtype_(tt::TensorDataType::YNX_UNDEFINED), impl_((void*)NULL) {
 #ifdef _USE_DNNL_CPU_
-        if ( device_ == DEVICE_CPU ) {
-            return;
-        }
+
 #endif
+
 #ifdef _USE_CUDA_GPU_
-        if ( device_ >= DEVICE_CUDA_0 && device_ <= DEVICE_CUDA_X ) {
-            return;
-        }
+
 #endif
         yannx_panic("Can't support target device type!");
     }
@@ -137,37 +118,29 @@ public:
 
 private:
     TensorType* impl() {
-#ifdef _USE_DNNL_CPU_
-        if ( impl_.index() == DNNL_FLOAT ) {
-            return (TensorType *) std::get<DNNL_FLOAT>(impl_).get();
-        }
-#endif
-        if ( impl_.index() == VALUE_INT64 ) {
-            return (TensorType *) std::get<VALUE_INT64>(impl_).get();
+        if ( impl_.index() == DEVICE_FLOAT ) {
+            return (TensorType *) std::get<DEVICE_FLOAT>(impl_).get();
         }
 
-        yannx_panic("Can't get impl from a UNKNOW_ANY tensor");
+        yannx_panic("Can't get impl from a none device tensor");
         return nullptr;
     }
 
 private:
     // basic info about tensor
-    const DeviceType    device_;
     TensorDataType      dtype_;
     std::vector<size_t> shape_;
 
     // ImplType enum order is same as TensorImpl's variant
     enum ImplType {
         UNKNOW_ANY = 0,
-        DNNL_FLOAT,
-        CUDA_FLOAT,
+        DEVICE_FLOAT,
         VALUE_FLOAT,
         VALUE_INT64,
         VALUE_BOOL,
     };
     using TensorImpl = std::variant< void *,
-                                     std::unique_ptr<dnnl_float_t>,
-                                     std::unique_ptr<cuda_float_t>,
+                                     std::unique_ptr<device_float_t>,
                                      std::unique_ptr<value_float_t>,
                                      std::unique_ptr<value_int64_t>,
                                      std::unique_ptr<value_bool_t> >;
@@ -187,7 +160,7 @@ private:
 namespace yannx { namespace tt {
 
 std::shared_ptr<TensorType> TensorType::create_undefined_user_tensor() {
-    auto* p = new DeviceTensor(DeviceTensor::DEVICE_CPU);
+    auto* p = new DeviceTensor();
     std::shared_ptr<TensorType> ret(p);
     return ret;
 }
@@ -202,14 +175,11 @@ void DeviceTensor::reset(TensorDataType dtype, std::vector<size_t>& shape) {
     yannx_assert(shape.size() > 0, "Can't reset a typed tensor with zero shape!");
     yannx_assert(impl_.index() == UNKNOW_ANY, "Can't reset a setted tensor!");
 
-#ifdef _USE_DNNL_CPU_
-    if ( device_ == DEVICE_CPU ) {
-        if ( dtype == YNX_FLOAT ) {
-            impl_ = std::make_unique<dnnl_float_t>(shape);
-        }
+    if ( dtype == YNX_FLOAT ) {
+        impl_ = std::make_unique<device_float_t>(shape);
         return;
     }
-#endif
+
     if ( dtype == YNX_INT64 ) {
         impl_ = std::make_unique<value_int64_t>(shape);
         return;
@@ -224,14 +194,11 @@ void DeviceTensor::reset(TensorDataType dtype, std::vector<size_t>& shape, const
     yannx_assert(shape.size() > 0, "Can't reset a typed tensor with zero shape!");
     yannx_assert(impl_.index() == UNKNOW_ANY, "Can't reset a setted tensor!");
 
-#ifdef _USE_DNNL_CPU_
-    if ( device_ == DEVICE_CPU ) {
-        if ( dtype == YNX_FLOAT ) {
-            impl_ = std::make_unique<dnnl_float_t>(shape, pdata);
-        }
+    if ( dtype == YNX_FLOAT ) {
+        impl_ = std::make_unique<device_float_t>(shape, pdata);
         return;
     }
-#endif
+
     if ( dtype == YNX_INT64) {
         impl_ = std::make_unique<value_int64_t>(shape, pdata);
         return;

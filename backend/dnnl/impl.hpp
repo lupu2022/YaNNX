@@ -80,20 +80,6 @@ struct DNNLTensor : public tt::TensorType  {
 
     // real tensor computing API
 public:
-    // two item binary operator : A op B = C
-    tt::OperatorReturnType onnx_Add(tt::tensor_t A, tt::tensor_t B, tt::tensor_t C) override {
-        return dnnl_binary_operator(A, B, C, dnnl_binary_add);
-    }
-    tt::OperatorReturnType onnx_Mul(tt::tensor_t A, tt::tensor_t B, tt::tensor_t C) override {
-        return dnnl_binary_operator(A, B, C, dnnl_binary_mul);
-    }
-    tt::OperatorReturnType onnx_Div(tt::tensor_t A, tt::tensor_t B, tt::tensor_t C) override {
-        return dnnl_binary_operator(A, B, C, dnnl_binary_div);
-    }
-    tt::OperatorReturnType onnx_Sub(tt::tensor_t A, tt::tensor_t B, tt::tensor_t C) override {
-        return dnnl_binary_operator(A, B, C, dnnl_binary_sub);
-    }
-
     // element wise operator : Y = op(X)
     tt::OperatorReturnType onnx_Abs(tt::tensor_t X, tt::tensor_t Y) override {
         return dnnl_eltwise_operator(X, Y, dnnl_eltwise_abs, 0.0, 0.0);
@@ -114,6 +100,22 @@ public:
         return dnnl_eltwise_operator(X, Y, dnnl_eltwise_tanh, 0.0, 0.0);
     }
 
+    // two item binary operator : A op B = C
+    tt::OperatorReturnType onnx_Add(tt::tensor_t A, tt::tensor_t B, tt::tensor_t C) override {
+        return dnnl_binary_operator(A, B, C, dnnl_binary_add);
+    }
+    tt::OperatorReturnType onnx_Mul(tt::tensor_t A, tt::tensor_t B, tt::tensor_t C) override {
+        return dnnl_binary_operator(A, B, C, dnnl_binary_mul);
+    }
+    tt::OperatorReturnType onnx_Div(tt::tensor_t A, tt::tensor_t B, tt::tensor_t C) override {
+        return dnnl_binary_operator(A, B, C, dnnl_binary_div);
+    }
+    tt::OperatorReturnType onnx_Sub(tt::tensor_t A, tt::tensor_t B, tt::tensor_t C) override {
+        return dnnl_binary_operator(A, B, C, dnnl_binary_sub);
+    }
+
+    // Common operators
+    tt::OperatorReturnType onnx_Concat(std::vector<tt::tensor_t>& inputs, tt::tensor_t concat_result, int64_t axis);
 
 private:
     // help functions for computing API
@@ -228,6 +230,7 @@ private:
 
 #include "binary.hpp"
 #include "eltwise.hpp"
+#include "concat.hpp"
 
 }}
 
