@@ -110,6 +110,9 @@ public:
     tt::OperatorReturnType onnx_Sqrt(tt::tensor_t X, tt::tensor_t Y) override {
         return dnnl_eltwise_operator(X, Y, dnnl_eltwise_sqrt, 0.0, 0.0);
     }
+    tt::OperatorReturnType onnx_Tanh(tt::tensor_t X, tt::tensor_t Y) override {
+        return dnnl_eltwise_operator(X, Y, dnnl_eltwise_tanh, 0.0, 0.0);
+    }
 
 
 private:
