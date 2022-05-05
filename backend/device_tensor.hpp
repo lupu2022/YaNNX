@@ -60,9 +60,6 @@ public:
         value_[0] = *(const T*)pvalue;
     }
 
-    const char* device() override {
-        return "ValueOnly";
-    }
 
     // value is only you need
     const void* value() override {
@@ -70,6 +67,10 @@ public:
     }
 
     // we don't need these functions, call these via DeviceTensor
+    const char* device() override {
+        yannx_panic("Can't call this interface!");
+        return nullptr;
+    }
     void reset(tt::TensorDataType dtype, std::vector<size_t>& shape) override {
         yannx_panic("Can't call this interface!");
     }
@@ -92,13 +93,6 @@ struct DeviceTensor: public TensorType  {
 public:
     // init functions, return an undefined tensor
     DeviceTensor() : dtype_(tt::TensorDataType::YNX_UNDEFINED), impl_((void*)NULL) {
-#ifdef _USE_DNNL_CPU_
-
-#endif
-
-#ifdef _USE_CUDA_GPU_
-
-#endif
         yannx_panic("Can't support target device type!");
     }
 
@@ -109,17 +103,12 @@ public:
     tt::TensorDataType dtype() override {
         return dtype_;
     }
-    const char* device() override {
-        return impl()->device();
-    }
+    const char* device() override;
+    const void* value() override;
 
     void reset(tt::TensorDataType dtype, std::vector<size_t>& shape) override;
     void reset(tt::TensorDataType dtype, std::vector<size_t>& shape, const void* pdata) override;
     void reset(tt::TensorDataType dtype, const void* pvalue) override;
-
-    const void* value() override {
-        return impl()->value();
-    }
 
 #include "api_impl.inc"
 
@@ -174,6 +163,28 @@ std::shared_ptr<TensorType> TensorType::create_undefined_user_tensor() {
 
 void  TensorType::register_user_tensor(std::shared_ptr<TensorType> tensor, int64_t flag) {
 
+}
+
+// device() & value() API
+const char* DeviceTensor::device() {
+    if ( impl_.index() == DEVICE_FLOAT ) {
+        return std::get<DEVICE_FLOAT>(impl_)->device();
+    }
+    return "ValueOnly";
+}
+
+const void* DeviceTensor::value() {
+    if ( impl_.index() == VALUE_FLOAT ) {
+        return std::get<VALUE_FLOAT>(impl_)->device();
+    }
+    if ( impl_.index() == VALUE_INT64 ) {
+        return std::get<VALUE_INT64>(impl_)->device();
+    }
+    if ( impl_.index() == VALUE_BOOL ) {
+        return std::get<VALUE_BOOL>(impl_)->device();
+    }
+    yannx_panic("Can't call value() from none value Tensor");
+    return nullptr;
 }
 
 // reset to a normal tensor

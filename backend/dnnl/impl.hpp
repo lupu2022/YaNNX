@@ -70,18 +70,28 @@ struct DNNLTensor : public tt::TensorType  {
         return "DNNL_CPU";
     }
 
-    // only one real overrided function
-    const void* value() override {
-        return plain_ptr();
-    }
-
-
     // we don't need call these interface , it is via DeviceTensor
-    void reset(tt::TensorDataType dtype, std::vector<size_t>& shape) override {}
-    void reset(tt::TensorDataType dtype, std::vector<size_t>& shape, const void* pdata) override {}
-    void reset(tt::TensorDataType dtype, const void* pvalue) override {}
-    tt::TensorDataType dtype() override { return _DTYPE_; }
-    const std::vector<size_t>& shape() override { return shape_; }
+    const void* value() override {
+        yannx_panic("Dont't call this interface");
+        return nullptr;
+    }
+    void reset(tt::TensorDataType dtype, std::vector<size_t>& shape) override {
+        yannx_panic("Dont't call this interface");
+    }
+    void reset(tt::TensorDataType dtype, std::vector<size_t>& shape, const void* pdata) override {
+        yannx_panic("Dont't call this interface");
+    }
+    void reset(tt::TensorDataType dtype, const void* pvalue) override {
+        yannx_panic("Dont't call this interface");
+    }
+    tt::TensorDataType dtype() override {
+        yannx_panic("Dont't call this interface");
+        return _DTYPE_;
+    }
+    const std::vector<size_t>& shape() override {
+        yannx_panic("Dont't call this interface");
+        return shape_;
+    }
 
     // real tensor computing API
 public:
