@@ -146,6 +146,7 @@ struct TensorType {
     virtual TensorDataType dtype() = 0;
     virtual const std::vector<size_t>& shape() = 0;
     virtual const void* value() = 0;
+    virtual const char* device() = 0;
 
     virtual void reset(TensorDataType dtype, std::vector<size_t>& shape) = 0;
     virtual void reset(TensorDataType dtype, std::vector<size_t>& shape, const void* pdata) = 0;

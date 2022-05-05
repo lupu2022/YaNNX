@@ -66,10 +66,15 @@ struct DNNLTensor : public tt::TensorType  {
                                                 dnnl_help::ndim_to_mem_plain_tag(shape_.size())));
     }
 
+    const char* device() override {
+        return "DNNL_CPU";
+    }
+
     // only one real overrided function
     const void* value() override {
         return plain_ptr();
     }
+
 
     // we don't need call these interface , it is via DeviceTensor
     void reset(tt::TensorDataType dtype, std::vector<size_t>& shape) override {}
@@ -99,6 +104,15 @@ public:
     tt::OperatorReturnType onnx_Tanh(tt::tensor_t X, tt::tensor_t Y) override {
         return dnnl_eltwise_operator(X, Y, dnnl_eltwise_tanh, 0.0, 0.0);
     }
+    tt::OperatorReturnType onnx_Log(tt::tensor_t X, tt::tensor_t Y) override {
+        return dnnl_eltwise_operator(X, Y, dnnl_eltwise_log, 0.0, 0.0);
+    }
+    tt::OperatorReturnType onnx_Round(tt::tensor_t X, tt::tensor_t Y) override {
+        return dnnl_eltwise_operator(X, Y, dnnl_eltwise_log, 0.0, 0.0);
+    }
+    tt::OperatorReturnType onnx_LeakyRelu(tt::tensor_t X, tt::tensor_t Y, float alpha) override {
+        return dnnl_eltwise_operator(X, Y, dnnl_eltwise_relu, alpha, 0.0);
+    }
 
     // two item binary operator : A op B = C
     tt::OperatorReturnType onnx_Add(tt::tensor_t A, tt::tensor_t B, tt::tensor_t C) override {
@@ -115,7 +129,9 @@ public:
     }
 
     // Common operators
-    tt::OperatorReturnType onnx_Concat(std::vector<tt::tensor_t>& inputs, tt::tensor_t concat_result, int64_t axis);
+    tt::OperatorReturnType onnx_Concat(std::vector<tt::tensor_t>& inputs, tt::tensor_t concat_result, int64_t axis) override;
+    tt::OperatorReturnType onnx_MatMul(tt::tensor_t A, tt::tensor_t B, tt::tensor_t Y) override;
+
 
 private:
     // help functions for computing API
@@ -228,9 +244,11 @@ private:
     const std::vector<size_t>     shape_;
 };
 
+// see https://oneapi-src.github.io/oneDNN/index.html
 #include "binary.hpp"
 #include "eltwise.hpp"
 #include "concat.hpp"
+#include "matmul.hpp"
 
 }}
 

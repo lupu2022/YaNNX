@@ -60,10 +60,15 @@ public:
         value_[0] = *(const T*)pvalue;
     }
 
+    const char* device() override {
+        return "ValueOnly";
+    }
+
     // value is only you need
     const void* value() override {
         return (const void*)(value_.data());
     }
+
 
     // we don't need these functions, call these via DeviceTensor
     void reset(tt::TensorDataType dtype, std::vector<size_t>& shape) override {
@@ -104,6 +109,9 @@ public:
     }
     tt::TensorDataType dtype() override {
         return dtype_;
+    }
+    const char* device() override {
+        return impl()->device();
     }
 
     void reset(tt::TensorDataType dtype, std::vector<size_t>& shape) override;

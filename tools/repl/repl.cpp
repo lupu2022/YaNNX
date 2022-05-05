@@ -47,6 +47,9 @@ struct MyTensorType : public yannx::tt::TensorType {
     const std::vector<size_t>& shape() override {
         return shape_;
     }
+    const char* device() override {
+        return "dummy";
+    }
 
     const void* value() override {
         if ( dtype_ == yannx::tt::YNX_UNDEFINED ) {
