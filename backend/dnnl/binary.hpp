@@ -42,3 +42,5 @@ tt::OperatorReturnType DNNLTensor<_DTYPE_>::dnnl_binary_operator(tt::tensor_t A,
     yannx_panic("Don't support data type");
     return tt::YNX_TODO_ERROR;
 }
+
+

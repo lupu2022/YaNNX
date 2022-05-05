@@ -69,7 +69,6 @@ public:
         return (const void*)(value_.data());
     }
 
-
     // we don't need these functions, call these via DeviceTensor
     void reset(tt::TensorDataType dtype, std::vector<size_t>& shape) override {
         yannx_panic("Can't call this interface!");

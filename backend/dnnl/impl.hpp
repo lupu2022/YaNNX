@@ -43,7 +43,7 @@ struct DNNLTensor : public tt::TensorType  {
         if ( tt_dtype == tt::YNX_FLOAT ) {
             float* dst = (float *)plain_ptr();
             const float* src = (const float *)pdata;
-            memcpy(dst, src, num_items() * sizeof(float) );
+            memcpy(dst, src, items() * sizeof(float) );
             return;
         }
 
@@ -134,10 +134,28 @@ public:
         return dnnl_binary_operator(A, B, C, dnnl_binary_sub);
     }
 
+    // reduce operator dst = reduce_op( srcs )
+    tt::OperatorReturnType onnx_Max(std::vector<tt::tensor_t>& data_0, tt::tensor_t max) override {
+        return dnnl_reduce_operator(data_0, max, dnnl_reduction_max, 0.0, 0.0);
+    }
+    tt::OperatorReturnType onnx_Min(std::vector<tt::tensor_t>& data_0, tt::tensor_t min) override {
+        return dnnl_reduce_operator(data_0, min, dnnl_reduction_min, 0.0, 0.0);
+    }
+    tt::OperatorReturnType onnx_Mean(std::vector<tt::tensor_t>& data_0, tt::tensor_t mean) override {
+        return dnnl_reduce_operator(data_0, mean, dnnl_reduction_mean, 0.0, 0.0);
+    }
+    tt::OperatorReturnType onnx_Sum(std::vector<tt::tensor_t>& data_0, tt::tensor_t sum) override {
+        return dnnl_reduce_operator(data_0, sum, dnnl_reduction_sum, 0.0, 0.0);
+    }
+
     // Some common operators
     tt::OperatorReturnType onnx_Concat(std::vector<tt::tensor_t>& inputs, tt::tensor_t concat_result, int64_t axis) override;
     tt::OperatorReturnType onnx_MatMul(tt::tensor_t A, tt::tensor_t B, tt::tensor_t Y) override;
     tt::OperatorReturnType onnx_Clip(tt::tensor_t input, std::variant<void *, tt::tensor_t>& min, std::variant<void *, tt::tensor_t>& max, tt::tensor_t output) override;
+    tt::OperatorReturnType onnx_Flatten(tt::tensor_t input, tt::tensor_t output, int64_t axis) override;
+
+    // Covolution & Pooling & BatchNorm
+
 
 private:
     // help functions for computing API
@@ -147,6 +165,8 @@ private:
     }
     tt::OperatorReturnType dnnl_binary_operator(tt::tensor_t A, tt::tensor_t B, tt::tensor_t C, dnnl_alg_kind_t algo);
     tt::OperatorReturnType dnnl_eltwise_operator(tt::tensor_t X, tt::tensor_t Y, dnnl_alg_kind_t algo, float alpha, float beta);
+    tt::OperatorReturnType dnnl_reduce_operator(std::vector<tt::tensor_t>& data_0, tt::tensor_t result, dnnl_alg_kind_t algo, float p, float epsde);
+
 
 private:
     // fast access
@@ -169,15 +189,6 @@ private:
             DNNL_CHECK(dnnl_primitive_desc_destroy(pd_));
         }
         pd_ = pd;
-    }
-
-    // some help functions
-    size_t num_items() {
-        size_t n = 1;
-        for (size_t i = 0; i < shape_.size(); i++) {
-            n = n * shape_[i];
-        }
-        return n;
     }
 
     // layout management
@@ -252,6 +263,8 @@ private:
 // see https://oneapi-src.github.io/oneDNN/index.html
 #include "binary.hpp"
 #include "eltwise.hpp"
+#include "reduce.hpp"
+#include "common.hpp"
 #include "concat.hpp"
 #include "matmul.hpp"
 
