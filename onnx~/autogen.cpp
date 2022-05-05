@@ -139,11 +139,7 @@ std::string api_generate(const OpSchema& op) {
     }
 
     oss << ") {" << std::endl;
-    oss << "#ifndef USING_ONNX_IMPL" << std::endl;
     oss << "\t    return YNX_TODO_ERROR;" << std::endl;
-    oss << "#else" << std::endl;
-    oss << "\t    return YNX_OK;" << std::endl;
-    oss << "#endif" << std::endl;
     oss << "\t}" << std::endl;
     return oss.str();
 }
@@ -274,14 +270,12 @@ const char* word_template =  R"~~(
 #ATTR#
 #INPUT#
 
-#ifdef USING_ONNX_IMPL
 #OUTPUT_ONNX#
 #ATTR_ONNX#
 #INPUT_ONNX#
             auto f = query_inference_function("#WORDNAME#");
             infer_.do_inference(f);
 #OUTPUT_CHECK_ONNX#
-#endif
 
             if ( #CALL_API# != YNX_OK ) {
                 yannx_panic("API: #WORDNAME#  return error!");

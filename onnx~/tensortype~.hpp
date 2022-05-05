@@ -12,15 +12,12 @@
 
 #include <yannx.hpp>
 
-#ifdef USING_ONNX_IMPL
 #include <onnx/onnx_pb.h>
 #include <onnx/defs/schema.h>
 #include <onnx/defs/attr_proto_util.h>
 #include <onnx/defs/tensor_proto_util.h>
 #include <onnx/shape_inference/implementation.h>
-
 using namespace onnx;
-#endif
 
 //
 //  A simple onnx based (type and shape inference only, or a pure dummy tensor ) Tensor.following ONNX IR
@@ -88,7 +85,6 @@ TensorDataType datatype_from_string(const std::string& dt_str ) {
 };
 
 
-#ifdef USING_ONNX_IMPL
 TensorDataType datatype_from_onnx( int dt ) {
     switch( dt ) {
         case TensorProto_DataType_UNDEFINED:
@@ -126,7 +122,6 @@ TensorDataType datatype_from_onnx( int dt ) {
     }
     return YNX_UNDEFINED;
 }
-#endif
 
 
 /*
@@ -146,6 +141,7 @@ struct TensorType {
     virtual TensorDataType dtype() = 0;
     virtual const std::vector<size_t>& shape() = 0;
     virtual const void* value() = 0;
+    virtual const char* device() = 0;
 
     virtual void reset(TensorDataType dtype, std::vector<size_t>& shape) = 0;
     virtual void reset(TensorDataType dtype, std::vector<size_t>& shape, const void* pdata) = 0;
@@ -187,7 +183,6 @@ struct TensorType {
 
 };
 
-#ifdef USING_ONNX_IMPL
 InferenceFunction query_inference_function(const std::string& op_name) {
     static std::map<const std::string, InferenceFunction> allInferenceFunctions;
 
@@ -382,7 +377,6 @@ struct YNXInferenceContextImpl : public InferenceContext {
         return nullptr;
     }
 };
-#endif
 
 //
 //  some common help functions, and none-auto operators

@@ -12,15 +12,12 @@
 
 #include <yannx.hpp>
 
-#ifdef USING_ONNX_IMPL
 #include <onnx/onnx_pb.h>
 #include <onnx/defs/schema.h>
 #include <onnx/defs/attr_proto_util.h>
 #include <onnx/defs/tensor_proto_util.h>
 #include <onnx/shape_inference/implementation.h>
-
 using namespace onnx;
-#endif
 
 //
 //  A simple onnx based (type and shape inference only, or a pure dummy tensor ) Tensor.following ONNX IR
@@ -88,7 +85,6 @@ TensorDataType datatype_from_string(const std::string& dt_str ) {
 };
 
 
-#ifdef USING_ONNX_IMPL
 TensorDataType datatype_from_onnx( int dt ) {
     switch( dt ) {
         case TensorProto_DataType_UNDEFINED:
@@ -126,7 +122,6 @@ TensorDataType datatype_from_onnx( int dt ) {
     }
     return YNX_UNDEFINED;
 }
-#endif
 
 
 /*
@@ -186,1440 +181,803 @@ struct TensorType {
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Abs
 	virtual OperatorReturnType onnx_Abs(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Acos
 	virtual OperatorReturnType onnx_Acos(/*inputs:*/ tensor_t input, /*outputs:*/ tensor_t output) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Acosh
 	virtual OperatorReturnType onnx_Acosh(/*inputs:*/ tensor_t input, /*outputs:*/ tensor_t output) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Add
 	virtual OperatorReturnType onnx_Add(/*inputs:*/ tensor_t A, tensor_t B, /*outputs:*/ tensor_t C) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#And
 	virtual OperatorReturnType onnx_And(/*inputs:*/ tensor_t A, tensor_t B, /*outputs:*/ tensor_t C) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#ArgMax
 	virtual OperatorReturnType onnx_ArgMax(/*inputs:*/ tensor_t data, /*outputs:*/ tensor_t reduced, /*attributes:*/ int64_t axis, int64_t keepdims, int64_t select_last_index) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#ArgMin
 	virtual OperatorReturnType onnx_ArgMin(/*inputs:*/ tensor_t data, /*outputs:*/ tensor_t reduced, /*attributes:*/ int64_t axis, int64_t keepdims, int64_t select_last_index) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Asin
 	virtual OperatorReturnType onnx_Asin(/*inputs:*/ tensor_t input, /*outputs:*/ tensor_t output) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Asinh
 	virtual OperatorReturnType onnx_Asinh(/*inputs:*/ tensor_t input, /*outputs:*/ tensor_t output) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Atan
 	virtual OperatorReturnType onnx_Atan(/*inputs:*/ tensor_t input, /*outputs:*/ tensor_t output) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Atanh
 	virtual OperatorReturnType onnx_Atanh(/*inputs:*/ tensor_t input, /*outputs:*/ tensor_t output) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#AveragePool
 	virtual OperatorReturnType onnx_AveragePool(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y, /*attributes:*/ std::string auto_pad, int64_t ceil_mode, int64_t count_include_pad, std::vector<int64_t> kernel_shape, std::vector<int64_t> pads, std::vector<int64_t> strides) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#BatchNormalization
 	virtual OperatorReturnType onnx_BatchNormalization(/*inputs:*/ tensor_t X, tensor_t scale, tensor_t B, tensor_t input_mean, tensor_t input_var, /*outputs:*/ tensor_t Y, std::variant<void *, tensor_t>& running_mean, std::variant<void *, tensor_t>& running_var, /*attributes:*/ float epsilon, float momentum, int64_t training_mode) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Bernoulli
 	virtual OperatorReturnType onnx_Bernoulli(/*inputs:*/ tensor_t input, /*outputs:*/ tensor_t output, /*attributes:*/ int64_t dtype, float seed) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#BitShift
 	virtual OperatorReturnType onnx_BitShift(/*inputs:*/ tensor_t X, tensor_t Y, /*outputs:*/ tensor_t Z, /*attributes:*/ std::string direction) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Cast
 	virtual OperatorReturnType onnx_Cast(/*inputs:*/ tensor_t input, /*outputs:*/ tensor_t output, /*attributes:*/ int64_t to) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#CastLike
 	virtual OperatorReturnType onnx_CastLike(/*inputs:*/ tensor_t input, tensor_t target_type, /*outputs:*/ tensor_t output) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Ceil
 	virtual OperatorReturnType onnx_Ceil(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Celu
 	virtual OperatorReturnType onnx_Celu(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y, /*attributes:*/ float alpha) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Clip
 	virtual OperatorReturnType onnx_Clip(/*inputs:*/ tensor_t input, std::variant<void *, tensor_t>& min, std::variant<void *, tensor_t>& max, /*outputs:*/ tensor_t output) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Compress
 	virtual OperatorReturnType onnx_Compress(/*inputs:*/ tensor_t input, tensor_t condition, /*outputs:*/ tensor_t output, /*attributes:*/ int64_t axis) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Concat
 	virtual OperatorReturnType onnx_Concat(/*inputs:*/ std::vector<tensor_t>& inputs, /*outputs:*/ tensor_t concat_result, /*attributes:*/ int64_t axis) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#ConcatFromSequence
 	virtual OperatorReturnType onnx_ConcatFromSequence(/*inputs:*/ tensor_t input_sequence, /*outputs:*/ tensor_t concat_result, /*attributes:*/ int64_t axis, int64_t new_axis) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Conv
 	virtual OperatorReturnType onnx_Conv(/*inputs:*/ tensor_t X, tensor_t W, std::variant<void *, tensor_t>& B, /*outputs:*/ tensor_t Y, /*attributes:*/ std::string auto_pad, std::vector<int64_t> dilations, int64_t group, std::vector<int64_t> kernel_shape, std::vector<int64_t> pads, std::vector<int64_t> strides) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#ConvInteger
 	virtual OperatorReturnType onnx_ConvInteger(/*inputs:*/ tensor_t x, tensor_t w, std::variant<void *, tensor_t>& x_zero_point, std::variant<void *, tensor_t>& w_zero_point, /*outputs:*/ tensor_t y, /*attributes:*/ std::string auto_pad, std::vector<int64_t> dilations, int64_t group, std::vector<int64_t> kernel_shape, std::vector<int64_t> pads, std::vector<int64_t> strides) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#ConvTranspose
 	virtual OperatorReturnType onnx_ConvTranspose(/*inputs:*/ tensor_t X, tensor_t W, std::variant<void *, tensor_t>& B, /*outputs:*/ tensor_t Y, /*attributes:*/ std::string auto_pad, std::vector<int64_t> dilations, int64_t group, std::vector<int64_t> kernel_shape, std::vector<int64_t> output_padding, std::vector<int64_t> output_shape, std::vector<int64_t> pads, std::vector<int64_t> strides) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Cos
 	virtual OperatorReturnType onnx_Cos(/*inputs:*/ tensor_t input, /*outputs:*/ tensor_t output) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Cosh
 	virtual OperatorReturnType onnx_Cosh(/*inputs:*/ tensor_t input, /*outputs:*/ tensor_t output) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#CumSum
 	virtual OperatorReturnType onnx_CumSum(/*inputs:*/ tensor_t x, tensor_t axis, /*outputs:*/ tensor_t y, /*attributes:*/ int64_t exclusive, int64_t reverse) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#DepthToSpace
 	virtual OperatorReturnType onnx_DepthToSpace(/*inputs:*/ tensor_t input, /*outputs:*/ tensor_t output, /*attributes:*/ int64_t blocksize, std::string mode) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#DequantizeLinear
 	virtual OperatorReturnType onnx_DequantizeLinear(/*inputs:*/ tensor_t x, tensor_t x_scale, std::variant<void *, tensor_t>& x_zero_point, /*outputs:*/ tensor_t y, /*attributes:*/ int64_t axis) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Det
 	virtual OperatorReturnType onnx_Det(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Div
 	virtual OperatorReturnType onnx_Div(/*inputs:*/ tensor_t A, tensor_t B, /*outputs:*/ tensor_t C) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Dropout
 	virtual OperatorReturnType onnx_Dropout(/*inputs:*/ tensor_t data, std::variant<void *, tensor_t>& ratio, std::variant<void *, tensor_t>& training_mode, /*outputs:*/ tensor_t output, std::variant<void *, tensor_t>& mask, /*attributes:*/ int64_t seed) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#DynamicQuantizeLinear
 	virtual OperatorReturnType onnx_DynamicQuantizeLinear(/*inputs:*/ tensor_t x, /*outputs:*/ tensor_t y, tensor_t y_scale, tensor_t y_zero_point) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Einsum
 	virtual OperatorReturnType onnx_Einsum(/*inputs:*/ std::vector<tensor_t>& Inputs, /*outputs:*/ tensor_t Output, /*attributes:*/ std::string equation) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Elu
 	virtual OperatorReturnType onnx_Elu(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y, /*attributes:*/ float alpha) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Equal
 	virtual OperatorReturnType onnx_Equal(/*inputs:*/ tensor_t A, tensor_t B, /*outputs:*/ tensor_t C) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Erf
 	virtual OperatorReturnType onnx_Erf(/*inputs:*/ tensor_t input, /*outputs:*/ tensor_t output) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Exp
 	virtual OperatorReturnType onnx_Exp(/*inputs:*/ tensor_t input, /*outputs:*/ tensor_t output) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Expand
 	virtual OperatorReturnType onnx_Expand(/*inputs:*/ tensor_t input, tensor_t shape, /*outputs:*/ tensor_t output) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#EyeLike
 	virtual OperatorReturnType onnx_EyeLike(/*inputs:*/ tensor_t input, /*outputs:*/ tensor_t output, /*attributes:*/ int64_t dtype, int64_t k) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Flatten
 	virtual OperatorReturnType onnx_Flatten(/*inputs:*/ tensor_t input, /*outputs:*/ tensor_t output, /*attributes:*/ int64_t axis) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Floor
 	virtual OperatorReturnType onnx_Floor(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#GRU
 	virtual OperatorReturnType onnx_GRU(/*inputs:*/ tensor_t X, tensor_t W, tensor_t R, std::variant<void *, tensor_t>& B, std::variant<void *, tensor_t>& sequence_lens, std::variant<void *, tensor_t>& initial_h, /*outputs:*/ std::variant<void *, tensor_t>& Y, std::variant<void *, tensor_t>& Y_h, /*attributes:*/ std::vector<float> activation_alpha, std::vector<float> activation_beta, std::vector<std::string> activations, float clip, std::string direction, int64_t hidden_size, int64_t layout, int64_t linear_before_reset) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Gather
 	virtual OperatorReturnType onnx_Gather(/*inputs:*/ tensor_t data, tensor_t indices, /*outputs:*/ tensor_t output, /*attributes:*/ int64_t axis) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#GatherElements
 	virtual OperatorReturnType onnx_GatherElements(/*inputs:*/ tensor_t data, tensor_t indices, /*outputs:*/ tensor_t output, /*attributes:*/ int64_t axis) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#GatherND
 	virtual OperatorReturnType onnx_GatherND(/*inputs:*/ tensor_t data, tensor_t indices, /*outputs:*/ tensor_t output, /*attributes:*/ int64_t batch_dims) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Gemm
 	virtual OperatorReturnType onnx_Gemm(/*inputs:*/ tensor_t A, tensor_t B, std::variant<void *, tensor_t>& C, /*outputs:*/ tensor_t Y, /*attributes:*/ float alpha, float beta, int64_t transA, int64_t transB) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#GlobalAveragePool
 	virtual OperatorReturnType onnx_GlobalAveragePool(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#GlobalLpPool
 	virtual OperatorReturnType onnx_GlobalLpPool(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y, /*attributes:*/ int64_t p) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#GlobalMaxPool
 	virtual OperatorReturnType onnx_GlobalMaxPool(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Greater
 	virtual OperatorReturnType onnx_Greater(/*inputs:*/ tensor_t A, tensor_t B, /*outputs:*/ tensor_t C) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#GreaterOrEqual
 	virtual OperatorReturnType onnx_GreaterOrEqual(/*inputs:*/ tensor_t A, tensor_t B, /*outputs:*/ tensor_t C) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#HardSigmoid
 	virtual OperatorReturnType onnx_HardSigmoid(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y, /*attributes:*/ float alpha, float beta) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#HardSwish
 	virtual OperatorReturnType onnx_HardSwish(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Hardmax
 	virtual OperatorReturnType onnx_Hardmax(/*inputs:*/ tensor_t input, /*outputs:*/ tensor_t output, /*attributes:*/ int64_t axis) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Identity
 	virtual OperatorReturnType onnx_Identity(/*inputs:*/ tensor_t input, /*outputs:*/ tensor_t output) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#InstanceNormalization
 	virtual OperatorReturnType onnx_InstanceNormalization(/*inputs:*/ tensor_t input, tensor_t scale, tensor_t B, /*outputs:*/ tensor_t output, /*attributes:*/ float epsilon) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#IsInf
 	virtual OperatorReturnType onnx_IsInf(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y, /*attributes:*/ int64_t detect_negative, int64_t detect_positive) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#IsNaN
 	virtual OperatorReturnType onnx_IsNaN(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#LRN
 	virtual OperatorReturnType onnx_LRN(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y, /*attributes:*/ float alpha, float beta, float bias, int64_t size) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#LSTM
 	virtual OperatorReturnType onnx_LSTM(/*inputs:*/ tensor_t X, tensor_t W, tensor_t R, std::variant<void *, tensor_t>& B, std::variant<void *, tensor_t>& sequence_lens, std::variant<void *, tensor_t>& initial_h, std::variant<void *, tensor_t>& initial_c, std::variant<void *, tensor_t>& P, /*outputs:*/ std::variant<void *, tensor_t>& Y, std::variant<void *, tensor_t>& Y_h, std::variant<void *, tensor_t>& Y_c, /*attributes:*/ std::vector<float> activation_alpha, std::vector<float> activation_beta, std::vector<std::string> activations, float clip, std::string direction, int64_t hidden_size, int64_t input_forget, int64_t layout) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#LeakyRelu
 	virtual OperatorReturnType onnx_LeakyRelu(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y, /*attributes:*/ float alpha) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Less
 	virtual OperatorReturnType onnx_Less(/*inputs:*/ tensor_t A, tensor_t B, /*outputs:*/ tensor_t C) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#LessOrEqual
 	virtual OperatorReturnType onnx_LessOrEqual(/*inputs:*/ tensor_t A, tensor_t B, /*outputs:*/ tensor_t C) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Log
 	virtual OperatorReturnType onnx_Log(/*inputs:*/ tensor_t input, /*outputs:*/ tensor_t output) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#LogSoftmax
 	virtual OperatorReturnType onnx_LogSoftmax(/*inputs:*/ tensor_t input, /*outputs:*/ tensor_t output, /*attributes:*/ int64_t axis) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#LpNormalization
 	virtual OperatorReturnType onnx_LpNormalization(/*inputs:*/ tensor_t input, /*outputs:*/ tensor_t output, /*attributes:*/ int64_t axis, int64_t p) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#LpPool
 	virtual OperatorReturnType onnx_LpPool(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y, /*attributes:*/ std::string auto_pad, std::vector<int64_t> kernel_shape, int64_t p, std::vector<int64_t> pads, std::vector<int64_t> strides) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#MatMul
 	virtual OperatorReturnType onnx_MatMul(/*inputs:*/ tensor_t A, tensor_t B, /*outputs:*/ tensor_t Y) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#MatMulInteger
 	virtual OperatorReturnType onnx_MatMulInteger(/*inputs:*/ tensor_t A, tensor_t B, std::variant<void *, tensor_t>& a_zero_point, std::variant<void *, tensor_t>& b_zero_point, /*outputs:*/ tensor_t Y) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Max
 	virtual OperatorReturnType onnx_Max(/*inputs:*/ std::vector<tensor_t>& data_0, /*outputs:*/ tensor_t max) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#MaxPool
 	virtual OperatorReturnType onnx_MaxPool(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y, std::variant<void *, tensor_t>& Indices, /*attributes:*/ std::string auto_pad, int64_t ceil_mode, std::vector<int64_t> dilations, std::vector<int64_t> kernel_shape, std::vector<int64_t> pads, int64_t storage_order, std::vector<int64_t> strides) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#MaxRoiPool
 	virtual OperatorReturnType onnx_MaxRoiPool(/*inputs:*/ tensor_t X, tensor_t rois, /*outputs:*/ tensor_t Y, /*attributes:*/ std::vector<int64_t> pooled_shape, float spatial_scale) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#MaxUnpool
 	virtual OperatorReturnType onnx_MaxUnpool(/*inputs:*/ tensor_t X, tensor_t I, std::variant<void *, tensor_t>& output_shape, /*outputs:*/ tensor_t output, /*attributes:*/ std::vector<int64_t> kernel_shape, std::vector<int64_t> pads, std::vector<int64_t> strides) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Mean
 	virtual OperatorReturnType onnx_Mean(/*inputs:*/ std::vector<tensor_t>& data_0, /*outputs:*/ tensor_t mean) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#MeanVarianceNormalization
 	virtual OperatorReturnType onnx_MeanVarianceNormalization(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y, /*attributes:*/ std::vector<int64_t> axes) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Min
 	virtual OperatorReturnType onnx_Min(/*inputs:*/ std::vector<tensor_t>& data_0, /*outputs:*/ tensor_t min) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Mod
 	virtual OperatorReturnType onnx_Mod(/*inputs:*/ tensor_t A, tensor_t B, /*outputs:*/ tensor_t C, /*attributes:*/ int64_t fmod) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Mul
 	virtual OperatorReturnType onnx_Mul(/*inputs:*/ tensor_t A, tensor_t B, /*outputs:*/ tensor_t C) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Multinomial
 	virtual OperatorReturnType onnx_Multinomial(/*inputs:*/ tensor_t input, /*outputs:*/ tensor_t output, /*attributes:*/ int64_t dtype, int64_t sample_size, float seed) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Neg
 	virtual OperatorReturnType onnx_Neg(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#NegativeLogLikelihoodLoss
 	virtual OperatorReturnType onnx_NegativeLogLikelihoodLoss(/*inputs:*/ tensor_t input, tensor_t target, std::variant<void *, tensor_t>& weight, /*outputs:*/ tensor_t loss, /*attributes:*/ int64_t ignore_index, std::string reduction) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#NonMaxSuppression
 	virtual OperatorReturnType onnx_NonMaxSuppression(/*inputs:*/ tensor_t boxes, tensor_t scores, std::variant<void *, tensor_t>& max_output_boxes_per_class, std::variant<void *, tensor_t>& iou_threshold, std::variant<void *, tensor_t>& score_threshold, /*outputs:*/ tensor_t selected_indices, /*attributes:*/ int64_t center_point_box) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#NonZero
 	virtual OperatorReturnType onnx_NonZero(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Not
 	virtual OperatorReturnType onnx_Not(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#OneHot
 	virtual OperatorReturnType onnx_OneHot(/*inputs:*/ tensor_t indices, tensor_t depth, tensor_t values, /*outputs:*/ tensor_t output, /*attributes:*/ int64_t axis) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Or
 	virtual OperatorReturnType onnx_Or(/*inputs:*/ tensor_t A, tensor_t B, /*outputs:*/ tensor_t C) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#PRelu
 	virtual OperatorReturnType onnx_PRelu(/*inputs:*/ tensor_t X, tensor_t slope, /*outputs:*/ tensor_t Y) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Pad
 	virtual OperatorReturnType onnx_Pad(/*inputs:*/ tensor_t data, tensor_t pads, std::variant<void *, tensor_t>& constant_value, /*outputs:*/ tensor_t output, /*attributes:*/ std::string mode) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Pow
 	virtual OperatorReturnType onnx_Pow(/*inputs:*/ tensor_t X, tensor_t Y, /*outputs:*/ tensor_t Z) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#QLinearConv
 	virtual OperatorReturnType onnx_QLinearConv(/*inputs:*/ tensor_t x, tensor_t x_scale, tensor_t x_zero_point, tensor_t w, tensor_t w_scale, tensor_t w_zero_point, tensor_t y_scale, tensor_t y_zero_point, std::variant<void *, tensor_t>& B, /*outputs:*/ tensor_t y, /*attributes:*/ std::string auto_pad, std::vector<int64_t> dilations, int64_t group, std::vector<int64_t> kernel_shape, std::vector<int64_t> pads, std::vector<int64_t> strides) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#QLinearMatMul
 	virtual OperatorReturnType onnx_QLinearMatMul(/*inputs:*/ tensor_t a, tensor_t a_scale, tensor_t a_zero_point, tensor_t b, tensor_t b_scale, tensor_t b_zero_point, tensor_t y_scale, tensor_t y_zero_point, /*outputs:*/ tensor_t y) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#QuantizeLinear
 	virtual OperatorReturnType onnx_QuantizeLinear(/*inputs:*/ tensor_t x, tensor_t y_scale, std::variant<void *, tensor_t>& y_zero_point, /*outputs:*/ tensor_t y, /*attributes:*/ int64_t axis) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#RNN
 	virtual OperatorReturnType onnx_RNN(/*inputs:*/ tensor_t X, tensor_t W, tensor_t R, std::variant<void *, tensor_t>& B, std::variant<void *, tensor_t>& sequence_lens, std::variant<void *, tensor_t>& initial_h, /*outputs:*/ std::variant<void *, tensor_t>& Y, std::variant<void *, tensor_t>& Y_h, /*attributes:*/ std::vector<float> activation_alpha, std::vector<float> activation_beta, std::vector<std::string> activations, float clip, std::string direction, int64_t hidden_size, int64_t layout) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#RandomNormal
 	virtual OperatorReturnType onnx_RandomNormal(/*outputs:*/ tensor_t output, /*attributes:*/ int64_t dtype, float mean, float scale, float seed, std::vector<int64_t> shape) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#RandomNormalLike
 	virtual OperatorReturnType onnx_RandomNormalLike(/*inputs:*/ tensor_t input, /*outputs:*/ tensor_t output, /*attributes:*/ int64_t dtype, float mean, float scale, float seed) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#RandomUniform
 	virtual OperatorReturnType onnx_RandomUniform(/*outputs:*/ tensor_t output, /*attributes:*/ int64_t dtype, float high, float low, float seed, std::vector<int64_t> shape) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#RandomUniformLike
 	virtual OperatorReturnType onnx_RandomUniformLike(/*inputs:*/ tensor_t input, /*outputs:*/ tensor_t output, /*attributes:*/ int64_t dtype, float high, float low, float seed) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Range
 	virtual OperatorReturnType onnx_Range(/*inputs:*/ tensor_t start, tensor_t limit, tensor_t delta, /*outputs:*/ tensor_t output) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Reciprocal
 	virtual OperatorReturnType onnx_Reciprocal(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#ReduceL1
 	virtual OperatorReturnType onnx_ReduceL1(/*inputs:*/ tensor_t data, /*outputs:*/ tensor_t reduced, /*attributes:*/ std::vector<int64_t> axes, int64_t keepdims) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#ReduceL2
 	virtual OperatorReturnType onnx_ReduceL2(/*inputs:*/ tensor_t data, /*outputs:*/ tensor_t reduced, /*attributes:*/ std::vector<int64_t> axes, int64_t keepdims) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#ReduceLogSum
 	virtual OperatorReturnType onnx_ReduceLogSum(/*inputs:*/ tensor_t data, /*outputs:*/ tensor_t reduced, /*attributes:*/ std::vector<int64_t> axes, int64_t keepdims) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#ReduceLogSumExp
 	virtual OperatorReturnType onnx_ReduceLogSumExp(/*inputs:*/ tensor_t data, /*outputs:*/ tensor_t reduced, /*attributes:*/ std::vector<int64_t> axes, int64_t keepdims) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#ReduceMax
 	virtual OperatorReturnType onnx_ReduceMax(/*inputs:*/ tensor_t data, /*outputs:*/ tensor_t reduced, /*attributes:*/ std::vector<int64_t> axes, int64_t keepdims) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#ReduceMean
 	virtual OperatorReturnType onnx_ReduceMean(/*inputs:*/ tensor_t data, /*outputs:*/ tensor_t reduced, /*attributes:*/ std::vector<int64_t> axes, int64_t keepdims) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#ReduceMin
 	virtual OperatorReturnType onnx_ReduceMin(/*inputs:*/ tensor_t data, /*outputs:*/ tensor_t reduced, /*attributes:*/ std::vector<int64_t> axes, int64_t keepdims) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#ReduceProd
 	virtual OperatorReturnType onnx_ReduceProd(/*inputs:*/ tensor_t data, /*outputs:*/ tensor_t reduced, /*attributes:*/ std::vector<int64_t> axes, int64_t keepdims) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#ReduceSum
 	virtual OperatorReturnType onnx_ReduceSum(/*inputs:*/ tensor_t data, std::variant<void *, tensor_t>& axes, /*outputs:*/ tensor_t reduced, /*attributes:*/ int64_t keepdims, int64_t noop_with_empty_axes) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#ReduceSumSquare
 	virtual OperatorReturnType onnx_ReduceSumSquare(/*inputs:*/ tensor_t data, /*outputs:*/ tensor_t reduced, /*attributes:*/ std::vector<int64_t> axes, int64_t keepdims) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Relu
 	virtual OperatorReturnType onnx_Relu(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Reshape
 	virtual OperatorReturnType onnx_Reshape(/*inputs:*/ tensor_t data, tensor_t shape, /*outputs:*/ tensor_t reshaped, /*attributes:*/ int64_t allowzero) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Resize
 	virtual OperatorReturnType onnx_Resize(/*inputs:*/ tensor_t X, std::variant<void *, tensor_t>& roi, std::variant<void *, tensor_t>& scales, std::variant<void *, tensor_t>& sizes, /*outputs:*/ tensor_t Y, /*attributes:*/ std::string coordinate_transformation_mode, float cubic_coeff_a, int64_t exclude_outside, float extrapolation_value, std::string mode, std::string nearest_mode) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#ReverseSequence
 	virtual OperatorReturnType onnx_ReverseSequence(/*inputs:*/ tensor_t input, tensor_t sequence_lens, /*outputs:*/ tensor_t Y, /*attributes:*/ int64_t batch_axis, int64_t time_axis) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#RoiAlign
 	virtual OperatorReturnType onnx_RoiAlign(/*inputs:*/ tensor_t X, tensor_t rois, tensor_t batch_indices, /*outputs:*/ tensor_t Y, /*attributes:*/ std::string coordinate_transformation_mode, std::string mode, int64_t output_height, int64_t output_width, int64_t sampling_ratio, float spatial_scale) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Round
 	virtual OperatorReturnType onnx_Round(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#ScatterElements
 	virtual OperatorReturnType onnx_ScatterElements(/*inputs:*/ tensor_t data, tensor_t indices, tensor_t updates, /*outputs:*/ tensor_t output, /*attributes:*/ int64_t axis) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#ScatterND
 	virtual OperatorReturnType onnx_ScatterND(/*inputs:*/ tensor_t data, tensor_t indices, tensor_t updates, /*outputs:*/ tensor_t output) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Selu
 	virtual OperatorReturnType onnx_Selu(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y, /*attributes:*/ float alpha, float gamma) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#SequenceAt
 	virtual OperatorReturnType onnx_SequenceAt(/*inputs:*/ tensor_t input_sequence, tensor_t position, /*outputs:*/ tensor_t tensor) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#SequenceConstruct
 	virtual OperatorReturnType onnx_SequenceConstruct(/*inputs:*/ std::vector<tensor_t>& inputs, /*outputs:*/ tensor_t output_sequence) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#SequenceEmpty
 	virtual OperatorReturnType onnx_SequenceEmpty(/*outputs:*/ tensor_t output, /*attributes:*/ int64_t dtype) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#SequenceErase
 	virtual OperatorReturnType onnx_SequenceErase(/*inputs:*/ tensor_t input_sequence, std::variant<void *, tensor_t>& position, /*outputs:*/ tensor_t output_sequence) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#SequenceInsert
 	virtual OperatorReturnType onnx_SequenceInsert(/*inputs:*/ tensor_t input_sequence, tensor_t tensor, std::variant<void *, tensor_t>& position, /*outputs:*/ tensor_t output_sequence) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#SequenceLength
 	virtual OperatorReturnType onnx_SequenceLength(/*inputs:*/ tensor_t input_sequence, /*outputs:*/ tensor_t length) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Shape
 	virtual OperatorReturnType onnx_Shape(/*inputs:*/ tensor_t data, /*outputs:*/ tensor_t shape, /*attributes:*/ int64_t end, int64_t start) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Shrink
 	virtual OperatorReturnType onnx_Shrink(/*inputs:*/ tensor_t input, /*outputs:*/ tensor_t output, /*attributes:*/ float bias, float lambd) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Sigmoid
 	virtual OperatorReturnType onnx_Sigmoid(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Sign
 	virtual OperatorReturnType onnx_Sign(/*inputs:*/ tensor_t input, /*outputs:*/ tensor_t output) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Sin
 	virtual OperatorReturnType onnx_Sin(/*inputs:*/ tensor_t input, /*outputs:*/ tensor_t output) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Sinh
 	virtual OperatorReturnType onnx_Sinh(/*inputs:*/ tensor_t input, /*outputs:*/ tensor_t output) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Size
 	virtual OperatorReturnType onnx_Size(/*inputs:*/ tensor_t data, /*outputs:*/ tensor_t size) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Slice
 	virtual OperatorReturnType onnx_Slice(/*inputs:*/ tensor_t data, tensor_t starts, tensor_t ends, std::variant<void *, tensor_t>& axes, std::variant<void *, tensor_t>& steps, /*outputs:*/ tensor_t output) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Softmax
 	virtual OperatorReturnType onnx_Softmax(/*inputs:*/ tensor_t input, /*outputs:*/ tensor_t output, /*attributes:*/ int64_t axis) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#SoftmaxCrossEntropyLoss
 	virtual OperatorReturnType onnx_SoftmaxCrossEntropyLoss(/*inputs:*/ tensor_t scores, tensor_t labels, std::variant<void *, tensor_t>& weights, /*outputs:*/ tensor_t output, std::variant<void *, tensor_t>& log_prob, /*attributes:*/ int64_t ignore_index, std::string reduction) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Softplus
 	virtual OperatorReturnType onnx_Softplus(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Softsign
 	virtual OperatorReturnType onnx_Softsign(/*inputs:*/ tensor_t input, /*outputs:*/ tensor_t output) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#SpaceToDepth
 	virtual OperatorReturnType onnx_SpaceToDepth(/*inputs:*/ tensor_t input, /*outputs:*/ tensor_t output, /*attributes:*/ int64_t blocksize) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Split
 	virtual OperatorReturnType onnx_Split(/*inputs:*/ tensor_t input, std::variant<void *, tensor_t>& split, /*outputs:*/ std::vector<tensor_t>& outputs, /*attributes:*/ int64_t axis) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#SplitToSequence
 	virtual OperatorReturnType onnx_SplitToSequence(/*inputs:*/ tensor_t input, std::variant<void *, tensor_t>& split, /*outputs:*/ tensor_t output_sequence, /*attributes:*/ int64_t axis, int64_t keepdims) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Sqrt
 	virtual OperatorReturnType onnx_Sqrt(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Squeeze
 	virtual OperatorReturnType onnx_Squeeze(/*inputs:*/ tensor_t data, std::variant<void *, tensor_t>& axes, /*outputs:*/ tensor_t squeezed) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#StringNormalizer
 	virtual OperatorReturnType onnx_StringNormalizer(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y, /*attributes:*/ std::string case_change_action, int64_t is_case_sensitive, std::string locale, std::vector<std::string> stopwords) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Sub
 	virtual OperatorReturnType onnx_Sub(/*inputs:*/ tensor_t A, tensor_t B, /*outputs:*/ tensor_t C) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Sum
 	virtual OperatorReturnType onnx_Sum(/*inputs:*/ std::vector<tensor_t>& data_0, /*outputs:*/ tensor_t sum) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Tan
 	virtual OperatorReturnType onnx_Tan(/*inputs:*/ tensor_t input, /*outputs:*/ tensor_t output) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Tanh
 	virtual OperatorReturnType onnx_Tanh(/*inputs:*/ tensor_t input, /*outputs:*/ tensor_t output) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#TfIdfVectorizer
 	virtual OperatorReturnType onnx_TfIdfVectorizer(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y, /*attributes:*/ int64_t max_gram_length, int64_t max_skip_count, int64_t min_gram_length, std::string mode, std::vector<int64_t> ngram_counts, std::vector<int64_t> ngram_indexes, std::vector<int64_t> pool_int64s, std::vector<std::string> pool_strings, std::vector<float> weights) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#ThresholdedRelu
 	virtual OperatorReturnType onnx_ThresholdedRelu(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y, /*attributes:*/ float alpha) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Tile
 	virtual OperatorReturnType onnx_Tile(/*inputs:*/ tensor_t input, tensor_t repeats, /*outputs:*/ tensor_t output) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#TopK
 	virtual OperatorReturnType onnx_TopK(/*inputs:*/ tensor_t X, tensor_t K, /*outputs:*/ tensor_t Values, tensor_t Indices, /*attributes:*/ int64_t axis, int64_t largest, int64_t sorted) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Transpose
 	virtual OperatorReturnType onnx_Transpose(/*inputs:*/ tensor_t data, /*outputs:*/ tensor_t transposed, /*attributes:*/ std::vector<int64_t> perm) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Trilu
 	virtual OperatorReturnType onnx_Trilu(/*inputs:*/ tensor_t input, std::variant<void *, tensor_t>& k, /*outputs:*/ tensor_t output, /*attributes:*/ int64_t upper) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Unique
 	virtual OperatorReturnType onnx_Unique(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y, std::variant<void *, tensor_t>& indices, std::variant<void *, tensor_t>& inverse_indices, std::variant<void *, tensor_t>& counts, /*attributes:*/ int64_t axis, int64_t sorted) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Unsqueeze
 	virtual OperatorReturnType onnx_Unsqueeze(/*inputs:*/ tensor_t data, tensor_t axes, /*outputs:*/ tensor_t expanded) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Where
 	virtual OperatorReturnType onnx_Where(/*inputs:*/ tensor_t condition, tensor_t X, tensor_t Y, /*outputs:*/ tensor_t output) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Xor
 	virtual OperatorReturnType onnx_Xor(/*inputs:*/ tensor_t A, tensor_t B, /*outputs:*/ tensor_t C) {
-#ifndef USING_ONNX_IMPL
 	    return YNX_TODO_ERROR;
-#else
-	    return YNX_OK;
-#endif
 	}
 
 
 
 };
 
-#ifdef USING_ONNX_IMPL
 InferenceFunction query_inference_function(const std::string& op_name) {
     static std::map<const std::string, InferenceFunction> allInferenceFunctions;
 
@@ -1814,7 +1172,6 @@ struct YNXInferenceContextImpl : public InferenceContext {
         return nullptr;
     }
 };
-#endif
 
 //
 //  some common help functions, and none-auto operators
@@ -2096,7 +1453,6 @@ namespace generator {
             auto input = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -2112,7 +1468,6 @@ namespace generator {
             infer_.do_inference(f);
             infer_.check_output(0, output);
 
-#endif
 
             if ( input->onnx_RandomNormalLike(input, output, dtype, mean, scale, seed) != YNX_OK ) {
                 yannx_panic("API: RandomNormalLike  return error!");
@@ -2159,7 +1514,6 @@ namespace generator {
 
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -2175,7 +1529,6 @@ namespace generator {
             infer_.do_inference(f);
             infer_.check_output(0, output);
 
-#endif
 
             if ( output->onnx_RandomNormal(output, dtype, mean, scale, seed, shape) != YNX_OK ) {
                 yannx_panic("API: RandomNormal  return error!");
@@ -2222,7 +1575,6 @@ namespace generator {
 
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -2238,7 +1590,6 @@ namespace generator {
             infer_.do_inference(f);
             infer_.check_output(0, output);
 
-#endif
 
             if ( output->onnx_RandomUniform(output, dtype, high, low, seed, shape) != YNX_OK ) {
                 yannx_panic("API: RandomUniform  return error!");
@@ -2283,7 +1634,6 @@ namespace generator {
             auto input = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -2297,7 +1647,6 @@ namespace generator {
             infer_.do_inference(f);
             infer_.check_output(0, output);
 
-#endif
 
             if ( input->onnx_EyeLike(input, output, dtype, k) != YNX_OK ) {
                 yannx_panic("API: EyeLike  return error!");
@@ -2340,7 +1689,6 @@ namespace generator {
             auto input = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -2354,7 +1702,6 @@ namespace generator {
             infer_.do_inference(f);
             infer_.check_output(0, output);
 
-#endif
 
             if ( input->onnx_Bernoulli(input, output, dtype, seed) != YNX_OK ) {
                 yannx_panic("API: Bernoulli  return error!");
@@ -2398,7 +1745,6 @@ namespace generator {
             auto input = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -2413,7 +1759,6 @@ namespace generator {
             infer_.do_inference(f);
             infer_.check_output(0, output);
 
-#endif
 
             if ( input->onnx_Multinomial(input, output, dtype, sample_size, seed) != YNX_OK ) {
                 yannx_panic("API: Multinomial  return error!");
@@ -2459,7 +1804,6 @@ namespace generator {
             auto input = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -2475,7 +1819,6 @@ namespace generator {
             infer_.do_inference(f);
             infer_.check_output(0, output);
 
-#endif
 
             if ( input->onnx_RandomUniformLike(input, output, dtype, high, low, seed) != YNX_OK ) {
                 yannx_panic("API: RandomUniformLike  return error!");
@@ -2520,7 +1863,6 @@ namespace generator {
             auto start = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -2534,7 +1876,6 @@ namespace generator {
             infer_.do_inference(f);
             infer_.check_output(0, output);
 
-#endif
 
             if ( start->onnx_Range(start, limit, delta, output) != YNX_OK ) {
                 yannx_panic("API: Range  return error!");
@@ -2578,7 +1919,6 @@ namespace logical {
             auto A = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -2591,7 +1931,6 @@ namespace logical {
             infer_.do_inference(f);
             infer_.check_output(0, C);
 
-#endif
 
             if ( A->onnx_GreaterOrEqual(A, B, C) != YNX_OK ) {
                 yannx_panic("API: GreaterOrEqual  return error!");
@@ -2632,7 +1971,6 @@ namespace logical {
             auto A = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -2645,7 +1983,6 @@ namespace logical {
             infer_.do_inference(f);
             infer_.check_output(0, C);
 
-#endif
 
             if ( A->onnx_Or(A, B, C) != YNX_OK ) {
                 yannx_panic("API: Or  return error!");
@@ -2687,7 +2024,6 @@ namespace logical {
             auto X = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -2701,7 +2037,6 @@ namespace logical {
             infer_.do_inference(f);
             infer_.check_output(0, Z);
 
-#endif
 
             if ( X->onnx_BitShift(X, Y, Z, direction) != YNX_OK ) {
                 yannx_panic("API: BitShift  return error!");
@@ -2743,7 +2078,6 @@ namespace logical {
             auto A = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -2756,7 +2090,6 @@ namespace logical {
             infer_.do_inference(f);
             infer_.check_output(0, C);
 
-#endif
 
             if ( A->onnx_Greater(A, B, C) != YNX_OK ) {
                 yannx_panic("API: Greater  return error!");
@@ -2797,7 +2130,6 @@ namespace logical {
             auto A = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -2810,7 +2142,6 @@ namespace logical {
             infer_.do_inference(f);
             infer_.check_output(0, C);
 
-#endif
 
             if ( A->onnx_Xor(A, B, C) != YNX_OK ) {
                 yannx_panic("API: Xor  return error!");
@@ -2851,7 +2182,6 @@ namespace logical {
             auto A = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -2864,7 +2194,6 @@ namespace logical {
             infer_.do_inference(f);
             infer_.check_output(0, C);
 
-#endif
 
             if ( A->onnx_And(A, B, C) != YNX_OK ) {
                 yannx_panic("API: And  return error!");
@@ -2905,7 +2234,6 @@ namespace logical {
             auto A = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -2918,7 +2246,6 @@ namespace logical {
             infer_.do_inference(f);
             infer_.check_output(0, C);
 
-#endif
 
             if ( A->onnx_LessOrEqual(A, B, C) != YNX_OK ) {
                 yannx_panic("API: LessOrEqual  return error!");
@@ -2958,7 +2285,6 @@ namespace logical {
             auto X = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -2970,7 +2296,6 @@ namespace logical {
             infer_.do_inference(f);
             infer_.check_output(0, Y);
 
-#endif
 
             if ( X->onnx_Not(X, Y) != YNX_OK ) {
                 yannx_panic("API: Not  return error!");
@@ -3010,7 +2335,6 @@ namespace logical {
             auto A = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -3023,7 +2347,6 @@ namespace logical {
             infer_.do_inference(f);
             infer_.check_output(0, C);
 
-#endif
 
             if ( A->onnx_Equal(A, B, C) != YNX_OK ) {
                 yannx_panic("API: Equal  return error!");
@@ -3064,7 +2387,6 @@ namespace logical {
             auto A = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -3077,7 +2399,6 @@ namespace logical {
             infer_.do_inference(f);
             infer_.check_output(0, C);
 
-#endif
 
             if ( A->onnx_Less(A, B, C) != YNX_OK ) {
                 yannx_panic("API: Less  return error!");
@@ -3119,7 +2440,6 @@ namespace math {
             auto X = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -3131,7 +2451,6 @@ namespace math {
             infer_.do_inference(f);
             infer_.check_output(0, Y);
 
-#endif
 
             if ( X->onnx_Reciprocal(X, Y) != YNX_OK ) {
                 yannx_panic("API: Reciprocal  return error!");
@@ -3171,7 +2490,6 @@ namespace math {
             auto X = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -3184,7 +2502,6 @@ namespace math {
             infer_.do_inference(f);
             infer_.check_output(0, Y);
 
-#endif
 
             if ( X->onnx_LeakyRelu(X, Y, alpha) != YNX_OK ) {
                 yannx_panic("API: LeakyRelu  return error!");
@@ -3226,7 +2543,6 @@ namespace math {
             auto X = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -3240,7 +2556,6 @@ namespace math {
             infer_.do_inference(f);
             infer_.check_output(0, Y);
 
-#endif
 
             if ( X->onnx_HardSigmoid(X, Y, alpha, beta) != YNX_OK ) {
                 yannx_panic("API: HardSigmoid  return error!");
@@ -3282,7 +2597,6 @@ namespace math {
             auto A = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -3295,7 +2609,6 @@ namespace math {
             infer_.do_inference(f);
             infer_.check_output(0, C);
 
-#endif
 
             if ( A->onnx_Div(A, B, C) != YNX_OK ) {
                 yannx_panic("API: Div  return error!");
@@ -3336,7 +2649,6 @@ namespace math {
             auto X = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -3349,7 +2661,6 @@ namespace math {
             infer_.do_inference(f);
             infer_.check_output(0, Z);
 
-#endif
 
             if ( X->onnx_Pow(X, Y, Z) != YNX_OK ) {
                 yannx_panic("API: Pow  return error!");
@@ -3390,7 +2701,6 @@ namespace math {
             auto A = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -3403,7 +2713,6 @@ namespace math {
             infer_.do_inference(f);
             infer_.check_output(0, C);
 
-#endif
 
             if ( A->onnx_Mul(A, B, C) != YNX_OK ) {
                 yannx_panic("API: Mul  return error!");
@@ -3443,7 +2752,6 @@ namespace math {
             auto data_0 = fetch_tensors(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -3455,7 +2763,6 @@ namespace math {
             infer_.do_inference(f);
             infer_.check_output(0, min);
 
-#endif
 
             if ( min->onnx_Min(data_0, min) != YNX_OK ) {
                 yannx_panic("API: Min  return error!");
@@ -3494,7 +2801,6 @@ namespace math {
             auto X = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -3506,7 +2812,6 @@ namespace math {
             infer_.do_inference(f);
             infer_.check_output(0, Y);
 
-#endif
 
             if ( X->onnx_Floor(X, Y) != YNX_OK ) {
                 yannx_panic("API: Floor  return error!");
@@ -3545,7 +2850,6 @@ namespace math {
             auto data_0 = fetch_tensors(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -3557,7 +2861,6 @@ namespace math {
             infer_.do_inference(f);
             infer_.check_output(0, mean);
 
-#endif
 
             if ( mean->onnx_Mean(data_0, mean) != YNX_OK ) {
                 yannx_panic("API: Mean  return error!");
@@ -3596,7 +2899,6 @@ namespace math {
             auto data_0 = fetch_tensors(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -3608,7 +2910,6 @@ namespace math {
             infer_.do_inference(f);
             infer_.check_output(0, max);
 
-#endif
 
             if ( max->onnx_Max(data_0, max) != YNX_OK ) {
                 yannx_panic("API: Max  return error!");
@@ -3647,7 +2948,6 @@ namespace math {
             auto X = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -3659,7 +2959,6 @@ namespace math {
             infer_.do_inference(f);
             infer_.check_output(0, Y);
 
-#endif
 
             if ( X->onnx_Round(X, Y) != YNX_OK ) {
                 yannx_panic("API: Round  return error!");
@@ -3698,7 +2997,6 @@ namespace math {
             auto X = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -3710,7 +3008,6 @@ namespace math {
             infer_.do_inference(f);
             infer_.check_output(0, Y);
 
-#endif
 
             if ( X->onnx_Sigmoid(X, Y) != YNX_OK ) {
                 yannx_panic("API: Sigmoid  return error!");
@@ -3749,7 +3046,6 @@ namespace math {
             auto X = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -3761,7 +3057,6 @@ namespace math {
             infer_.do_inference(f);
             infer_.check_output(0, Y);
 
-#endif
 
             if ( X->onnx_Relu(X, Y) != YNX_OK ) {
                 yannx_panic("API: Relu  return error!");
@@ -3801,7 +3096,6 @@ namespace math {
             auto input = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -3814,7 +3108,6 @@ namespace math {
             infer_.do_inference(f);
             infer_.check_output(0, output);
 
-#endif
 
             if ( input->onnx_LogSoftmax(input, output, axis) != YNX_OK ) {
                 yannx_panic("API: LogSoftmax  return error!");
@@ -3854,7 +3147,6 @@ namespace math {
             auto X = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -3866,7 +3158,6 @@ namespace math {
             infer_.do_inference(f);
             infer_.check_output(0, Y);
 
-#endif
 
             if ( X->onnx_Ceil(X, Y) != YNX_OK ) {
                 yannx_panic("API: Ceil  return error!");
@@ -3905,7 +3196,6 @@ namespace math {
             auto input = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -3917,7 +3207,6 @@ namespace math {
             infer_.do_inference(f);
             infer_.check_output(0, output);
 
-#endif
 
             if ( input->onnx_Log(input, output) != YNX_OK ) {
                 yannx_panic("API: Log  return error!");
@@ -3956,7 +3245,6 @@ namespace math {
             auto X = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -3968,7 +3256,6 @@ namespace math {
             infer_.do_inference(f);
             infer_.check_output(0, Y);
 
-#endif
 
             if ( X->onnx_Neg(X, Y) != YNX_OK ) {
                 yannx_panic("API: Neg  return error!");
@@ -4008,7 +3295,6 @@ namespace math {
             auto A = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -4021,7 +3307,6 @@ namespace math {
             infer_.do_inference(f);
             infer_.check_output(0, C);
 
-#endif
 
             if ( A->onnx_Sub(A, B, C) != YNX_OK ) {
                 yannx_panic("API: Sub  return error!");
@@ -4062,7 +3347,6 @@ namespace math {
             auto X = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -4075,7 +3359,6 @@ namespace math {
             infer_.do_inference(f);
             infer_.check_output(0, Y);
 
-#endif
 
             if ( X->onnx_PRelu(X, slope, Y) != YNX_OK ) {
                 yannx_panic("API: PRelu  return error!");
@@ -4116,7 +3399,6 @@ namespace math {
             auto A = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -4129,7 +3411,6 @@ namespace math {
             infer_.do_inference(f);
             infer_.check_output(0, C);
 
-#endif
 
             if ( A->onnx_Add(A, B, C) != YNX_OK ) {
                 yannx_panic("API: Add  return error!");
@@ -4171,7 +3452,6 @@ namespace math {
             auto X = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -4185,7 +3465,6 @@ namespace math {
             infer_.do_inference(f);
             infer_.check_output(0, Y);
 
-#endif
 
             if ( X->onnx_Selu(X, Y, alpha, gamma) != YNX_OK ) {
                 yannx_panic("API: Selu  return error!");
@@ -4226,7 +3505,6 @@ namespace math {
             auto X = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -4238,7 +3516,6 @@ namespace math {
             infer_.do_inference(f);
             infer_.check_output(0, Y);
 
-#endif
 
             if ( X->onnx_Abs(X, Y) != YNX_OK ) {
                 yannx_panic("API: Abs  return error!");
@@ -4284,7 +3561,6 @@ namespace math {
             auto a = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -4303,7 +3579,6 @@ namespace math {
             infer_.do_inference(f);
             infer_.check_output(0, y);
 
-#endif
 
             if ( a->onnx_QLinearMatMul(a, a_scale, a_zero_point, b, b_scale, b_zero_point, y_scale, y_zero_point, y) != YNX_OK ) {
                 yannx_panic("API: QLinearMatMul  return error!");
@@ -4351,7 +3626,6 @@ namespace math {
             auto input = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -4365,7 +3639,6 @@ namespace math {
             infer_.do_inference(f);
             infer_.check_output(0, output);
 
-#endif
 
             if ( input->onnx_Clip(input, min, max, output) != YNX_OK ) {
                 yannx_panic("API: Clip  return error!");
@@ -4407,7 +3680,6 @@ namespace math {
             auto Inputs = fetch_tensors(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -4420,7 +3692,6 @@ namespace math {
             infer_.do_inference(f);
             infer_.check_output(0, Output);
 
-#endif
 
             if ( Output->onnx_Einsum(Inputs, Output, equation) != YNX_OK ) {
                 yannx_panic("API: Einsum  return error!");
@@ -4461,7 +3732,6 @@ namespace math {
             auto input = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -4474,7 +3744,6 @@ namespace math {
             infer_.do_inference(f);
             infer_.check_output(0, output);
 
-#endif
 
             if ( input->onnx_Hardmax(input, output, axis) != YNX_OK ) {
                 yannx_panic("API: Hardmax  return error!");
@@ -4514,7 +3783,6 @@ namespace math {
             auto X = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -4526,7 +3794,6 @@ namespace math {
             infer_.do_inference(f);
             infer_.check_output(0, Y);
 
-#endif
 
             if ( X->onnx_Sqrt(X, Y) != YNX_OK ) {
                 yannx_panic("API: Sqrt  return error!");
@@ -4571,7 +3838,6 @@ namespace math {
             auto A = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -4589,7 +3855,6 @@ namespace math {
             infer_.do_inference(f);
             infer_.check_output(0, Y);
 
-#endif
 
             if ( A->onnx_Gemm(A, B, C, Y, alpha, beta, transA, transB) != YNX_OK ) {
                 yannx_panic("API: Gemm  return error!");
@@ -4634,7 +3899,6 @@ namespace math {
             auto input = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -4646,7 +3910,6 @@ namespace math {
             infer_.do_inference(f);
             infer_.check_output(0, output);
 
-#endif
 
             if ( input->onnx_Cos(input, output) != YNX_OK ) {
                 yannx_panic("API: Cos  return error!");
@@ -4685,7 +3948,6 @@ namespace math {
             auto input = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -4697,7 +3959,6 @@ namespace math {
             infer_.do_inference(f);
             infer_.check_output(0, output);
 
-#endif
 
             if ( input->onnx_Exp(input, output) != YNX_OK ) {
                 yannx_panic("API: Exp  return error!");
@@ -4736,7 +3997,6 @@ namespace math {
             auto input = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -4748,7 +4008,6 @@ namespace math {
             infer_.do_inference(f);
             infer_.check_output(0, output);
 
-#endif
 
             if ( input->onnx_Tan(input, output) != YNX_OK ) {
                 yannx_panic("API: Tan  return error!");
@@ -4788,7 +4047,6 @@ namespace math {
             auto input = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -4801,7 +4059,6 @@ namespace math {
             infer_.do_inference(f);
             infer_.check_output(0, output);
 
-#endif
 
             if ( input->onnx_Softmax(input, output, axis) != YNX_OK ) {
                 yannx_panic("API: Softmax  return error!");
@@ -4849,7 +4106,6 @@ namespace math {
             auto scores = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             if ( log_prob.index() != 0) {
@@ -4871,7 +4127,6 @@ namespace math {
                 infer_.check_output(1, std::get<1>(log_prob));
             }
 
-#endif
 
             if ( scores->onnx_SoftmaxCrossEntropyLoss(scores, labels, weights, output, log_prob, ignore_index, reduction) != YNX_OK ) {
                 yannx_panic("API: SoftmaxCrossEntropyLoss  return error!");
@@ -4921,7 +4176,6 @@ namespace math {
             auto input = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -4933,7 +4187,6 @@ namespace math {
             infer_.do_inference(f);
             infer_.check_output(0, output);
 
-#endif
 
             if ( input->onnx_Softsign(input, output) != YNX_OK ) {
                 yannx_panic("API: Softsign  return error!");
@@ -4972,7 +4225,6 @@ namespace math {
             auto data_0 = fetch_tensors(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -4984,7 +4236,6 @@ namespace math {
             infer_.do_inference(f);
             infer_.check_output(0, sum);
 
-#endif
 
             if ( sum->onnx_Sum(data_0, sum) != YNX_OK ) {
                 yannx_panic("API: Sum  return error!");
@@ -5023,7 +4274,6 @@ namespace math {
             auto input = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -5035,7 +4285,6 @@ namespace math {
             infer_.do_inference(f);
             infer_.check_output(0, output);
 
-#endif
 
             if ( input->onnx_Sinh(input, output) != YNX_OK ) {
                 yannx_panic("API: Sinh  return error!");
@@ -5074,7 +4323,6 @@ namespace math {
             auto input = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -5086,7 +4334,6 @@ namespace math {
             infer_.do_inference(f);
             infer_.check_output(0, output);
 
-#endif
 
             if ( input->onnx_Tanh(input, output) != YNX_OK ) {
                 yannx_panic("API: Tanh  return error!");
@@ -5131,7 +4378,6 @@ namespace math {
             auto X = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             outputs_.push_back(1);
@@ -5149,7 +4395,6 @@ namespace math {
             infer_.check_output(0, Values);
             infer_.check_output(1, Indices);
 
-#endif
 
             if ( X->onnx_TopK(X, K, Values, Indices, axis, largest, sorted) != YNX_OK ) {
                 yannx_panic("API: TopK  return error!");
@@ -5194,7 +4439,6 @@ namespace math {
             auto input = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -5206,7 +4450,6 @@ namespace math {
             infer_.do_inference(f);
             infer_.check_output(0, output);
 
-#endif
 
             if ( input->onnx_Acos(input, output) != YNX_OK ) {
                 yannx_panic("API: Acos  return error!");
@@ -5245,7 +4488,6 @@ namespace math {
             auto input = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -5257,7 +4499,6 @@ namespace math {
             infer_.do_inference(f);
             infer_.check_output(0, output);
 
-#endif
 
             if ( input->onnx_Asin(input, output) != YNX_OK ) {
                 yannx_panic("API: Asin  return error!");
@@ -5296,7 +4537,6 @@ namespace math {
             auto input = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -5308,7 +4548,6 @@ namespace math {
             infer_.do_inference(f);
             infer_.check_output(0, output);
 
-#endif
 
             if ( input->onnx_Atan(input, output) != YNX_OK ) {
                 yannx_panic("API: Atan  return error!");
@@ -5347,7 +4586,6 @@ namespace math {
             auto input = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -5359,7 +4597,6 @@ namespace math {
             infer_.do_inference(f);
             infer_.check_output(0, output);
 
-#endif
 
             if ( input->onnx_Sign(input, output) != YNX_OK ) {
                 yannx_panic("API: Sign  return error!");
@@ -5398,7 +4635,6 @@ namespace math {
             auto input = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -5410,7 +4646,6 @@ namespace math {
             infer_.do_inference(f);
             infer_.check_output(0, output);
 
-#endif
 
             if ( input->onnx_Sin(input, output) != YNX_OK ) {
                 yannx_panic("API: Sin  return error!");
@@ -5450,7 +4685,6 @@ namespace math {
             auto A = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -5463,7 +4697,6 @@ namespace math {
             infer_.do_inference(f);
             infer_.check_output(0, Y);
 
-#endif
 
             if ( A->onnx_MatMul(A, B, Y) != YNX_OK ) {
                 yannx_panic("API: MatMul  return error!");
@@ -5504,7 +4737,6 @@ namespace math {
             auto input = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -5517,7 +4749,6 @@ namespace math {
             infer_.do_inference(f);
             infer_.check_output(0, output);
 
-#endif
 
             if ( input->onnx_Expand(input, shape, output) != YNX_OK ) {
                 yannx_panic("API: Expand  return error!");
@@ -5558,7 +4789,6 @@ namespace math {
             auto X = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -5571,7 +4801,6 @@ namespace math {
             infer_.do_inference(f);
             infer_.check_output(0, Y);
 
-#endif
 
             if ( X->onnx_Elu(X, Y, alpha) != YNX_OK ) {
                 yannx_panic("API: Elu  return error!");
@@ -5611,7 +4840,6 @@ namespace math {
             auto input = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -5623,7 +4851,6 @@ namespace math {
             infer_.do_inference(f);
             infer_.check_output(0, output);
 
-#endif
 
             if ( input->onnx_Cosh(input, output) != YNX_OK ) {
                 yannx_panic("API: Cosh  return error!");
@@ -5662,7 +4889,6 @@ namespace math {
             auto input = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -5674,7 +4900,6 @@ namespace math {
             infer_.do_inference(f);
             infer_.check_output(0, output);
 
-#endif
 
             if ( input->onnx_Asinh(input, output) != YNX_OK ) {
                 yannx_panic("API: Asinh  return error!");
@@ -5713,7 +4938,6 @@ namespace math {
             auto input = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -5725,7 +4949,6 @@ namespace math {
             infer_.do_inference(f);
             infer_.check_output(0, output);
 
-#endif
 
             if ( input->onnx_Acosh(input, output) != YNX_OK ) {
                 yannx_panic("API: Acosh  return error!");
@@ -5764,7 +4987,6 @@ namespace math {
             auto input = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -5776,7 +4998,6 @@ namespace math {
             infer_.do_inference(f);
             infer_.check_output(0, output);
 
-#endif
 
             if ( input->onnx_Atanh(input, output) != YNX_OK ) {
                 yannx_panic("API: Atanh  return error!");
@@ -5815,7 +5036,6 @@ namespace math {
             auto input = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -5827,7 +5047,6 @@ namespace math {
             infer_.do_inference(f);
             infer_.check_output(0, output);
 
-#endif
 
             if ( input->onnx_Erf(input, output) != YNX_OK ) {
                 yannx_panic("API: Erf  return error!");
@@ -5868,7 +5087,6 @@ namespace math {
             auto A = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -5882,7 +5100,6 @@ namespace math {
             infer_.do_inference(f);
             infer_.check_output(0, C);
 
-#endif
 
             if ( A->onnx_Mod(A, B, C, fmod) != YNX_OK ) {
                 yannx_panic("API: Mod  return error!");
@@ -5924,7 +5141,6 @@ namespace math {
             auto X = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -5937,7 +5153,6 @@ namespace math {
             infer_.do_inference(f);
             infer_.check_output(0, Y);
 
-#endif
 
             if ( X->onnx_ThresholdedRelu(X, Y, alpha) != YNX_OK ) {
                 yannx_panic("API: ThresholdedRelu  return error!");
@@ -5980,7 +5195,6 @@ namespace math {
             auto A = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -5995,7 +5209,6 @@ namespace math {
             infer_.do_inference(f);
             infer_.check_output(0, Y);
 
-#endif
 
             if ( A->onnx_MatMulInteger(A, B, a_zero_point, b_zero_point, Y) != YNX_OK ) {
                 yannx_panic("API: MatMulInteger  return error!");
@@ -6038,7 +5251,6 @@ namespace math {
             auto X = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -6051,7 +5263,6 @@ namespace math {
             infer_.do_inference(f);
             infer_.check_output(0, Y);
 
-#endif
 
             if ( X->onnx_Celu(X, Y, alpha) != YNX_OK ) {
                 yannx_panic("API: Celu  return error!");
@@ -6094,7 +5305,6 @@ namespace math {
             auto x = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -6109,7 +5319,6 @@ namespace math {
             infer_.do_inference(f);
             infer_.check_output(0, y);
 
-#endif
 
             if ( x->onnx_CumSum(x, axis, y, exclusive, reverse) != YNX_OK ) {
                 yannx_panic("API: CumSum  return error!");
@@ -6151,7 +5360,6 @@ namespace math {
             auto X = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -6163,7 +5371,6 @@ namespace math {
             infer_.do_inference(f);
             infer_.check_output(0, Y);
 
-#endif
 
             if ( X->onnx_Softplus(X, Y) != YNX_OK ) {
                 yannx_panic("API: Softplus  return error!");
@@ -6206,7 +5413,6 @@ namespace math {
             auto input = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -6222,7 +5428,6 @@ namespace math {
             infer_.do_inference(f);
             infer_.check_output(0, loss);
 
-#endif
 
             if ( input->onnx_NegativeLogLikelihoodLoss(input, target, weight, loss, ignore_index, reduction) != YNX_OK ) {
                 yannx_panic("API: NegativeLogLikelihoodLoss  return error!");
@@ -6265,7 +5470,6 @@ namespace math {
             auto X = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -6277,7 +5481,6 @@ namespace math {
             infer_.do_inference(f);
             infer_.check_output(0, Y);
 
-#endif
 
             if ( X->onnx_Det(X, Y) != YNX_OK ) {
                 yannx_panic("API: Det  return error!");
@@ -6316,7 +5519,6 @@ namespace math {
             auto X = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -6328,7 +5530,6 @@ namespace math {
             infer_.do_inference(f);
             infer_.check_output(0, Y);
 
-#endif
 
             if ( X->onnx_HardSwish(X, Y) != YNX_OK ) {
                 yannx_panic("API: HardSwish  return error!");
@@ -6373,7 +5574,6 @@ namespace nn {
             auto X = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -6389,7 +5589,6 @@ namespace nn {
             infer_.do_inference(f);
             infer_.check_output(0, Y);
 
-#endif
 
             if ( X->onnx_LRN(X, Y, alpha, beta, bias, size) != YNX_OK ) {
                 yannx_panic("API: LRN  return error!");
@@ -6437,7 +5636,6 @@ namespace nn {
             auto X = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -6454,7 +5652,6 @@ namespace nn {
             infer_.do_inference(f);
             infer_.check_output(0, Y);
 
-#endif
 
             if ( X->onnx_LpPool(X, Y, auto_pad, kernel_shape, p, pads, strides) != YNX_OK ) {
                 yannx_panic("API: LpPool  return error!");
@@ -6505,7 +5702,6 @@ namespace nn {
             auto data = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             if ( mask.index() != 0) {
@@ -6526,7 +5722,6 @@ namespace nn {
                 infer_.check_output(1, std::get<1>(mask));
             }
 
-#endif
 
             if ( data->onnx_Dropout(data, ratio, training_mode, output, mask, seed) != YNX_OK ) {
                 yannx_panic("API: Dropout  return error!");
@@ -6586,7 +5781,6 @@ namespace nn {
             auto X = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             if ( Indices.index() != 0) {
@@ -6611,7 +5805,6 @@ namespace nn {
                 infer_.check_output(1, std::get<1>(Indices));
             }
 
-#endif
 
             if ( X->onnx_MaxPool(X, Y, Indices, auto_pad, ceil_mode, dilations, kernel_shape, pads, storage_order, strides) != YNX_OK ) {
                 yannx_panic("API: MaxPool  return error!");
@@ -6665,7 +5858,6 @@ namespace nn {
             auto X = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -6678,7 +5870,6 @@ namespace nn {
             infer_.do_inference(f);
             infer_.check_output(0, Y);
 
-#endif
 
             if ( X->onnx_GlobalLpPool(X, Y, p) != YNX_OK ) {
                 yannx_panic("API: GlobalLpPool  return error!");
@@ -6720,7 +5911,6 @@ namespace nn {
             auto input = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -6734,7 +5924,6 @@ namespace nn {
             infer_.do_inference(f);
             infer_.check_output(0, output);
 
-#endif
 
             if ( input->onnx_LpNormalization(input, output, axis, p) != YNX_OK ) {
                 yannx_panic("API: LpNormalization  return error!");
@@ -6783,7 +5972,6 @@ namespace nn {
             auto X = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -6803,7 +5991,6 @@ namespace nn {
             infer_.do_inference(f);
             infer_.check_output(0, Y);
 
-#endif
 
             if ( X->onnx_Conv(X, W, B, Y, auto_pad, dilations, group, kernel_shape, pads, strides) != YNX_OK ) {
                 yannx_panic("API: Conv  return error!");
@@ -6850,7 +6037,6 @@ namespace nn {
             auto X = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -6862,7 +6048,6 @@ namespace nn {
             infer_.do_inference(f);
             infer_.check_output(0, Y);
 
-#endif
 
             if ( X->onnx_GlobalMaxPool(X, Y) != YNX_OK ) {
                 yannx_panic("API: GlobalMaxPool  return error!");
@@ -6906,7 +6091,6 @@ namespace nn {
             auto X = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -6923,7 +6107,6 @@ namespace nn {
             infer_.do_inference(f);
             infer_.check_output(0, output);
 
-#endif
 
             if ( X->onnx_MaxUnpool(X, I, output_shape, output, kernel_shape, pads, strides) != YNX_OK ) {
                 yannx_panic("API: MaxUnpool  return error!");
@@ -6973,7 +6156,6 @@ namespace nn {
             auto X = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -6991,7 +6173,6 @@ namespace nn {
             infer_.do_inference(f);
             infer_.check_output(0, Y);
 
-#endif
 
             if ( X->onnx_AveragePool(X, Y, auto_pad, ceil_mode, count_include_pad, kernel_shape, pads, strides) != YNX_OK ) {
                 yannx_panic("API: AveragePool  return error!");
@@ -7039,7 +6220,6 @@ namespace nn {
             auto input = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -7054,7 +6234,6 @@ namespace nn {
             infer_.do_inference(f);
             infer_.check_output(0, output);
 
-#endif
 
             if ( input->onnx_InstanceNormalization(input, scale, B, output, epsilon) != YNX_OK ) {
                 yannx_panic("API: InstanceNormalization  return error!");
@@ -7097,7 +6276,6 @@ namespace nn {
             auto input = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -7110,7 +6288,6 @@ namespace nn {
             infer_.do_inference(f);
             infer_.check_output(0, output);
 
-#endif
 
             if ( input->onnx_Flatten(input, output, axis) != YNX_OK ) {
                 yannx_panic("API: Flatten  return error!");
@@ -7150,7 +6327,6 @@ namespace nn {
             auto X = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -7162,7 +6338,6 @@ namespace nn {
             infer_.do_inference(f);
             infer_.check_output(0, Y);
 
-#endif
 
             if ( X->onnx_GlobalAveragePool(X, Y) != YNX_OK ) {
                 yannx_panic("API: GlobalAveragePool  return error!");
@@ -7204,7 +6379,6 @@ namespace nn {
             auto X = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -7219,7 +6393,6 @@ namespace nn {
             infer_.do_inference(f);
             infer_.check_output(0, Y);
 
-#endif
 
             if ( X->onnx_MaxRoiPool(X, rois, Y, pooled_shape, spatial_scale) != YNX_OK ) {
                 yannx_panic("API: MaxRoiPool  return error!");
@@ -7276,7 +6449,6 @@ namespace nn {
             auto X = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             if ( running_mean.index() != 0) {
@@ -7307,7 +6479,6 @@ namespace nn {
                 infer_.check_output(2, std::get<1>(running_var));
             }
 
-#endif
 
             if ( X->onnx_BatchNormalization(X, scale, B, input_mean, input_var, Y, running_mean, running_var, epsilon, momentum, training_mode) != YNX_OK ) {
                 yannx_panic("API: BatchNormalization  return error!");
@@ -7371,7 +6542,6 @@ namespace nn {
             auto X = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -7387,7 +6557,6 @@ namespace nn {
             infer_.do_inference(f);
             infer_.check_output(0, Y);
 
-#endif
 
             if ( X->onnx_StringNormalizer(X, Y, case_change_action, is_case_sensitive, locale, stopwords) != YNX_OK ) {
                 yannx_panic("API: StringNormalizer  return error!");
@@ -7432,7 +6601,6 @@ namespace nn {
             auto input = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -7446,7 +6614,6 @@ namespace nn {
             infer_.do_inference(f);
             infer_.check_output(0, output);
 
-#endif
 
             if ( input->onnx_Shrink(input, output, bias, lambd) != YNX_OK ) {
                 yannx_panic("API: Shrink  return error!");
@@ -7488,7 +6655,6 @@ namespace nn {
             auto X = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -7501,7 +6667,6 @@ namespace nn {
             infer_.do_inference(f);
             infer_.check_output(0, Y);
 
-#endif
 
             if ( X->onnx_MeanVarianceNormalization(X, Y, axes) != YNX_OK ) {
                 yannx_panic("API: MeanVarianceNormalization  return error!");
@@ -7550,7 +6715,6 @@ namespace nn {
             auto x = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -7571,7 +6735,6 @@ namespace nn {
             infer_.do_inference(f);
             infer_.check_output(0, y);
 
-#endif
 
             if ( x->onnx_ConvInteger(x, w, x_zero_point, w_zero_point, y, auto_pad, dilations, group, kernel_shape, pads, strides) != YNX_OK ) {
                 yannx_panic("API: ConvInteger  return error!");
@@ -7633,7 +6796,6 @@ namespace nn {
             auto x = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -7659,7 +6821,6 @@ namespace nn {
             infer_.do_inference(f);
             infer_.check_output(0, y);
 
-#endif
 
             if ( x->onnx_QLinearConv(x, x_scale, x_zero_point, w, w_scale, w_zero_point, y_scale, y_zero_point, B, y, auto_pad, dilations, group, kernel_shape, pads, strides) != YNX_OK ) {
                 yannx_panic("API: QLinearConv  return error!");
@@ -7722,7 +6883,6 @@ namespace nn {
             auto X = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -7744,7 +6904,6 @@ namespace nn {
             infer_.do_inference(f);
             infer_.check_output(0, Y);
 
-#endif
 
             if ( X->onnx_ConvTranspose(X, W, B, Y, auto_pad, dilations, group, kernel_shape, output_padding, output_shape, pads, strides) != YNX_OK ) {
                 yannx_panic("API: ConvTranspose  return error!");
@@ -7802,7 +6961,6 @@ namespace nn {
             auto X = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -7823,7 +6981,6 @@ namespace nn {
             infer_.do_inference(f);
             infer_.check_output(0, Y);
 
-#endif
 
             if ( X->onnx_TfIdfVectorizer(X, Y, max_gram_length, max_skip_count, min_gram_length, mode, ngram_counts, ngram_indexes, pool_int64s, pool_strings, weights) != YNX_OK ) {
                 yannx_panic("API: TfIdfVectorizer  return error!");
@@ -7881,7 +7038,6 @@ namespace object_detection {
             auto X = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -7901,7 +7057,6 @@ namespace object_detection {
             infer_.do_inference(f);
             infer_.check_output(0, Y);
 
-#endif
 
             if ( X->onnx_RoiAlign(X, rois, batch_indices, Y, coordinate_transformation_mode, mode, output_height, output_width, sampling_ratio, spatial_scale) != YNX_OK ) {
                 yannx_panic("API: RoiAlign  return error!");
@@ -7953,7 +7108,6 @@ namespace object_detection {
             auto boxes = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -7970,7 +7124,6 @@ namespace object_detection {
             infer_.do_inference(f);
             infer_.check_output(0, selected_indices);
 
-#endif
 
             if ( boxes->onnx_NonMaxSuppression(boxes, scores, max_output_boxes_per_class, iou_threshold, score_threshold, selected_indices, center_point_box) != YNX_OK ) {
                 yannx_panic("API: NonMaxSuppression  return error!");
@@ -8019,7 +7172,6 @@ namespace quantization {
             auto x = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -8034,7 +7186,6 @@ namespace quantization {
             infer_.do_inference(f);
             infer_.check_output(0, y);
 
-#endif
 
             if ( x->onnx_QuantizeLinear(x, y_scale, y_zero_point, y, axis) != YNX_OK ) {
                 yannx_panic("API: QuantizeLinear  return error!");
@@ -8080,7 +7231,6 @@ namespace quantization {
             auto x = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             outputs_.push_back(1);
@@ -8096,7 +7246,6 @@ namespace quantization {
             infer_.check_output(1, y_scale);
             infer_.check_output(2, y_zero_point);
 
-#endif
 
             if ( x->onnx_DynamicQuantizeLinear(x, y, y_scale, y_zero_point) != YNX_OK ) {
                 yannx_panic("API: DynamicQuantizeLinear  return error!");
@@ -8142,7 +7291,6 @@ namespace quantization {
             auto x = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -8157,7 +7305,6 @@ namespace quantization {
             infer_.do_inference(f);
             infer_.check_output(0, y);
 
-#endif
 
             if ( x->onnx_DequantizeLinear(x, x_scale, x_zero_point, y, axis) != YNX_OK ) {
                 yannx_panic("API: DequantizeLinear  return error!");
@@ -8203,7 +7350,6 @@ namespace reduction {
             auto data = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -8217,7 +7363,6 @@ namespace reduction {
             infer_.do_inference(f);
             infer_.check_output(0, reduced);
 
-#endif
 
             if ( data->onnx_ReduceProd(data, reduced, axes, keepdims) != YNX_OK ) {
                 yannx_panic("API: ReduceProd  return error!");
@@ -8260,7 +7405,6 @@ namespace reduction {
             auto data = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -8274,7 +7418,6 @@ namespace reduction {
             infer_.do_inference(f);
             infer_.check_output(0, reduced);
 
-#endif
 
             if ( data->onnx_ReduceMin(data, reduced, axes, keepdims) != YNX_OK ) {
                 yannx_panic("API: ReduceMin  return error!");
@@ -8317,7 +7460,6 @@ namespace reduction {
             auto data = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -8331,7 +7473,6 @@ namespace reduction {
             infer_.do_inference(f);
             infer_.check_output(0, reduced);
 
-#endif
 
             if ( data->onnx_ReduceSumSquare(data, reduced, axes, keepdims) != YNX_OK ) {
                 yannx_panic("API: ReduceSumSquare  return error!");
@@ -8375,7 +7516,6 @@ namespace reduction {
             auto data = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -8390,7 +7530,6 @@ namespace reduction {
             infer_.do_inference(f);
             infer_.check_output(0, reduced);
 
-#endif
 
             if ( data->onnx_ReduceSum(data, axes, reduced, keepdims, noop_with_empty_axes) != YNX_OK ) {
                 yannx_panic("API: ReduceSum  return error!");
@@ -8434,7 +7573,6 @@ namespace reduction {
             auto data = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -8448,7 +7586,6 @@ namespace reduction {
             infer_.do_inference(f);
             infer_.check_output(0, reduced);
 
-#endif
 
             if ( data->onnx_ReduceLogSumExp(data, reduced, axes, keepdims) != YNX_OK ) {
                 yannx_panic("API: ReduceLogSumExp  return error!");
@@ -8491,7 +7628,6 @@ namespace reduction {
             auto data = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -8505,7 +7641,6 @@ namespace reduction {
             infer_.do_inference(f);
             infer_.check_output(0, reduced);
 
-#endif
 
             if ( data->onnx_ReduceMax(data, reduced, axes, keepdims) != YNX_OK ) {
                 yannx_panic("API: ReduceMax  return error!");
@@ -8549,7 +7684,6 @@ namespace reduction {
             auto data = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -8564,7 +7698,6 @@ namespace reduction {
             infer_.do_inference(f);
             infer_.check_output(0, reduced);
 
-#endif
 
             if ( data->onnx_ArgMax(data, reduced, axis, keepdims, select_last_index) != YNX_OK ) {
                 yannx_panic("API: ArgMax  return error!");
@@ -8609,7 +7742,6 @@ namespace reduction {
             auto data = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -8624,7 +7756,6 @@ namespace reduction {
             infer_.do_inference(f);
             infer_.check_output(0, reduced);
 
-#endif
 
             if ( data->onnx_ArgMin(data, reduced, axis, keepdims, select_last_index) != YNX_OK ) {
                 yannx_panic("API: ArgMin  return error!");
@@ -8668,7 +7799,6 @@ namespace reduction {
             auto data = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -8682,7 +7812,6 @@ namespace reduction {
             infer_.do_inference(f);
             infer_.check_output(0, reduced);
 
-#endif
 
             if ( data->onnx_ReduceLogSum(data, reduced, axes, keepdims) != YNX_OK ) {
                 yannx_panic("API: ReduceLogSum  return error!");
@@ -8725,7 +7854,6 @@ namespace reduction {
             auto data = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -8739,7 +7867,6 @@ namespace reduction {
             infer_.do_inference(f);
             infer_.check_output(0, reduced);
 
-#endif
 
             if ( data->onnx_ReduceMean(data, reduced, axes, keepdims) != YNX_OK ) {
                 yannx_panic("API: ReduceMean  return error!");
@@ -8782,7 +7909,6 @@ namespace reduction {
             auto data = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -8796,7 +7922,6 @@ namespace reduction {
             infer_.do_inference(f);
             infer_.check_output(0, reduced);
 
-#endif
 
             if ( data->onnx_ReduceL2(data, reduced, axes, keepdims) != YNX_OK ) {
                 yannx_panic("API: ReduceL2  return error!");
@@ -8839,7 +7964,6 @@ namespace reduction {
             auto data = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -8853,7 +7977,6 @@ namespace reduction {
             infer_.do_inference(f);
             infer_.check_output(0, reduced);
 
-#endif
 
             if ( data->onnx_ReduceL1(data, reduced, axes, keepdims) != YNX_OK ) {
                 yannx_panic("API: ReduceL1  return error!");
@@ -8921,7 +8044,6 @@ namespace rnn {
             auto X = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             if ( Y.index() != 0) {
                 outputs_.push_back(0);
@@ -8964,7 +8086,6 @@ namespace rnn {
                 infer_.check_output(2, std::get<1>(Y_c));
             }
 
-#endif
 
             if ( X->onnx_LSTM(X, W, R, B, sequence_lens, initial_h, initial_c, P, Y, Y_h, Y_c, activation_alpha, activation_beta, activations, clip, direction, hidden_size, input_forget, layout) != YNX_OK ) {
                 yannx_panic("API: LSTM  return error!");
@@ -9056,7 +8177,6 @@ namespace rnn {
             auto X = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             if ( Y.index() != 0) {
                 outputs_.push_back(0);
@@ -9091,7 +8211,6 @@ namespace rnn {
                 infer_.check_output(1, std::get<1>(Y_h));
             }
 
-#endif
 
             if ( X->onnx_GRU(X, W, R, B, sequence_lens, initial_h, Y, Y_h, activation_alpha, activation_beta, activations, clip, direction, hidden_size, layout, linear_before_reset) != YNX_OK ) {
                 yannx_panic("API: GRU  return error!");
@@ -9173,7 +8292,6 @@ namespace rnn {
             auto X = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             if ( Y.index() != 0) {
                 outputs_.push_back(0);
@@ -9207,7 +8325,6 @@ namespace rnn {
                 infer_.check_output(1, std::get<1>(Y_h));
             }
 
-#endif
 
             if ( X->onnx_RNN(X, W, R, B, sequence_lens, initial_h, Y, Y_h, activation_alpha, activation_beta, activations, clip, direction, hidden_size, layout) != YNX_OK ) {
                 yannx_panic("API: RNN  return error!");
@@ -9272,7 +8389,6 @@ namespace sequence {
 
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -9284,7 +8400,6 @@ namespace sequence {
             infer_.do_inference(f);
             infer_.check_output(0, output);
 
-#endif
 
             if ( output->onnx_SequenceEmpty(output, dtype) != YNX_OK ) {
                 yannx_panic("API: SequenceEmpty  return error!");
@@ -9326,7 +8441,6 @@ namespace sequence {
             auto input = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -9341,7 +8455,6 @@ namespace sequence {
             infer_.do_inference(f);
             infer_.check_output(0, output_sequence);
 
-#endif
 
             if ( input->onnx_SplitToSequence(input, split, output_sequence, axis, keepdims) != YNX_OK ) {
                 yannx_panic("API: SplitToSequence  return error!");
@@ -9384,7 +8497,6 @@ namespace sequence {
             auto input_sequence = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -9397,7 +8509,6 @@ namespace sequence {
             infer_.do_inference(f);
             infer_.check_output(0, tensor);
 
-#endif
 
             if ( input_sequence->onnx_SequenceAt(input_sequence, position, tensor) != YNX_OK ) {
                 yannx_panic("API: SequenceAt  return error!");
@@ -9437,7 +8548,6 @@ namespace sequence {
             auto input_sequence = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -9449,7 +8559,6 @@ namespace sequence {
             infer_.do_inference(f);
             infer_.check_output(0, length);
 
-#endif
 
             if ( input_sequence->onnx_SequenceLength(input_sequence, length) != YNX_OK ) {
                 yannx_panic("API: SequenceLength  return error!");
@@ -9488,7 +8597,6 @@ namespace sequence {
             auto inputs = fetch_tensors(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -9500,7 +8608,6 @@ namespace sequence {
             infer_.do_inference(f);
             infer_.check_output(0, output_sequence);
 
-#endif
 
             if ( output_sequence->onnx_SequenceConstruct(inputs, output_sequence) != YNX_OK ) {
                 yannx_panic("API: SequenceConstruct  return error!");
@@ -9541,7 +8648,6 @@ namespace sequence {
             auto input_sequence = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -9555,7 +8661,6 @@ namespace sequence {
             infer_.do_inference(f);
             infer_.check_output(0, output_sequence);
 
-#endif
 
             if ( input_sequence->onnx_SequenceInsert(input_sequence, tensor, position, output_sequence) != YNX_OK ) {
                 yannx_panic("API: SequenceInsert  return error!");
@@ -9597,7 +8702,6 @@ namespace sequence {
             auto input_sequence = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -9610,7 +8714,6 @@ namespace sequence {
             infer_.do_inference(f);
             infer_.check_output(0, output_sequence);
 
-#endif
 
             if ( input_sequence->onnx_SequenceErase(input_sequence, position, output_sequence) != YNX_OK ) {
                 yannx_panic("API: SequenceErase  return error!");
@@ -9652,7 +8755,6 @@ namespace sequence {
             auto input_sequence = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -9666,7 +8768,6 @@ namespace sequence {
             infer_.do_inference(f);
             infer_.check_output(0, concat_result);
 
-#endif
 
             if ( input_sequence->onnx_ConcatFromSequence(input_sequence, concat_result, axis, new_axis) != YNX_OK ) {
                 yannx_panic("API: ConcatFromSequence  return error!");
@@ -9710,7 +8811,6 @@ namespace tensor {
             auto input = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -9723,7 +8823,6 @@ namespace tensor {
             infer_.do_inference(f);
             infer_.check_output(0, output);
 
-#endif
 
             if ( input->onnx_CastLike(input, target_type, output) != YNX_OK ) {
                 yannx_panic("API: CastLike  return error!");
@@ -9765,7 +8864,6 @@ namespace tensor {
             auto data = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -9779,7 +8877,6 @@ namespace tensor {
             infer_.do_inference(f);
             infer_.check_output(0, shape);
 
-#endif
 
             if ( data->onnx_Shape(data, shape, end, start) != YNX_OK ) {
                 yannx_panic("API: Shape  return error!");
@@ -9822,7 +8919,6 @@ namespace tensor {
             auto data = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -9836,7 +8932,6 @@ namespace tensor {
             infer_.do_inference(f);
             infer_.check_output(0, reshaped);
 
-#endif
 
             if ( data->onnx_Reshape(data, shape, reshaped, allowzero) != YNX_OK ) {
                 yannx_panic("API: Reshape  return error!");
@@ -9879,7 +8974,6 @@ namespace tensor {
             auto input = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -9893,7 +8987,6 @@ namespace tensor {
             infer_.do_inference(f);
             infer_.check_output(0, output);
 
-#endif
 
             if ( input->onnx_DepthToSpace(input, output, blocksize, mode) != YNX_OK ) {
                 yannx_panic("API: DepthToSpace  return error!");
@@ -9935,7 +9028,6 @@ namespace tensor {
             auto inputs = fetch_tensors(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -9948,7 +9040,6 @@ namespace tensor {
             infer_.do_inference(f);
             infer_.check_output(0, concat_result);
 
-#endif
 
             if ( concat_result->onnx_Concat(inputs, concat_result, axis) != YNX_OK ) {
                 yannx_panic("API: Concat  return error!");
@@ -9990,7 +9081,6 @@ namespace tensor {
             auto data = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -10004,7 +9094,6 @@ namespace tensor {
             infer_.do_inference(f);
             infer_.check_output(0, output);
 
-#endif
 
             if ( data->onnx_Gather(data, indices, output, axis) != YNX_OK ) {
                 yannx_panic("API: Gather  return error!");
@@ -10045,7 +9134,6 @@ namespace tensor {
             auto data = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -10057,7 +9145,6 @@ namespace tensor {
             infer_.do_inference(f);
             infer_.check_output(0, size);
 
-#endif
 
             if ( data->onnx_Size(data, size) != YNX_OK ) {
                 yannx_panic("API: Size  return error!");
@@ -10097,7 +9184,6 @@ namespace tensor {
             auto input = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -10110,7 +9196,6 @@ namespace tensor {
             infer_.do_inference(f);
             infer_.check_output(0, output);
 
-#endif
 
             if ( input->onnx_Cast(input, output, to) != YNX_OK ) {
                 yannx_panic("API: Cast  return error!");
@@ -10152,7 +9237,6 @@ namespace tensor {
             auto input = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             for ( size_t i = 0; i < outputs.size(); i++) {
                 outputs_.push_back(i);
@@ -10170,7 +9254,6 @@ namespace tensor {
                 infer_.check_output(i, outputs[i]);
             }
 
-#endif
 
             if ( input->onnx_Split(input, split, outputs, axis) != YNX_OK ) {
                 yannx_panic("API: Split  return error!");
@@ -10211,7 +9294,6 @@ namespace tensor {
             auto input = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -10223,7 +9305,6 @@ namespace tensor {
             infer_.do_inference(f);
             infer_.check_output(0, output);
 
-#endif
 
             if ( input->onnx_Identity(input, output) != YNX_OK ) {
                 yannx_panic("API: Identity  return error!");
@@ -10266,7 +9347,6 @@ namespace tensor {
             auto data = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -10282,7 +9362,6 @@ namespace tensor {
             infer_.do_inference(f);
             infer_.check_output(0, output);
 
-#endif
 
             if ( data->onnx_Slice(data, starts, ends, axes, steps, output) != YNX_OK ) {
                 yannx_panic("API: Slice  return error!");
@@ -10327,7 +9406,6 @@ namespace tensor {
             auto data = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -10341,7 +9419,6 @@ namespace tensor {
             infer_.do_inference(f);
             infer_.check_output(0, output);
 
-#endif
 
             if ( data->onnx_GatherND(data, indices, output, batch_dims) != YNX_OK ) {
                 yannx_panic("API: GatherND  return error!");
@@ -10383,7 +9460,6 @@ namespace tensor {
             auto input = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -10396,7 +9472,6 @@ namespace tensor {
             infer_.do_inference(f);
             infer_.check_output(0, output);
 
-#endif
 
             if ( input->onnx_SpaceToDepth(input, output, blocksize) != YNX_OK ) {
                 yannx_panic("API: SpaceToDepth  return error!");
@@ -10437,7 +9512,6 @@ namespace tensor {
             auto data = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -10450,7 +9524,6 @@ namespace tensor {
             infer_.do_inference(f);
             infer_.check_output(0, squeezed);
 
-#endif
 
             if ( data->onnx_Squeeze(data, axes, squeezed) != YNX_OK ) {
                 yannx_panic("API: Squeeze  return error!");
@@ -10504,7 +9577,6 @@ namespace tensor {
             auto X = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             if ( indices.index() != 0) {
@@ -10536,7 +9608,6 @@ namespace tensor {
                 infer_.check_output(3, std::get<1>(counts));
             }
 
-#endif
 
             if ( X->onnx_Unique(X, Y, indices, inverse_indices, counts, axis, sorted) != YNX_OK ) {
                 yannx_panic("API: Unique  return error!");
@@ -10598,7 +9669,6 @@ namespace tensor {
             auto X = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -10610,7 +9680,6 @@ namespace tensor {
             infer_.do_inference(f);
             infer_.check_output(0, Y);
 
-#endif
 
             if ( X->onnx_IsNaN(X, Y) != YNX_OK ) {
                 yannx_panic("API: IsNaN  return error!");
@@ -10650,7 +9719,6 @@ namespace tensor {
             auto input = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -10663,7 +9731,6 @@ namespace tensor {
             infer_.do_inference(f);
             infer_.check_output(0, output);
 
-#endif
 
             if ( input->onnx_Tile(input, repeats, output) != YNX_OK ) {
                 yannx_panic("API: Tile  return error!");
@@ -10706,7 +9773,6 @@ namespace tensor {
             auto input = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -10721,7 +9787,6 @@ namespace tensor {
             infer_.do_inference(f);
             infer_.check_output(0, Y);
 
-#endif
 
             if ( input->onnx_ReverseSequence(input, sequence_lens, Y, batch_axis, time_axis) != YNX_OK ) {
                 yannx_panic("API: ReverseSequence  return error!");
@@ -10764,7 +9829,6 @@ namespace tensor {
             auto data = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -10777,7 +9841,6 @@ namespace tensor {
             infer_.do_inference(f);
             infer_.check_output(0, transposed);
 
-#endif
 
             if ( data->onnx_Transpose(data, transposed, perm) != YNX_OK ) {
                 yannx_panic("API: Transpose  return error!");
@@ -10819,7 +9882,6 @@ namespace tensor {
             auto input = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -10833,7 +9895,6 @@ namespace tensor {
             infer_.do_inference(f);
             infer_.check_output(0, output);
 
-#endif
 
             if ( input->onnx_Trilu(input, k, output, upper) != YNX_OK ) {
                 yannx_panic("API: Trilu  return error!");
@@ -10876,7 +9937,6 @@ namespace tensor {
             auto condition = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -10890,7 +9950,6 @@ namespace tensor {
             infer_.do_inference(f);
             infer_.check_output(0, output);
 
-#endif
 
             if ( condition->onnx_Where(condition, X, Y, output) != YNX_OK ) {
                 yannx_panic("API: Where  return error!");
@@ -10933,7 +9992,6 @@ namespace tensor {
             auto input = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -10947,7 +10005,6 @@ namespace tensor {
             infer_.do_inference(f);
             infer_.check_output(0, output);
 
-#endif
 
             if ( input->onnx_Compress(input, condition, output, axis) != YNX_OK ) {
                 yannx_panic("API: Compress  return error!");
@@ -10989,7 +10046,6 @@ namespace tensor {
             auto data = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -11002,7 +10058,6 @@ namespace tensor {
             infer_.do_inference(f);
             infer_.check_output(0, expanded);
 
-#endif
 
             if ( data->onnx_Unsqueeze(data, axes, expanded) != YNX_OK ) {
                 yannx_panic("API: Unsqueeze  return error!");
@@ -11045,7 +10100,6 @@ namespace tensor {
             auto indices = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -11060,7 +10114,6 @@ namespace tensor {
             infer_.do_inference(f);
             infer_.check_output(0, output);
 
-#endif
 
             if ( indices->onnx_OneHot(indices, depth, values, output, axis) != YNX_OK ) {
                 yannx_panic("API: OneHot  return error!");
@@ -11102,7 +10155,6 @@ namespace tensor {
             auto X = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -11114,7 +10166,6 @@ namespace tensor {
             infer_.do_inference(f);
             infer_.check_output(0, Y);
 
-#endif
 
             if ( X->onnx_NonZero(X, Y) != YNX_OK ) {
                 yannx_panic("API: NonZero  return error!");
@@ -11155,7 +10206,6 @@ namespace tensor {
             auto data = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -11169,7 +10219,6 @@ namespace tensor {
             infer_.do_inference(f);
             infer_.check_output(0, output);
 
-#endif
 
             if ( data->onnx_ScatterND(data, indices, updates, output) != YNX_OK ) {
                 yannx_panic("API: ScatterND  return error!");
@@ -11219,7 +10268,6 @@ namespace tensor {
             auto X = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -11240,7 +10288,6 @@ namespace tensor {
             infer_.do_inference(f);
             infer_.check_output(0, Y);
 
-#endif
 
             if ( X->onnx_Resize(X, roi, scales, sizes, Y, coordinate_transformation_mode, cubic_coeff_a, exclude_outside, extrapolation_value, mode, nearest_mode) != YNX_OK ) {
                 yannx_panic("API: Resize  return error!");
@@ -11291,7 +10338,6 @@ namespace tensor {
             auto data = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -11306,7 +10352,6 @@ namespace tensor {
             infer_.do_inference(f);
             infer_.check_output(0, output);
 
-#endif
 
             if ( data->onnx_Pad(data, pads, constant_value, output, mode) != YNX_OK ) {
                 yannx_panic("API: Pad  return error!");
@@ -11350,7 +10395,6 @@ namespace tensor {
             auto X = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -11364,7 +10408,6 @@ namespace tensor {
             infer_.do_inference(f);
             infer_.check_output(0, Y);
 
-#endif
 
             if ( X->onnx_IsInf(X, Y, detect_negative, detect_positive) != YNX_OK ) {
                 yannx_panic("API: IsInf  return error!");
@@ -11407,7 +10450,6 @@ namespace tensor {
             auto data = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -11421,7 +10463,6 @@ namespace tensor {
             infer_.do_inference(f);
             infer_.check_output(0, output);
 
-#endif
 
             if ( data->onnx_GatherElements(data, indices, output, axis) != YNX_OK ) {
                 yannx_panic("API: GatherElements  return error!");
@@ -11465,7 +10506,6 @@ namespace tensor {
             auto data = fetch_tensor(stack);
 
 
-#ifdef USING_ONNX_IMPL
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
@@ -11480,7 +10520,6 @@ namespace tensor {
             infer_.do_inference(f);
             infer_.check_output(0, output);
 
-#endif
 
             if ( data->onnx_ScatterElements(data, indices, updates, output, axis) != YNX_OK ) {
                 yannx_panic("API: ScatterElements  return error!");
