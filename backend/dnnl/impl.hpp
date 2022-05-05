@@ -107,11 +107,17 @@ public:
     tt::OperatorReturnType onnx_Log(tt::tensor_t X, tt::tensor_t Y) override {
         return dnnl_eltwise_operator(X, Y, dnnl_eltwise_log, 0.0, 0.0);
     }
+    tt::OperatorReturnType onnx_Exp(tt::tensor_t X, tt::tensor_t Y) override {
+        return dnnl_eltwise_operator(X, Y, dnnl_eltwise_exp, 0.0, 0.0);
+    }
     tt::OperatorReturnType onnx_Round(tt::tensor_t X, tt::tensor_t Y) override {
         return dnnl_eltwise_operator(X, Y, dnnl_eltwise_log, 0.0, 0.0);
     }
     tt::OperatorReturnType onnx_LeakyRelu(tt::tensor_t X, tt::tensor_t Y, float alpha) override {
         return dnnl_eltwise_operator(X, Y, dnnl_eltwise_relu, alpha, 0.0);
+    }
+    tt::OperatorReturnType onnx_Elu(tt::tensor_t X, tt::tensor_t Y, float alpha) override {
+        return dnnl_eltwise_operator(X, Y, dnnl_eltwise_elu, alpha, 0.0);
     }
 
     // two item binary operator : A op B = C
@@ -131,6 +137,7 @@ public:
     // Some common operators
     tt::OperatorReturnType onnx_Concat(std::vector<tt::tensor_t>& inputs, tt::tensor_t concat_result, int64_t axis) override;
     tt::OperatorReturnType onnx_MatMul(tt::tensor_t A, tt::tensor_t B, tt::tensor_t Y) override;
+    tt::OperatorReturnType onnx_Clip(tt::tensor_t input, std::variant<void *, tt::tensor_t>& min, std::variant<void *, tt::tensor_t>& max, tt::tensor_t output) override;
 
 private:
     // help functions for computing API
@@ -140,7 +147,6 @@ private:
     }
     tt::OperatorReturnType dnnl_binary_operator(tt::tensor_t A, tt::tensor_t B, tt::tensor_t C, dnnl_alg_kind_t algo);
     tt::OperatorReturnType dnnl_eltwise_operator(tt::tensor_t X, tt::tensor_t Y, dnnl_alg_kind_t algo, float alpha, float beta);
-
 
 private:
     // fast access

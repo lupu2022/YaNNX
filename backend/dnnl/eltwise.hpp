@@ -37,3 +37,25 @@ tt::OperatorReturnType DNNLTensor<_DTYPE_>::dnnl_eltwise_operator(tt::tensor_t X
     yannx_panic("Don't support data type");
     return tt::YNX_TODO_ERROR;
 }
+
+
+template <tt::TensorDataType _DTYPE_>
+tt::OperatorReturnType DNNLTensor<_DTYPE_>::onnx_Clip(tt::tensor_t input, std::variant<void *, tt::tensor_t>& min_, std::variant<void *, tt::tensor_t>& max_, tt::tensor_t output) {
+    tt::TensorDataType dtype = _DTYPE_;
+
+    yannx_assert( min_.index() == 1, "Clip's min/max can't be empty!");
+    yannx_assert( max_.index() == 1, "Clip's min/max can't be empty!");
+    auto min = std::get<1>(min_);
+    auto max = std::get<1>(max_);
+    yannx_assert( min->is_scalar(), "Clip's min/max must be scalar!");
+    yannx_assert( max->is_scalar(), "Clip's min/max must be scalar!");
+
+    if (dtype == tt::YNX_FLOAT) {
+        float min_value = *(const float *)min->value();
+        float max_value = *(const float *)max->value();
+        return dnnl_eltwise_operator(input, output, dnnl_eltwise_clip, min_value, max_value);
+    }
+    yannx_panic("Don't support data type");
+    return tt::YNX_TODO_ERROR;
+}
+

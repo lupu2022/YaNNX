@@ -161,6 +161,7 @@ struct TensorType {
         return ss.str();
     }
 
+    // some very common help function
     size_t items() {
         if ( dtype() == YNX_UNDEFINED ) {
             return 0;
@@ -171,6 +172,15 @@ struct TensorType {
             n = n * shape_[i];
         }
         return n;
+    }
+    bool is_scalar() {
+        if ( dtype() == YNX_UNDEFINED ) {
+            return false;
+        }
+        if ( shape().size() == 0) {
+            return true;
+        }
+        return false;
     }
 
     //
