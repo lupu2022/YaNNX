@@ -1,3 +1,4 @@
+#define USING_ONNX_IMPL
 #include <yannx.hpp>
 #include <tensortype.hpp>
 

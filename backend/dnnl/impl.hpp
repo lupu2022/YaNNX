@@ -128,10 +128,9 @@ public:
         return dnnl_binary_operator(A, B, C, dnnl_binary_sub);
     }
 
-    // Common operators
+    // Some common operators
     tt::OperatorReturnType onnx_Concat(std::vector<tt::tensor_t>& inputs, tt::tensor_t concat_result, int64_t axis) override;
     tt::OperatorReturnType onnx_MatMul(tt::tensor_t A, tt::tensor_t B, tt::tensor_t Y) override;
-
 
 private:
     // help functions for computing API
