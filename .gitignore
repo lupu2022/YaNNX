@@ -1,8 +1,5 @@
 .vscode
 
-onnx~/autogen
-onnx~/tensortype.hpp
-
+autogen/autogen
 tools/repl/repl
 
-backend/test_backend

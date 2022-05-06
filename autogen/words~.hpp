@@ -11,6 +11,8 @@
 #include <algorithm>
 
 #include <yannx.hpp>
+#include <api.hpp>
+#include <tensortype.hpp>
 
 #include <onnx/onnx_pb.h>
 #include <onnx/defs/schema.h>
@@ -19,41 +21,7 @@
 #include <onnx/shape_inference/implementation.h>
 using namespace onnx;
 
-//
-//  A simple onnx based (type and shape inference only, or a pure dummy tensor ) Tensor.following ONNX IR
-//  https://github.com/onnx/onnx/blob/main/docs/IR.md
-//  https://github.com/onnx/onnx/blob/main/docs/Operators.md
-//
-
 namespace yannx { namespace tt {
-
-enum OperatorReturnType {
-    YNX_OK = 0,
-    YNX_TODO_ERROR = -1,
-    YNX_INPUT_ERROR = -2,
-    YNX_OUTPUT_ERROR = -3,
-    YNX_ATTR_ERROR = -4,
-};
-
-enum TensorDataType {
-    YNX_UNDEFINED = 0,
-    YNX_FLOAT,
-    YNX_UINT8,
-    YNX_INT8,
-    YNX_UINT16,
-    YNX_INT16,
-    YNX_INT32,
-    YNX_INT64,
-    YNX_STRING,
-    YNX_BOOL,
-    YNX_FLOAT16,
-    YNX_DOUBLE,
-    YNX_UINT32,
-    YNX_UINT64,
-    YNX_COMPLEX64,
-    YNX_COMPLEX128,
-    YNX_BFLOAT16
-};
 
 static const char* TensorDataTypeString[] = {
     "YNX_UNDEFINED",
@@ -83,7 +51,6 @@ TensorDataType datatype_from_string(const std::string& dt_str ) {
     }
     return YNX_UNDEFINED;
 };
-
 
 TensorDataType datatype_from_onnx( int dt ) {
     switch( dt ) {
@@ -124,74 +91,6 @@ TensorDataType datatype_from_onnx( int dt ) {
 }
 
 
-/*
- *  https://github.com/onnx/onnx/blob/main/docs/IR.md#tensor-definition
- *  scalar:         an empty shape with a defined data type
- *  tensor:         shape dimention > 0
- *  undefined:      empty shape with a undefined data type, used for type_shape inference.
- */
-
-struct TensorType;
-using tensor_t = std::shared_ptr<TensorType>;
-
-struct TensorType {
-    TensorType() { }
-    virtual ~TensorType() {}
-
-    virtual TensorDataType dtype() = 0;
-    virtual const std::vector<size_t>& shape() = 0;
-    virtual const void* value() = 0;
-    virtual const char* device() = 0;
-
-    virtual void reset(TensorDataType dtype, std::vector<size_t>& shape) = 0;
-    virtual void reset(TensorDataType dtype, std::vector<size_t>& shape, const void* pdata) = 0;
-    virtual void reset(TensorDataType dtype, const void* pvalue) = 0;
-
-    virtual std::string to_string() {
-        std::ostringstream ss;
-        ss << TensorDataTypeString[ dtype() ];
-        ss << ":[";
-        for (size_t i = 0; i < shape().size(); i++) {
-            ss << shape()[i];
-            if (i != shape().size() - 1) {
-                ss << " ";
-            }
-        }
-        ss << "]";
-        return ss.str();
-    }
-
-    // some very common help function
-    size_t items() {
-        if ( dtype() == YNX_UNDEFINED ) {
-            return 0;
-        }
-        size_t n = 1;
-        auto shape_ = shape();
-        for ( size_t i = 0; i < shape_.size(); i++) {
-            n = n * shape_[i];
-        }
-        return n;
-    }
-    bool is_scalar() {
-        if ( dtype() == YNX_UNDEFINED ) {
-            return false;
-        }
-        if ( shape().size() == 0) {
-            return true;
-        }
-        return false;
-    }
-
-    //
-    //  User must be re-implement, return user side undefined tensor!
-    //
-    static tensor_t create_undefined_user_tensor();
-    static void register_user_tensor(tensor_t, int64_t flag);
-
-#ONNX_DEF#
-
-};
 
 InferenceFunction query_inference_function(const std::string& op_name) {
     static std::map<const std::string, InferenceFunction> allInferenceFunctions;

@@ -6,6 +6,7 @@
 #include <cmath>
 
 #include <yannx.hpp>
+#include <api.hpp>
 #include <tensortype.hpp>
 
 #include "dnnl_help.hpp"
@@ -13,7 +14,7 @@
 namespace yannx { namespace dnnl {
 
 template <tt::TensorDataType _DTYPE_>
-struct DNNLTensor : public tt::TensorType  {
+struct DNNLTensor : public tt::OnnxOperatorSet {
     ~DNNLTensor() {
         release();
     }
@@ -70,30 +71,6 @@ struct DNNLTensor : public tt::TensorType  {
         return "DNNL_CPU";
     }
 
-    // we don't need call these interface , it is via DeviceTensor
-    const void* value() override {
-        yannx_panic("Dont't call this interface");
-        return nullptr;
-    }
-    void reset(tt::TensorDataType dtype, std::vector<size_t>& shape) override {
-        yannx_panic("Dont't call this interface");
-    }
-    void reset(tt::TensorDataType dtype, std::vector<size_t>& shape, const void* pdata) override {
-        yannx_panic("Dont't call this interface");
-    }
-    void reset(tt::TensorDataType dtype, const void* pvalue) override {
-        yannx_panic("Dont't call this interface");
-    }
-    tt::TensorDataType dtype() override {
-        yannx_panic("Dont't call this interface");
-        return _DTYPE_;
-    }
-    const std::vector<size_t>& shape() override {
-        yannx_panic("Dont't call this interface");
-        return shape_;
-    }
-
-    // real tensor computing API
 public:
     // element wise operator : Y = op(X)
     tt::OperatorReturnType onnx_Abs(tt::tensor_t X, tt::tensor_t Y) override {
@@ -176,7 +153,6 @@ private:
     tt::OperatorReturnType dnnl_binary_operator(tt::tensor_t A, tt::tensor_t B, tt::tensor_t C, dnnl_alg_kind_t algo);
     tt::OperatorReturnType dnnl_eltwise_operator(tt::tensor_t X, tt::tensor_t Y, dnnl_alg_kind_t algo, float alpha, float beta);
     tt::OperatorReturnType dnnl_reduce_operator(std::vector<tt::tensor_t>& data_0, tt::tensor_t result, dnnl_alg_kind_t algo, float p, float epsde);
-
 
 private:
     // fast access

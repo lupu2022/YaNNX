@@ -188,7 +188,7 @@ std::string api_impl_generate(const OpSchema& op) {
     }
 
     std::ostringstream oss;
-    oss << "OperatorReturnType onnx_" << op_name << "(";
+    oss << "\tOperatorReturnType onnx_" << op_name << "(";
     for (size_t i = 0; i < tokens.size(); i++) {
         oss << tokens[i] ;
         if ( i != tokens.size() - 1) {
@@ -196,7 +196,7 @@ std::string api_impl_generate(const OpSchema& op) {
         }
     }
     oss << ") override {" << std::endl;
-    oss << "    return impl()->onnx_" << op_name <<  "(";
+    oss << "\t    return impl()->onnx_" << op_name <<  "(";
     for (size_t i = 0; i < tokens2.size(); i++) {
         oss << tokens2[i] ;
         if ( i != tokens2.size() - 1) {
@@ -204,7 +204,7 @@ std::string api_impl_generate(const OpSchema& op) {
         }
     }
     oss << ");" << std::endl;
-    oss << "}" << std::endl;
+    oss << "\t}" << std::endl;
     return oss.str();
 }
 
@@ -624,8 +624,6 @@ int main(int argc, char* argv[]) {
     std::map<std::string, size_t> operators_by_name;
     std::map<std::string, std::vector<size_t> > operators_by_tag;
 
-    auto result = fileToString("tensortype~.hpp");
-
     // 0. fast scaning all the operators
     for (size_t i = 0; i < schemas.size(); i++) {
         // skip too old and new
@@ -658,14 +656,20 @@ int main(int argc, char* argv[]) {
     {
         std::ostringstream oss;
         for (auto ii = operators_by_name.begin(); ii != operators_by_name.end(); ii++) {
-            std::string api_code = api_generate( schemas[ ii->second ] );
+            std::string api_code = api_impl_generate( schemas[ ii->second ] );
             oss << api_code << std::endl;
         }
-        replace_all(result, "#ONNX_DEF#", oss.str());
-        oss.clear();
+
+        std::string def_str = oss.str();
+        replace_all(def_str, "\t", "");
+        std::ofstream ofs;
+        ofs.open("api_impl.inc");
+        ofs << def_str;
+        ofs.close();
     }
 
     // 2. generating operator's implementation word, sorted by tags
+    auto result = fileToString("words~.hpp");
     {
         std::ostringstream oss;
         for (auto i = operators_by_tag.begin(); i != operators_by_tag.end(); i++) {
@@ -697,26 +701,29 @@ int main(int argc, char* argv[]) {
         replace_all(def_str, "\t", "    ");
         replace_all(result, "#ONNX_REGISTER#", def_str);
         oss.clear();
-    }
 
-    // 4. writing final result to file
-    {
         std::ofstream ofs;
-        ofs.open("tensortype.hpp");
+        ofs.open("words.hpp");
         ofs << result;
         ofs.close();
     }
 
-    // 5. writing a auto api impl list
+    // 4. writing a auto api define list
     {
+        auto result = fileToString("api~.hpp");
         std::ostringstream oss;
         for (auto ii = operators_by_name.begin(); ii != operators_by_name.end(); ii++) {
-            std::string api_code = api_impl_generate( schemas[ ii->second ] );
+            std::string api_code = api_generate( schemas[ ii->second ] );
             oss << api_code << std::endl;
         }
+        std::string def_str = oss.str();
+        replace_all(def_str, "\t", "    ");
+        replace_all(result, "#ONNX_DEF#", def_str);
+        oss.clear();
+
         std::ofstream ofs;
-        ofs.open("api_impl.inc");
-        ofs << oss.str();
+        ofs.open("api.hpp");
+        ofs << result;
         ofs.close();
     }
 }
