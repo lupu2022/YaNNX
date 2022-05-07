@@ -664,6 +664,7 @@ int main(int argc, char* argv[]) {
         replace_all(def_str, "\t", "");
         std::ofstream ofs;
         ofs.open("api_impl.inc");
+        ofs << "//  this file is geneated by autogen" << std::endl;
         ofs << def_str;
         ofs.close();
     }

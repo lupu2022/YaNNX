@@ -71,6 +71,10 @@ public:
     const void* value() {
         return (const void*)(value_.data());
     }
+    const void* value(size_t i) {
+        return (void *)&value_[i];
+    }
+
     TensorDataType dtype() {
         return _DTYPE_;
     }
@@ -93,9 +97,10 @@ struct TensorType : public OnnxOperatorSet {
 public:
     // default is a undefined tensor
     TensorType() : dtype_(YNX_UNDEFINED), impl_((void*)NULL) {
-        yannx_panic("Can't support target device type!");
+        static_assert(std::is_base_of<OnnxOperatorSet, device_float_t>::value, "Can't Using this tensor type!");
     }
-    ~TensorType() {}
+    ~TensorType() {
+    }
 
     // fast access
     TensorDataType dtype() {
@@ -137,18 +142,57 @@ public:
         }
         return false;
     }
-    const void* value() {
+
+    template<typename T>
+    T value() {
+        if ( !is_scalar() ) {
+            yannx_panic("Can't call value() from none scalar");
+        }
+
         if ( impl_.index() == VALUE_FLOAT ) {
-            return std::get<VALUE_FLOAT>(impl_)->value();
+            return *(T *)std::get<VALUE_FLOAT>(impl_)->value();
         }
         if ( impl_.index() == VALUE_INT64 ) {
-            return std::get<VALUE_INT64>(impl_)->value();
+            return *(T *)std::get<VALUE_INT64>(impl_)->value();
         }
         if ( impl_.index() == VALUE_BOOL ) {
-            return std::get<VALUE_BOOL>(impl_)->value();
+            return *(T *)std::get<VALUE_BOOL>(impl_)->value();
         }
+
         yannx_panic("Can't call value() from none value Tensor");
-        return nullptr;
+        return 0;
+    }
+
+    template<typename T>
+    T value(const std::vector<size_t>& pos) {
+        if ( is_scalar() ) {
+            yannx_panic("Can't call value(pos) from a scalar");
+        }
+
+        if ( pos.size() != shape_.size() ) {
+            yannx_panic("Position is not same rank of shape!");
+        }
+
+        size_t seq = 0;
+        for (size_t i = 0; i < pos.size(); i++) {
+            if ( pos[i] >= shape_[i] ) {
+                yannx_panic("Position is out of shape!");
+            }
+            seq = seq + pos[i] * shape_[i];
+        }
+
+        if ( impl_.index() == VALUE_FLOAT ) {
+            return *(T *)std::get<VALUE_FLOAT>(impl_)->value(seq);
+        }
+        if ( impl_.index() == VALUE_INT64 ) {
+            return *(T *)std::get<VALUE_INT64>(impl_)->value(seq);
+        }
+        if ( impl_.index() == VALUE_BOOL ) {
+            return *(T *)std::get<VALUE_BOOL>(impl_)->value(seq);
+        }
+
+        yannx_panic("Can't call value() from none value Tensor");
+        return 0;
     }
 
     // reset to a normal tensor
@@ -224,11 +268,19 @@ public:
         }
         return "ValueOnly";
     }
+    const value* value_() override {
+        yannx_panic("Yur need not to call!");
+        return nullptr;
+    }
+    const value* value_(const std::vector<size_t>& pos) override {
+        yannx_panic("Yur need not to call!");
+        return nullptr;
+    }
 
 #include "api_impl.inc"
 
 private:
-    TensorType* impl() {
+    OnnxOperatorSet* impl() {
         if ( impl_.index() == DEVICE_FLOAT ) {
             return (TensorType *) std::get<DEVICE_FLOAT>(impl_).get();
         }

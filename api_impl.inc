@@ -1,3 +1,4 @@
+//  this file is geneated by autogen
 OperatorReturnType onnx_Abs(tensor_t X, tensor_t Y) override {
     return impl()->onnx_Abs(X, Y);
 }

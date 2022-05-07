@@ -1,5 +1,5 @@
 //
-//  this file is geneated by onnx~/autogen
+//  this file is geneated by autogen
 //
 
 #ifndef _YANNX_TENSORTYPE_HPP_
