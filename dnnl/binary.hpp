@@ -3,12 +3,12 @@ tt::OperatorReturnType DNNLTensor<_DTYPE_>::dnnl_binary_operator(tt::tensor_t A,
     tt::TensorDataType dtype = _DTYPE_;
 
     if (dtype == tt::YNX_FLOAT) {
-        auto src0_md = dnnl(A)->dnnl_md();
-        auto src0_mem = dnnl(A)->dnnl_mem();
+        auto src0_md = A->device_float()->dnnl_md();
+        auto src0_mem = A->device_float()->dnnl_mem();
 
-        auto src1_md = dnnl(B)->dnnl_md();
-        auto src1_mem = dnnl(B)->dnnl_mem();
-        auto dst_md = dnnl(C)->dnnl_md();
+        auto src1_md = B->device_float()->dnnl_md();
+        auto src1_mem = B->device_float()->dnnl_mem();
+        auto dst_md = C->device_float()->dnnl_md();
 
         dnnl_binary_desc_t desc;
         DNNL_CHECK(dnnl_binary_desc_init(&desc,
@@ -23,9 +23,9 @@ tt::OperatorReturnType DNNLTensor<_DTYPE_>::dnnl_binary_operator(tt::tensor_t A,
         // create destnation memory
         {
             auto dst_md = dnnl_primitive_desc_query_md(binary_pd, dnnl_query_dst_md, 0);
-            dnnl(C)->reorder(dst_md);
+            C->device_float()->reorder(dst_md);
         }
-        auto dst_mem = dnnl(C)->dnnl_mem();
+        auto dst_mem = C->device_float()->dnnl_mem();
 
         // prepare arguments and execute
         dnnl_exec_arg_t args[3];

@@ -3,13 +3,13 @@ tt::OperatorReturnType DNNLTensor<_DTYPE_>::dnnl_reduce_operator(std::vector<tt:
     tt::TensorDataType dtype = _DTYPE_;
 
     if (dtype == tt::YNX_FLOAT) {
-        auto dst_mem = dnnl(dst)->dnnl_mem();
-        auto dst_md = dnnl(dst)->dnnl_md();
+        auto dst_mem = dst->device_float()->dnnl_mem();
+        auto dst_md = dst->device_float()->dnnl_md();
 
         dnnl_reduction_desc_t desc;
         DNNL_CHECK( dnnl_reduction_desc_init(&desc,
                                          algo,
-                                         dnnl(inputs[0])->dnnl_md(),
+                                         inputs[0]->device_float()->dnnl_md(),
                                          dst_md,
                                          0.0, 0.0));
 
@@ -21,7 +21,7 @@ tt::OperatorReturnType DNNLTensor<_DTYPE_>::dnnl_reduce_operator(std::vector<tt:
         // prepare arguments and execute
         std::vector<dnnl_exec_arg_t> args(inputs.size() + 1);
         for(size_t i = 0; i < inputs.size(); i++) {
-            auto mem = dnnl(inputs[i])->dnnl_mem();
+            auto mem = inputs[i]->device_float()->dnnl_mem();
             dnnl_help::set_arg(&args[0], i, DNNL_ARG_MULTIPLE_SRC + i, mem);
         }
         dnnl_help::set_arg(&args[0], inputs.size(), DNNL_ARG_DST, dst_mem);

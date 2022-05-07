@@ -68,9 +68,6 @@ public:
     }
 
     // value is only you need
-    const void* value() {
-        return (const void*)(value_.data());
-    }
     const void* value(size_t i) {
         return (void *)&value_[i];
     }
@@ -143,6 +140,12 @@ public:
         return false;
     }
 
+    device_float_t* device_float() {
+        if ( impl_.index() == DEVICE_FLOAT() ) {
+            return std::get<DEVICE_FLOAT>(impl_).get();
+        }
+    }
+
     template<typename T>
     T value() {
         if ( !is_scalar() ) {
@@ -150,13 +153,13 @@ public:
         }
 
         if ( impl_.index() == VALUE_FLOAT ) {
-            return *(T *)std::get<VALUE_FLOAT>(impl_)->value();
+            return *(T *)std::get<VALUE_FLOAT>(impl_)->value(0);
         }
         if ( impl_.index() == VALUE_INT64 ) {
-            return *(T *)std::get<VALUE_INT64>(impl_)->value();
+            return *(T *)std::get<VALUE_INT64>(impl_)->value(0);
         }
         if ( impl_.index() == VALUE_BOOL ) {
-            return *(T *)std::get<VALUE_BOOL>(impl_)->value();
+            return *(T *)std::get<VALUE_BOOL>(impl_)->value(0);
         }
 
         yannx_panic("Can't call value() from none value Tensor");
@@ -262,19 +265,11 @@ public:
     //
     //  Realy tensor computing API following ONNX define
     //
-    const char* device() override {
+    const char* genre() override {
         if ( impl_.index() == DEVICE_FLOAT ) {
-            return std::get<DEVICE_FLOAT>(impl_)->device();
+            return std::get<DEVICE_FLOAT>(impl_)->genre();
         }
         return "ValueOnly";
-    }
-    const value* value_() override {
-        yannx_panic("Yur need not to call!");
-        return nullptr;
-    }
-    const value* value_(const std::vector<size_t>& pos) override {
-        yannx_panic("Yur need not to call!");
-        return nullptr;
     }
 
 #include "api_impl.inc"

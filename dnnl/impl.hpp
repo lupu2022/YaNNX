@@ -5,11 +5,11 @@
 #include <cstring>
 #include <cmath>
 
-#include <yannx.hpp>
-#include <api.hpp>
-#include <tensortype.hpp>
+#include "yannx.hpp"
+#include "api.hpp"
+#include "tensortype.hpp"
 
-#include "dnnl_help.hpp"
+#include "dnnl/dnnl_help.hpp"
 
 namespace yannx { namespace dnnl {
 
@@ -19,7 +19,7 @@ struct DNNLTensor : public tt::OnnxOperatorSet {
         release();
     }
 
-    // buila a dense plain layout tensor
+    // build a dense plain layout tensor
     DNNLTensor(const std::vector<size_t>& shape) : shape_(shape) {
         tt::TensorDataType tt_dtype = _DTYPE_;
 
@@ -37,7 +37,7 @@ struct DNNLTensor : public tt::OnnxOperatorSet {
         DNNL_CHECK(dnnl_memory_create(&mem_, &plain_md_, dnnl_help::DNNL_ENGINE_DEFAULT, DNNL_MEMORY_ALLOCATE));
     }
 
-    // buila plain tensor with filled value
+    // build plain tensor with filled value
     DNNLTensor(const std::vector<size_t>& shape, const void* pdata) : DNNLTensor(shape) {
         tt::TensorDataType tt_dtype = _DTYPE_;
 
@@ -51,7 +51,7 @@ struct DNNLTensor : public tt::OnnxOperatorSet {
         yannx_panic("Can't build tensor with un-supported type!");
     }
 
-    // buila arbitrary layout tensor with memory
+    // build arbitrary layout tensor with memory
     DNNLTensor(const std::vector<size_t>& shape, dnnl_memory_t mem, dnnl_primitive_desc_t pd) : shape_(shape) {
         yannx_assert(shape_.size() != 0, "Can't build tensor with zero shape!");
 
@@ -67,7 +67,7 @@ struct DNNLTensor : public tt::OnnxOperatorSet {
                                                 dnnl_help::ndim_to_mem_plain_tag(shape_.size())));
     }
 
-    const char* device() override {
+    const char* genre() override {
         return "DNNL_CPU";
     }
 
@@ -146,10 +146,6 @@ public:
 
 private:
     // help functions for computing API
-    inline DNNLTensor<_DTYPE_>* dnnl(tt::tensor_t& t) {
-        auto* p = (DNNLTensor<_DTYPE_> *)t.get();
-        return p;
-    }
     tt::OperatorReturnType dnnl_binary_operator(tt::tensor_t A, tt::tensor_t B, tt::tensor_t C, dnnl_alg_kind_t algo);
     tt::OperatorReturnType dnnl_eltwise_operator(tt::tensor_t X, tt::tensor_t Y, dnnl_alg_kind_t algo, float alpha, float beta);
     tt::OperatorReturnType dnnl_reduce_operator(std::vector<tt::tensor_t>& data_0, tt::tensor_t result, dnnl_alg_kind_t algo, float p, float epsde);

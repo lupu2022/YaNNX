@@ -28,9 +28,7 @@ enum OperatorReturnType {
 //
 struct OnnxOperatorSet {
     // some must be common operator
-    virtual const char* device() = 0;
-    virtual const void* value_(const std::vector<size_t>& pos) = 0;  // read a item via a position
-    virtual const void* value_() = 0;                                // read a scalar
+    virtual const char* genre() = 0;
 
     // following is ONNX operator set
 #ONNX_DEF#
