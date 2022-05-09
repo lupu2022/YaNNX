@@ -28,12 +28,6 @@ bool readline(const std::string& prop, std::string& code) {
     return false;
 }
 
-namespace yannx::tt {
-    void  TensorType::register_user_tensor(std::shared_ptr<TensorType> tensor, int64_t flag) {
-
-    }
-}
-
 int main(const int argc, const char* argv[] ) {
     yannx::Runtime<yannx::tt::TensorType> runtime;
     //yannx::tt::register_all_onnx_defined_words(runtime);

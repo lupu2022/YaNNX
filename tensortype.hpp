@@ -8,7 +8,6 @@
 #include <variant>
 
 #include "yannx.hpp"
-#include "api.hpp"
 
 namespace yannx { namespace tt {
 
@@ -83,22 +82,22 @@ public:
     virtual TensorDataType dtype() = 0;
     // io functions: single read & whole write
     virtual const void* item_(const std::vector<size_t>& position) = 0;
-    virtual fill_(const void* pdata) = 0;
+    virtual void fill_(const void* pdata) = 0;
 
     // reset undefined to a defined
-    virtual reset(TensorDataType dtype_, const std::vector<size_t>& shape_) = 0;
-    virtual reset(TensorDataType dtype_, const void* pvalue) = 0;
-    virtual reset(TensorDataType dtype_, const std::vector<size_t>& shape_, const void* pdata) = 0;
+    virtual void reset(TensorDataType dtype_, const std::vector<size_t>& shape_) = 0;
+    virtual void reset(TensorDataType dtype_, const void* pvalue) = 0;
+    virtual void reset(TensorDataType dtype_, const std::vector<size_t>& shape_, const void* pdata) = 0;
 
     // some fast access and help
     bool is_undefined() {
-        if ( dtype_ == YNX_UNDEFINED ) {
+        if ( dtype() == YNX_UNDEFINED ) {
             return true;
         }
         return false;
     }
     bool is_scalar() {
-        if ( dtype_ != YNX_UNDEFINED && shape_.size() == 0) {
+        if ( dtype() != YNX_UNDEFINED && shape().size() == 0) {
             return true;
         }
         return false;
@@ -125,9 +124,10 @@ public:
         return ss.str();
     }
 
-    template<typename T> T at(const std::vector<size_t>& position) {
-        T r = *(const T *)pvalue(position);
-        return T;
+    template<typename T>
+    T item(const std::vector<size_t>& position) {
+        auto r = *(const T *)item_(position);
+        return r;
     }
 
     // following is ONNX operator set
@@ -138,21 +138,26 @@ public:
 struct TensorFactory {
     virtual tensor_t create_undefined_tensor() = 0;
     virtual void register_user_tensor(tensor_t t, int64_t flag) = 0;
-}
+};
+
+
+//
+//  Following is a simple multiple type wrapped tensor
+//
 
 template <class T, TensorDataType _DTYPE_>
 struct ValueOnlyTensor {
 public:
     ValueOnlyTensor(std::vector<size_t>& shape) {
         size_t n = 1;
-        for (size_t i = 0; i < shape_.size(); i++) {
+        for (size_t i = 0; i < shape.size(); i++) {
             n = n * shape[i];
         }
         value_.resize(n);
     }
     ValueOnlyTensor(std::vector<size_t>& shape, const void* pdata){
         size_t n = 1;
-        for (size_t i = 0; i < shape_.size(); i++) {
+        for (size_t i = 0; i < shape.size(); i++) {
             n = n * shape[i];
         }
         value_.resize(n);
@@ -181,7 +186,7 @@ using value_int64_t = ValueOnlyTensor<int64_t, TensorDataType::YNX_INT64>;
 using value_bool_t = ValueOnlyTensor<unsigned char, TensorDataType::YNX_BOOL>;
 
 template <TensorDataType _DTYPE_, typename DeviceImpl>
-struct DeviceTensor : {
+struct DeviceTensor : public TensorType {
 public:
     // default is a undefined tensor
     DeviceTensor() : dtype_(YNX_UNDEFINED), impl_((void*)NULL) {
