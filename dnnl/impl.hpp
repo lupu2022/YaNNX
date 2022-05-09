@@ -267,6 +267,10 @@ private:
         mem_ = dst_mem;
     }
 
+    static DNNLTensor<_DTYPE_>* dnnl(tt::tensor_t& t) {
+        return tt::DeviceTensor<_DTYPE_, DNNLTensor<_DTYPE_> >::impl(t);
+    }
+
 private:
     dnnl_memory_desc_t              plain_md_;
     dnnl_memory_t                   mem_;

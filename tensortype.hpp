@@ -217,7 +217,7 @@ public:
         return true;
     }
 
-    static DeviceImpl* impl(tensor_t t) {
+    static DeviceImpl* impl(tensor_t& t) {
         DeviceTensor* dt = dynamic_cast<DeviceTensor *>(t.get());
         if ( dt ) {
             return dt->impl();
