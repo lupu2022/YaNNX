@@ -31,6 +31,8 @@ bool readline(const std::string& prop, std::string& code) {
 
 int main(const int argc, const char* argv[] ) {
     yannx::Runtime<yannx::tt::TensorType> runtime;
+
+    yannx::tt::DeviceTensor<yannx::tt::YNX_FLOAT, yannx::dnnl::DNNLTensor<yannx::tt::YNX_FLOAT>> myTensor;
     //yannx::tt::register_all_onnx_defined_words(runtime);
 
     // 0. load all code to one string

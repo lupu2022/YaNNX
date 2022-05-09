@@ -86,7 +86,7 @@ struct DNNLTensor : public tt::TensorType {
         }
 
         if ( _DTYPE_ == tt::YNX_FLOAT ) {
-            float* d = plain_ptr();
+            float* d = (float *)plain_ptr();
             return &d[pos];
         }
         yannx_panic("DNNL unsupport data type!");
@@ -103,7 +103,9 @@ struct DNNLTensor : public tt::TensorType {
     }
 
     // we don't need these call, they are called by DeviceTensor
-
+    virtual void reset(tt::TensorDataType dtype_, const std::vector<size_t>& shape_) override {};
+    virtual void reset(tt::TensorDataType dtype_, const void* pvalue) override {};
+    virtual void reset(tt::TensorDataType dtype_, const std::vector<size_t>& shape_, const void* pdata) override {};
 
 public:
     // element wise operator : Y = op(X)

@@ -6,6 +6,7 @@
 #include <sstream>
 #include <algorithm>
 #include <variant>
+#include <cstring>
 
 #include "yannx.hpp"
 
@@ -149,14 +150,14 @@ struct TensorFactory {
 template <class T, TensorDataType _DTYPE_>
 struct ValueOnlyTensor {
 public:
-    ValueOnlyTensor(std::vector<size_t>& shape) {
+    ValueOnlyTensor(const std::vector<size_t>& shape) {
         size_t n = 1;
         for (size_t i = 0; i < shape.size(); i++) {
             n = n * shape[i];
         }
         value_.resize(n);
     }
-    ValueOnlyTensor(std::vector<size_t>& shape, const void* pdata){
+    ValueOnlyTensor(const std::vector<size_t>& shape, const void* pdata){
         size_t n = 1;
         for (size_t i = 0; i < shape.size(); i++) {
             n = n * shape[i];
@@ -241,7 +242,7 @@ public:
     }
 
     // reset to a normal tensor
-    void reset(TensorDataType dtype, std::vector<size_t>& shape) {
+    void reset(TensorDataType dtype, const std::vector<size_t>& shape) override {
         yannx_assert(dtype == YNX_UNDEFINED, "Can't reset a typed tensor!");
         yannx_assert(shape.size() > 0, "Can't reset with zero shape!");
 
@@ -271,7 +272,7 @@ public:
     }
 
     // reset to a normal tensor with filled data
-    void reset(TensorDataType dtype, std::vector<size_t>& shape, const void* pdata) {
+    void reset(TensorDataType dtype, const std::vector<size_t>& shape, const void* pdata) override {
         yannx_assert(dtype == YNX_UNDEFINED, "Can't reset a typed tensor!");
         yannx_assert(shape.size() > 0, "Can't reset a typed tensor with zero shape!");
         yannx_assert(impl_.index() == UNKNOW_ANY, "Can't reset a setted tensor!");
@@ -302,7 +303,7 @@ public:
     }
 
     // reset to a scalar tensor
-    void reset(TensorDataType dtype, const void* pvalue) {
+    void reset(TensorDataType dtype, const void* pvalue) override {
         yannx_assert(dtype == YNX_UNDEFINED, "Can't reset a typed tensor!");
         yannx_assert(impl_.index() == UNKNOW_ANY, "Can't reset a setted tensor!");
 
