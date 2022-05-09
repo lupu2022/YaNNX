@@ -51,8 +51,8 @@ tt::OperatorReturnType DNNLTensor<_DTYPE_>::onnx_Clip(tt::tensor_t input, std::v
     yannx_assert( max->is_scalar(), "Clip's min/max must be scalar!");
 
     if (dtype == tt::YNX_FLOAT) {
-        float min_value = *(const float *)min->value();
-        float max_value = *(const float *)max->value();
+        float min_value = min->item<float>( {} );
+        float max_value = max->item<float>( {} );
         return dnnl_eltwise_operator(input, output, dnnl_eltwise_clip, min_value, max_value);
     }
     yannx_panic("Don't support data type");

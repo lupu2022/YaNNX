@@ -5,6 +5,7 @@
 
 #include "yannx.hpp"
 #include "tensortype.hpp"
+#include "dnnl/impl.hpp"
 
 std::string fileToString(const char* filename) {
     std::ifstream t(filename);

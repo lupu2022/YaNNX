@@ -39,6 +39,14 @@ namespace yannx { namespace dnnl { namespace dnnl_help {
         DNNL_CHECK(dnnl_engine_destroy(dnnl_help::DNNL_ENGINE_DEFAULT));
     }
 
+    inline dnnl_data_type_t tt_type_to_dnnl_type(yannx::tt::TensorDataType dtype) {
+        if ( dtype == yannx::tt::YNX_FLOAT) {
+            return dnnl_f32;
+        }
+        yannx_panic("DNNL unsupport data type.");
+        return dnnl_data_type_undef;
+    }
+
     inline dnnl_format_tag_t ndim_to_mem_plain_tag(size_t ndim) {
         if (ndim == 1) {
             return dnnl_a;

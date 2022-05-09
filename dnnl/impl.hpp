@@ -6,15 +6,14 @@
 #include <cmath>
 
 #include "yannx.hpp"
-#include "api.hpp"
 #include "tensortype.hpp"
 
 #include "dnnl/dnnl_help.hpp"
 
 namespace yannx { namespace dnnl {
 
-template <dnnl_data_type_t _DTYPE_>
-struct DNNLTensor : public tt::OnnxOperatorSet {
+template <tt::TensorDataType _DTYPE_>
+struct DNNLTensor : public tt::TensorType {
     ~DNNLTensor() {
         release();
     }
@@ -22,9 +21,9 @@ struct DNNLTensor : public tt::OnnxOperatorSet {
     // build a dense plain layout tensor
     DNNLTensor(const std::vector<size_t>& shape) : shape_(shape) {
         yannx_assert(shape_.size() != 0, "Can't build tensor with zero shape!");
-        yannx_assert(tt_dtype != tt::YNX_UNDEFINED, "Can't implement a undefined CPU tensor");
+        yannx_assert( _DTYPE_ != tt::YNX_UNDEFINED, "Can't implement a undefined CPU tensor");
 
-        dtype_ = _DTYPE_;
+        dtype_ = dnnl_help::tt_type_to_dnnl_type(_DTYPE_);
 
         pd_ = nullptr;
         DNNL_CHECK(dnnl_memory_desc_init_by_tag(&plain_md_,
@@ -42,7 +41,7 @@ struct DNNLTensor : public tt::OnnxOperatorSet {
         if ( tt_dtype == tt::YNX_FLOAT ) {
             float* dst = (float *)plain_ptr();
             const float* src = (const float *)pdata;
-            memcpy(dst, src, items() * sizeof(float) );
+            memcpy(dst, src, num_items() * sizeof(float) );
             return;
         }
 
@@ -65,9 +64,46 @@ struct DNNLTensor : public tt::OnnxOperatorSet {
                                                 dnnl_help::ndim_to_mem_plain_tag(shape_.size())));
     }
 
-    const char* genre() override {
+    const char* device() override {
         return "DNNL_CPU";
     }
+    const std::vector<size_t>& shape() override {
+        return shape_;
+    }
+    tt::TensorDataType dtype() override {
+        return _DTYPE_;
+    }
+
+    const void* item_(const std::vector<size_t>& position) override {
+        // check position wheather out of shape
+        size_t pos = 0;
+        for (size_t i = 0; i < position.size(); i++) {
+            if ( position[i] >= shape_[i] ) {
+                yannx_panic("Position is out of shape");
+            }
+            pos = pos * shape_[i];
+            pos += position[i];
+        }
+
+        if ( _DTYPE_ == tt::YNX_FLOAT ) {
+            float* d = plain_ptr();
+            return &d[pos];
+        }
+        yannx_panic("DNNL unsupport data type!");
+    }
+
+    void fill_(const void* pdata) override {
+        if ( _DTYPE_ == tt::YNX_FLOAT ) {
+            float* dst = (float *)plain_ptr();
+            const float* src = (const float *)pdata;
+            memcpy(dst, src, num_items() * sizeof(float) );
+            return;
+        }
+        yannx_panic("DNNL unsupport data type!");
+    }
+
+    // we don't need these call, they are called by DeviceTensor
+
 
 public:
     // element wise operator : Y = op(X)

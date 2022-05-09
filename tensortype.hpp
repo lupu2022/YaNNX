@@ -76,6 +76,7 @@ using tensor_t = std::shared_ptr<TensorType>;
 //
 struct TensorType {
 public:
+    virtual ~TensorType() {}
     // must be common operator
     virtual const char* device() = 0;
     virtual const std::vector<size_t>& shape()  = 0;
@@ -168,13 +169,18 @@ public:
         value_[0] = *(const T*)pvalue;
     }
 
+    TensorDataType dtype() {
+        return _DTYPE_;
+    }
+
     // value is only you need
     const void* value(size_t i) {
         return (void *)&value_[i];
     }
 
-    TensorDataType dtype() {
-        return _DTYPE_;
+    void fill(const void* pdata) {
+        const T* mem = (T *)pdata;
+        memcpy( value_.data(), mem,  value_.size() * sizeof(T) );
     }
 
 private:
@@ -194,6 +200,30 @@ public:
         static_assert((_DTYPE_ != YNX_INT64 ) && (_DTYPE_ != YNX_BOOL), "Don't support this type!");
     }
     ~DeviceTensor() {
+    }
+
+    DeviceImpl* impl() {
+        if ( impl_.index() == DEVICE_IMPL ) {
+            return (DeviceImpl *) std::get<DEVICE_IMPL>(impl_).get();
+        }
+        yannx_panic("Can't get impl from a none device tensor");
+        return nullptr;
+    }
+
+    bool is_value_only() {
+        if ( impl_.index() == DEVICE_IMPL ) {
+            return false;
+        }
+        return true;
+    }
+
+    static DeviceImpl* impl(tensor_t t) {
+        DeviceTensor* dt = dynamic_cast<DeviceTensor *>(t.get());
+        if ( dt ) {
+            return dt->impl();
+        }
+        yannx_panic("Can't get impl from a none device tensor");
+        return nullptr;
     }
 
     // fast access
@@ -291,26 +321,56 @@ public:
             impl_ = std::make_unique<value_bool_t>(pvalue);
             return;
         }
-
         yannx_panic("DeviceTensor::reset can't be here!");
+    }
+
+    const void* item_(const std::vector<size_t>& position) override {
+        if ( position.size() != shape_.size() ) {
+            yannx_panic("Position is out of shape");
+        }
+        if ( is_value_only() ) {
+            // check position wheather out of shape
+            size_t pos = 0;
+            for (size_t i = 0; i < position.size(); i++) {
+                if ( position[i] >= shape_[i] ) {
+                    yannx_panic("Position is out of shape");
+                }
+                pos = pos * shape_[i];
+                pos += position[i];
+            }
+
+            if ( impl_.index() == VALUE_FLOAT ) {
+                return std::get<VALUE_FLOAT>(impl_)->value(pos);
+            }
+            if ( impl_.index() == VALUE_INT64 ) {
+                return std::get<VALUE_INT64>(impl_)->value(pos);
+            }
+            if ( impl_.index() == VALUE_BOOL ) {
+                return std::get<VALUE_BOOL>(impl_)->value(pos);
+            }
+            yannx_panic("Can't be here!");
+        }
+        return impl()->item_(position);
+    }
+    void fill_(const void* pdata) override {
+        if ( is_value_only() ) {
+            // check position wheather out of shape
+            if ( impl_.index() == VALUE_FLOAT ) {
+                return std::get<VALUE_FLOAT>(impl_)->fill(pdata);
+            }
+            if ( impl_.index() == VALUE_INT64 ) {
+                return std::get<VALUE_INT64>(impl_)->fill(pdata);
+            }
+            if ( impl_.index() == VALUE_BOOL ) {
+                return std::get<VALUE_BOOL>(impl_)->fill(pdata);
+            }
+            yannx_panic("Can't be here!");
+        }
+        return impl()->fill_(pdata);
     }
 
 #include "api_impl.inc"
 
-private:
-    TensorType* impl() {
-        if ( impl_.index() == DEVICE_IMPL ) {
-            return (TensorType *) std::get<DEVICE_IMPL>(impl_).get();
-        }
-        yannx_panic("Can't get impl from a none device tensor");
-        return nullptr;
-    }
-    bool is_value_only() {
-        if ( impl_.index() == DEVICE_IMPL ) {
-            return false;
-        }
-        return true;
-    }
 
 private:
     // basic info about tensor
