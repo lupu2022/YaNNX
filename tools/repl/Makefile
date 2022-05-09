@@ -2,9 +2,9 @@
 
 TARGET = repl
 
-FLAGS = -std=c++17 -Wall -g -DONNX_NAMESPACE=onnx -DONNX_ML=0 
-INC = -I../.. -I${ONNX_PATH}/include -I$(PROTOBUF_PATH)/include
-LINK = -L${ONNX_PATH}/lib  -L${PROTOBUF_PATH}/lib -lonnx -lonnx_proto -lprotobuf -lpthread 
+FLAGS = -std=c++17 -Wall -g -DONNX_NAMESPACE=onnx -DONNX_ML=0 -D_USE_DNNL_CPU_ 
+INC = -I../.. -I${ONNX_PATH}/include -I$(PROTOBUF_PATH)/include -I$(DNNL_PATH)/include 
+LINK = -L${ONNX_PATH}/lib  -L${PROTOBUF_PATH}/lib -L$(DNNL_PATH)/lib -lonnx -lonnx_proto -lprotobuf -ldnnl -lpthread 
 
 all: $(TARGET)
 

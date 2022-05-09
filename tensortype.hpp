@@ -5,21 +5,20 @@
 #include <string>
 #include <sstream>
 #include <algorithm>
+#include <variant>
 
-#include <yannx.hpp>
-#include <api.hpp>
-
-#ifdef _USE_DNNL_CPU_
-#include "dnnl/impl.hpp"
-using device_float_t = yannx::dnnl::DNNLTensor<tt::TensorDataType::YNX_FLOAT>;
-#endif
-
-#ifdef _USE_CUDA_GPU_
-#include "cuda/impl.hpp"
-using device_float_t = yannx::dnnl::DNNLTensor<tt::TensorDataType::YNX_FLOAT>;
-#endif
+#include "yannx.hpp"
+#include "api.hpp"
 
 namespace yannx { namespace tt {
+
+enum OperatorReturnType {
+    YNX_OK = 0,
+    YNX_TODO_ERROR = -1,
+    YNX_INPUT_ERROR = -2,
+    YNX_OUTPUT_ERROR = -3,
+    YNX_ATTR_ERROR = -4,
+};
 
 enum TensorDataType {
     YNX_UNDEFINED = 0,
@@ -41,8 +40,105 @@ enum TensorDataType {
     YNX_BFLOAT16
 };
 
+static const char* TensorDataTypeString[] = {
+    "YNX_UNDEFINED",
+    "YNX_FLOAT",
+    "YNX_UINT8",
+    "YNX_INT8",
+    "YNX_UINT16",
+    "YNX_INT16",
+    "YNX_INT32",
+    "YNX_INT64",
+    "YNX_STRING",
+    "YNX_BOOL",
+    "YNX_FLOAT16",
+    "YNX_DOUBLE",
+    "YNX_UINT32",
+    "YNX_UINT64",
+    "YNX_COMPLEX64",
+    "YNX_COMPLEX128",
+    "YNX_BFLOAT16"
+};
+
+
+
 struct TensorType;
 using tensor_t = std::shared_ptr<TensorType>;
+
+//
+//  https://github.com/onnx/onnx/blob/main/docs/IR.md#tensor-definition
+//  scalar:         an empty shape with a defined data type
+//  tensor:         shape dimention > 0
+//  undefined:      empty shape with a undefined data type, used for type_shape inference.
+//
+//  ONNX based tensor computing API
+//  https://github.com/onnx/onnx/blob/main/docs/IR.md
+//  https://github.com/onnx/onnx/blob/main/docs/Operators.md
+//
+struct TensorType {
+public:
+    // must be common operator
+    virtual const char* device() = 0;
+    virtual const std::vector<size_t>& shape()  = 0;
+    virtual TensorDataType dtype() = 0;
+    // io functions: single read & whole write
+    virtual const void* item_(const std::vector<size_t>& position) = 0;
+    virtual fill_(const void* pdata) = 0;
+
+    // reset undefined to a defined
+    virtual reset(TensorDataType dtype_, const std::vector<size_t>& shape_) = 0;
+    virtual reset(TensorDataType dtype_, const void* pvalue) = 0;
+    virtual reset(TensorDataType dtype_, const std::vector<size_t>& shape_, const void* pdata) = 0;
+
+    // some fast access and help
+    bool is_undefined() {
+        if ( dtype_ == YNX_UNDEFINED ) {
+            return true;
+        }
+        return false;
+    }
+    bool is_scalar() {
+        if ( dtype_ != YNX_UNDEFINED && shape_.size() == 0) {
+            return true;
+        }
+        return false;
+    }
+    size_t num_items() {
+        auto s = shape();
+        size_t n = 1;
+        for (size_t i = 0; i < s.size(); i++) {
+            n = n * s[i];
+        }
+        return n;
+    }
+    std::string to_string() {
+        std::ostringstream ss;
+        ss << TensorDataTypeString[ dtype() ];
+        ss << ":[";
+        for (size_t i = 0; i < shape().size(); i++) {
+            ss << shape()[i];
+            if (i != shape().size() - 1) {
+                ss << " ";
+            }
+        }
+        ss << "]";
+        return ss.str();
+    }
+
+    template<typename T> T at(const std::vector<size_t>& position) {
+        T r = *(const T *)pvalue(position);
+        return T;
+    }
+
+    // following is ONNX operator set
+#include "api_def.inc"
+
+};
+
+struct TensorFactory {
+    virtual tensor_t create_undefined_tensor() = 0;
+    virtual void register_user_tensor(tensor_t t, int64_t flag) = 0;
+}
 
 template <class T, TensorDataType _DTYPE_>
 struct ValueOnlyTensor {
@@ -79,140 +175,59 @@ public:
 private:
     std::vector<T> value_;
 };
-// for scalar or un-supported data type
+
 using value_float_t = ValueOnlyTensor<float, TensorDataType::YNX_FLOAT>;
 using value_int64_t = ValueOnlyTensor<int64_t, TensorDataType::YNX_INT64>;
 using value_bool_t = ValueOnlyTensor<unsigned char, TensorDataType::YNX_BOOL>;
 
-/*
- *  https://github.com/onnx/onnx/blob/main/docs/IR.md#tensor-definition
- *  scalar:         an empty shape with a defined data type
- *  tensor:         shape dimention > 0
- *  undefined:      empty shape with a undefined data type, used for type_shape inference.
- */
-struct TensorType : public OnnxOperatorSet {
+template <TensorDataType _DTYPE_, typename DeviceImpl>
+struct DeviceTensor : {
 public:
     // default is a undefined tensor
-    TensorType() : dtype_(YNX_UNDEFINED), impl_((void*)NULL) {
-        static_assert(std::is_base_of<OnnxOperatorSet, device_float_t>::value, "Can't Using this tensor type!");
+    DeviceTensor() : dtype_(YNX_UNDEFINED), impl_((void*)NULL) {
+        static_assert(std::is_base_of<TensorType, DeviceImpl >::value, "Can't Using this tensor type!");
+        static_assert((_DTYPE_ != YNX_INT64 ) && (_DTYPE_ != YNX_BOOL), "Don't support this type!");
     }
-    ~TensorType() {
+    ~DeviceTensor() {
     }
 
     // fast access
-    TensorDataType dtype() {
+    const char* device() override {
+        if ( is_value_only() ) {
+            return "ValueOnly";
+        }
+        return impl()->device();
+    }
+    TensorDataType dtype() override {
         return dtype_;
     }
-    const std::vector<size_t>& shape() {
+    const std::vector<size_t>& shape() override {
         return shape_;
-    }
-    std::string to_string() {
-        std::ostringstream ss;
-        ss << TensorDataTypeString[ dtype() ];
-        ss << ":[";
-        for (size_t i = 0; i < shape().size(); i++) {
-            ss << shape()[i];
-            if (i != shape().size() - 1) {
-                ss << " ";
-            }
-        }
-        ss << "]";
-        return ss.str();
-    }
-    size_t items() {
-        if ( dtype() == YNX_UNDEFINED ) {
-            return 0;
-        }
-        size_t n = 1;
-        auto shape_ = shape();
-        for ( size_t i = 0; i < shape_.size(); i++) {
-            n = n * shape_[i];
-        }
-        return n;
-    }
-    bool is_scalar() {
-        if ( dtype() == YNX_UNDEFINED ) {
-            return false;
-        }
-        if ( shape().size() == 0) {
-            return true;
-        }
-        return false;
-    }
-
-    device_float_t* device_float() {
-        if ( impl_.index() == DEVICE_FLOAT() ) {
-            return std::get<DEVICE_FLOAT>(impl_).get();
-        }
-    }
-
-    template<typename T>
-    T value() {
-        if ( !is_scalar() ) {
-            yannx_panic("Can't call value() from none scalar");
-        }
-
-        if ( impl_.index() == VALUE_FLOAT ) {
-            return *(T *)std::get<VALUE_FLOAT>(impl_)->value(0);
-        }
-        if ( impl_.index() == VALUE_INT64 ) {
-            return *(T *)std::get<VALUE_INT64>(impl_)->value(0);
-        }
-        if ( impl_.index() == VALUE_BOOL ) {
-            return *(T *)std::get<VALUE_BOOL>(impl_)->value(0);
-        }
-
-        yannx_panic("Can't call value() from none value Tensor");
-        return 0;
-    }
-
-    template<typename T>
-    T value(const std::vector<size_t>& pos) {
-        if ( is_scalar() ) {
-            yannx_panic("Can't call value(pos) from a scalar");
-        }
-
-        if ( pos.size() != shape_.size() ) {
-            yannx_panic("Position is not same rank of shape!");
-        }
-
-        size_t seq = 0;
-        for (size_t i = 0; i < pos.size(); i++) {
-            if ( pos[i] >= shape_[i] ) {
-                yannx_panic("Position is out of shape!");
-            }
-            seq = seq + pos[i] * shape_[i];
-        }
-
-        if ( impl_.index() == VALUE_FLOAT ) {
-            return *(T *)std::get<VALUE_FLOAT>(impl_)->value(seq);
-        }
-        if ( impl_.index() == VALUE_INT64 ) {
-            return *(T *)std::get<VALUE_INT64>(impl_)->value(seq);
-        }
-        if ( impl_.index() == VALUE_BOOL ) {
-            return *(T *)std::get<VALUE_BOOL>(impl_)->value(seq);
-        }
-
-        yannx_panic("Can't call value() from none value Tensor");
-        return 0;
     }
 
     // reset to a normal tensor
     void reset(TensorDataType dtype, std::vector<size_t>& shape) {
         yannx_assert(dtype == YNX_UNDEFINED, "Can't reset a typed tensor!");
-        yannx_assert(shape.size() > 0, "Can't reset a typed tensor with zero shape!");
-        yannx_assert(impl_.index() == UNKNOW_ANY, "Can't reset a setted tensor!");
+        yannx_assert(shape.size() > 0, "Can't reset with zero shape!");
 
         dtype_ = dtype;
         shape_ = shape;
 
-        if ( dtype == YNX_FLOAT ) {
-            impl_ = std::make_unique<device_float_t>(shape);
+        if ( dtype == _DTYPE_ ) {
+            impl_ = std::make_unique<DeviceImpl>(shape);
+            return;
+        }
+        if ( dtype == YNX_INT64 ) {
+            impl_ = std::make_unique<value_int64_t>(shape);
             return;
         }
 
         if ( dtype == YNX_INT64 ) {
+            impl_ = std::make_unique<value_int64_t>(shape);
+            return;
+        }
+
+        if ( dtype == YNX_BOOL ) {
             impl_ = std::make_unique<value_int64_t>(shape);
             return;
         }
@@ -229,8 +244,13 @@ public:
         dtype_ = dtype;
         shape_ = shape;
 
-        if ( dtype == YNX_FLOAT ) {
-            impl_ = std::make_unique<device_float_t>(shape, pdata);
+        if ( dtype == _DTYPE_ ) {
+            impl_ = std::make_unique<DeviceImpl>(shape, pdata);
+            return;
+        }
+
+        if ( dtype == YNX_FLOAT) {
+            impl_ = std::make_unique<value_float_t>(shape, pdata);
             return;
         }
 
@@ -239,6 +259,10 @@ public:
             return;
         }
 
+        if ( dtype == YNX_BOOL) {
+            impl_ = std::make_unique<value_bool_t>(shape, pdata);
+            return;
+        }
         yannx_panic("DeviceTensor::reset can't be here!");
     }
 
@@ -258,29 +282,29 @@ public:
             impl_ = std::make_unique<value_int64_t>(pvalue);
             return;
         }
+        if ( dtype == YNX_BOOL) {
+            impl_ = std::make_unique<value_bool_t>(pvalue);
+            return;
+        }
 
         yannx_panic("DeviceTensor::reset can't be here!");
-    }
-
-    //
-    //  Realy tensor computing API following ONNX define
-    //
-    const char* genre() override {
-        if ( impl_.index() == DEVICE_FLOAT ) {
-            return std::get<DEVICE_FLOAT>(impl_)->genre();
-        }
-        return "ValueOnly";
     }
 
 #include "api_impl.inc"
 
 private:
-    OnnxOperatorSet* impl() {
-        if ( impl_.index() == DEVICE_FLOAT ) {
-            return (TensorType *) std::get<DEVICE_FLOAT>(impl_).get();
+    TensorType* impl() {
+        if ( impl_.index() == DEVICE_IMPL ) {
+            return (TensorType *) std::get<DEVICE_IMPL>(impl_).get();
         }
         yannx_panic("Can't get impl from a none device tensor");
         return nullptr;
+    }
+    bool is_value_only() {
+        if ( impl_.index() == DEVICE_IMPL ) {
+            return false;
+        }
+        return true;
     }
 
 private:
@@ -291,25 +315,20 @@ private:
     // ImplType enum order is same as TensorImpl's variant
     enum ImplType {
         UNKNOW_ANY = 0,
-        DEVICE_FLOAT,
+        DEVICE_IMPL,
         VALUE_FLOAT,
         VALUE_INT64,
         VALUE_BOOL,
     };
     using TensorImpl = std::variant< void *,
-                                     std::unique_ptr<device_float_t>,
+                                     std::unique_ptr<DeviceImpl>,
                                      std::unique_ptr<value_float_t>,
                                      std::unique_ptr<value_int64_t>,
                                      std::unique_ptr<value_bool_t> >;
     TensorImpl impl_;
-
-public:
-    //
-    //  User must be re-implement, return user side undefined tensor!
-    //
-    static tensor_t create_undefined_user_tensor();
-    static void register_user_tensor(tensor_t, int64_t flag);
 };
 
 }} // end of namespace
+
+
 #endif

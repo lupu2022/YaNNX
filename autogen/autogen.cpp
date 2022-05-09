@@ -711,20 +711,15 @@ int main(int argc, char* argv[]) {
 
     // 4. writing a auto api define list
     {
-        auto result = fileToString("api~.hpp");
         std::ostringstream oss;
         for (auto ii = operators_by_name.begin(); ii != operators_by_name.end(); ii++) {
             std::string api_code = api_generate( schemas[ ii->second ] );
             oss << api_code << std::endl;
         }
-        std::string def_str = oss.str();
-        replace_all(def_str, "\t", "    ");
-        replace_all(result, "#ONNX_DEF#", def_str);
-        oss.clear();
-
         std::ofstream ofs;
-        ofs.open("api.hpp");
-        ofs << result;
+        ofs.open("api_def.inc");
+        ofs << "//  this file is geneated by autogen" << std::endl;
+        ofs << oss.str();
         ofs.close();
     }
 }

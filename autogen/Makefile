@@ -13,8 +13,8 @@ $(TARGET): autogen.cpp
 
 install: $(TARGET)
 	LD_LIBRARY_PATH=$(ONNX_PATH)/lib:$(PROTOBUF_PATH)/lib:$LD_LIBRARY_PATH ./$(TARGET)
-	mv api.hpp api_impl.inc words.hpp ../
+	mv api_def.inc api_impl.inc words.hpp ../
 
 clean:
 	rm -f $(TARGET)
-	rm -f api.hpp api_impl.inc words.hpp
+	rm -f api_def.inc api_impl.inc words.hpp

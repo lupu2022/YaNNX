@@ -13,7 +13,7 @@
 
 namespace yannx { namespace dnnl {
 
-template <tt::TensorDataType _DTYPE_>
+template <dnnl_data_type_t _DTYPE_>
 struct DNNLTensor : public tt::OnnxOperatorSet {
     ~DNNLTensor() {
         release();
@@ -21,12 +21,10 @@ struct DNNLTensor : public tt::OnnxOperatorSet {
 
     // build a dense plain layout tensor
     DNNLTensor(const std::vector<size_t>& shape) : shape_(shape) {
-        tt::TensorDataType tt_dtype = _DTYPE_;
-
         yannx_assert(shape_.size() != 0, "Can't build tensor with zero shape!");
         yannx_assert(tt_dtype != tt::YNX_UNDEFINED, "Can't implement a undefined CPU tensor");
 
-        dtype_ = dnnl_help::tt_type_to_dnnl_type(tt_dtype);
+        dtype_ = _DTYPE_;
 
         pd_ = nullptr;
         DNNL_CHECK(dnnl_memory_desc_init_by_tag(&plain_md_,
@@ -243,12 +241,12 @@ private:
 };
 
 // see https://oneapi-src.github.io/oneDNN/index.html
-#include "binary.hpp"
-#include "eltwise.hpp"
-#include "reduce.hpp"
-#include "common.hpp"
-#include "concat.hpp"
-#include "matmul.hpp"
+#include "dnnl/binary.hpp"
+#include "dnnl/eltwise.hpp"
+#include "dnnl/reduce.hpp"
+#include "dnnl/common.hpp"
+#include "dnnl/concat.hpp"
+#include "dnnl/matmul.hpp"
 
 }}
 
