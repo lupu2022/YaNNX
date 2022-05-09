@@ -4,8 +4,8 @@ tt::OperatorReturnType DNNLTensor<_DTYPE_>::dnnl_eltwise_operator(tt::tensor_t X
 
     if (dtype == tt::YNX_FLOAT) {
         // query memory and memory desc
-        auto src_mem = X->device_float()->dnnl_mem();
-        auto src_md = X->device_float()->dnnl_md();
+        auto src_mem = dnnl(X)->dnnl_mem();
+        auto src_md = dnnl(X)->dnnl_md();
 
         // create prim and pd
         dnnl_eltwise_desc_t desc;
@@ -20,8 +20,8 @@ tt::OperatorReturnType DNNLTensor<_DTYPE_>::dnnl_eltwise_operator(tt::tensor_t X
 
         // create destnation memory
         auto dst_md = dnnl_primitive_desc_query_md(eltwise_pd, dnnl_query_dst_md, 0);
-        Y->device_float()->reorder(dst_md);
-        auto dst_mem = Y->device_float()->dnnl_mem();
+        dnnl(Y)->reorder(dst_md);
+        auto dst_mem = dnnl(Y)->dnnl_mem();
 
         // prepare arguments and execute
         dnnl_exec_arg_t args[2];

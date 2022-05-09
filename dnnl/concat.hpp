@@ -3,12 +3,12 @@ tt::OperatorReturnType DNNLTensor<_DTYPE_>::onnx_Concat(std::vector<tt::tensor_t
     tt::TensorDataType dtype = _DTYPE_;
 
     if (dtype == tt::YNX_FLOAT) {
-        auto dst_mem = dst->device_float()->dnnl_mem();
-        auto dst_md = dst->device_float()->dnnl_md();
+        auto dst_mem = dnnl(dst)->dnnl_mem();
+        auto dst_md = dnnl(dst)->dnnl_md();
 
         std::vector<dnnl_memory_desc_t> src_mds(all_tensors.size());
         for(size_t i = 0; i < all_tensors.size(); i++) {
-            src_mds[i] = *all_tensors[i]->device_float()->dnnl_md());
+            src_mds[i] = *(dnnl(all_tensors[i])->dnnl_md());
         }
 
         dnnl_primitive_desc_t concat_pd;
@@ -26,7 +26,7 @@ tt::OperatorReturnType DNNLTensor<_DTYPE_>::onnx_Concat(std::vector<tt::tensor_t
         // prepare arguments and execute
         std::vector<dnnl_exec_arg_t> args(all_tensors.size() + 1);
         for(size_t i = 0; i < all_tensors.size(); i++) {
-            auto mem = all_tensors[i]->device_float()->dnnl_mem();
+            auto mem = dnnl(all_tensors[i])->dnnl_mem();
             dnnl_help::set_arg(&args[0], i, DNNL_ARG_MULTIPLE_SRC + i, mem);
         }
         dnnl_help::set_arg(&args[0], all_tensors.size(), DNNL_ARG_DST, dst_mem);
