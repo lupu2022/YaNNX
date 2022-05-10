@@ -133,7 +133,7 @@ public:
     }
 
     // following is ONNX operator set
-#include "api_def.inc"
+#include "autogen/api_def.inc"
 
 };
 
@@ -370,7 +370,7 @@ public:
         return impl()->fill_(pdata);
     }
 
-#include "api_impl.inc"
+#include "autogen/api_impl.inc"
 
 
 private:

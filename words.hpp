@@ -522,7 +522,7 @@ namespace common {
 
 }
 
-#include "words_impl.inc"
+#include "autogen/words_impl.inc"
 
 //
 //  Registering all words
@@ -534,7 +534,7 @@ void register_all_onnx_defined_words( Runtime<TensorType>& runtime) {
     runtime.new_nword("ynx.NewConstant~", common::Constant::creator);
     runtime.new_nword("ynx.Register~", common::Register::creator);
 
-#include "words_def.inc"
+#include "autogen/words_def.inc"
 
 }
 
