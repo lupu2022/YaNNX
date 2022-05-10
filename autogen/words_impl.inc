@@ -6,7 +6,7 @@ namespace generator {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            output = TensorType::create_undefined_user_tensor();
+            output = TensorFactory::create_undefined_user_tensor();
 
             auto seed = fetch_optional_float(stack, 0);
             auto scale = fetch_optional_float(stack, 1);
@@ -67,7 +67,7 @@ namespace generator {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            output = TensorType::create_undefined_user_tensor();
+            output = TensorFactory::create_undefined_user_tensor();
 
             auto shape = fetch_ints(stack);
             auto seed = fetch_optional_float(stack, 0);
@@ -128,7 +128,7 @@ namespace generator {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            output = TensorType::create_undefined_user_tensor();
+            output = TensorFactory::create_undefined_user_tensor();
 
             auto shape = fetch_ints(stack);
             auto seed = fetch_optional_float(stack, 0);
@@ -189,7 +189,7 @@ namespace generator {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            output = TensorType::create_undefined_user_tensor();
+            output = TensorFactory::create_undefined_user_tensor();
 
             auto k = fetch_optional_int(stack, 0);
             auto dtype = fetch_optional_int(stack, 0);
@@ -244,7 +244,7 @@ namespace generator {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            output = TensorType::create_undefined_user_tensor();
+            output = TensorFactory::create_undefined_user_tensor();
 
             auto seed = fetch_optional_float(stack, 0);
             auto dtype = fetch_optional_int(stack, 0);
@@ -299,7 +299,7 @@ namespace generator {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            output = TensorType::create_undefined_user_tensor();
+            output = TensorFactory::create_undefined_user_tensor();
 
             auto seed = fetch_optional_float(stack, 0);
             auto sample_size = fetch_optional_int(stack, 1);
@@ -357,7 +357,7 @@ namespace generator {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            output = TensorType::create_undefined_user_tensor();
+            output = TensorFactory::create_undefined_user_tensor();
 
             auto seed = fetch_optional_float(stack, 0);
             auto low = fetch_optional_float(stack, 0);
@@ -418,7 +418,7 @@ namespace generator {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            output = TensorType::create_undefined_user_tensor();
+            output = TensorFactory::create_undefined_user_tensor();
 
 
             auto delta = fetch_tensor(stack);
@@ -475,7 +475,7 @@ namespace logical {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            C = TensorType::create_undefined_user_tensor();
+            C = TensorFactory::create_undefined_user_tensor();
 
 
             auto B = fetch_tensor(stack);
@@ -527,7 +527,7 @@ namespace logical {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            C = TensorType::create_undefined_user_tensor();
+            C = TensorFactory::create_undefined_user_tensor();
 
 
             auto B = fetch_tensor(stack);
@@ -579,7 +579,7 @@ namespace logical {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            Z = TensorType::create_undefined_user_tensor();
+            Z = TensorFactory::create_undefined_user_tensor();
 
             auto direction = fetch_string(stack);
 
@@ -634,7 +634,7 @@ namespace logical {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            C = TensorType::create_undefined_user_tensor();
+            C = TensorFactory::create_undefined_user_tensor();
 
 
             auto B = fetch_tensor(stack);
@@ -686,7 +686,7 @@ namespace logical {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            C = TensorType::create_undefined_user_tensor();
+            C = TensorFactory::create_undefined_user_tensor();
 
 
             auto B = fetch_tensor(stack);
@@ -738,7 +738,7 @@ namespace logical {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            C = TensorType::create_undefined_user_tensor();
+            C = TensorFactory::create_undefined_user_tensor();
 
 
             auto B = fetch_tensor(stack);
@@ -790,7 +790,7 @@ namespace logical {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            C = TensorType::create_undefined_user_tensor();
+            C = TensorFactory::create_undefined_user_tensor();
 
 
             auto B = fetch_tensor(stack);
@@ -842,7 +842,7 @@ namespace logical {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            Y = TensorType::create_undefined_user_tensor();
+            Y = TensorFactory::create_undefined_user_tensor();
 
 
             auto X = fetch_tensor(stack);
@@ -891,7 +891,7 @@ namespace logical {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            C = TensorType::create_undefined_user_tensor();
+            C = TensorFactory::create_undefined_user_tensor();
 
 
             auto B = fetch_tensor(stack);
@@ -943,7 +943,7 @@ namespace logical {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            C = TensorType::create_undefined_user_tensor();
+            C = TensorFactory::create_undefined_user_tensor();
 
 
             auto B = fetch_tensor(stack);
@@ -997,7 +997,7 @@ namespace math {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            Y = TensorType::create_undefined_user_tensor();
+            Y = TensorFactory::create_undefined_user_tensor();
 
 
             auto X = fetch_tensor(stack);
@@ -1046,7 +1046,7 @@ namespace math {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            Y = TensorType::create_undefined_user_tensor();
+            Y = TensorFactory::create_undefined_user_tensor();
 
             auto alpha = fetch_optional_float(stack, 0.01);
 
@@ -1098,7 +1098,7 @@ namespace math {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            Y = TensorType::create_undefined_user_tensor();
+            Y = TensorFactory::create_undefined_user_tensor();
 
             auto beta = fetch_optional_float(stack, 0.5);
             auto alpha = fetch_optional_float(stack, 0.2);
@@ -1153,7 +1153,7 @@ namespace math {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            C = TensorType::create_undefined_user_tensor();
+            C = TensorFactory::create_undefined_user_tensor();
 
 
             auto B = fetch_tensor(stack);
@@ -1205,7 +1205,7 @@ namespace math {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            Z = TensorType::create_undefined_user_tensor();
+            Z = TensorFactory::create_undefined_user_tensor();
 
 
             auto Y = fetch_tensor(stack);
@@ -1257,7 +1257,7 @@ namespace math {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            C = TensorType::create_undefined_user_tensor();
+            C = TensorFactory::create_undefined_user_tensor();
 
 
             auto B = fetch_tensor(stack);
@@ -1309,7 +1309,7 @@ namespace math {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            min = TensorType::create_undefined_user_tensor();
+            min = TensorFactory::create_undefined_user_tensor();
 
 
             auto data_0 = fetch_tensors(stack);
@@ -1358,7 +1358,7 @@ namespace math {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            Y = TensorType::create_undefined_user_tensor();
+            Y = TensorFactory::create_undefined_user_tensor();
 
 
             auto X = fetch_tensor(stack);
@@ -1407,7 +1407,7 @@ namespace math {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            mean = TensorType::create_undefined_user_tensor();
+            mean = TensorFactory::create_undefined_user_tensor();
 
 
             auto data_0 = fetch_tensors(stack);
@@ -1456,7 +1456,7 @@ namespace math {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            max = TensorType::create_undefined_user_tensor();
+            max = TensorFactory::create_undefined_user_tensor();
 
 
             auto data_0 = fetch_tensors(stack);
@@ -1505,7 +1505,7 @@ namespace math {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            Y = TensorType::create_undefined_user_tensor();
+            Y = TensorFactory::create_undefined_user_tensor();
 
 
             auto X = fetch_tensor(stack);
@@ -1554,7 +1554,7 @@ namespace math {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            Y = TensorType::create_undefined_user_tensor();
+            Y = TensorFactory::create_undefined_user_tensor();
 
 
             auto X = fetch_tensor(stack);
@@ -1603,7 +1603,7 @@ namespace math {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            Y = TensorType::create_undefined_user_tensor();
+            Y = TensorFactory::create_undefined_user_tensor();
 
 
             auto X = fetch_tensor(stack);
@@ -1652,7 +1652,7 @@ namespace math {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            output = TensorType::create_undefined_user_tensor();
+            output = TensorFactory::create_undefined_user_tensor();
 
             auto axis = fetch_optional_int(stack, -1);
 
@@ -1704,7 +1704,7 @@ namespace math {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            Y = TensorType::create_undefined_user_tensor();
+            Y = TensorFactory::create_undefined_user_tensor();
 
 
             auto X = fetch_tensor(stack);
@@ -1753,7 +1753,7 @@ namespace math {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            output = TensorType::create_undefined_user_tensor();
+            output = TensorFactory::create_undefined_user_tensor();
 
 
             auto input = fetch_tensor(stack);
@@ -1802,7 +1802,7 @@ namespace math {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            Y = TensorType::create_undefined_user_tensor();
+            Y = TensorFactory::create_undefined_user_tensor();
 
 
             auto X = fetch_tensor(stack);
@@ -1851,7 +1851,7 @@ namespace math {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            C = TensorType::create_undefined_user_tensor();
+            C = TensorFactory::create_undefined_user_tensor();
 
 
             auto B = fetch_tensor(stack);
@@ -1903,7 +1903,7 @@ namespace math {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            Y = TensorType::create_undefined_user_tensor();
+            Y = TensorFactory::create_undefined_user_tensor();
 
 
             auto slope = fetch_tensor(stack);
@@ -1955,7 +1955,7 @@ namespace math {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            C = TensorType::create_undefined_user_tensor();
+            C = TensorFactory::create_undefined_user_tensor();
 
 
             auto B = fetch_tensor(stack);
@@ -2007,7 +2007,7 @@ namespace math {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            Y = TensorType::create_undefined_user_tensor();
+            Y = TensorFactory::create_undefined_user_tensor();
 
             auto gamma = fetch_optional_float(stack, 1.0507);
             auto alpha = fetch_optional_float(stack, 1.67326);
@@ -2062,7 +2062,7 @@ namespace math {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            Y = TensorType::create_undefined_user_tensor();
+            Y = TensorFactory::create_undefined_user_tensor();
 
 
             auto X = fetch_tensor(stack);
@@ -2111,7 +2111,7 @@ namespace math {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            y = TensorType::create_undefined_user_tensor();
+            y = TensorFactory::create_undefined_user_tensor();
 
 
             auto y_zero_point = fetch_tensor(stack);
@@ -2181,7 +2181,7 @@ namespace math {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            output = TensorType::create_undefined_user_tensor();
+            output = TensorFactory::create_undefined_user_tensor();
 
 
             auto max = fetch_optional_tensor(stack);
@@ -2236,7 +2236,7 @@ namespace math {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            Output = TensorType::create_undefined_user_tensor();
+            Output = TensorFactory::create_undefined_user_tensor();
 
             auto equation = fetch_string(stack);
 
@@ -2288,7 +2288,7 @@ namespace math {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            output = TensorType::create_undefined_user_tensor();
+            output = TensorFactory::create_undefined_user_tensor();
 
             auto axis = fetch_optional_int(stack, -1);
 
@@ -2340,7 +2340,7 @@ namespace math {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            Y = TensorType::create_undefined_user_tensor();
+            Y = TensorFactory::create_undefined_user_tensor();
 
 
             auto X = fetch_tensor(stack);
@@ -2389,7 +2389,7 @@ namespace math {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            Y = TensorType::create_undefined_user_tensor();
+            Y = TensorFactory::create_undefined_user_tensor();
 
             auto transB = fetch_optional_int(stack, 0);
             auto transA = fetch_optional_int(stack, 0);
@@ -2456,7 +2456,7 @@ namespace math {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            output = TensorType::create_undefined_user_tensor();
+            output = TensorFactory::create_undefined_user_tensor();
 
 
             auto input = fetch_tensor(stack);
@@ -2505,7 +2505,7 @@ namespace math {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            output = TensorType::create_undefined_user_tensor();
+            output = TensorFactory::create_undefined_user_tensor();
 
 
             auto input = fetch_tensor(stack);
@@ -2554,7 +2554,7 @@ namespace math {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            output = TensorType::create_undefined_user_tensor();
+            output = TensorFactory::create_undefined_user_tensor();
 
 
             auto input = fetch_tensor(stack);
@@ -2603,7 +2603,7 @@ namespace math {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            output = TensorType::create_undefined_user_tensor();
+            output = TensorFactory::create_undefined_user_tensor();
 
             auto axis = fetch_optional_int(stack, -1);
 
@@ -2657,9 +2657,9 @@ namespace math {
             ValueStack<TensorType>& stack = rt;
 
             if ( fetch_bool(stack) == true) {
-                log_prob = TensorType::create_undefined_user_tensor();
+                log_prob = TensorFactory::create_undefined_user_tensor();
             }
-            output = TensorType::create_undefined_user_tensor();
+            output = TensorFactory::create_undefined_user_tensor();
 
             auto reduction = fetch_optional_string(stack, "mean");
             auto ignore_index = fetch_optional_int(stack, 0);
@@ -2733,7 +2733,7 @@ namespace math {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            output = TensorType::create_undefined_user_tensor();
+            output = TensorFactory::create_undefined_user_tensor();
 
 
             auto input = fetch_tensor(stack);
@@ -2782,7 +2782,7 @@ namespace math {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            sum = TensorType::create_undefined_user_tensor();
+            sum = TensorFactory::create_undefined_user_tensor();
 
 
             auto data_0 = fetch_tensors(stack);
@@ -2831,7 +2831,7 @@ namespace math {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            output = TensorType::create_undefined_user_tensor();
+            output = TensorFactory::create_undefined_user_tensor();
 
 
             auto input = fetch_tensor(stack);
@@ -2880,7 +2880,7 @@ namespace math {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            output = TensorType::create_undefined_user_tensor();
+            output = TensorFactory::create_undefined_user_tensor();
 
 
             auto input = fetch_tensor(stack);
@@ -2930,8 +2930,8 @@ namespace math {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            Indices = TensorType::create_undefined_user_tensor();
-            Values = TensorType::create_undefined_user_tensor();
+            Indices = TensorFactory::create_undefined_user_tensor();
+            Values = TensorFactory::create_undefined_user_tensor();
 
             auto sorted = fetch_optional_int(stack, 1);
             auto largest = fetch_optional_int(stack, 1);
@@ -2996,7 +2996,7 @@ namespace math {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            output = TensorType::create_undefined_user_tensor();
+            output = TensorFactory::create_undefined_user_tensor();
 
 
             auto input = fetch_tensor(stack);
@@ -3045,7 +3045,7 @@ namespace math {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            output = TensorType::create_undefined_user_tensor();
+            output = TensorFactory::create_undefined_user_tensor();
 
 
             auto input = fetch_tensor(stack);
@@ -3094,7 +3094,7 @@ namespace math {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            output = TensorType::create_undefined_user_tensor();
+            output = TensorFactory::create_undefined_user_tensor();
 
 
             auto input = fetch_tensor(stack);
@@ -3143,7 +3143,7 @@ namespace math {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            output = TensorType::create_undefined_user_tensor();
+            output = TensorFactory::create_undefined_user_tensor();
 
 
             auto input = fetch_tensor(stack);
@@ -3192,7 +3192,7 @@ namespace math {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            output = TensorType::create_undefined_user_tensor();
+            output = TensorFactory::create_undefined_user_tensor();
 
 
             auto input = fetch_tensor(stack);
@@ -3241,7 +3241,7 @@ namespace math {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            Y = TensorType::create_undefined_user_tensor();
+            Y = TensorFactory::create_undefined_user_tensor();
 
 
             auto B = fetch_tensor(stack);
@@ -3293,7 +3293,7 @@ namespace math {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            output = TensorType::create_undefined_user_tensor();
+            output = TensorFactory::create_undefined_user_tensor();
 
 
             auto shape = fetch_tensor(stack);
@@ -3345,7 +3345,7 @@ namespace math {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            Y = TensorType::create_undefined_user_tensor();
+            Y = TensorFactory::create_undefined_user_tensor();
 
             auto alpha = fetch_optional_float(stack, 1);
 
@@ -3397,7 +3397,7 @@ namespace math {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            output = TensorType::create_undefined_user_tensor();
+            output = TensorFactory::create_undefined_user_tensor();
 
 
             auto input = fetch_tensor(stack);
@@ -3446,7 +3446,7 @@ namespace math {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            output = TensorType::create_undefined_user_tensor();
+            output = TensorFactory::create_undefined_user_tensor();
 
 
             auto input = fetch_tensor(stack);
@@ -3495,7 +3495,7 @@ namespace math {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            output = TensorType::create_undefined_user_tensor();
+            output = TensorFactory::create_undefined_user_tensor();
 
 
             auto input = fetch_tensor(stack);
@@ -3544,7 +3544,7 @@ namespace math {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            output = TensorType::create_undefined_user_tensor();
+            output = TensorFactory::create_undefined_user_tensor();
 
 
             auto input = fetch_tensor(stack);
@@ -3593,7 +3593,7 @@ namespace math {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            output = TensorType::create_undefined_user_tensor();
+            output = TensorFactory::create_undefined_user_tensor();
 
 
             auto input = fetch_tensor(stack);
@@ -3642,7 +3642,7 @@ namespace math {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            C = TensorType::create_undefined_user_tensor();
+            C = TensorFactory::create_undefined_user_tensor();
 
             auto fmod = fetch_optional_int(stack, 0);
 
@@ -3697,7 +3697,7 @@ namespace math {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            Y = TensorType::create_undefined_user_tensor();
+            Y = TensorFactory::create_undefined_user_tensor();
 
             auto alpha = fetch_optional_float(stack, 1);
 
@@ -3749,7 +3749,7 @@ namespace math {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            Y = TensorType::create_undefined_user_tensor();
+            Y = TensorFactory::create_undefined_user_tensor();
 
 
             auto b_zero_point = fetch_optional_tensor(stack);
@@ -3807,7 +3807,7 @@ namespace math {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            Y = TensorType::create_undefined_user_tensor();
+            Y = TensorFactory::create_undefined_user_tensor();
 
             auto alpha = fetch_optional_float(stack, 1);
 
@@ -3859,7 +3859,7 @@ namespace math {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            y = TensorType::create_undefined_user_tensor();
+            y = TensorFactory::create_undefined_user_tensor();
 
             auto reverse = fetch_optional_int(stack, 0);
             auto exclusive = fetch_optional_int(stack, 0);
@@ -3917,7 +3917,7 @@ namespace math {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            Y = TensorType::create_undefined_user_tensor();
+            Y = TensorFactory::create_undefined_user_tensor();
 
 
             auto X = fetch_tensor(stack);
@@ -3966,7 +3966,7 @@ namespace math {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            loss = TensorType::create_undefined_user_tensor();
+            loss = TensorFactory::create_undefined_user_tensor();
 
             auto reduction = fetch_optional_string(stack, "mean");
             auto ignore_index = fetch_optional_int(stack, 0);
@@ -4027,7 +4027,7 @@ namespace math {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            Y = TensorType::create_undefined_user_tensor();
+            Y = TensorFactory::create_undefined_user_tensor();
 
 
             auto X = fetch_tensor(stack);
@@ -4076,7 +4076,7 @@ namespace math {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            Y = TensorType::create_undefined_user_tensor();
+            Y = TensorFactory::create_undefined_user_tensor();
 
 
             auto X = fetch_tensor(stack);
@@ -4127,7 +4127,7 @@ namespace nn {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            Y = TensorType::create_undefined_user_tensor();
+            Y = TensorFactory::create_undefined_user_tensor();
 
             auto size = fetch_int(stack);
             auto bias = fetch_optional_float(stack, 1);
@@ -4188,7 +4188,7 @@ namespace nn {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            Y = TensorType::create_undefined_user_tensor();
+            Y = TensorFactory::create_undefined_user_tensor();
 
             auto strides = fetch_optional_ints(stack, {});
             auto pads = fetch_optional_ints(stack, {});
@@ -4254,9 +4254,9 @@ namespace nn {
             ValueStack<TensorType>& stack = rt;
 
             if ( fetch_bool(stack) == true) {
-                mask = TensorType::create_undefined_user_tensor();
+                mask = TensorFactory::create_undefined_user_tensor();
             }
-            output = TensorType::create_undefined_user_tensor();
+            output = TensorFactory::create_undefined_user_tensor();
 
             auto seed = fetch_optional_int(stack, 0);
 
@@ -4329,9 +4329,9 @@ namespace nn {
             ValueStack<TensorType>& stack = rt;
 
             if ( fetch_bool(stack) == true) {
-                Indices = TensorType::create_undefined_user_tensor();
+                Indices = TensorFactory::create_undefined_user_tensor();
             }
-            Y = TensorType::create_undefined_user_tensor();
+            Y = TensorFactory::create_undefined_user_tensor();
 
             auto strides = fetch_optional_ints(stack, {});
             auto storage_order = fetch_optional_int(stack, 0);
@@ -4414,7 +4414,7 @@ namespace nn {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            Y = TensorType::create_undefined_user_tensor();
+            Y = TensorFactory::create_undefined_user_tensor();
 
             auto p = fetch_optional_int(stack, 2);
 
@@ -4466,7 +4466,7 @@ namespace nn {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            output = TensorType::create_undefined_user_tensor();
+            output = TensorFactory::create_undefined_user_tensor();
 
             auto p = fetch_optional_int(stack, 2);
             auto axis = fetch_optional_int(stack, -1);
@@ -4521,7 +4521,7 @@ namespace nn {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            Y = TensorType::create_undefined_user_tensor();
+            Y = TensorFactory::create_undefined_user_tensor();
 
             auto strides = fetch_optional_ints(stack, {});
             auto pads = fetch_optional_ints(stack, {});
@@ -4594,7 +4594,7 @@ namespace nn {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            Y = TensorType::create_undefined_user_tensor();
+            Y = TensorFactory::create_undefined_user_tensor();
 
 
             auto X = fetch_tensor(stack);
@@ -4643,7 +4643,7 @@ namespace nn {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            output = TensorType::create_undefined_user_tensor();
+            output = TensorFactory::create_undefined_user_tensor();
 
             auto strides = fetch_optional_ints(stack, {});
             auto pads = fetch_optional_ints(stack, {});
@@ -4707,7 +4707,7 @@ namespace nn {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            Y = TensorType::create_undefined_user_tensor();
+            Y = TensorFactory::create_undefined_user_tensor();
 
             auto strides = fetch_optional_ints(stack, {});
             auto pads = fetch_optional_ints(stack, {});
@@ -4774,7 +4774,7 @@ namespace nn {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            output = TensorType::create_undefined_user_tensor();
+            output = TensorFactory::create_undefined_user_tensor();
 
             auto epsilon = fetch_optional_float(stack, 1e-05);
 
@@ -4832,7 +4832,7 @@ namespace nn {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            output = TensorType::create_undefined_user_tensor();
+            output = TensorFactory::create_undefined_user_tensor();
 
             auto axis = fetch_optional_int(stack, 1);
 
@@ -4884,7 +4884,7 @@ namespace nn {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            Y = TensorType::create_undefined_user_tensor();
+            Y = TensorFactory::create_undefined_user_tensor();
 
 
             auto X = fetch_tensor(stack);
@@ -4933,7 +4933,7 @@ namespace nn {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            Y = TensorType::create_undefined_user_tensor();
+            Y = TensorFactory::create_undefined_user_tensor();
 
             auto spatial_scale = fetch_optional_float(stack, 1);
             auto pooled_shape = fetch_ints(stack);
@@ -4994,12 +4994,12 @@ namespace nn {
             ValueStack<TensorType>& stack = rt;
 
             if ( fetch_bool(stack) == true) {
-                running_var = TensorType::create_undefined_user_tensor();
+                running_var = TensorFactory::create_undefined_user_tensor();
             }
             if ( fetch_bool(stack) == true) {
-                running_mean = TensorType::create_undefined_user_tensor();
+                running_mean = TensorFactory::create_undefined_user_tensor();
             }
-            Y = TensorType::create_undefined_user_tensor();
+            Y = TensorFactory::create_undefined_user_tensor();
 
             auto training_mode = fetch_optional_int(stack, 0);
             auto momentum = fetch_optional_float(stack, 0.9);
@@ -5095,7 +5095,7 @@ namespace nn {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            Y = TensorType::create_undefined_user_tensor();
+            Y = TensorFactory::create_undefined_user_tensor();
 
             auto stopwords = fetch_optional_strings(stack, {});
             auto locale = fetch_optional_string(stack, "");
@@ -5156,7 +5156,7 @@ namespace nn {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            output = TensorType::create_undefined_user_tensor();
+            output = TensorFactory::create_undefined_user_tensor();
 
             auto lambd = fetch_optional_float(stack, 0.5);
             auto bias = fetch_optional_float(stack, 0);
@@ -5211,7 +5211,7 @@ namespace nn {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            Y = TensorType::create_undefined_user_tensor();
+            Y = TensorFactory::create_undefined_user_tensor();
 
             auto axes = fetch_optional_ints(stack, {0, 2, 3, });
 
@@ -5263,7 +5263,7 @@ namespace nn {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            y = TensorType::create_undefined_user_tensor();
+            y = TensorFactory::create_undefined_user_tensor();
 
             auto strides = fetch_optional_ints(stack, {});
             auto pads = fetch_optional_ints(stack, {});
@@ -5339,7 +5339,7 @@ namespace nn {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            y = TensorType::create_undefined_user_tensor();
+            y = TensorFactory::create_undefined_user_tensor();
 
             auto strides = fetch_optional_ints(stack, {});
             auto pads = fetch_optional_ints(stack, {});
@@ -5430,7 +5430,7 @@ namespace nn {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            Y = TensorType::create_undefined_user_tensor();
+            Y = TensorFactory::create_undefined_user_tensor();
 
             auto strides = fetch_optional_ints(stack, {});
             auto pads = fetch_optional_ints(stack, {});
@@ -5509,7 +5509,7 @@ namespace nn {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            Y = TensorType::create_undefined_user_tensor();
+            Y = TensorFactory::create_undefined_user_tensor();
 
             auto weights = fetch_optional_floats(stack, {});
             auto pool_strings = fetch_optional_strings(stack, {});
@@ -5587,7 +5587,7 @@ namespace object_detection {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            Y = TensorType::create_undefined_user_tensor();
+            Y = TensorFactory::create_undefined_user_tensor();
 
             auto spatial_scale = fetch_optional_float(stack, 1);
             auto sampling_ratio = fetch_optional_int(stack, 0);
@@ -5660,7 +5660,7 @@ namespace object_detection {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            selected_indices = TensorType::create_undefined_user_tensor();
+            selected_indices = TensorFactory::create_undefined_user_tensor();
 
             auto center_point_box = fetch_optional_int(stack, 0);
 
@@ -5726,7 +5726,7 @@ namespace quantization {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            y = TensorType::create_undefined_user_tensor();
+            y = TensorFactory::create_undefined_user_tensor();
 
             auto axis = fetch_optional_int(stack, 1);
 
@@ -5786,9 +5786,9 @@ namespace quantization {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            y_zero_point = TensorType::create_undefined_user_tensor();
-            y_scale = TensorType::create_undefined_user_tensor();
-            y = TensorType::create_undefined_user_tensor();
+            y_zero_point = TensorFactory::create_undefined_user_tensor();
+            y_scale = TensorFactory::create_undefined_user_tensor();
+            y = TensorFactory::create_undefined_user_tensor();
 
 
             auto x = fetch_tensor(stack);
@@ -5845,7 +5845,7 @@ namespace quantization {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            y = TensorType::create_undefined_user_tensor();
+            y = TensorFactory::create_undefined_user_tensor();
 
             auto axis = fetch_optional_int(stack, 1);
 
@@ -5905,7 +5905,7 @@ namespace reduction {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            reduced = TensorType::create_undefined_user_tensor();
+            reduced = TensorFactory::create_undefined_user_tensor();
 
             auto keepdims = fetch_optional_int(stack, 1);
             auto axes = fetch_optional_ints(stack, {});
@@ -5960,7 +5960,7 @@ namespace reduction {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            reduced = TensorType::create_undefined_user_tensor();
+            reduced = TensorFactory::create_undefined_user_tensor();
 
             auto keepdims = fetch_optional_int(stack, 1);
             auto axes = fetch_optional_ints(stack, {});
@@ -6015,7 +6015,7 @@ namespace reduction {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            reduced = TensorType::create_undefined_user_tensor();
+            reduced = TensorFactory::create_undefined_user_tensor();
 
             auto keepdims = fetch_optional_int(stack, 1);
             auto axes = fetch_optional_ints(stack, {});
@@ -6070,7 +6070,7 @@ namespace reduction {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            reduced = TensorType::create_undefined_user_tensor();
+            reduced = TensorFactory::create_undefined_user_tensor();
 
             auto noop_with_empty_axes = fetch_optional_int(stack, 0);
             auto keepdims = fetch_optional_int(stack, 1);
@@ -6128,7 +6128,7 @@ namespace reduction {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            reduced = TensorType::create_undefined_user_tensor();
+            reduced = TensorFactory::create_undefined_user_tensor();
 
             auto keepdims = fetch_optional_int(stack, 1);
             auto axes = fetch_optional_ints(stack, {});
@@ -6183,7 +6183,7 @@ namespace reduction {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            reduced = TensorType::create_undefined_user_tensor();
+            reduced = TensorFactory::create_undefined_user_tensor();
 
             auto keepdims = fetch_optional_int(stack, 1);
             auto axes = fetch_optional_ints(stack, {});
@@ -6238,7 +6238,7 @@ namespace reduction {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            reduced = TensorType::create_undefined_user_tensor();
+            reduced = TensorFactory::create_undefined_user_tensor();
 
             auto select_last_index = fetch_optional_int(stack, 0);
             auto keepdims = fetch_optional_int(stack, 1);
@@ -6296,7 +6296,7 @@ namespace reduction {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            reduced = TensorType::create_undefined_user_tensor();
+            reduced = TensorFactory::create_undefined_user_tensor();
 
             auto select_last_index = fetch_optional_int(stack, 0);
             auto keepdims = fetch_optional_int(stack, 1);
@@ -6354,7 +6354,7 @@ namespace reduction {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            reduced = TensorType::create_undefined_user_tensor();
+            reduced = TensorFactory::create_undefined_user_tensor();
 
             auto keepdims = fetch_optional_int(stack, 1);
             auto axes = fetch_optional_ints(stack, {});
@@ -6409,7 +6409,7 @@ namespace reduction {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            reduced = TensorType::create_undefined_user_tensor();
+            reduced = TensorFactory::create_undefined_user_tensor();
 
             auto keepdims = fetch_optional_int(stack, 1);
             auto axes = fetch_optional_ints(stack, {});
@@ -6464,7 +6464,7 @@ namespace reduction {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            reduced = TensorType::create_undefined_user_tensor();
+            reduced = TensorFactory::create_undefined_user_tensor();
 
             auto keepdims = fetch_optional_int(stack, 1);
             auto axes = fetch_optional_ints(stack, {});
@@ -6519,7 +6519,7 @@ namespace reduction {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            reduced = TensorType::create_undefined_user_tensor();
+            reduced = TensorFactory::create_undefined_user_tensor();
 
             auto keepdims = fetch_optional_int(stack, 1);
             auto axes = fetch_optional_ints(stack, {});
@@ -6579,13 +6579,13 @@ namespace rnn {
             ValueStack<TensorType>& stack = rt;
 
             if ( fetch_bool(stack) == true) {
-                Y_c = TensorType::create_undefined_user_tensor();
+                Y_c = TensorFactory::create_undefined_user_tensor();
             }
             if ( fetch_bool(stack) == true) {
-                Y_h = TensorType::create_undefined_user_tensor();
+                Y_h = TensorFactory::create_undefined_user_tensor();
             }
             if ( fetch_bool(stack) == true) {
-                Y = TensorType::create_undefined_user_tensor();
+                Y = TensorFactory::create_undefined_user_tensor();
             }
 
             auto layout = fetch_optional_int(stack, 0);
@@ -6717,10 +6717,10 @@ namespace rnn {
             ValueStack<TensorType>& stack = rt;
 
             if ( fetch_bool(stack) == true) {
-                Y_h = TensorType::create_undefined_user_tensor();
+                Y_h = TensorFactory::create_undefined_user_tensor();
             }
             if ( fetch_bool(stack) == true) {
-                Y = TensorType::create_undefined_user_tensor();
+                Y = TensorFactory::create_undefined_user_tensor();
             }
 
             auto linear_before_reset = fetch_optional_int(stack, 0);
@@ -6833,10 +6833,10 @@ namespace rnn {
             ValueStack<TensorType>& stack = rt;
 
             if ( fetch_bool(stack) == true) {
-                Y_h = TensorType::create_undefined_user_tensor();
+                Y_h = TensorFactory::create_undefined_user_tensor();
             }
             if ( fetch_bool(stack) == true) {
-                Y = TensorType::create_undefined_user_tensor();
+                Y = TensorFactory::create_undefined_user_tensor();
             }
 
             auto layout = fetch_optional_int(stack, 0);
@@ -6946,7 +6946,7 @@ namespace sequence {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            output = TensorType::create_undefined_user_tensor();
+            output = TensorFactory::create_undefined_user_tensor();
 
             auto dtype = fetch_optional_int(stack, 0);
 
@@ -6995,7 +6995,7 @@ namespace sequence {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            output_sequence = TensorType::create_undefined_user_tensor();
+            output_sequence = TensorFactory::create_undefined_user_tensor();
 
             auto keepdims = fetch_optional_int(stack, 1);
             auto axis = fetch_optional_int(stack, 0);
@@ -7053,7 +7053,7 @@ namespace sequence {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            tensor = TensorType::create_undefined_user_tensor();
+            tensor = TensorFactory::create_undefined_user_tensor();
 
 
             auto position = fetch_tensor(stack);
@@ -7105,7 +7105,7 @@ namespace sequence {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            length = TensorType::create_undefined_user_tensor();
+            length = TensorFactory::create_undefined_user_tensor();
 
 
             auto input_sequence = fetch_tensor(stack);
@@ -7154,7 +7154,7 @@ namespace sequence {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            output_sequence = TensorType::create_undefined_user_tensor();
+            output_sequence = TensorFactory::create_undefined_user_tensor();
 
 
             auto inputs = fetch_tensors(stack);
@@ -7203,7 +7203,7 @@ namespace sequence {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            output_sequence = TensorType::create_undefined_user_tensor();
+            output_sequence = TensorFactory::create_undefined_user_tensor();
 
 
             auto position = fetch_optional_tensor(stack);
@@ -7258,7 +7258,7 @@ namespace sequence {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            output_sequence = TensorType::create_undefined_user_tensor();
+            output_sequence = TensorFactory::create_undefined_user_tensor();
 
 
             auto position = fetch_optional_tensor(stack);
@@ -7310,7 +7310,7 @@ namespace sequence {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            concat_result = TensorType::create_undefined_user_tensor();
+            concat_result = TensorFactory::create_undefined_user_tensor();
 
             auto new_axis = fetch_optional_int(stack, 0);
             auto axis = fetch_int(stack);
@@ -7367,7 +7367,7 @@ namespace tensor {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            output = TensorType::create_undefined_user_tensor();
+            output = TensorFactory::create_undefined_user_tensor();
 
 
             auto target_type = fetch_tensor(stack);
@@ -7419,7 +7419,7 @@ namespace tensor {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            shape = TensorType::create_undefined_user_tensor();
+            shape = TensorFactory::create_undefined_user_tensor();
 
             auto start = fetch_optional_int(stack, 0);
             auto end = fetch_optional_int(stack, 0);
@@ -7474,7 +7474,7 @@ namespace tensor {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            reshaped = TensorType::create_undefined_user_tensor();
+            reshaped = TensorFactory::create_undefined_user_tensor();
 
             auto allowzero = fetch_optional_int(stack, 0);
 
@@ -7529,7 +7529,7 @@ namespace tensor {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            output = TensorType::create_undefined_user_tensor();
+            output = TensorFactory::create_undefined_user_tensor();
 
             auto mode = fetch_optional_string(stack, "DCR");
             auto blocksize = fetch_int(stack);
@@ -7584,7 +7584,7 @@ namespace tensor {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            concat_result = TensorType::create_undefined_user_tensor();
+            concat_result = TensorFactory::create_undefined_user_tensor();
 
             auto axis = fetch_int(stack);
 
@@ -7636,7 +7636,7 @@ namespace tensor {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            output = TensorType::create_undefined_user_tensor();
+            output = TensorFactory::create_undefined_user_tensor();
 
             auto axis = fetch_optional_int(stack, 0);
 
@@ -7691,7 +7691,7 @@ namespace tensor {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            size = TensorType::create_undefined_user_tensor();
+            size = TensorFactory::create_undefined_user_tensor();
 
 
             auto data = fetch_tensor(stack);
@@ -7740,7 +7740,7 @@ namespace tensor {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            output = TensorType::create_undefined_user_tensor();
+            output = TensorFactory::create_undefined_user_tensor();
 
             auto to = fetch_int(stack);
 
@@ -7851,7 +7851,7 @@ namespace tensor {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            output = TensorType::create_undefined_user_tensor();
+            output = TensorFactory::create_undefined_user_tensor();
 
 
             auto input = fetch_tensor(stack);
@@ -7900,7 +7900,7 @@ namespace tensor {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            output = TensorType::create_undefined_user_tensor();
+            output = TensorFactory::create_undefined_user_tensor();
 
 
             auto steps = fetch_optional_tensor(stack);
@@ -7961,7 +7961,7 @@ namespace tensor {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            output = TensorType::create_undefined_user_tensor();
+            output = TensorFactory::create_undefined_user_tensor();
 
             auto batch_dims = fetch_optional_int(stack, 0);
 
@@ -8016,7 +8016,7 @@ namespace tensor {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            output = TensorType::create_undefined_user_tensor();
+            output = TensorFactory::create_undefined_user_tensor();
 
             auto blocksize = fetch_int(stack);
 
@@ -8068,7 +8068,7 @@ namespace tensor {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            squeezed = TensorType::create_undefined_user_tensor();
+            squeezed = TensorFactory::create_undefined_user_tensor();
 
 
             auto axes = fetch_optional_tensor(stack);
@@ -8124,15 +8124,15 @@ namespace tensor {
             ValueStack<TensorType>& stack = rt;
 
             if ( fetch_bool(stack) == true) {
-                counts = TensorType::create_undefined_user_tensor();
+                counts = TensorFactory::create_undefined_user_tensor();
             }
             if ( fetch_bool(stack) == true) {
-                inverse_indices = TensorType::create_undefined_user_tensor();
+                inverse_indices = TensorFactory::create_undefined_user_tensor();
             }
             if ( fetch_bool(stack) == true) {
-                indices = TensorType::create_undefined_user_tensor();
+                indices = TensorFactory::create_undefined_user_tensor();
             }
-            Y = TensorType::create_undefined_user_tensor();
+            Y = TensorFactory::create_undefined_user_tensor();
 
             auto sorted = fetch_optional_int(stack, 1);
             auto axis = fetch_optional_int(stack, 0);
@@ -8226,7 +8226,7 @@ namespace tensor {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            Y = TensorType::create_undefined_user_tensor();
+            Y = TensorFactory::create_undefined_user_tensor();
 
 
             auto X = fetch_tensor(stack);
@@ -8275,7 +8275,7 @@ namespace tensor {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            output = TensorType::create_undefined_user_tensor();
+            output = TensorFactory::create_undefined_user_tensor();
 
 
             auto repeats = fetch_tensor(stack);
@@ -8327,7 +8327,7 @@ namespace tensor {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            Y = TensorType::create_undefined_user_tensor();
+            Y = TensorFactory::create_undefined_user_tensor();
 
             auto time_axis = fetch_optional_int(stack, 0);
             auto batch_axis = fetch_optional_int(stack, 1);
@@ -8385,7 +8385,7 @@ namespace tensor {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            transposed = TensorType::create_undefined_user_tensor();
+            transposed = TensorFactory::create_undefined_user_tensor();
 
             auto perm = fetch_optional_ints(stack, {});
 
@@ -8437,7 +8437,7 @@ namespace tensor {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            output = TensorType::create_undefined_user_tensor();
+            output = TensorFactory::create_undefined_user_tensor();
 
             auto upper = fetch_optional_int(stack, 1);
 
@@ -8492,7 +8492,7 @@ namespace tensor {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            output = TensorType::create_undefined_user_tensor();
+            output = TensorFactory::create_undefined_user_tensor();
 
 
             auto Y = fetch_tensor(stack);
@@ -8547,7 +8547,7 @@ namespace tensor {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            output = TensorType::create_undefined_user_tensor();
+            output = TensorFactory::create_undefined_user_tensor();
 
             auto axis = fetch_optional_int(stack, 0);
 
@@ -8602,7 +8602,7 @@ namespace tensor {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            expanded = TensorType::create_undefined_user_tensor();
+            expanded = TensorFactory::create_undefined_user_tensor();
 
 
             auto axes = fetch_tensor(stack);
@@ -8654,7 +8654,7 @@ namespace tensor {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            output = TensorType::create_undefined_user_tensor();
+            output = TensorFactory::create_undefined_user_tensor();
 
             auto axis = fetch_optional_int(stack, -1);
 
@@ -8712,7 +8712,7 @@ namespace tensor {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            Y = TensorType::create_undefined_user_tensor();
+            Y = TensorFactory::create_undefined_user_tensor();
 
 
             auto X = fetch_tensor(stack);
@@ -8761,7 +8761,7 @@ namespace tensor {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            output = TensorType::create_undefined_user_tensor();
+            output = TensorFactory::create_undefined_user_tensor();
 
 
             auto updates = fetch_tensor(stack);
@@ -8816,7 +8816,7 @@ namespace tensor {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            Y = TensorType::create_undefined_user_tensor();
+            Y = TensorFactory::create_undefined_user_tensor();
 
             auto nearest_mode = fetch_optional_string(stack, "round_prefer_floor");
             auto mode = fetch_optional_string(stack, "nearest");
@@ -8892,7 +8892,7 @@ namespace tensor {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            output = TensorType::create_undefined_user_tensor();
+            output = TensorFactory::create_undefined_user_tensor();
 
             auto mode = fetch_optional_string(stack, "constant");
 
@@ -8950,7 +8950,7 @@ namespace tensor {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            Y = TensorType::create_undefined_user_tensor();
+            Y = TensorFactory::create_undefined_user_tensor();
 
             auto detect_positive = fetch_optional_int(stack, 1);
             auto detect_negative = fetch_optional_int(stack, 1);
@@ -9005,7 +9005,7 @@ namespace tensor {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            output = TensorType::create_undefined_user_tensor();
+            output = TensorFactory::create_undefined_user_tensor();
 
             auto axis = fetch_optional_int(stack, 0);
 
@@ -9060,7 +9060,7 @@ namespace tensor {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            output = TensorType::create_undefined_user_tensor();
+            output = TensorFactory::create_undefined_user_tensor();
 
             auto axis = fetch_optional_int(stack, 0);
 

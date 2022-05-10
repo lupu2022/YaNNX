@@ -130,7 +130,7 @@ public:
 };
 
 struct TensorFactory {
-    static tensor_t create_undefined_tensor();
+    static tensor_t create_undefined_user_tensor();
     static void register_user_tensor(tensor_t t, int64_t flag);
 };
 
@@ -244,6 +244,7 @@ public:
             impl_ = std::make_unique<DeviceImpl>(shape);
             return;
         }
+
         if ( dtype == YNX_INT64 ) {
             impl_ = std::make_unique<value_int64_t>(shape);
             return;

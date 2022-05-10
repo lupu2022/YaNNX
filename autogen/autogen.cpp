@@ -457,10 +457,10 @@ std::string impl_generate(const OpSchema& op) {
                 int opt = allOutputs[i].GetOption();
 
                 if ( opt == 0 ) {
-                    oss << "\t" << oname << " = TensorType::create_undefined_user_tensor();" << std::endl;
+                    oss << "\t" << oname << " = TensorFactory::create_undefined_user_tensor();" << std::endl;
                 } else if ( opt == 1) {
                     oss << "\tif ( fetch_bool(stack) == true) {" << std::endl;
-                    oss << "\t    " << oname << " = TensorType::create_undefined_user_tensor();" << std::endl;
+                    oss << "\t    " << oname << " = TensorFactory::create_undefined_user_tensor();" << std::endl;
                     oss << "\t}" << std::endl;
                 } else {
                     oss << "\t" << oname << ".resize( fetch_int(stack) );" << std::endl;

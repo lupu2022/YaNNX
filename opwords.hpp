@@ -14,9 +14,11 @@
 #include <onnx/defs/attr_proto_util.h>
 #include <onnx/defs/tensor_proto_util.h>
 #include <onnx/shape_inference/implementation.h>
-using namespace onnx;
 
-namespace yannx { namespace tt {
+using namespace onnx;
+using namespace yannx::tt;
+
+namespace yannx { namespace opw {
 
 TensorDataType datatype_from_string(const std::string& dt_str ) {
     for (size_t i = 0; i < YNX_BFLOAT16; i++) {
@@ -417,7 +419,7 @@ namespace common {
                 shape.push_back( shape_[i] );
             }
 
-            output = TensorType::create_undefined_user_tensor();
+            output = TensorFactory::create_undefined_user_tensor();
             output->reset(dtype, shape);
 
             put_tensor(stack, output);
@@ -448,7 +450,7 @@ namespace common {
                 items_ = items_ * shape_[i];
             }
 
-            output = TensorType::create_undefined_user_tensor();
+            output = TensorFactory::create_undefined_user_tensor();
             if ( dtype == YNX_FLOAT) {
                 auto values = fetch_floats(stack);
                 if ( items_ != values.size() ) {
@@ -484,7 +486,7 @@ namespace common {
             std::string dtype_string = fetch_string(stack);
             auto dtype = datatype_from_string(dtype_string);
 
-            output = TensorType::create_undefined_user_tensor();
+            output = TensorFactory::create_undefined_user_tensor();
 
             if ( dtype == YNX_FLOAT) {
                 auto value = fetch_float(stack);
@@ -508,7 +510,7 @@ namespace common {
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             auto flag = fetch_int(rt);
             auto t = fetch_tensor(rt);
-            TensorType::register_user_tensor(t, flag);
+            TensorFactory::register_user_tensor(t, flag);
             rt.push_tensor(t);
         }
         virtual void run(ValueStack<TensorType>& stack) {
