@@ -144,10 +144,10 @@ struct YNXInferenceContextImpl : public InferenceContext {
         input_types_[index] = proto;
 
         // converting tensortype to onnx's tensorproto
-        if ( t->dtype() == YNX_FLOAT) {
-            const float *d = (const float *)t->value();
+        if ( t->dtype() == YNX_FLOAT && t->device() == std::string("ValueOnly") ) {
+            const float *d = (const float *)t->get_data();
             if ( d != nullptr ) {
-                auto n = t->items();
+                auto n = t->num_items();
                 TensorProto t;
                 t.set_data_type( TensorProto_DataType_FLOAT );
                 t.clear_float_data();
@@ -157,10 +157,11 @@ struct YNXInferenceContextImpl : public InferenceContext {
 
                 input_datas_[index] = t;
             }
-        } else if ( t->dtype() == YNX_INT64 ) {
-            const int64_t *d = (const int64_t *)t->value();
+        }
+        if ( t->dtype() == YNX_INT64 && t->device() == std::string("ValueOnly") ) {
+            const int64_t *d = (const int64_t *)t->get_data();
             if ( d != nullptr ) {
-                auto n = t->items();
+                auto n = t->num_items();
                 TensorProto t;
                 t.set_data_type( TensorProto_DataType_INT64 );
                 t.clear_int64_data();
@@ -169,8 +170,6 @@ struct YNXInferenceContextImpl : public InferenceContext {
                 }
                 input_datas_[index] = t;
             }
-        } else {
-            yannx_panic("Can't convert data type from tt to onnx!");
         }
 
         input_num_ ++;

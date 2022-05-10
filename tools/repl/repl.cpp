@@ -5,7 +5,7 @@
 
 #include "yannx.hpp"
 #include "tensortype.hpp"
-//#include "words.hpp"
+#include "opwords.hpp"
 #include "dnnl/impl.hpp"
 
 std::string fileToString(const char* filename) {
