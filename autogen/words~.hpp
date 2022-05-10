@@ -1,9 +1,5 @@
-//
-//  this file is geneated by autogen
-//
-
-#ifndef _YANNX_TENSORTYPE_HPP_
-#define _YANNX_TENSORTYPE_HPP_
+#ifndef _YANNX_USERWORDS_HPP_
+#define _YANNX_USERWORDS_HPP_
 
 #include <vector>
 #include <string>
@@ -11,7 +7,6 @@
 #include <algorithm>
 
 #include <yannx.hpp>
-#include <api.hpp>
 #include <tensortype.hpp>
 
 #include <onnx/onnx_pb.h>
@@ -22,26 +17,6 @@
 using namespace onnx;
 
 namespace yannx { namespace tt {
-
-static const char* TensorDataTypeString[] = {
-    "YNX_UNDEFINED",
-    "YNX_FLOAT",
-    "YNX_UINT8",
-    "YNX_INT8",
-    "YNX_UINT16",
-    "YNX_INT16",
-    "YNX_INT32",
-    "YNX_INT64",
-    "YNX_STRING",
-    "YNX_BOOL",
-    "YNX_FLOAT16",
-    "YNX_DOUBLE",
-    "YNX_UINT32",
-    "YNX_UINT64",
-    "YNX_COMPLEX64",
-    "YNX_COMPLEX128",
-    "YNX_BFLOAT16"
-};
 
 TensorDataType datatype_from_string(const std::string& dt_str ) {
     for (size_t i = 0; i < YNX_BFLOAT16; i++) {
@@ -89,8 +64,6 @@ TensorDataType datatype_from_onnx( int dt ) {
     }
     return YNX_UNDEFINED;
 }
-
-
 
 InferenceFunction query_inference_function(const std::string& op_name) {
     static std::map<const std::string, InferenceFunction> allInferenceFunctions;

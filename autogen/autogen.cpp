@@ -670,7 +670,6 @@ int main(int argc, char* argv[]) {
     }
 
     // 2. generating operator's implementation word, sorted by tags
-    auto result = fileToString("words~.hpp");
     {
         std::ostringstream oss;
         for (auto i = operators_by_tag.begin(); i != operators_by_tag.end(); i++) {
@@ -682,9 +681,12 @@ int main(int argc, char* argv[]) {
             oss << "}" << std::endl;
         }
         std::string def_str = oss.str();
-        replace_all(def_str, "\t", "    ");
-        replace_all(result, "#ONNX_IMPL#", def_str);
-        oss.clear();
+        //replace_all(def_str, "\t", "    ");
+
+        std::ofstream ofs;
+        ofs.open("words_impl.inc");
+        ofs << def_str;
+        ofs.close();
     }
 
     // 3. generating code for register native word
@@ -699,13 +701,11 @@ int main(int argc, char* argv[]) {
             }
         }
         std::string def_str = oss.str();
-        replace_all(def_str, "\t", "    ");
-        replace_all(result, "#ONNX_REGISTER#", def_str);
-        oss.clear();
+        //replace_all(def_str, "\t", "    ");
 
         std::ofstream ofs;
-        ofs.open("words.hpp");
-        ofs << result;
+        ofs.open("words_def.inc");
+        ofs << def_str;
         ofs.close();
     }
 
