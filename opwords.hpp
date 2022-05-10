@@ -1,5 +1,5 @@
-#ifndef _YANNX_USERWORDS_HPP_
-#define _YANNX_USERWORDS_HPP_
+#ifndef _YANNX_OPWORDS_HPP_
+#define _YANNX_OPWORDS_HPP_
 
 #include <vector>
 #include <string>

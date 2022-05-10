@@ -74,7 +74,8 @@ struct DNNLTensor : public tt::TensorType {
         return _DTYPE_;
     }
 
-    const void* item_(const std::vector<size_t>& position) override {
+    const void* get_data() override {
+        /*
         // check position wheather out of shape
         size_t pos = 0;
         for (size_t i = 0; i < position.size(); i++) {
@@ -84,15 +85,14 @@ struct DNNLTensor : public tt::TensorType {
             pos = pos * shape_[i];
             pos += position[i];
         }
-
+        */
         if ( _DTYPE_ == tt::YNX_FLOAT ) {
-            float* d = (float *)plain_ptr();
-            return &d[pos];
+            return plain_ptr();
         }
         yannx_panic("DNNL unsupport data type!");
     }
 
-    void fill_(const void* pdata) override {
+    void set_data(const void* pdata) override {
         if ( _DTYPE_ == tt::YNX_FLOAT ) {
             float* dst = (float *)plain_ptr();
             const float* src = (const float *)pdata;

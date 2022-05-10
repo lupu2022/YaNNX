@@ -60,8 +60,6 @@ static const char* TensorDataTypeString[] = {
     "YNX_BFLOAT16"
 };
 
-
-
 struct TensorType;
 using tensor_t = std::shared_ptr<TensorType>;
 
@@ -82,9 +80,9 @@ public:
     virtual const char* device() = 0;
     virtual const std::vector<size_t>& shape()  = 0;
     virtual TensorDataType dtype() = 0;
-    // io functions: single read & whole write
-    virtual const void* item_(const std::vector<size_t>& position) = 0;
-    virtual void fill_(const void* pdata) = 0;
+    // io functions
+    virtual const void* get_data() = 0;
+    virtual void set_data(const void* pdata) = 0;
 
     // reset undefined to a defined
     virtual void reset(TensorDataType dtype_, const std::vector<size_t>& shape_) = 0;
@@ -126,22 +124,15 @@ public:
         return ss.str();
     }
 
-    template<typename T>
-    T item(const std::vector<size_t>& position) {
-        auto r = *(const T *)item_(position);
-        return r;
-    }
-
     // following is ONNX operator set
 #include "autogen/api_def.inc"
 
 };
 
 struct TensorFactory {
-    virtual tensor_t create_undefined_tensor() = 0;
-    virtual void register_user_tensor(tensor_t t, int64_t flag) = 0;
+    static tensor_t create_undefined_tensor();
+    static void register_user_tensor(tensor_t t, int64_t flag);
 };
-
 
 //
 //  Following is a simple multiple type wrapped tensor
@@ -175,8 +166,8 @@ public:
     }
 
     // value is only you need
-    const void* value(size_t i) {
-        return (void *)&value_[i];
+    const void* data() {
+        return (const void *)value_.data();
     }
 
     void fill(const void* pdata) {
@@ -325,35 +316,23 @@ public:
         yannx_panic("DeviceTensor::reset can't be here!");
     }
 
-    const void* item_(const std::vector<size_t>& position) override {
-        if ( position.size() != shape_.size() ) {
-            yannx_panic("Position is out of shape");
-        }
+    const void* get_data() override {
         if ( is_value_only() ) {
-            // check position wheather out of shape
-            size_t pos = 0;
-            for (size_t i = 0; i < position.size(); i++) {
-                if ( position[i] >= shape_[i] ) {
-                    yannx_panic("Position is out of shape");
-                }
-                pos = pos * shape_[i];
-                pos += position[i];
-            }
-
             if ( impl_.index() == VALUE_FLOAT ) {
-                return std::get<VALUE_FLOAT>(impl_)->value(pos);
+                return std::get<VALUE_FLOAT>(impl_)->data();
             }
             if ( impl_.index() == VALUE_INT64 ) {
-                return std::get<VALUE_INT64>(impl_)->value(pos);
+                return std::get<VALUE_INT64>(impl_)->data();
             }
             if ( impl_.index() == VALUE_BOOL ) {
-                return std::get<VALUE_BOOL>(impl_)->value(pos);
+                return std::get<VALUE_BOOL>(impl_)->data();
             }
             yannx_panic("Can't be here!");
         }
-        return impl()->item_(position);
+        return impl()->get_data();
     }
-    void fill_(const void* pdata) override {
+
+    void set_data(const void* pdata) override {
         if ( is_value_only() ) {
             // check position wheather out of shape
             if ( impl_.index() == VALUE_FLOAT ) {
@@ -367,7 +346,7 @@ public:
             }
             yannx_panic("Can't be here!");
         }
-        return impl()->fill_(pdata);
+        return impl()->set_data(pdata);
     }
 
 #include "autogen/api_impl.inc"
