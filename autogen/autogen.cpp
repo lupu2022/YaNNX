@@ -141,6 +141,23 @@ std::string api_generate(const OpSchema& op) {
     oss << ") {" << std::endl;
     oss << "\t    return YNX_TODO_ERROR;" << std::endl;
     oss << "\t}" << std::endl;
+    if ( allInputs.size() > 0) {
+        oss << "\tvirtual bool onnx_" << op_name << "_typing() { ";
+        oss << "\t    return false;" << std::endl;
+        oss << "\t}" << std::endl;
+    } else {
+        oss << "\tvirtual bool onnx_" << op_name << "_typing(";
+
+        for (size_t i = 0; i < tokens.size(); i++) {
+            oss << tokens[i] ;
+            if ( i != tokens.size() - 1) {
+                oss << ", ";
+            }
+        }
+        oss << ") {" << std::endl;
+        oss << "\t    return false;" << std::endl;
+        oss << "\t}" << std::endl;
+    }
     return oss.str();
 }
 
@@ -189,6 +206,7 @@ std::string api_impl_generate(const OpSchema& op) {
     }
 
     std::ostringstream oss;
+
     oss << "\tOperatorReturnType onnx_" << op_name << "(";
     for (size_t i = 0; i < tokens.size(); i++) {
         oss << tokens[i] ;
@@ -271,12 +289,15 @@ const char* word_template =  R"~~(
 #ATTR#
 #INPUT#
 
+            if ( #CHECK_TYPING# == false ) {
 #OUTPUT_ONNX#
 #ATTR_ONNX#
 #INPUT_ONNX#
-            auto f = query_inference_function("#WORDNAME#");
-            infer_.do_inference(f);
+                auto f = query_inference_function("#WORDNAME#");
+                infer_.do_inference(f);
 #OUTPUT_CHECK_ONNX#
+
+            }
 
             if ( #CALL_API# != YNX_OK ) {
                 yannx_panic("API: #WORDNAME#  return error!");
@@ -379,7 +400,7 @@ std::string impl_generate(const OpSchema& op) {
         }
 
         auto attr_code = oss.str();
-        replace_all(attr_code, "\t", "            ");
+        replace_all(attr_code, "\t", "                ");
         replace_all(code, "#ATTR_ONNX#", attr_code);
     }
 
@@ -415,7 +436,7 @@ std::string impl_generate(const OpSchema& op) {
             oss << "\tinfer_.new_input(" << iname << ");" << std::endl;
         }
         auto input_code = oss.str();
-        replace_all(input_code, "\t", "            ");
+        replace_all(input_code, "\t", "               ");
         replace_all(code, "#INPUT_ONNX#", input_code);
     }
 
@@ -463,8 +484,11 @@ std::string impl_generate(const OpSchema& op) {
                     oss << "\tif ( fetch_bool(stack) == true) {" << std::endl;
                     oss << "\t    " << oname << " = TensorFactory::create_undefined_user_tensor();" << std::endl;
                     oss << "\t}" << std::endl;
-                } else {
+                } else if ( opt == 2) {
                     oss << "\t" << oname << ".resize( fetch_int(stack) );" << std::endl;
+                    oss << "\t" << "for(size_t i = 0; i < " << oname << ".size(); i++) {" << std::endl;
+                    oss << "\t    " << oname << "[i] = TensorFactory::create_undefined_user_tensor();" << std::endl;
+                    oss << "\t}" << std::endl;
                 }
             }
             std::string output_init = oss.str();
@@ -509,7 +533,7 @@ std::string impl_generate(const OpSchema& op) {
             oss << "\tYNXInferenceContextImpl infer_(outputs_);" << std::endl;
 
             std::string output_init = oss.str();
-            replace_all(output_init, "\t", "            ");
+            replace_all(output_init, "\t", "                ");
             replace_all(code, "#OUTPUT_ONNX#", output_init);
         }
 
@@ -531,9 +555,30 @@ std::string impl_generate(const OpSchema& op) {
                 }
             }
             std::string output_init = oss.str();
-            replace_all(output_init, "\t", "            ");
+            replace_all(output_init, "\t", "                ");
             replace_all(code, "#OUTPUT_CHECK_ONNX#", output_init);
         }
+    }
+
+    // check typing api
+    {
+        std::ostringstream oss;
+
+        // find first tensor to executing API
+        auto allInputs = op.inputs();
+        auto allOutputs = op.outputs();
+        if ( allInputs.size() > 0 && allInputs[0].GetOption() == 0) {
+            oss << allInputs[0].GetName() << "->";
+        } else if ( allOutputs.size() > 0 && allOutputs[0].GetOption() == 0) {
+            oss << allOutputs[0].GetName() << "->";
+        } else {
+            std::cerr << op << std::endl;
+            assert(false);
+        }
+        oss << "onnx_" << op.Name() << "_typing()";
+
+        std::string api_str = oss.str();
+        replace_all(code, "#CHECK_TYPING#", api_str);
     }
 
     // call api
