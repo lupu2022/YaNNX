@@ -47,6 +47,7 @@ namespace yannx { namespace tt {
 int main(const int argc, const char* argv[] ) {
     yannx::Runtime<yannx::tt::TensorType> runtime;
     yannx::opw::register_all_onnx_defined_words(runtime);
+    yannx::dnnl::dnnl_help::dnnl_begin();
 
     // 0. load all code to one string
     std::string txt;

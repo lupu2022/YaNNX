@@ -7,14 +7,12 @@
 #include <dnnl_debug.h>
 
 #include <yannx.hpp>
-#include <tensortype.hpp>
 
 #define COMPLAIN_DNNL_ERROR_AND_EXIT(what, status) \
     do { \
         printf("[%s:%d] `%s` returns DNNL error: %s.\n", __FILE__, __LINE__, \
                 what, dnnl_status2str(status)); \
-        printf("Example failed.\n"); \
-        exit(1); \
+        yannx_panic("DNNL API failed.\n"); \
     } while (0)
 
 #define DNNL_CHECK(f) \
