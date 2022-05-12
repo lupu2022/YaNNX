@@ -30,11 +30,23 @@ bool readline(const std::string& prop, std::string& code) {
     return false;
 }
 
+//
+// User's factory
+//
+using user_tensor_t = DeviceTensor<yannx::tt::YNX_FLOAT, yannx::dnnl::DNNLTensor<yannx::tt::YNX_FLOAT>>;
+namespace yannx { namespace tt {
+    tensor_t TensorFactory::create_undefined_user_tensor() {
+        auto ret = std::make_shared< user_tensor_t>();
+        return ret;
+    }
+    void TensorFactory::register_user_tensor(tensor_t t, int64_t flag) {
+
+    }
+}}
+
 int main(const int argc, const char* argv[] ) {
     yannx::Runtime<yannx::tt::TensorType> runtime;
-
-    yannx::tt::DeviceTensor<yannx::tt::YNX_FLOAT, yannx::dnnl::DNNLTensor<yannx::tt::YNX_FLOAT>> myTensor;
-    //yannx::tt::register_all_onnx_defined_words(runtime);
+    yannx::opw::register_all_onnx_defined_words(runtime);
 
     // 0. load all code to one string
     std::string txt;

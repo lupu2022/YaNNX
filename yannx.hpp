@@ -194,7 +194,7 @@ struct ValueStack {
         return v.tensor();
     }
 
-    // fast acess psedo data struct : list
+    // fast access psedo data struct : list
     const std::vector<YNumber> pop_number_tuple() {
         YNumber sn = pop_number();
         yannx_assert( roundf(sn) == sn, "pop_number_tuple: size must be integer!");
@@ -998,10 +998,8 @@ private:
 
 template<class YT>
 void Runtime<YT>::register_builtin_native_words() {
-    new_nword("@", builtin::Get<YT>::creator);
-    new_nword("!", builtin::Set<YT>::creator);
-    new_nword("get~", builtin::Get<YT>::creator);
-    new_nword("set~", builtin::Set<YT>::creator);
+    new_nword("@", builtin::Get<YT>::creator); new_nword("get~", builtin::Get<YT>::creator);
+    new_nword("!", builtin::Set<YT>::creator); new_nword("set~", builtin::Set<YT>::creator);
 
     new_nword("?", builtin::PrintOne<YT>::creator);
     new_nword("??", builtin::PrintAll<YT>::creator);

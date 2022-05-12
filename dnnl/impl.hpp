@@ -10,6 +10,12 @@
 
 #include "dnnl/dnnl_help.hpp"
 
+
+//
+// see https://oneapi-src.github.io/oneDNN/index.html
+//
+//
+
 namespace yannx { namespace dnnl {
 
 template <tt::TensorDataType _DTYPE_>
@@ -282,7 +288,6 @@ private:
     const std::vector<size_t>     shape_;
 };
 
-// see https://oneapi-src.github.io/oneDNN/index.html
 #include "dnnl/binary.hpp"
 #include "dnnl/eltwise.hpp"
 #include "dnnl/reduce.hpp"
