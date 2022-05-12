@@ -243,6 +243,10 @@ OperatorReturnType onnx_LRN(tensor_t X, tensor_t Y, float alpha, float beta, flo
     return impl()->onnx_LRN(X, Y, alpha, beta, bias, size);
 }
 
+OperatorReturnType onnx_LayerNormalization(tensor_t X, tensor_t Scale, std::variant<void *, tensor_t>& B, tensor_t Y, std::variant<void *, tensor_t>& Mean, std::variant<void *, tensor_t>& InvStdDev, int64_t axis, float epsilon, int64_t stash_type) override {
+    return impl()->onnx_LayerNormalization(X, Scale, B, Y, Mean, InvStdDev, axis, epsilon, stash_type);
+}
+
 OperatorReturnType onnx_LeakyRelu(tensor_t X, tensor_t Y, float alpha) override {
     return impl()->onnx_LeakyRelu(X, Y, alpha);
 }

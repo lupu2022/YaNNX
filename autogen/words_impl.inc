@@ -4122,6 +4122,104 @@ namespace math {
 }
 namespace nn {
 
+    struct LayerNormalization : NativeWord<TensorType> {
+        std::variant<void *, tensor_t> InvStdDev;
+        std::variant<void *, tensor_t> Mean;
+        tensor_t Y;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            if ( fetch_bool(stack) == true) {
+                InvStdDev = TensorFactory::create_undefined_user_tensor();
+            }
+            if ( fetch_bool(stack) == true) {
+                Mean = TensorFactory::create_undefined_user_tensor();
+            }
+            Y = TensorFactory::create_undefined_user_tensor();
+
+            auto stash_type = fetch_optional_int(stack, 1);
+            auto epsilon = fetch_optional_float(stack, 1e-05);
+            auto axis = fetch_optional_int(stack, -1);
+
+            auto B = fetch_optional_tensor(stack);
+            auto Scale = fetch_tensor(stack);
+            auto X = fetch_tensor(stack);
+
+
+            std::vector<size_t> outputs_;
+            outputs_.push_back(0);
+            if ( Mean.index() != 0) {
+                outputs_.push_back(1);
+            }
+            if ( InvStdDev.index() != 0) {
+                outputs_.push_back(2);
+            }
+            YNXInferenceContextImpl infer_(outputs_);
+
+            infer_.new_attr("stash_type", stash_type);
+            infer_.new_attr("epsilon", epsilon);
+            infer_.new_attr("axis", axis);
+
+            infer_.new_input(X);
+            infer_.new_input(Scale);
+            infer_.new_input(B);
+
+            auto f = query_inference_function("LayerNormalization");
+            infer_.do_inference(f);
+            infer_.check_output(0, Y);
+            if ( Mean.index() != 0) {
+                infer_.check_output(1, std::get<1>(Mean));
+            }
+            if ( InvStdDev.index() != 0) {
+                infer_.check_output(2, std::get<1>(InvStdDev));
+            }
+
+
+            if ( X->onnx_LayerNormalization(X, Scale, B, Y, Mean, InvStdDev, axis, epsilon, stash_type) != YNX_OK ) {
+                yannx_panic("API: LayerNormalization  return error!");
+            }
+
+            put_tensor(stack, Y);
+            if ( Mean.index() != 0) {
+                put_optional_tensor(stack, Mean);
+            }
+            if ( InvStdDev.index() != 0) {
+                put_optional_tensor(stack, InvStdDev);
+            }
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+            fetch_bool(stack);
+            fetch_bool(stack);
+
+            auto stash_type = fetch_optional_int(stack, 1);
+            auto epsilon = fetch_optional_float(stack, 1e-05);
+            auto axis = fetch_optional_int(stack, -1);
+
+            auto B = fetch_optional_tensor(stack);
+            auto Scale = fetch_tensor(stack);
+            auto X = fetch_tensor(stack);
+
+
+            if ( X->onnx_LayerNormalization(X, Scale, B, Y, Mean, InvStdDev, axis, epsilon, stash_type) != YNX_OK ) {
+                yannx_panic("API: LayerNormalization  return error!");
+            }
+
+            put_tensor(stack, Y);
+            if ( Mean.index() != 0) {
+                put_optional_tensor(stack, Mean);
+            }
+            if ( InvStdDev.index() != 0) {
+                put_optional_tensor(stack, InvStdDev);
+            }
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(LayerNormalization)
+    };
+
+
     struct QLinearConv : NativeWord<TensorType> {
         tensor_t y;
 

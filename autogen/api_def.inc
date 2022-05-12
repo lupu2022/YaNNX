@@ -304,6 +304,11 @@
 	    return YNX_TODO_ERROR;
 	}
 
+	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#LayerNormalization
+	virtual OperatorReturnType onnx_LayerNormalization(/*inputs:*/ tensor_t X, tensor_t Scale, std::variant<void *, tensor_t>& B, /*outputs:*/ tensor_t Y, std::variant<void *, tensor_t>& Mean, std::variant<void *, tensor_t>& InvStdDev, /*attributes:*/ int64_t axis, float epsilon, int64_t stash_type) {
+	    return YNX_TODO_ERROR;
+	}
+
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#LeakyRelu
 	virtual OperatorReturnType onnx_LeakyRelu(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y, /*attributes:*/ float alpha) {
 	    return YNX_TODO_ERROR;

@@ -77,6 +77,7 @@
 	runtime.new_nword("onnx.Atanh", math::Atanh::creator);
 	runtime.new_nword("onnx.Hardmax", math::Hardmax::creator);
 	runtime.new_nword("onnx.Erf", math::Erf::creator);
+	runtime.new_nword("onnx.LayerNormalization", nn::LayerNormalization::creator);
 	runtime.new_nword("onnx.QLinearConv", nn::QLinearConv::creator);
 	runtime.new_nword("onnx.ConvInteger", nn::ConvInteger::creator);
 	runtime.new_nword("onnx.MaxPool", nn::MaxPool::creator);
