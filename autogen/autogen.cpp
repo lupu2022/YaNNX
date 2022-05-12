@@ -567,6 +567,7 @@ std::string impl_generate(const OpSchema& op) {
         // find first tensor to executing API
         auto allInputs = op.inputs();
         auto allOutputs = op.outputs();
+        auto allAttrs = op.attributes();
         if ( allInputs.size() > 0 && allInputs[0].GetOption() == 0) {
             oss << allInputs[0].GetName() << "->";
         } else if ( allOutputs.size() > 0 && allOutputs[0].GetOption() == 0) {
@@ -575,7 +576,29 @@ std::string impl_generate(const OpSchema& op) {
             std::cerr << op << std::endl;
             assert(false);
         }
-        oss << "onnx_" << op.Name() << "_typing()";
+        oss << "onnx_" << op.Name() << "_typing(";
+        if ( allInputs.size() > 0 ) {
+            oss << ")";
+        } else {
+            std::vector<std::string> tokens;
+            for(size_t i = 0; i < allInputs.size(); i++) {
+                tokens.push_back( allInputs[i].GetName() );
+            }
+            for(size_t i = 0; i < allOutputs.size(); i++) {
+                tokens.push_back( allOutputs[i].GetName() );
+            }
+            for (auto i = allAttrs.begin(); i != allAttrs.end(); i++) {
+                tokens.push_back(i->first);
+            }
+
+            for (size_t i = 0; i < tokens.size(); i++) {
+                oss << tokens[i] ;
+                if ( i != tokens.size() - 1) {
+                    oss << ", ";
+                }
+            }
+            oss << ")";
+        }
 
         std::string api_str = oss.str();
         replace_all(code, "#CHECK_TYPING#", api_str);

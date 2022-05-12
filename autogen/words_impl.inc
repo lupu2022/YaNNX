@@ -17,7 +17,7 @@ namespace generator {
 
 
 
-            if ( output->onnx_RandomNormal_typing() == false ) {
+            if ( output->onnx_RandomNormal_typing(output, dtype, mean, scale, seed, shape) == false ) {
                 std::vector<size_t> outputs_;
                 outputs_.push_back(0);
                 YNXInferenceContextImpl infer_(outputs_);
@@ -139,7 +139,7 @@ namespace generator {
 
 
 
-            if ( output->onnx_RandomUniform_typing() == false ) {
+            if ( output->onnx_RandomUniform_typing(output, dtype, high, low, seed, shape) == false ) {
                 std::vector<size_t> outputs_;
                 outputs_.push_back(0);
                 YNXInferenceContextImpl infer_(outputs_);
