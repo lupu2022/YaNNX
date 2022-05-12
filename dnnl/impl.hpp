@@ -185,6 +185,9 @@ public:
 
     // Covolution & Pooling & BatchNorm
     tt::OperatorReturnType onnx_Conv(tt::tensor_t X, tt::tensor_t W, std::variant<void *, tt::tensor_t>& B, tt::tensor_t Y, std::string auto_pad, std::vector<int64_t> dilations, int64_t group, std::vector<int64_t> kernel_shape, std::vector<int64_t> pads, std::vector<int64_t> strides) override;
+    tt::OperatorReturnType onnx_MaxPool(tt::tensor_t X, tt::tensor_t Y, std::variant<void *, tt::tensor_t>& Indices, std::string auto_pad, int64_t ceil_mode, std::vector<int64_t> dilations, std::vector<int64_t> kernel_shape, std::vector<int64_t> pads, int64_t storage_order, std::vector<int64_t> strides) override;
+    tt::OperatorReturnType onnx_AveragePool(tt::tensor_t X, tensor_t Y, std::string auto_pad, int64_t ceil_mode, int64_t count_include_pad, std::vector<int64_t> kernel_shape, std::vector<int64_t> pads, std::vector<int64_t> strides) override;
+
 
 private:
     // help functions for computing API
@@ -295,6 +298,7 @@ private:
 #include "dnnl/concat.hpp"
 #include "dnnl/matmul.hpp"
 #include "dnnl/conv.hpp"
+#include "dnnl/pool.hpp"
 
 }}
 
