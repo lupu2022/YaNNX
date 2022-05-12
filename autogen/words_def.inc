@@ -116,17 +116,6 @@
 	runtime.new_nword("onnx.ReduceSum", reduction::ReduceSum::creator);
 	runtime.new_nword("onnx.ReduceSumSquare", reduction::ReduceSumSquare::creator);
 	runtime.new_nword("onnx.ReduceProd", reduction::ReduceProd::creator);
-	runtime.new_nword("onnx.GRU", rnn::GRU::creator);
-	runtime.new_nword("onnx.LSTM", rnn::LSTM::creator);
-	runtime.new_nword("onnx.RNN", rnn::RNN::creator);
-	runtime.new_nword("onnx.SequenceLength", sequence::SequenceLength::creator);
-	runtime.new_nword("onnx.SequenceAt", sequence::SequenceAt::creator);
-	runtime.new_nword("onnx.SequenceConstruct", sequence::SequenceConstruct::creator);
-	runtime.new_nword("onnx.ConcatFromSequence", sequence::ConcatFromSequence::creator);
-	runtime.new_nword("onnx.SequenceEmpty", sequence::SequenceEmpty::creator);
-	runtime.new_nword("onnx.SequenceInsert", sequence::SequenceInsert::creator);
-	runtime.new_nword("onnx.SplitToSequence", sequence::SplitToSequence::creator);
-	runtime.new_nword("onnx.SequenceErase", sequence::SequenceErase::creator);
 	runtime.new_nword("onnx.GridSample", tensor::GridSample::creator);
 	runtime.new_nword("onnx.CastLike", tensor::CastLike::creator);
 	runtime.new_nword("onnx.GatherND", tensor::GatherND::creator);

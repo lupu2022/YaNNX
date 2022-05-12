@@ -87,10 +87,6 @@ OperatorReturnType onnx_Concat(std::vector<tensor_t>& inputs, tensor_t concat_re
     return impl()->onnx_Concat(inputs, concat_result, axis);
 }
 
-OperatorReturnType onnx_ConcatFromSequence(tensor_t input_sequence, tensor_t concat_result, int64_t axis, int64_t new_axis) override {
-    return impl()->onnx_ConcatFromSequence(input_sequence, concat_result, axis, new_axis);
-}
-
 OperatorReturnType onnx_Conv(tensor_t X, tensor_t W, std::variant<void *, tensor_t>& B, tensor_t Y, std::string auto_pad, std::vector<int64_t> dilations, int64_t group, std::vector<int64_t> kernel_shape, std::vector<int64_t> pads, std::vector<int64_t> strides) override {
     return impl()->onnx_Conv(X, W, B, Y, auto_pad, dilations, group, kernel_shape, pads, strides);
 }
@@ -175,10 +171,6 @@ OperatorReturnType onnx_Floor(tensor_t X, tensor_t Y) override {
     return impl()->onnx_Floor(X, Y);
 }
 
-OperatorReturnType onnx_GRU(tensor_t X, tensor_t W, tensor_t R, std::variant<void *, tensor_t>& B, std::variant<void *, tensor_t>& sequence_lens, std::variant<void *, tensor_t>& initial_h, std::variant<void *, tensor_t>& Y, std::variant<void *, tensor_t>& Y_h, std::vector<float> activation_alpha, std::vector<float> activation_beta, std::vector<std::string> activations, float clip, std::string direction, int64_t hidden_size, int64_t layout, int64_t linear_before_reset) override {
-    return impl()->onnx_GRU(X, W, R, B, sequence_lens, initial_h, Y, Y_h, activation_alpha, activation_beta, activations, clip, direction, hidden_size, layout, linear_before_reset);
-}
-
 OperatorReturnType onnx_Gather(tensor_t data, tensor_t indices, tensor_t output, int64_t axis) override {
     return impl()->onnx_Gather(data, indices, output, axis);
 }
@@ -249,10 +241,6 @@ OperatorReturnType onnx_IsNaN(tensor_t X, tensor_t Y) override {
 
 OperatorReturnType onnx_LRN(tensor_t X, tensor_t Y, float alpha, float beta, float bias, int64_t size) override {
     return impl()->onnx_LRN(X, Y, alpha, beta, bias, size);
-}
-
-OperatorReturnType onnx_LSTM(tensor_t X, tensor_t W, tensor_t R, std::variant<void *, tensor_t>& B, std::variant<void *, tensor_t>& sequence_lens, std::variant<void *, tensor_t>& initial_h, std::variant<void *, tensor_t>& initial_c, std::variant<void *, tensor_t>& P, std::variant<void *, tensor_t>& Y, std::variant<void *, tensor_t>& Y_h, std::variant<void *, tensor_t>& Y_c, std::vector<float> activation_alpha, std::vector<float> activation_beta, std::vector<std::string> activations, float clip, std::string direction, int64_t hidden_size, int64_t input_forget, int64_t layout) override {
-    return impl()->onnx_LSTM(X, W, R, B, sequence_lens, initial_h, initial_c, P, Y, Y_h, Y_c, activation_alpha, activation_beta, activations, clip, direction, hidden_size, input_forget, layout);
 }
 
 OperatorReturnType onnx_LeakyRelu(tensor_t X, tensor_t Y, float alpha) override {
@@ -383,10 +371,6 @@ OperatorReturnType onnx_QuantizeLinear(tensor_t x, tensor_t y_scale, std::varian
     return impl()->onnx_QuantizeLinear(x, y_scale, y_zero_point, y, axis);
 }
 
-OperatorReturnType onnx_RNN(tensor_t X, tensor_t W, tensor_t R, std::variant<void *, tensor_t>& B, std::variant<void *, tensor_t>& sequence_lens, std::variant<void *, tensor_t>& initial_h, std::variant<void *, tensor_t>& Y, std::variant<void *, tensor_t>& Y_h, std::vector<float> activation_alpha, std::vector<float> activation_beta, std::vector<std::string> activations, float clip, std::string direction, int64_t hidden_size, int64_t layout) override {
-    return impl()->onnx_RNN(X, W, R, B, sequence_lens, initial_h, Y, Y_h, activation_alpha, activation_beta, activations, clip, direction, hidden_size, layout);
-}
-
 OperatorReturnType onnx_RandomNormal(tensor_t output, int64_t dtype, float mean, float scale, float seed, std::vector<int64_t> shape) override {
     return impl()->onnx_RandomNormal(output, dtype, mean, scale, seed, shape);
 }
@@ -487,30 +471,6 @@ OperatorReturnType onnx_Selu(tensor_t X, tensor_t Y, float alpha, float gamma) o
     return impl()->onnx_Selu(X, Y, alpha, gamma);
 }
 
-OperatorReturnType onnx_SequenceAt(tensor_t input_sequence, tensor_t position, tensor_t tensor) override {
-    return impl()->onnx_SequenceAt(input_sequence, position, tensor);
-}
-
-OperatorReturnType onnx_SequenceConstruct(std::vector<tensor_t>& inputs, tensor_t output_sequence) override {
-    return impl()->onnx_SequenceConstruct(inputs, output_sequence);
-}
-
-OperatorReturnType onnx_SequenceEmpty(tensor_t output, int64_t dtype) override {
-    return impl()->onnx_SequenceEmpty(output, dtype);
-}
-
-OperatorReturnType onnx_SequenceErase(tensor_t input_sequence, std::variant<void *, tensor_t>& position, tensor_t output_sequence) override {
-    return impl()->onnx_SequenceErase(input_sequence, position, output_sequence);
-}
-
-OperatorReturnType onnx_SequenceInsert(tensor_t input_sequence, tensor_t tensor, std::variant<void *, tensor_t>& position, tensor_t output_sequence) override {
-    return impl()->onnx_SequenceInsert(input_sequence, tensor, position, output_sequence);
-}
-
-OperatorReturnType onnx_SequenceLength(tensor_t input_sequence, tensor_t length) override {
-    return impl()->onnx_SequenceLength(input_sequence, length);
-}
-
 OperatorReturnType onnx_Shape(tensor_t data, tensor_t shape, int64_t end, int64_t start) override {
     return impl()->onnx_Shape(data, shape, end, start);
 }
@@ -565,10 +525,6 @@ OperatorReturnType onnx_SpaceToDepth(tensor_t input, tensor_t output, int64_t bl
 
 OperatorReturnType onnx_Split(tensor_t input, std::variant<void *, tensor_t>& split, std::vector<tensor_t>& outputs, int64_t axis) override {
     return impl()->onnx_Split(input, split, outputs, axis);
-}
-
-OperatorReturnType onnx_SplitToSequence(tensor_t input, std::variant<void *, tensor_t>& split, tensor_t output_sequence, int64_t axis, int64_t keepdims) override {
-    return impl()->onnx_SplitToSequence(input, split, output_sequence, axis, keepdims);
 }
 
 OperatorReturnType onnx_Sqrt(tensor_t X, tensor_t Y) override {

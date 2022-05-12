@@ -618,6 +618,24 @@ std::string fileToString(const char* filename) {
     return str;
 }
 
+bool check_tag(const std::string& tag) {
+    const char* all_you_need[] = {"generator",
+                                  "logical",
+                                  "math",
+                                  "nn",
+                                  "object_detection",
+                                  "quantization",
+                                  "reduction",
+                                  "tensor"};
+
+    for (size_t i = 0; i < sizeof(all_you_need) / sizeof(const char*); i++) {
+        if ( tag == all_you_need[i] ) {
+            return true;
+        }
+    }
+
+    return false;
+}
 
 int main(int argc, char* argv[]) {
     const std::vector<OpSchema> schemas = OpSchemaRegistry::get_all_schemas();
@@ -636,16 +654,13 @@ int main(int argc, char* argv[]) {
         }
 
         auto op = schemas[i];
-
-        std::string tag = parse_tag( op.file() );
-        if ( tag == "traditionalml" || tag == "controlflow" || tag == "training" ) {
-            continue;
-        }
         std::string name = schemas[i].Name();
-        if ( name.find("Constant") != std::string::npos ) {
+        std::string tag = parse_tag( op.file() );
+
+        if ( check_tag(tag) == false ) {
             continue;
         }
-        if ( name.find("Option") != std::string::npos ) {
+        if ( name.find("Constant") != std::string::npos ) {
             continue;
         }
 

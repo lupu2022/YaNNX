@@ -109,11 +109,6 @@
 	    return YNX_TODO_ERROR;
 	}
 
-	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#ConcatFromSequence
-	virtual OperatorReturnType onnx_ConcatFromSequence(/*inputs:*/ tensor_t input_sequence, /*outputs:*/ tensor_t concat_result, /*attributes:*/ int64_t axis, int64_t new_axis) {
-	    return YNX_TODO_ERROR;
-	}
-
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Conv
 	virtual OperatorReturnType onnx_Conv(/*inputs:*/ tensor_t X, tensor_t W, std::variant<void *, tensor_t>& B, /*outputs:*/ tensor_t Y, /*attributes:*/ std::string auto_pad, std::vector<int64_t> dilations, int64_t group, std::vector<int64_t> kernel_shape, std::vector<int64_t> pads, std::vector<int64_t> strides) {
 	    return YNX_TODO_ERROR;
@@ -219,11 +214,6 @@
 	    return YNX_TODO_ERROR;
 	}
 
-	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#GRU
-	virtual OperatorReturnType onnx_GRU(/*inputs:*/ tensor_t X, tensor_t W, tensor_t R, std::variant<void *, tensor_t>& B, std::variant<void *, tensor_t>& sequence_lens, std::variant<void *, tensor_t>& initial_h, /*outputs:*/ std::variant<void *, tensor_t>& Y, std::variant<void *, tensor_t>& Y_h, /*attributes:*/ std::vector<float> activation_alpha, std::vector<float> activation_beta, std::vector<std::string> activations, float clip, std::string direction, int64_t hidden_size, int64_t layout, int64_t linear_before_reset) {
-	    return YNX_TODO_ERROR;
-	}
-
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Gather
 	virtual OperatorReturnType onnx_Gather(/*inputs:*/ tensor_t data, tensor_t indices, /*outputs:*/ tensor_t output, /*attributes:*/ int64_t axis) {
 	    return YNX_TODO_ERROR;
@@ -311,11 +301,6 @@
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#LRN
 	virtual OperatorReturnType onnx_LRN(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y, /*attributes:*/ float alpha, float beta, float bias, int64_t size) {
-	    return YNX_TODO_ERROR;
-	}
-
-	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#LSTM
-	virtual OperatorReturnType onnx_LSTM(/*inputs:*/ tensor_t X, tensor_t W, tensor_t R, std::variant<void *, tensor_t>& B, std::variant<void *, tensor_t>& sequence_lens, std::variant<void *, tensor_t>& initial_h, std::variant<void *, tensor_t>& initial_c, std::variant<void *, tensor_t>& P, /*outputs:*/ std::variant<void *, tensor_t>& Y, std::variant<void *, tensor_t>& Y_h, std::variant<void *, tensor_t>& Y_c, /*attributes:*/ std::vector<float> activation_alpha, std::vector<float> activation_beta, std::vector<std::string> activations, float clip, std::string direction, int64_t hidden_size, int64_t input_forget, int64_t layout) {
 	    return YNX_TODO_ERROR;
 	}
 
@@ -479,11 +464,6 @@
 	    return YNX_TODO_ERROR;
 	}
 
-	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#RNN
-	virtual OperatorReturnType onnx_RNN(/*inputs:*/ tensor_t X, tensor_t W, tensor_t R, std::variant<void *, tensor_t>& B, std::variant<void *, tensor_t>& sequence_lens, std::variant<void *, tensor_t>& initial_h, /*outputs:*/ std::variant<void *, tensor_t>& Y, std::variant<void *, tensor_t>& Y_h, /*attributes:*/ std::vector<float> activation_alpha, std::vector<float> activation_beta, std::vector<std::string> activations, float clip, std::string direction, int64_t hidden_size, int64_t layout) {
-	    return YNX_TODO_ERROR;
-	}
-
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#RandomNormal
 	virtual OperatorReturnType onnx_RandomNormal(/*outputs:*/ tensor_t output, /*attributes:*/ int64_t dtype, float mean, float scale, float seed, std::vector<int64_t> shape) {
 	    return YNX_TODO_ERROR;
@@ -609,36 +589,6 @@
 	    return YNX_TODO_ERROR;
 	}
 
-	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#SequenceAt
-	virtual OperatorReturnType onnx_SequenceAt(/*inputs:*/ tensor_t input_sequence, tensor_t position, /*outputs:*/ tensor_t tensor) {
-	    return YNX_TODO_ERROR;
-	}
-
-	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#SequenceConstruct
-	virtual OperatorReturnType onnx_SequenceConstruct(/*inputs:*/ std::vector<tensor_t>& inputs, /*outputs:*/ tensor_t output_sequence) {
-	    return YNX_TODO_ERROR;
-	}
-
-	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#SequenceEmpty
-	virtual OperatorReturnType onnx_SequenceEmpty(/*outputs:*/ tensor_t output, /*attributes:*/ int64_t dtype) {
-	    return YNX_TODO_ERROR;
-	}
-
-	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#SequenceErase
-	virtual OperatorReturnType onnx_SequenceErase(/*inputs:*/ tensor_t input_sequence, std::variant<void *, tensor_t>& position, /*outputs:*/ tensor_t output_sequence) {
-	    return YNX_TODO_ERROR;
-	}
-
-	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#SequenceInsert
-	virtual OperatorReturnType onnx_SequenceInsert(/*inputs:*/ tensor_t input_sequence, tensor_t tensor, std::variant<void *, tensor_t>& position, /*outputs:*/ tensor_t output_sequence) {
-	    return YNX_TODO_ERROR;
-	}
-
-	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#SequenceLength
-	virtual OperatorReturnType onnx_SequenceLength(/*inputs:*/ tensor_t input_sequence, /*outputs:*/ tensor_t length) {
-	    return YNX_TODO_ERROR;
-	}
-
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Shape
 	virtual OperatorReturnType onnx_Shape(/*inputs:*/ tensor_t data, /*outputs:*/ tensor_t shape, /*attributes:*/ int64_t end, int64_t start) {
 	    return YNX_TODO_ERROR;
@@ -706,11 +656,6 @@
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Split
 	virtual OperatorReturnType onnx_Split(/*inputs:*/ tensor_t input, std::variant<void *, tensor_t>& split, /*outputs:*/ std::vector<tensor_t>& outputs, /*attributes:*/ int64_t axis) {
-	    return YNX_TODO_ERROR;
-	}
-
-	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#SplitToSequence
-	virtual OperatorReturnType onnx_SplitToSequence(/*inputs:*/ tensor_t input, std::variant<void *, tensor_t>& split, /*outputs:*/ tensor_t output_sequence, /*attributes:*/ int64_t axis, int64_t keepdims) {
 	    return YNX_TODO_ERROR;
 	}
 
