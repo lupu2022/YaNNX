@@ -1,4 +1,4 @@
-//  this file is geneated by autogen
+//  this file is geneated by autogen, don't edit
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Abs
 	virtual OperatorReturnType onnx_Abs(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y) {
 	    return YNX_TODO_ERROR;
@@ -266,6 +266,11 @@
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#GreaterOrEqual
 	virtual OperatorReturnType onnx_GreaterOrEqual(/*inputs:*/ tensor_t A, tensor_t B, /*outputs:*/ tensor_t C) {
+	    return YNX_TODO_ERROR;
+	}
+
+	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#GridSample
+	virtual OperatorReturnType onnx_GridSample(/*inputs:*/ tensor_t X, tensor_t grid, /*outputs:*/ tensor_t Y, /*attributes:*/ int64_t align_corners, std::string mode, std::string padding_mode) {
 	    return YNX_TODO_ERROR;
 	}
 
@@ -590,12 +595,12 @@
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#ScatterElements
-	virtual OperatorReturnType onnx_ScatterElements(/*inputs:*/ tensor_t data, tensor_t indices, tensor_t updates, /*outputs:*/ tensor_t output, /*attributes:*/ int64_t axis) {
+	virtual OperatorReturnType onnx_ScatterElements(/*inputs:*/ tensor_t data, tensor_t indices, tensor_t updates, /*outputs:*/ tensor_t output, /*attributes:*/ int64_t axis, std::string reduction) {
 	    return YNX_TODO_ERROR;
 	}
 
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#ScatterND
-	virtual OperatorReturnType onnx_ScatterND(/*inputs:*/ tensor_t data, tensor_t indices, tensor_t updates, /*outputs:*/ tensor_t output) {
+	virtual OperatorReturnType onnx_ScatterND(/*inputs:*/ tensor_t data, tensor_t indices, tensor_t updates, /*outputs:*/ tensor_t output, /*attributes:*/ std::string reduction) {
 	    return YNX_TODO_ERROR;
 	}
 

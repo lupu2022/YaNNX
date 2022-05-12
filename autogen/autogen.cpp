@@ -149,6 +149,7 @@ std::string api_impl_generate(const OpSchema& op) {
     std::vector<std::string> tokens2;
 
     std::string op_name = op.Name();
+
     auto allInputs = op.inputs();
     for(size_t i = 0; i < allInputs.size(); i++) {
         std::ostringstream oss;
@@ -664,7 +665,7 @@ int main(int argc, char* argv[]) {
         replace_all(def_str, "\t", "");
         std::ofstream ofs;
         ofs.open("api_impl.inc");
-        ofs << "//  this file is geneated by autogen" << std::endl;
+        ofs << "//  this file is geneated by autogen, don't edit" << std::endl;
         ofs << def_str;
         ofs.close();
     }
@@ -685,6 +686,7 @@ int main(int argc, char* argv[]) {
 
         std::ofstream ofs;
         ofs.open("words_impl.inc");
+        ofs << "//  this file is geneated by autogen, don't edit" << std::endl;
         ofs << def_str;
         ofs.close();
     }
@@ -705,6 +707,7 @@ int main(int argc, char* argv[]) {
 
         std::ofstream ofs;
         ofs.open("words_def.inc");
+        ofs << "//  this file is geneated by autogen, don't edit" << std::endl;
         ofs << def_str;
         ofs.close();
     }
@@ -718,7 +721,7 @@ int main(int argc, char* argv[]) {
         }
         std::ofstream ofs;
         ofs.open("api_def.inc");
-        ofs << "//  this file is geneated by autogen" << std::endl;
+        ofs << "//  this file is geneated by autogen, don't edit" << std::endl;
         ofs << oss.str();
         ofs.close();
     }

@@ -1,65 +1,5 @@
+//  this file is geneated by autogen, don't edit
 namespace generator {
-
-    struct RandomNormalLike : NativeWord<TensorType> {
-        tensor_t output;
-
-        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            ValueStack<TensorType>& stack = rt;
-
-            output = TensorFactory::create_undefined_user_tensor();
-
-            auto seed = fetch_optional_float(stack, 0);
-            auto scale = fetch_optional_float(stack, 1);
-            auto mean = fetch_optional_float(stack, 0);
-            auto dtype = fetch_optional_int(stack, 0);
-
-            auto input = fetch_tensor(stack);
-
-
-            std::vector<size_t> outputs_;
-            outputs_.push_back(0);
-            YNXInferenceContextImpl infer_(outputs_);
-
-            infer_.new_attr("seed", seed);
-            infer_.new_attr("scale", scale);
-            infer_.new_attr("mean", mean);
-            infer_.new_attr("dtype", dtype);
-
-            infer_.new_input(input);
-
-            auto f = query_inference_function("RandomNormalLike");
-            infer_.do_inference(f);
-            infer_.check_output(0, output);
-
-
-            if ( input->onnx_RandomNormalLike(input, output, dtype, mean, scale, seed) != YNX_OK ) {
-                yannx_panic("API: RandomNormalLike  return error!");
-            }
-
-            put_tensor(stack, output);
-
-        }
-        virtual void run(ValueStack<TensorType>& stack) {
-
-
-            auto seed = fetch_optional_float(stack, 0);
-            auto scale = fetch_optional_float(stack, 1);
-            auto mean = fetch_optional_float(stack, 0);
-            auto dtype = fetch_optional_int(stack, 0);
-
-            auto input = fetch_tensor(stack);
-
-
-            if ( input->onnx_RandomNormalLike(input, output, dtype, mean, scale, seed) != YNX_OK ) {
-                yannx_panic("API: RandomNormalLike  return error!");
-            }
-
-            put_tensor(stack, output);
-
-        }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(RandomNormalLike)
-    };
-
 
     struct RandomNormal : NativeWord<TensorType> {
         tensor_t output;
@@ -122,6 +62,61 @@ namespace generator {
     };
 
 
+    struct Range : NativeWord<TensorType> {
+        tensor_t output;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            output = TensorFactory::create_undefined_user_tensor();
+
+
+            auto delta = fetch_tensor(stack);
+            auto limit = fetch_tensor(stack);
+            auto start = fetch_tensor(stack);
+
+
+            std::vector<size_t> outputs_;
+            outputs_.push_back(0);
+            YNXInferenceContextImpl infer_(outputs_);
+
+
+            infer_.new_input(start);
+            infer_.new_input(limit);
+            infer_.new_input(delta);
+
+            auto f = query_inference_function("Range");
+            infer_.do_inference(f);
+            infer_.check_output(0, output);
+
+
+            if ( start->onnx_Range(start, limit, delta, output) != YNX_OK ) {
+                yannx_panic("API: Range  return error!");
+            }
+
+            put_tensor(stack, output);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+
+            auto delta = fetch_tensor(stack);
+            auto limit = fetch_tensor(stack);
+            auto start = fetch_tensor(stack);
+
+
+            if ( start->onnx_Range(start, limit, delta, output) != YNX_OK ) {
+                yannx_panic("API: Range  return error!");
+            }
+
+            put_tensor(stack, output);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(Range)
+    };
+
+
     struct RandomUniform : NativeWord<TensorType> {
         tensor_t output;
 
@@ -180,6 +175,67 @@ namespace generator {
 
         }
         NWORD_CREATOR_DEFINE_TENSORTYPE(RandomUniform)
+    };
+
+
+    struct RandomUniformLike : NativeWord<TensorType> {
+        tensor_t output;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            output = TensorFactory::create_undefined_user_tensor();
+
+            auto seed = fetch_optional_float(stack, 0);
+            auto low = fetch_optional_float(stack, 0);
+            auto high = fetch_optional_float(stack, 1);
+            auto dtype = fetch_optional_int(stack, 0);
+
+            auto input = fetch_tensor(stack);
+
+
+            std::vector<size_t> outputs_;
+            outputs_.push_back(0);
+            YNXInferenceContextImpl infer_(outputs_);
+
+            infer_.new_attr("seed", seed);
+            infer_.new_attr("low", low);
+            infer_.new_attr("high", high);
+            infer_.new_attr("dtype", dtype);
+
+            infer_.new_input(input);
+
+            auto f = query_inference_function("RandomUniformLike");
+            infer_.do_inference(f);
+            infer_.check_output(0, output);
+
+
+            if ( input->onnx_RandomUniformLike(input, output, dtype, high, low, seed) != YNX_OK ) {
+                yannx_panic("API: RandomUniformLike  return error!");
+            }
+
+            put_tensor(stack, output);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+            auto seed = fetch_optional_float(stack, 0);
+            auto low = fetch_optional_float(stack, 0);
+            auto high = fetch_optional_float(stack, 1);
+            auto dtype = fetch_optional_int(stack, 0);
+
+            auto input = fetch_tensor(stack);
+
+
+            if ( input->onnx_RandomUniformLike(input, output, dtype, high, low, seed) != YNX_OK ) {
+                yannx_panic("API: RandomUniformLike  return error!");
+            }
+
+            put_tensor(stack, output);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(RandomUniformLike)
     };
 
 
@@ -293,6 +349,67 @@ namespace generator {
     };
 
 
+    struct RandomNormalLike : NativeWord<TensorType> {
+        tensor_t output;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            output = TensorFactory::create_undefined_user_tensor();
+
+            auto seed = fetch_optional_float(stack, 0);
+            auto scale = fetch_optional_float(stack, 1);
+            auto mean = fetch_optional_float(stack, 0);
+            auto dtype = fetch_optional_int(stack, 0);
+
+            auto input = fetch_tensor(stack);
+
+
+            std::vector<size_t> outputs_;
+            outputs_.push_back(0);
+            YNXInferenceContextImpl infer_(outputs_);
+
+            infer_.new_attr("seed", seed);
+            infer_.new_attr("scale", scale);
+            infer_.new_attr("mean", mean);
+            infer_.new_attr("dtype", dtype);
+
+            infer_.new_input(input);
+
+            auto f = query_inference_function("RandomNormalLike");
+            infer_.do_inference(f);
+            infer_.check_output(0, output);
+
+
+            if ( input->onnx_RandomNormalLike(input, output, dtype, mean, scale, seed) != YNX_OK ) {
+                yannx_panic("API: RandomNormalLike  return error!");
+            }
+
+            put_tensor(stack, output);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+            auto seed = fetch_optional_float(stack, 0);
+            auto scale = fetch_optional_float(stack, 1);
+            auto mean = fetch_optional_float(stack, 0);
+            auto dtype = fetch_optional_int(stack, 0);
+
+            auto input = fetch_tensor(stack);
+
+
+            if ( input->onnx_RandomNormalLike(input, output, dtype, mean, scale, seed) != YNX_OK ) {
+                yannx_panic("API: RandomNormalLike  return error!");
+            }
+
+            put_tensor(stack, output);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(RandomNormalLike)
+    };
+
+
     struct Multinomial : NativeWord<TensorType> {
         tensor_t output;
 
@@ -350,122 +467,6 @@ namespace generator {
         NWORD_CREATOR_DEFINE_TENSORTYPE(Multinomial)
     };
 
-
-    struct RandomUniformLike : NativeWord<TensorType> {
-        tensor_t output;
-
-        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            ValueStack<TensorType>& stack = rt;
-
-            output = TensorFactory::create_undefined_user_tensor();
-
-            auto seed = fetch_optional_float(stack, 0);
-            auto low = fetch_optional_float(stack, 0);
-            auto high = fetch_optional_float(stack, 1);
-            auto dtype = fetch_optional_int(stack, 0);
-
-            auto input = fetch_tensor(stack);
-
-
-            std::vector<size_t> outputs_;
-            outputs_.push_back(0);
-            YNXInferenceContextImpl infer_(outputs_);
-
-            infer_.new_attr("seed", seed);
-            infer_.new_attr("low", low);
-            infer_.new_attr("high", high);
-            infer_.new_attr("dtype", dtype);
-
-            infer_.new_input(input);
-
-            auto f = query_inference_function("RandomUniformLike");
-            infer_.do_inference(f);
-            infer_.check_output(0, output);
-
-
-            if ( input->onnx_RandomUniformLike(input, output, dtype, high, low, seed) != YNX_OK ) {
-                yannx_panic("API: RandomUniformLike  return error!");
-            }
-
-            put_tensor(stack, output);
-
-        }
-        virtual void run(ValueStack<TensorType>& stack) {
-
-
-            auto seed = fetch_optional_float(stack, 0);
-            auto low = fetch_optional_float(stack, 0);
-            auto high = fetch_optional_float(stack, 1);
-            auto dtype = fetch_optional_int(stack, 0);
-
-            auto input = fetch_tensor(stack);
-
-
-            if ( input->onnx_RandomUniformLike(input, output, dtype, high, low, seed) != YNX_OK ) {
-                yannx_panic("API: RandomUniformLike  return error!");
-            }
-
-            put_tensor(stack, output);
-
-        }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(RandomUniformLike)
-    };
-
-
-    struct Range : NativeWord<TensorType> {
-        tensor_t output;
-
-        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            ValueStack<TensorType>& stack = rt;
-
-            output = TensorFactory::create_undefined_user_tensor();
-
-
-            auto delta = fetch_tensor(stack);
-            auto limit = fetch_tensor(stack);
-            auto start = fetch_tensor(stack);
-
-
-            std::vector<size_t> outputs_;
-            outputs_.push_back(0);
-            YNXInferenceContextImpl infer_(outputs_);
-
-
-            infer_.new_input(start);
-            infer_.new_input(limit);
-            infer_.new_input(delta);
-
-            auto f = query_inference_function("Range");
-            infer_.do_inference(f);
-            infer_.check_output(0, output);
-
-
-            if ( start->onnx_Range(start, limit, delta, output) != YNX_OK ) {
-                yannx_panic("API: Range  return error!");
-            }
-
-            put_tensor(stack, output);
-
-        }
-        virtual void run(ValueStack<TensorType>& stack) {
-
-
-
-            auto delta = fetch_tensor(stack);
-            auto limit = fetch_tensor(stack);
-            auto start = fetch_tensor(stack);
-
-
-            if ( start->onnx_Range(start, limit, delta, output) != YNX_OK ) {
-                yannx_panic("API: Range  return error!");
-            }
-
-            put_tensor(stack, output);
-
-        }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(Range)
-    };
-
 }
 namespace logical {
 
@@ -521,6 +522,58 @@ namespace logical {
     };
 
 
+    struct LessOrEqual : NativeWord<TensorType> {
+        tensor_t C;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            C = TensorFactory::create_undefined_user_tensor();
+
+
+            auto B = fetch_tensor(stack);
+            auto A = fetch_tensor(stack);
+
+
+            std::vector<size_t> outputs_;
+            outputs_.push_back(0);
+            YNXInferenceContextImpl infer_(outputs_);
+
+
+            infer_.new_input(A);
+            infer_.new_input(B);
+
+            auto f = query_inference_function("LessOrEqual");
+            infer_.do_inference(f);
+            infer_.check_output(0, C);
+
+
+            if ( A->onnx_LessOrEqual(A, B, C) != YNX_OK ) {
+                yannx_panic("API: LessOrEqual  return error!");
+            }
+
+            put_tensor(stack, C);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+
+            auto B = fetch_tensor(stack);
+            auto A = fetch_tensor(stack);
+
+
+            if ( A->onnx_LessOrEqual(A, B, C) != YNX_OK ) {
+                yannx_panic("API: LessOrEqual  return error!");
+            }
+
+            put_tensor(stack, C);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(LessOrEqual)
+    };
+
+
     struct Or : NativeWord<TensorType> {
         tensor_t C;
 
@@ -570,6 +623,211 @@ namespace logical {
 
         }
         NWORD_CREATOR_DEFINE_TENSORTYPE(Or)
+    };
+
+
+    struct Not : NativeWord<TensorType> {
+        tensor_t Y;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            Y = TensorFactory::create_undefined_user_tensor();
+
+
+            auto X = fetch_tensor(stack);
+
+
+            std::vector<size_t> outputs_;
+            outputs_.push_back(0);
+            YNXInferenceContextImpl infer_(outputs_);
+
+
+            infer_.new_input(X);
+
+            auto f = query_inference_function("Not");
+            infer_.do_inference(f);
+            infer_.check_output(0, Y);
+
+
+            if ( X->onnx_Not(X, Y) != YNX_OK ) {
+                yannx_panic("API: Not  return error!");
+            }
+
+            put_tensor(stack, Y);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+
+            auto X = fetch_tensor(stack);
+
+
+            if ( X->onnx_Not(X, Y) != YNX_OK ) {
+                yannx_panic("API: Not  return error!");
+            }
+
+            put_tensor(stack, Y);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(Not)
+    };
+
+
+    struct And : NativeWord<TensorType> {
+        tensor_t C;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            C = TensorFactory::create_undefined_user_tensor();
+
+
+            auto B = fetch_tensor(stack);
+            auto A = fetch_tensor(stack);
+
+
+            std::vector<size_t> outputs_;
+            outputs_.push_back(0);
+            YNXInferenceContextImpl infer_(outputs_);
+
+
+            infer_.new_input(A);
+            infer_.new_input(B);
+
+            auto f = query_inference_function("And");
+            infer_.do_inference(f);
+            infer_.check_output(0, C);
+
+
+            if ( A->onnx_And(A, B, C) != YNX_OK ) {
+                yannx_panic("API: And  return error!");
+            }
+
+            put_tensor(stack, C);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+
+            auto B = fetch_tensor(stack);
+            auto A = fetch_tensor(stack);
+
+
+            if ( A->onnx_And(A, B, C) != YNX_OK ) {
+                yannx_panic("API: And  return error!");
+            }
+
+            put_tensor(stack, C);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(And)
+    };
+
+
+    struct Less : NativeWord<TensorType> {
+        tensor_t C;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            C = TensorFactory::create_undefined_user_tensor();
+
+
+            auto B = fetch_tensor(stack);
+            auto A = fetch_tensor(stack);
+
+
+            std::vector<size_t> outputs_;
+            outputs_.push_back(0);
+            YNXInferenceContextImpl infer_(outputs_);
+
+
+            infer_.new_input(A);
+            infer_.new_input(B);
+
+            auto f = query_inference_function("Less");
+            infer_.do_inference(f);
+            infer_.check_output(0, C);
+
+
+            if ( A->onnx_Less(A, B, C) != YNX_OK ) {
+                yannx_panic("API: Less  return error!");
+            }
+
+            put_tensor(stack, C);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+
+            auto B = fetch_tensor(stack);
+            auto A = fetch_tensor(stack);
+
+
+            if ( A->onnx_Less(A, B, C) != YNX_OK ) {
+                yannx_panic("API: Less  return error!");
+            }
+
+            put_tensor(stack, C);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(Less)
+    };
+
+
+    struct Equal : NativeWord<TensorType> {
+        tensor_t C;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            C = TensorFactory::create_undefined_user_tensor();
+
+
+            auto B = fetch_tensor(stack);
+            auto A = fetch_tensor(stack);
+
+
+            std::vector<size_t> outputs_;
+            outputs_.push_back(0);
+            YNXInferenceContextImpl infer_(outputs_);
+
+
+            infer_.new_input(A);
+            infer_.new_input(B);
+
+            auto f = query_inference_function("Equal");
+            infer_.do_inference(f);
+            infer_.check_output(0, C);
+
+
+            if ( A->onnx_Equal(A, B, C) != YNX_OK ) {
+                yannx_panic("API: Equal  return error!");
+            }
+
+            put_tensor(stack, C);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+
+            auto B = fetch_tensor(stack);
+            auto A = fetch_tensor(stack);
+
+
+            if ( A->onnx_Equal(A, B, C) != YNX_OK ) {
+                yannx_panic("API: Equal  return error!");
+            }
+
+            put_tensor(stack, C);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(Equal)
     };
 
 
@@ -731,1923 +989,8 @@ namespace logical {
         NWORD_CREATOR_DEFINE_TENSORTYPE(Xor)
     };
 
-
-    struct And : NativeWord<TensorType> {
-        tensor_t C;
-
-        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            ValueStack<TensorType>& stack = rt;
-
-            C = TensorFactory::create_undefined_user_tensor();
-
-
-            auto B = fetch_tensor(stack);
-            auto A = fetch_tensor(stack);
-
-
-            std::vector<size_t> outputs_;
-            outputs_.push_back(0);
-            YNXInferenceContextImpl infer_(outputs_);
-
-
-            infer_.new_input(A);
-            infer_.new_input(B);
-
-            auto f = query_inference_function("And");
-            infer_.do_inference(f);
-            infer_.check_output(0, C);
-
-
-            if ( A->onnx_And(A, B, C) != YNX_OK ) {
-                yannx_panic("API: And  return error!");
-            }
-
-            put_tensor(stack, C);
-
-        }
-        virtual void run(ValueStack<TensorType>& stack) {
-
-
-
-            auto B = fetch_tensor(stack);
-            auto A = fetch_tensor(stack);
-
-
-            if ( A->onnx_And(A, B, C) != YNX_OK ) {
-                yannx_panic("API: And  return error!");
-            }
-
-            put_tensor(stack, C);
-
-        }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(And)
-    };
-
-
-    struct LessOrEqual : NativeWord<TensorType> {
-        tensor_t C;
-
-        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            ValueStack<TensorType>& stack = rt;
-
-            C = TensorFactory::create_undefined_user_tensor();
-
-
-            auto B = fetch_tensor(stack);
-            auto A = fetch_tensor(stack);
-
-
-            std::vector<size_t> outputs_;
-            outputs_.push_back(0);
-            YNXInferenceContextImpl infer_(outputs_);
-
-
-            infer_.new_input(A);
-            infer_.new_input(B);
-
-            auto f = query_inference_function("LessOrEqual");
-            infer_.do_inference(f);
-            infer_.check_output(0, C);
-
-
-            if ( A->onnx_LessOrEqual(A, B, C) != YNX_OK ) {
-                yannx_panic("API: LessOrEqual  return error!");
-            }
-
-            put_tensor(stack, C);
-
-        }
-        virtual void run(ValueStack<TensorType>& stack) {
-
-
-
-            auto B = fetch_tensor(stack);
-            auto A = fetch_tensor(stack);
-
-
-            if ( A->onnx_LessOrEqual(A, B, C) != YNX_OK ) {
-                yannx_panic("API: LessOrEqual  return error!");
-            }
-
-            put_tensor(stack, C);
-
-        }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(LessOrEqual)
-    };
-
-
-    struct Not : NativeWord<TensorType> {
-        tensor_t Y;
-
-        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            ValueStack<TensorType>& stack = rt;
-
-            Y = TensorFactory::create_undefined_user_tensor();
-
-
-            auto X = fetch_tensor(stack);
-
-
-            std::vector<size_t> outputs_;
-            outputs_.push_back(0);
-            YNXInferenceContextImpl infer_(outputs_);
-
-
-            infer_.new_input(X);
-
-            auto f = query_inference_function("Not");
-            infer_.do_inference(f);
-            infer_.check_output(0, Y);
-
-
-            if ( X->onnx_Not(X, Y) != YNX_OK ) {
-                yannx_panic("API: Not  return error!");
-            }
-
-            put_tensor(stack, Y);
-
-        }
-        virtual void run(ValueStack<TensorType>& stack) {
-
-
-
-            auto X = fetch_tensor(stack);
-
-
-            if ( X->onnx_Not(X, Y) != YNX_OK ) {
-                yannx_panic("API: Not  return error!");
-            }
-
-            put_tensor(stack, Y);
-
-        }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(Not)
-    };
-
-
-    struct Equal : NativeWord<TensorType> {
-        tensor_t C;
-
-        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            ValueStack<TensorType>& stack = rt;
-
-            C = TensorFactory::create_undefined_user_tensor();
-
-
-            auto B = fetch_tensor(stack);
-            auto A = fetch_tensor(stack);
-
-
-            std::vector<size_t> outputs_;
-            outputs_.push_back(0);
-            YNXInferenceContextImpl infer_(outputs_);
-
-
-            infer_.new_input(A);
-            infer_.new_input(B);
-
-            auto f = query_inference_function("Equal");
-            infer_.do_inference(f);
-            infer_.check_output(0, C);
-
-
-            if ( A->onnx_Equal(A, B, C) != YNX_OK ) {
-                yannx_panic("API: Equal  return error!");
-            }
-
-            put_tensor(stack, C);
-
-        }
-        virtual void run(ValueStack<TensorType>& stack) {
-
-
-
-            auto B = fetch_tensor(stack);
-            auto A = fetch_tensor(stack);
-
-
-            if ( A->onnx_Equal(A, B, C) != YNX_OK ) {
-                yannx_panic("API: Equal  return error!");
-            }
-
-            put_tensor(stack, C);
-
-        }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(Equal)
-    };
-
-
-    struct Less : NativeWord<TensorType> {
-        tensor_t C;
-
-        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            ValueStack<TensorType>& stack = rt;
-
-            C = TensorFactory::create_undefined_user_tensor();
-
-
-            auto B = fetch_tensor(stack);
-            auto A = fetch_tensor(stack);
-
-
-            std::vector<size_t> outputs_;
-            outputs_.push_back(0);
-            YNXInferenceContextImpl infer_(outputs_);
-
-
-            infer_.new_input(A);
-            infer_.new_input(B);
-
-            auto f = query_inference_function("Less");
-            infer_.do_inference(f);
-            infer_.check_output(0, C);
-
-
-            if ( A->onnx_Less(A, B, C) != YNX_OK ) {
-                yannx_panic("API: Less  return error!");
-            }
-
-            put_tensor(stack, C);
-
-        }
-        virtual void run(ValueStack<TensorType>& stack) {
-
-
-
-            auto B = fetch_tensor(stack);
-            auto A = fetch_tensor(stack);
-
-
-            if ( A->onnx_Less(A, B, C) != YNX_OK ) {
-                yannx_panic("API: Less  return error!");
-            }
-
-            put_tensor(stack, C);
-
-        }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(Less)
-    };
-
 }
 namespace math {
-
-    struct Reciprocal : NativeWord<TensorType> {
-        tensor_t Y;
-
-        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            ValueStack<TensorType>& stack = rt;
-
-            Y = TensorFactory::create_undefined_user_tensor();
-
-
-            auto X = fetch_tensor(stack);
-
-
-            std::vector<size_t> outputs_;
-            outputs_.push_back(0);
-            YNXInferenceContextImpl infer_(outputs_);
-
-
-            infer_.new_input(X);
-
-            auto f = query_inference_function("Reciprocal");
-            infer_.do_inference(f);
-            infer_.check_output(0, Y);
-
-
-            if ( X->onnx_Reciprocal(X, Y) != YNX_OK ) {
-                yannx_panic("API: Reciprocal  return error!");
-            }
-
-            put_tensor(stack, Y);
-
-        }
-        virtual void run(ValueStack<TensorType>& stack) {
-
-
-
-            auto X = fetch_tensor(stack);
-
-
-            if ( X->onnx_Reciprocal(X, Y) != YNX_OK ) {
-                yannx_panic("API: Reciprocal  return error!");
-            }
-
-            put_tensor(stack, Y);
-
-        }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(Reciprocal)
-    };
-
-
-    struct LeakyRelu : NativeWord<TensorType> {
-        tensor_t Y;
-
-        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            ValueStack<TensorType>& stack = rt;
-
-            Y = TensorFactory::create_undefined_user_tensor();
-
-            auto alpha = fetch_optional_float(stack, 0.01);
-
-            auto X = fetch_tensor(stack);
-
-
-            std::vector<size_t> outputs_;
-            outputs_.push_back(0);
-            YNXInferenceContextImpl infer_(outputs_);
-
-            infer_.new_attr("alpha", alpha);
-
-            infer_.new_input(X);
-
-            auto f = query_inference_function("LeakyRelu");
-            infer_.do_inference(f);
-            infer_.check_output(0, Y);
-
-
-            if ( X->onnx_LeakyRelu(X, Y, alpha) != YNX_OK ) {
-                yannx_panic("API: LeakyRelu  return error!");
-            }
-
-            put_tensor(stack, Y);
-
-        }
-        virtual void run(ValueStack<TensorType>& stack) {
-
-
-            auto alpha = fetch_optional_float(stack, 0.01);
-
-            auto X = fetch_tensor(stack);
-
-
-            if ( X->onnx_LeakyRelu(X, Y, alpha) != YNX_OK ) {
-                yannx_panic("API: LeakyRelu  return error!");
-            }
-
-            put_tensor(stack, Y);
-
-        }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(LeakyRelu)
-    };
-
-
-    struct HardSigmoid : NativeWord<TensorType> {
-        tensor_t Y;
-
-        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            ValueStack<TensorType>& stack = rt;
-
-            Y = TensorFactory::create_undefined_user_tensor();
-
-            auto beta = fetch_optional_float(stack, 0.5);
-            auto alpha = fetch_optional_float(stack, 0.2);
-
-            auto X = fetch_tensor(stack);
-
-
-            std::vector<size_t> outputs_;
-            outputs_.push_back(0);
-            YNXInferenceContextImpl infer_(outputs_);
-
-            infer_.new_attr("beta", beta);
-            infer_.new_attr("alpha", alpha);
-
-            infer_.new_input(X);
-
-            auto f = query_inference_function("HardSigmoid");
-            infer_.do_inference(f);
-            infer_.check_output(0, Y);
-
-
-            if ( X->onnx_HardSigmoid(X, Y, alpha, beta) != YNX_OK ) {
-                yannx_panic("API: HardSigmoid  return error!");
-            }
-
-            put_tensor(stack, Y);
-
-        }
-        virtual void run(ValueStack<TensorType>& stack) {
-
-
-            auto beta = fetch_optional_float(stack, 0.5);
-            auto alpha = fetch_optional_float(stack, 0.2);
-
-            auto X = fetch_tensor(stack);
-
-
-            if ( X->onnx_HardSigmoid(X, Y, alpha, beta) != YNX_OK ) {
-                yannx_panic("API: HardSigmoid  return error!");
-            }
-
-            put_tensor(stack, Y);
-
-        }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(HardSigmoid)
-    };
-
-
-    struct Div : NativeWord<TensorType> {
-        tensor_t C;
-
-        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            ValueStack<TensorType>& stack = rt;
-
-            C = TensorFactory::create_undefined_user_tensor();
-
-
-            auto B = fetch_tensor(stack);
-            auto A = fetch_tensor(stack);
-
-
-            std::vector<size_t> outputs_;
-            outputs_.push_back(0);
-            YNXInferenceContextImpl infer_(outputs_);
-
-
-            infer_.new_input(A);
-            infer_.new_input(B);
-
-            auto f = query_inference_function("Div");
-            infer_.do_inference(f);
-            infer_.check_output(0, C);
-
-
-            if ( A->onnx_Div(A, B, C) != YNX_OK ) {
-                yannx_panic("API: Div  return error!");
-            }
-
-            put_tensor(stack, C);
-
-        }
-        virtual void run(ValueStack<TensorType>& stack) {
-
-
-
-            auto B = fetch_tensor(stack);
-            auto A = fetch_tensor(stack);
-
-
-            if ( A->onnx_Div(A, B, C) != YNX_OK ) {
-                yannx_panic("API: Div  return error!");
-            }
-
-            put_tensor(stack, C);
-
-        }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(Div)
-    };
-
-
-    struct Pow : NativeWord<TensorType> {
-        tensor_t Z;
-
-        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            ValueStack<TensorType>& stack = rt;
-
-            Z = TensorFactory::create_undefined_user_tensor();
-
-
-            auto Y = fetch_tensor(stack);
-            auto X = fetch_tensor(stack);
-
-
-            std::vector<size_t> outputs_;
-            outputs_.push_back(0);
-            YNXInferenceContextImpl infer_(outputs_);
-
-
-            infer_.new_input(X);
-            infer_.new_input(Y);
-
-            auto f = query_inference_function("Pow");
-            infer_.do_inference(f);
-            infer_.check_output(0, Z);
-
-
-            if ( X->onnx_Pow(X, Y, Z) != YNX_OK ) {
-                yannx_panic("API: Pow  return error!");
-            }
-
-            put_tensor(stack, Z);
-
-        }
-        virtual void run(ValueStack<TensorType>& stack) {
-
-
-
-            auto Y = fetch_tensor(stack);
-            auto X = fetch_tensor(stack);
-
-
-            if ( X->onnx_Pow(X, Y, Z) != YNX_OK ) {
-                yannx_panic("API: Pow  return error!");
-            }
-
-            put_tensor(stack, Z);
-
-        }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(Pow)
-    };
-
-
-    struct Mul : NativeWord<TensorType> {
-        tensor_t C;
-
-        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            ValueStack<TensorType>& stack = rt;
-
-            C = TensorFactory::create_undefined_user_tensor();
-
-
-            auto B = fetch_tensor(stack);
-            auto A = fetch_tensor(stack);
-
-
-            std::vector<size_t> outputs_;
-            outputs_.push_back(0);
-            YNXInferenceContextImpl infer_(outputs_);
-
-
-            infer_.new_input(A);
-            infer_.new_input(B);
-
-            auto f = query_inference_function("Mul");
-            infer_.do_inference(f);
-            infer_.check_output(0, C);
-
-
-            if ( A->onnx_Mul(A, B, C) != YNX_OK ) {
-                yannx_panic("API: Mul  return error!");
-            }
-
-            put_tensor(stack, C);
-
-        }
-        virtual void run(ValueStack<TensorType>& stack) {
-
-
-
-            auto B = fetch_tensor(stack);
-            auto A = fetch_tensor(stack);
-
-
-            if ( A->onnx_Mul(A, B, C) != YNX_OK ) {
-                yannx_panic("API: Mul  return error!");
-            }
-
-            put_tensor(stack, C);
-
-        }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(Mul)
-    };
-
-
-    struct Min : NativeWord<TensorType> {
-        tensor_t min;
-
-        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            ValueStack<TensorType>& stack = rt;
-
-            min = TensorFactory::create_undefined_user_tensor();
-
-
-            auto data_0 = fetch_tensors(stack);
-
-
-            std::vector<size_t> outputs_;
-            outputs_.push_back(0);
-            YNXInferenceContextImpl infer_(outputs_);
-
-
-            infer_.new_input(data_0);
-
-            auto f = query_inference_function("Min");
-            infer_.do_inference(f);
-            infer_.check_output(0, min);
-
-
-            if ( min->onnx_Min(data_0, min) != YNX_OK ) {
-                yannx_panic("API: Min  return error!");
-            }
-
-            put_tensor(stack, min);
-
-        }
-        virtual void run(ValueStack<TensorType>& stack) {
-
-
-
-            auto data_0 = fetch_tensors(stack);
-
-
-            if ( min->onnx_Min(data_0, min) != YNX_OK ) {
-                yannx_panic("API: Min  return error!");
-            }
-
-            put_tensor(stack, min);
-
-        }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(Min)
-    };
-
-
-    struct Floor : NativeWord<TensorType> {
-        tensor_t Y;
-
-        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            ValueStack<TensorType>& stack = rt;
-
-            Y = TensorFactory::create_undefined_user_tensor();
-
-
-            auto X = fetch_tensor(stack);
-
-
-            std::vector<size_t> outputs_;
-            outputs_.push_back(0);
-            YNXInferenceContextImpl infer_(outputs_);
-
-
-            infer_.new_input(X);
-
-            auto f = query_inference_function("Floor");
-            infer_.do_inference(f);
-            infer_.check_output(0, Y);
-
-
-            if ( X->onnx_Floor(X, Y) != YNX_OK ) {
-                yannx_panic("API: Floor  return error!");
-            }
-
-            put_tensor(stack, Y);
-
-        }
-        virtual void run(ValueStack<TensorType>& stack) {
-
-
-
-            auto X = fetch_tensor(stack);
-
-
-            if ( X->onnx_Floor(X, Y) != YNX_OK ) {
-                yannx_panic("API: Floor  return error!");
-            }
-
-            put_tensor(stack, Y);
-
-        }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(Floor)
-    };
-
-
-    struct Mean : NativeWord<TensorType> {
-        tensor_t mean;
-
-        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            ValueStack<TensorType>& stack = rt;
-
-            mean = TensorFactory::create_undefined_user_tensor();
-
-
-            auto data_0 = fetch_tensors(stack);
-
-
-            std::vector<size_t> outputs_;
-            outputs_.push_back(0);
-            YNXInferenceContextImpl infer_(outputs_);
-
-
-            infer_.new_input(data_0);
-
-            auto f = query_inference_function("Mean");
-            infer_.do_inference(f);
-            infer_.check_output(0, mean);
-
-
-            if ( mean->onnx_Mean(data_0, mean) != YNX_OK ) {
-                yannx_panic("API: Mean  return error!");
-            }
-
-            put_tensor(stack, mean);
-
-        }
-        virtual void run(ValueStack<TensorType>& stack) {
-
-
-
-            auto data_0 = fetch_tensors(stack);
-
-
-            if ( mean->onnx_Mean(data_0, mean) != YNX_OK ) {
-                yannx_panic("API: Mean  return error!");
-            }
-
-            put_tensor(stack, mean);
-
-        }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(Mean)
-    };
-
-
-    struct Max : NativeWord<TensorType> {
-        tensor_t max;
-
-        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            ValueStack<TensorType>& stack = rt;
-
-            max = TensorFactory::create_undefined_user_tensor();
-
-
-            auto data_0 = fetch_tensors(stack);
-
-
-            std::vector<size_t> outputs_;
-            outputs_.push_back(0);
-            YNXInferenceContextImpl infer_(outputs_);
-
-
-            infer_.new_input(data_0);
-
-            auto f = query_inference_function("Max");
-            infer_.do_inference(f);
-            infer_.check_output(0, max);
-
-
-            if ( max->onnx_Max(data_0, max) != YNX_OK ) {
-                yannx_panic("API: Max  return error!");
-            }
-
-            put_tensor(stack, max);
-
-        }
-        virtual void run(ValueStack<TensorType>& stack) {
-
-
-
-            auto data_0 = fetch_tensors(stack);
-
-
-            if ( max->onnx_Max(data_0, max) != YNX_OK ) {
-                yannx_panic("API: Max  return error!");
-            }
-
-            put_tensor(stack, max);
-
-        }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(Max)
-    };
-
-
-    struct Round : NativeWord<TensorType> {
-        tensor_t Y;
-
-        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            ValueStack<TensorType>& stack = rt;
-
-            Y = TensorFactory::create_undefined_user_tensor();
-
-
-            auto X = fetch_tensor(stack);
-
-
-            std::vector<size_t> outputs_;
-            outputs_.push_back(0);
-            YNXInferenceContextImpl infer_(outputs_);
-
-
-            infer_.new_input(X);
-
-            auto f = query_inference_function("Round");
-            infer_.do_inference(f);
-            infer_.check_output(0, Y);
-
-
-            if ( X->onnx_Round(X, Y) != YNX_OK ) {
-                yannx_panic("API: Round  return error!");
-            }
-
-            put_tensor(stack, Y);
-
-        }
-        virtual void run(ValueStack<TensorType>& stack) {
-
-
-
-            auto X = fetch_tensor(stack);
-
-
-            if ( X->onnx_Round(X, Y) != YNX_OK ) {
-                yannx_panic("API: Round  return error!");
-            }
-
-            put_tensor(stack, Y);
-
-        }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(Round)
-    };
-
-
-    struct Sigmoid : NativeWord<TensorType> {
-        tensor_t Y;
-
-        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            ValueStack<TensorType>& stack = rt;
-
-            Y = TensorFactory::create_undefined_user_tensor();
-
-
-            auto X = fetch_tensor(stack);
-
-
-            std::vector<size_t> outputs_;
-            outputs_.push_back(0);
-            YNXInferenceContextImpl infer_(outputs_);
-
-
-            infer_.new_input(X);
-
-            auto f = query_inference_function("Sigmoid");
-            infer_.do_inference(f);
-            infer_.check_output(0, Y);
-
-
-            if ( X->onnx_Sigmoid(X, Y) != YNX_OK ) {
-                yannx_panic("API: Sigmoid  return error!");
-            }
-
-            put_tensor(stack, Y);
-
-        }
-        virtual void run(ValueStack<TensorType>& stack) {
-
-
-
-            auto X = fetch_tensor(stack);
-
-
-            if ( X->onnx_Sigmoid(X, Y) != YNX_OK ) {
-                yannx_panic("API: Sigmoid  return error!");
-            }
-
-            put_tensor(stack, Y);
-
-        }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(Sigmoid)
-    };
-
-
-    struct Relu : NativeWord<TensorType> {
-        tensor_t Y;
-
-        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            ValueStack<TensorType>& stack = rt;
-
-            Y = TensorFactory::create_undefined_user_tensor();
-
-
-            auto X = fetch_tensor(stack);
-
-
-            std::vector<size_t> outputs_;
-            outputs_.push_back(0);
-            YNXInferenceContextImpl infer_(outputs_);
-
-
-            infer_.new_input(X);
-
-            auto f = query_inference_function("Relu");
-            infer_.do_inference(f);
-            infer_.check_output(0, Y);
-
-
-            if ( X->onnx_Relu(X, Y) != YNX_OK ) {
-                yannx_panic("API: Relu  return error!");
-            }
-
-            put_tensor(stack, Y);
-
-        }
-        virtual void run(ValueStack<TensorType>& stack) {
-
-
-
-            auto X = fetch_tensor(stack);
-
-
-            if ( X->onnx_Relu(X, Y) != YNX_OK ) {
-                yannx_panic("API: Relu  return error!");
-            }
-
-            put_tensor(stack, Y);
-
-        }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(Relu)
-    };
-
-
-    struct LogSoftmax : NativeWord<TensorType> {
-        tensor_t output;
-
-        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            ValueStack<TensorType>& stack = rt;
-
-            output = TensorFactory::create_undefined_user_tensor();
-
-            auto axis = fetch_optional_int(stack, -1);
-
-            auto input = fetch_tensor(stack);
-
-
-            std::vector<size_t> outputs_;
-            outputs_.push_back(0);
-            YNXInferenceContextImpl infer_(outputs_);
-
-            infer_.new_attr("axis", axis);
-
-            infer_.new_input(input);
-
-            auto f = query_inference_function("LogSoftmax");
-            infer_.do_inference(f);
-            infer_.check_output(0, output);
-
-
-            if ( input->onnx_LogSoftmax(input, output, axis) != YNX_OK ) {
-                yannx_panic("API: LogSoftmax  return error!");
-            }
-
-            put_tensor(stack, output);
-
-        }
-        virtual void run(ValueStack<TensorType>& stack) {
-
-
-            auto axis = fetch_optional_int(stack, -1);
-
-            auto input = fetch_tensor(stack);
-
-
-            if ( input->onnx_LogSoftmax(input, output, axis) != YNX_OK ) {
-                yannx_panic("API: LogSoftmax  return error!");
-            }
-
-            put_tensor(stack, output);
-
-        }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(LogSoftmax)
-    };
-
-
-    struct Ceil : NativeWord<TensorType> {
-        tensor_t Y;
-
-        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            ValueStack<TensorType>& stack = rt;
-
-            Y = TensorFactory::create_undefined_user_tensor();
-
-
-            auto X = fetch_tensor(stack);
-
-
-            std::vector<size_t> outputs_;
-            outputs_.push_back(0);
-            YNXInferenceContextImpl infer_(outputs_);
-
-
-            infer_.new_input(X);
-
-            auto f = query_inference_function("Ceil");
-            infer_.do_inference(f);
-            infer_.check_output(0, Y);
-
-
-            if ( X->onnx_Ceil(X, Y) != YNX_OK ) {
-                yannx_panic("API: Ceil  return error!");
-            }
-
-            put_tensor(stack, Y);
-
-        }
-        virtual void run(ValueStack<TensorType>& stack) {
-
-
-
-            auto X = fetch_tensor(stack);
-
-
-            if ( X->onnx_Ceil(X, Y) != YNX_OK ) {
-                yannx_panic("API: Ceil  return error!");
-            }
-
-            put_tensor(stack, Y);
-
-        }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(Ceil)
-    };
-
-
-    struct Log : NativeWord<TensorType> {
-        tensor_t output;
-
-        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            ValueStack<TensorType>& stack = rt;
-
-            output = TensorFactory::create_undefined_user_tensor();
-
-
-            auto input = fetch_tensor(stack);
-
-
-            std::vector<size_t> outputs_;
-            outputs_.push_back(0);
-            YNXInferenceContextImpl infer_(outputs_);
-
-
-            infer_.new_input(input);
-
-            auto f = query_inference_function("Log");
-            infer_.do_inference(f);
-            infer_.check_output(0, output);
-
-
-            if ( input->onnx_Log(input, output) != YNX_OK ) {
-                yannx_panic("API: Log  return error!");
-            }
-
-            put_tensor(stack, output);
-
-        }
-        virtual void run(ValueStack<TensorType>& stack) {
-
-
-
-            auto input = fetch_tensor(stack);
-
-
-            if ( input->onnx_Log(input, output) != YNX_OK ) {
-                yannx_panic("API: Log  return error!");
-            }
-
-            put_tensor(stack, output);
-
-        }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(Log)
-    };
-
-
-    struct Neg : NativeWord<TensorType> {
-        tensor_t Y;
-
-        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            ValueStack<TensorType>& stack = rt;
-
-            Y = TensorFactory::create_undefined_user_tensor();
-
-
-            auto X = fetch_tensor(stack);
-
-
-            std::vector<size_t> outputs_;
-            outputs_.push_back(0);
-            YNXInferenceContextImpl infer_(outputs_);
-
-
-            infer_.new_input(X);
-
-            auto f = query_inference_function("Neg");
-            infer_.do_inference(f);
-            infer_.check_output(0, Y);
-
-
-            if ( X->onnx_Neg(X, Y) != YNX_OK ) {
-                yannx_panic("API: Neg  return error!");
-            }
-
-            put_tensor(stack, Y);
-
-        }
-        virtual void run(ValueStack<TensorType>& stack) {
-
-
-
-            auto X = fetch_tensor(stack);
-
-
-            if ( X->onnx_Neg(X, Y) != YNX_OK ) {
-                yannx_panic("API: Neg  return error!");
-            }
-
-            put_tensor(stack, Y);
-
-        }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(Neg)
-    };
-
-
-    struct Sub : NativeWord<TensorType> {
-        tensor_t C;
-
-        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            ValueStack<TensorType>& stack = rt;
-
-            C = TensorFactory::create_undefined_user_tensor();
-
-
-            auto B = fetch_tensor(stack);
-            auto A = fetch_tensor(stack);
-
-
-            std::vector<size_t> outputs_;
-            outputs_.push_back(0);
-            YNXInferenceContextImpl infer_(outputs_);
-
-
-            infer_.new_input(A);
-            infer_.new_input(B);
-
-            auto f = query_inference_function("Sub");
-            infer_.do_inference(f);
-            infer_.check_output(0, C);
-
-
-            if ( A->onnx_Sub(A, B, C) != YNX_OK ) {
-                yannx_panic("API: Sub  return error!");
-            }
-
-            put_tensor(stack, C);
-
-        }
-        virtual void run(ValueStack<TensorType>& stack) {
-
-
-
-            auto B = fetch_tensor(stack);
-            auto A = fetch_tensor(stack);
-
-
-            if ( A->onnx_Sub(A, B, C) != YNX_OK ) {
-                yannx_panic("API: Sub  return error!");
-            }
-
-            put_tensor(stack, C);
-
-        }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(Sub)
-    };
-
-
-    struct PRelu : NativeWord<TensorType> {
-        tensor_t Y;
-
-        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            ValueStack<TensorType>& stack = rt;
-
-            Y = TensorFactory::create_undefined_user_tensor();
-
-
-            auto slope = fetch_tensor(stack);
-            auto X = fetch_tensor(stack);
-
-
-            std::vector<size_t> outputs_;
-            outputs_.push_back(0);
-            YNXInferenceContextImpl infer_(outputs_);
-
-
-            infer_.new_input(X);
-            infer_.new_input(slope);
-
-            auto f = query_inference_function("PRelu");
-            infer_.do_inference(f);
-            infer_.check_output(0, Y);
-
-
-            if ( X->onnx_PRelu(X, slope, Y) != YNX_OK ) {
-                yannx_panic("API: PRelu  return error!");
-            }
-
-            put_tensor(stack, Y);
-
-        }
-        virtual void run(ValueStack<TensorType>& stack) {
-
-
-
-            auto slope = fetch_tensor(stack);
-            auto X = fetch_tensor(stack);
-
-
-            if ( X->onnx_PRelu(X, slope, Y) != YNX_OK ) {
-                yannx_panic("API: PRelu  return error!");
-            }
-
-            put_tensor(stack, Y);
-
-        }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(PRelu)
-    };
-
-
-    struct Add : NativeWord<TensorType> {
-        tensor_t C;
-
-        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            ValueStack<TensorType>& stack = rt;
-
-            C = TensorFactory::create_undefined_user_tensor();
-
-
-            auto B = fetch_tensor(stack);
-            auto A = fetch_tensor(stack);
-
-
-            std::vector<size_t> outputs_;
-            outputs_.push_back(0);
-            YNXInferenceContextImpl infer_(outputs_);
-
-
-            infer_.new_input(A);
-            infer_.new_input(B);
-
-            auto f = query_inference_function("Add");
-            infer_.do_inference(f);
-            infer_.check_output(0, C);
-
-
-            if ( A->onnx_Add(A, B, C) != YNX_OK ) {
-                yannx_panic("API: Add  return error!");
-            }
-
-            put_tensor(stack, C);
-
-        }
-        virtual void run(ValueStack<TensorType>& stack) {
-
-
-
-            auto B = fetch_tensor(stack);
-            auto A = fetch_tensor(stack);
-
-
-            if ( A->onnx_Add(A, B, C) != YNX_OK ) {
-                yannx_panic("API: Add  return error!");
-            }
-
-            put_tensor(stack, C);
-
-        }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(Add)
-    };
-
-
-    struct Selu : NativeWord<TensorType> {
-        tensor_t Y;
-
-        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            ValueStack<TensorType>& stack = rt;
-
-            Y = TensorFactory::create_undefined_user_tensor();
-
-            auto gamma = fetch_optional_float(stack, 1.0507);
-            auto alpha = fetch_optional_float(stack, 1.67326);
-
-            auto X = fetch_tensor(stack);
-
-
-            std::vector<size_t> outputs_;
-            outputs_.push_back(0);
-            YNXInferenceContextImpl infer_(outputs_);
-
-            infer_.new_attr("gamma", gamma);
-            infer_.new_attr("alpha", alpha);
-
-            infer_.new_input(X);
-
-            auto f = query_inference_function("Selu");
-            infer_.do_inference(f);
-            infer_.check_output(0, Y);
-
-
-            if ( X->onnx_Selu(X, Y, alpha, gamma) != YNX_OK ) {
-                yannx_panic("API: Selu  return error!");
-            }
-
-            put_tensor(stack, Y);
-
-        }
-        virtual void run(ValueStack<TensorType>& stack) {
-
-
-            auto gamma = fetch_optional_float(stack, 1.0507);
-            auto alpha = fetch_optional_float(stack, 1.67326);
-
-            auto X = fetch_tensor(stack);
-
-
-            if ( X->onnx_Selu(X, Y, alpha, gamma) != YNX_OK ) {
-                yannx_panic("API: Selu  return error!");
-            }
-
-            put_tensor(stack, Y);
-
-        }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(Selu)
-    };
-
-
-    struct Abs : NativeWord<TensorType> {
-        tensor_t Y;
-
-        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            ValueStack<TensorType>& stack = rt;
-
-            Y = TensorFactory::create_undefined_user_tensor();
-
-
-            auto X = fetch_tensor(stack);
-
-
-            std::vector<size_t> outputs_;
-            outputs_.push_back(0);
-            YNXInferenceContextImpl infer_(outputs_);
-
-
-            infer_.new_input(X);
-
-            auto f = query_inference_function("Abs");
-            infer_.do_inference(f);
-            infer_.check_output(0, Y);
-
-
-            if ( X->onnx_Abs(X, Y) != YNX_OK ) {
-                yannx_panic("API: Abs  return error!");
-            }
-
-            put_tensor(stack, Y);
-
-        }
-        virtual void run(ValueStack<TensorType>& stack) {
-
-
-
-            auto X = fetch_tensor(stack);
-
-
-            if ( X->onnx_Abs(X, Y) != YNX_OK ) {
-                yannx_panic("API: Abs  return error!");
-            }
-
-            put_tensor(stack, Y);
-
-        }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(Abs)
-    };
-
-
-    struct QLinearMatMul : NativeWord<TensorType> {
-        tensor_t y;
-
-        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            ValueStack<TensorType>& stack = rt;
-
-            y = TensorFactory::create_undefined_user_tensor();
-
-
-            auto y_zero_point = fetch_tensor(stack);
-            auto y_scale = fetch_tensor(stack);
-            auto b_zero_point = fetch_tensor(stack);
-            auto b_scale = fetch_tensor(stack);
-            auto b = fetch_tensor(stack);
-            auto a_zero_point = fetch_tensor(stack);
-            auto a_scale = fetch_tensor(stack);
-            auto a = fetch_tensor(stack);
-
-
-            std::vector<size_t> outputs_;
-            outputs_.push_back(0);
-            YNXInferenceContextImpl infer_(outputs_);
-
-
-            infer_.new_input(a);
-            infer_.new_input(a_scale);
-            infer_.new_input(a_zero_point);
-            infer_.new_input(b);
-            infer_.new_input(b_scale);
-            infer_.new_input(b_zero_point);
-            infer_.new_input(y_scale);
-            infer_.new_input(y_zero_point);
-
-            auto f = query_inference_function("QLinearMatMul");
-            infer_.do_inference(f);
-            infer_.check_output(0, y);
-
-
-            if ( a->onnx_QLinearMatMul(a, a_scale, a_zero_point, b, b_scale, b_zero_point, y_scale, y_zero_point, y) != YNX_OK ) {
-                yannx_panic("API: QLinearMatMul  return error!");
-            }
-
-            put_tensor(stack, y);
-
-        }
-        virtual void run(ValueStack<TensorType>& stack) {
-
-
-
-            auto y_zero_point = fetch_tensor(stack);
-            auto y_scale = fetch_tensor(stack);
-            auto b_zero_point = fetch_tensor(stack);
-            auto b_scale = fetch_tensor(stack);
-            auto b = fetch_tensor(stack);
-            auto a_zero_point = fetch_tensor(stack);
-            auto a_scale = fetch_tensor(stack);
-            auto a = fetch_tensor(stack);
-
-
-            if ( a->onnx_QLinearMatMul(a, a_scale, a_zero_point, b, b_scale, b_zero_point, y_scale, y_zero_point, y) != YNX_OK ) {
-                yannx_panic("API: QLinearMatMul  return error!");
-            }
-
-            put_tensor(stack, y);
-
-        }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(QLinearMatMul)
-    };
-
-
-    struct Clip : NativeWord<TensorType> {
-        tensor_t output;
-
-        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            ValueStack<TensorType>& stack = rt;
-
-            output = TensorFactory::create_undefined_user_tensor();
-
-
-            auto max = fetch_optional_tensor(stack);
-            auto min = fetch_optional_tensor(stack);
-            auto input = fetch_tensor(stack);
-
-
-            std::vector<size_t> outputs_;
-            outputs_.push_back(0);
-            YNXInferenceContextImpl infer_(outputs_);
-
-
-            infer_.new_input(input);
-            infer_.new_input(min);
-            infer_.new_input(max);
-
-            auto f = query_inference_function("Clip");
-            infer_.do_inference(f);
-            infer_.check_output(0, output);
-
-
-            if ( input->onnx_Clip(input, min, max, output) != YNX_OK ) {
-                yannx_panic("API: Clip  return error!");
-            }
-
-            put_tensor(stack, output);
-
-        }
-        virtual void run(ValueStack<TensorType>& stack) {
-
-
-
-            auto max = fetch_optional_tensor(stack);
-            auto min = fetch_optional_tensor(stack);
-            auto input = fetch_tensor(stack);
-
-
-            if ( input->onnx_Clip(input, min, max, output) != YNX_OK ) {
-                yannx_panic("API: Clip  return error!");
-            }
-
-            put_tensor(stack, output);
-
-        }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(Clip)
-    };
-
-
-    struct Einsum : NativeWord<TensorType> {
-        tensor_t Output;
-
-        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            ValueStack<TensorType>& stack = rt;
-
-            Output = TensorFactory::create_undefined_user_tensor();
-
-            auto equation = fetch_string(stack);
-
-            auto Inputs = fetch_tensors(stack);
-
-
-            std::vector<size_t> outputs_;
-            outputs_.push_back(0);
-            YNXInferenceContextImpl infer_(outputs_);
-
-            infer_.new_attr("equation", equation);
-
-            infer_.new_input(Inputs);
-
-            auto f = query_inference_function("Einsum");
-            infer_.do_inference(f);
-            infer_.check_output(0, Output);
-
-
-            if ( Output->onnx_Einsum(Inputs, Output, equation) != YNX_OK ) {
-                yannx_panic("API: Einsum  return error!");
-            }
-
-            put_tensor(stack, Output);
-
-        }
-        virtual void run(ValueStack<TensorType>& stack) {
-
-
-            auto equation = fetch_string(stack);
-
-            auto Inputs = fetch_tensors(stack);
-
-
-            if ( Output->onnx_Einsum(Inputs, Output, equation) != YNX_OK ) {
-                yannx_panic("API: Einsum  return error!");
-            }
-
-            put_tensor(stack, Output);
-
-        }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(Einsum)
-    };
-
-
-    struct Hardmax : NativeWord<TensorType> {
-        tensor_t output;
-
-        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            ValueStack<TensorType>& stack = rt;
-
-            output = TensorFactory::create_undefined_user_tensor();
-
-            auto axis = fetch_optional_int(stack, -1);
-
-            auto input = fetch_tensor(stack);
-
-
-            std::vector<size_t> outputs_;
-            outputs_.push_back(0);
-            YNXInferenceContextImpl infer_(outputs_);
-
-            infer_.new_attr("axis", axis);
-
-            infer_.new_input(input);
-
-            auto f = query_inference_function("Hardmax");
-            infer_.do_inference(f);
-            infer_.check_output(0, output);
-
-
-            if ( input->onnx_Hardmax(input, output, axis) != YNX_OK ) {
-                yannx_panic("API: Hardmax  return error!");
-            }
-
-            put_tensor(stack, output);
-
-        }
-        virtual void run(ValueStack<TensorType>& stack) {
-
-
-            auto axis = fetch_optional_int(stack, -1);
-
-            auto input = fetch_tensor(stack);
-
-
-            if ( input->onnx_Hardmax(input, output, axis) != YNX_OK ) {
-                yannx_panic("API: Hardmax  return error!");
-            }
-
-            put_tensor(stack, output);
-
-        }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(Hardmax)
-    };
-
-
-    struct Sqrt : NativeWord<TensorType> {
-        tensor_t Y;
-
-        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            ValueStack<TensorType>& stack = rt;
-
-            Y = TensorFactory::create_undefined_user_tensor();
-
-
-            auto X = fetch_tensor(stack);
-
-
-            std::vector<size_t> outputs_;
-            outputs_.push_back(0);
-            YNXInferenceContextImpl infer_(outputs_);
-
-
-            infer_.new_input(X);
-
-            auto f = query_inference_function("Sqrt");
-            infer_.do_inference(f);
-            infer_.check_output(0, Y);
-
-
-            if ( X->onnx_Sqrt(X, Y) != YNX_OK ) {
-                yannx_panic("API: Sqrt  return error!");
-            }
-
-            put_tensor(stack, Y);
-
-        }
-        virtual void run(ValueStack<TensorType>& stack) {
-
-
-
-            auto X = fetch_tensor(stack);
-
-
-            if ( X->onnx_Sqrt(X, Y) != YNX_OK ) {
-                yannx_panic("API: Sqrt  return error!");
-            }
-
-            put_tensor(stack, Y);
-
-        }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(Sqrt)
-    };
-
-
-    struct Gemm : NativeWord<TensorType> {
-        tensor_t Y;
-
-        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            ValueStack<TensorType>& stack = rt;
-
-            Y = TensorFactory::create_undefined_user_tensor();
-
-            auto transB = fetch_optional_int(stack, 0);
-            auto transA = fetch_optional_int(stack, 0);
-            auto beta = fetch_optional_float(stack, 1);
-            auto alpha = fetch_optional_float(stack, 1);
-
-            auto C = fetch_optional_tensor(stack);
-            auto B = fetch_tensor(stack);
-            auto A = fetch_tensor(stack);
-
-
-            std::vector<size_t> outputs_;
-            outputs_.push_back(0);
-            YNXInferenceContextImpl infer_(outputs_);
-
-            infer_.new_attr("transB", transB);
-            infer_.new_attr("transA", transA);
-            infer_.new_attr("beta", beta);
-            infer_.new_attr("alpha", alpha);
-
-            infer_.new_input(A);
-            infer_.new_input(B);
-            infer_.new_input(C);
-
-            auto f = query_inference_function("Gemm");
-            infer_.do_inference(f);
-            infer_.check_output(0, Y);
-
-
-            if ( A->onnx_Gemm(A, B, C, Y, alpha, beta, transA, transB) != YNX_OK ) {
-                yannx_panic("API: Gemm  return error!");
-            }
-
-            put_tensor(stack, Y);
-
-        }
-        virtual void run(ValueStack<TensorType>& stack) {
-
-
-            auto transB = fetch_optional_int(stack, 0);
-            auto transA = fetch_optional_int(stack, 0);
-            auto beta = fetch_optional_float(stack, 1);
-            auto alpha = fetch_optional_float(stack, 1);
-
-            auto C = fetch_optional_tensor(stack);
-            auto B = fetch_tensor(stack);
-            auto A = fetch_tensor(stack);
-
-
-            if ( A->onnx_Gemm(A, B, C, Y, alpha, beta, transA, transB) != YNX_OK ) {
-                yannx_panic("API: Gemm  return error!");
-            }
-
-            put_tensor(stack, Y);
-
-        }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(Gemm)
-    };
-
-
-    struct Cos : NativeWord<TensorType> {
-        tensor_t output;
-
-        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            ValueStack<TensorType>& stack = rt;
-
-            output = TensorFactory::create_undefined_user_tensor();
-
-
-            auto input = fetch_tensor(stack);
-
-
-            std::vector<size_t> outputs_;
-            outputs_.push_back(0);
-            YNXInferenceContextImpl infer_(outputs_);
-
-
-            infer_.new_input(input);
-
-            auto f = query_inference_function("Cos");
-            infer_.do_inference(f);
-            infer_.check_output(0, output);
-
-
-            if ( input->onnx_Cos(input, output) != YNX_OK ) {
-                yannx_panic("API: Cos  return error!");
-            }
-
-            put_tensor(stack, output);
-
-        }
-        virtual void run(ValueStack<TensorType>& stack) {
-
-
-
-            auto input = fetch_tensor(stack);
-
-
-            if ( input->onnx_Cos(input, output) != YNX_OK ) {
-                yannx_panic("API: Cos  return error!");
-            }
-
-            put_tensor(stack, output);
-
-        }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(Cos)
-    };
-
-
-    struct Exp : NativeWord<TensorType> {
-        tensor_t output;
-
-        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            ValueStack<TensorType>& stack = rt;
-
-            output = TensorFactory::create_undefined_user_tensor();
-
-
-            auto input = fetch_tensor(stack);
-
-
-            std::vector<size_t> outputs_;
-            outputs_.push_back(0);
-            YNXInferenceContextImpl infer_(outputs_);
-
-
-            infer_.new_input(input);
-
-            auto f = query_inference_function("Exp");
-            infer_.do_inference(f);
-            infer_.check_output(0, output);
-
-
-            if ( input->onnx_Exp(input, output) != YNX_OK ) {
-                yannx_panic("API: Exp  return error!");
-            }
-
-            put_tensor(stack, output);
-
-        }
-        virtual void run(ValueStack<TensorType>& stack) {
-
-
-
-            auto input = fetch_tensor(stack);
-
-
-            if ( input->onnx_Exp(input, output) != YNX_OK ) {
-                yannx_panic("API: Exp  return error!");
-            }
-
-            put_tensor(stack, output);
-
-        }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(Exp)
-    };
-
-
-    struct Tan : NativeWord<TensorType> {
-        tensor_t output;
-
-        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            ValueStack<TensorType>& stack = rt;
-
-            output = TensorFactory::create_undefined_user_tensor();
-
-
-            auto input = fetch_tensor(stack);
-
-
-            std::vector<size_t> outputs_;
-            outputs_.push_back(0);
-            YNXInferenceContextImpl infer_(outputs_);
-
-
-            infer_.new_input(input);
-
-            auto f = query_inference_function("Tan");
-            infer_.do_inference(f);
-            infer_.check_output(0, output);
-
-
-            if ( input->onnx_Tan(input, output) != YNX_OK ) {
-                yannx_panic("API: Tan  return error!");
-            }
-
-            put_tensor(stack, output);
-
-        }
-        virtual void run(ValueStack<TensorType>& stack) {
-
-
-
-            auto input = fetch_tensor(stack);
-
-
-            if ( input->onnx_Tan(input, output) != YNX_OK ) {
-                yannx_panic("API: Tan  return error!");
-            }
-
-            put_tensor(stack, output);
-
-        }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(Tan)
-    };
-
-
-    struct Softmax : NativeWord<TensorType> {
-        tensor_t output;
-
-        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            ValueStack<TensorType>& stack = rt;
-
-            output = TensorFactory::create_undefined_user_tensor();
-
-            auto axis = fetch_optional_int(stack, -1);
-
-            auto input = fetch_tensor(stack);
-
-
-            std::vector<size_t> outputs_;
-            outputs_.push_back(0);
-            YNXInferenceContextImpl infer_(outputs_);
-
-            infer_.new_attr("axis", axis);
-
-            infer_.new_input(input);
-
-            auto f = query_inference_function("Softmax");
-            infer_.do_inference(f);
-            infer_.check_output(0, output);
-
-
-            if ( input->onnx_Softmax(input, output, axis) != YNX_OK ) {
-                yannx_panic("API: Softmax  return error!");
-            }
-
-            put_tensor(stack, output);
-
-        }
-        virtual void run(ValueStack<TensorType>& stack) {
-
-
-            auto axis = fetch_optional_int(stack, -1);
-
-            auto input = fetch_tensor(stack);
-
-
-            if ( input->onnx_Softmax(input, output, axis) != YNX_OK ) {
-                yannx_panic("API: Softmax  return error!");
-            }
-
-            put_tensor(stack, output);
-
-        }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(Softmax)
-    };
-
 
     struct SoftmaxCrossEntropyLoss : NativeWord<TensorType> {
         std::variant<void *, tensor_t> log_prob;
@@ -2727,6 +1070,1783 @@ namespace math {
     };
 
 
+    struct Celu : NativeWord<TensorType> {
+        tensor_t Y;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            Y = TensorFactory::create_undefined_user_tensor();
+
+            auto alpha = fetch_optional_float(stack, 1);
+
+            auto X = fetch_tensor(stack);
+
+
+            std::vector<size_t> outputs_;
+            outputs_.push_back(0);
+            YNXInferenceContextImpl infer_(outputs_);
+
+            infer_.new_attr("alpha", alpha);
+
+            infer_.new_input(X);
+
+            auto f = query_inference_function("Celu");
+            infer_.do_inference(f);
+            infer_.check_output(0, Y);
+
+
+            if ( X->onnx_Celu(X, Y, alpha) != YNX_OK ) {
+                yannx_panic("API: Celu  return error!");
+            }
+
+            put_tensor(stack, Y);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+            auto alpha = fetch_optional_float(stack, 1);
+
+            auto X = fetch_tensor(stack);
+
+
+            if ( X->onnx_Celu(X, Y, alpha) != YNX_OK ) {
+                yannx_panic("API: Celu  return error!");
+            }
+
+            put_tensor(stack, Y);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(Celu)
+    };
+
+
+    struct CumSum : NativeWord<TensorType> {
+        tensor_t y;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            y = TensorFactory::create_undefined_user_tensor();
+
+            auto reverse = fetch_optional_int(stack, 0);
+            auto exclusive = fetch_optional_int(stack, 0);
+
+            auto axis = fetch_tensor(stack);
+            auto x = fetch_tensor(stack);
+
+
+            std::vector<size_t> outputs_;
+            outputs_.push_back(0);
+            YNXInferenceContextImpl infer_(outputs_);
+
+            infer_.new_attr("reverse", reverse);
+            infer_.new_attr("exclusive", exclusive);
+
+            infer_.new_input(x);
+            infer_.new_input(axis);
+
+            auto f = query_inference_function("CumSum");
+            infer_.do_inference(f);
+            infer_.check_output(0, y);
+
+
+            if ( x->onnx_CumSum(x, axis, y, exclusive, reverse) != YNX_OK ) {
+                yannx_panic("API: CumSum  return error!");
+            }
+
+            put_tensor(stack, y);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+            auto reverse = fetch_optional_int(stack, 0);
+            auto exclusive = fetch_optional_int(stack, 0);
+
+            auto axis = fetch_tensor(stack);
+            auto x = fetch_tensor(stack);
+
+
+            if ( x->onnx_CumSum(x, axis, y, exclusive, reverse) != YNX_OK ) {
+                yannx_panic("API: CumSum  return error!");
+            }
+
+            put_tensor(stack, y);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(CumSum)
+    };
+
+
+    struct Det : NativeWord<TensorType> {
+        tensor_t Y;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            Y = TensorFactory::create_undefined_user_tensor();
+
+
+            auto X = fetch_tensor(stack);
+
+
+            std::vector<size_t> outputs_;
+            outputs_.push_back(0);
+            YNXInferenceContextImpl infer_(outputs_);
+
+
+            infer_.new_input(X);
+
+            auto f = query_inference_function("Det");
+            infer_.do_inference(f);
+            infer_.check_output(0, Y);
+
+
+            if ( X->onnx_Det(X, Y) != YNX_OK ) {
+                yannx_panic("API: Det  return error!");
+            }
+
+            put_tensor(stack, Y);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+
+            auto X = fetch_tensor(stack);
+
+
+            if ( X->onnx_Det(X, Y) != YNX_OK ) {
+                yannx_panic("API: Det  return error!");
+            }
+
+            put_tensor(stack, Y);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(Det)
+    };
+
+
+    struct QLinearMatMul : NativeWord<TensorType> {
+        tensor_t y;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            y = TensorFactory::create_undefined_user_tensor();
+
+
+            auto y_zero_point = fetch_tensor(stack);
+            auto y_scale = fetch_tensor(stack);
+            auto b_zero_point = fetch_tensor(stack);
+            auto b_scale = fetch_tensor(stack);
+            auto b = fetch_tensor(stack);
+            auto a_zero_point = fetch_tensor(stack);
+            auto a_scale = fetch_tensor(stack);
+            auto a = fetch_tensor(stack);
+
+
+            std::vector<size_t> outputs_;
+            outputs_.push_back(0);
+            YNXInferenceContextImpl infer_(outputs_);
+
+
+            infer_.new_input(a);
+            infer_.new_input(a_scale);
+            infer_.new_input(a_zero_point);
+            infer_.new_input(b);
+            infer_.new_input(b_scale);
+            infer_.new_input(b_zero_point);
+            infer_.new_input(y_scale);
+            infer_.new_input(y_zero_point);
+
+            auto f = query_inference_function("QLinearMatMul");
+            infer_.do_inference(f);
+            infer_.check_output(0, y);
+
+
+            if ( a->onnx_QLinearMatMul(a, a_scale, a_zero_point, b, b_scale, b_zero_point, y_scale, y_zero_point, y) != YNX_OK ) {
+                yannx_panic("API: QLinearMatMul  return error!");
+            }
+
+            put_tensor(stack, y);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+
+            auto y_zero_point = fetch_tensor(stack);
+            auto y_scale = fetch_tensor(stack);
+            auto b_zero_point = fetch_tensor(stack);
+            auto b_scale = fetch_tensor(stack);
+            auto b = fetch_tensor(stack);
+            auto a_zero_point = fetch_tensor(stack);
+            auto a_scale = fetch_tensor(stack);
+            auto a = fetch_tensor(stack);
+
+
+            if ( a->onnx_QLinearMatMul(a, a_scale, a_zero_point, b, b_scale, b_zero_point, y_scale, y_zero_point, y) != YNX_OK ) {
+                yannx_panic("API: QLinearMatMul  return error!");
+            }
+
+            put_tensor(stack, y);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(QLinearMatMul)
+    };
+
+
+    struct MatMulInteger : NativeWord<TensorType> {
+        tensor_t Y;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            Y = TensorFactory::create_undefined_user_tensor();
+
+
+            auto b_zero_point = fetch_optional_tensor(stack);
+            auto a_zero_point = fetch_optional_tensor(stack);
+            auto B = fetch_tensor(stack);
+            auto A = fetch_tensor(stack);
+
+
+            std::vector<size_t> outputs_;
+            outputs_.push_back(0);
+            YNXInferenceContextImpl infer_(outputs_);
+
+
+            infer_.new_input(A);
+            infer_.new_input(B);
+            infer_.new_input(a_zero_point);
+            infer_.new_input(b_zero_point);
+
+            auto f = query_inference_function("MatMulInteger");
+            infer_.do_inference(f);
+            infer_.check_output(0, Y);
+
+
+            if ( A->onnx_MatMulInteger(A, B, a_zero_point, b_zero_point, Y) != YNX_OK ) {
+                yannx_panic("API: MatMulInteger  return error!");
+            }
+
+            put_tensor(stack, Y);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+
+            auto b_zero_point = fetch_optional_tensor(stack);
+            auto a_zero_point = fetch_optional_tensor(stack);
+            auto B = fetch_tensor(stack);
+            auto A = fetch_tensor(stack);
+
+
+            if ( A->onnx_MatMulInteger(A, B, a_zero_point, b_zero_point, Y) != YNX_OK ) {
+                yannx_panic("API: MatMulInteger  return error!");
+            }
+
+            put_tensor(stack, Y);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(MatMulInteger)
+    };
+
+
+    struct Mul : NativeWord<TensorType> {
+        tensor_t C;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            C = TensorFactory::create_undefined_user_tensor();
+
+
+            auto B = fetch_tensor(stack);
+            auto A = fetch_tensor(stack);
+
+
+            std::vector<size_t> outputs_;
+            outputs_.push_back(0);
+            YNXInferenceContextImpl infer_(outputs_);
+
+
+            infer_.new_input(A);
+            infer_.new_input(B);
+
+            auto f = query_inference_function("Mul");
+            infer_.do_inference(f);
+            infer_.check_output(0, C);
+
+
+            if ( A->onnx_Mul(A, B, C) != YNX_OK ) {
+                yannx_panic("API: Mul  return error!");
+            }
+
+            put_tensor(stack, C);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+
+            auto B = fetch_tensor(stack);
+            auto A = fetch_tensor(stack);
+
+
+            if ( A->onnx_Mul(A, B, C) != YNX_OK ) {
+                yannx_panic("API: Mul  return error!");
+            }
+
+            put_tensor(stack, C);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(Mul)
+    };
+
+
+    struct Max : NativeWord<TensorType> {
+        tensor_t max;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            max = TensorFactory::create_undefined_user_tensor();
+
+
+            auto data_0 = fetch_tensors(stack);
+
+
+            std::vector<size_t> outputs_;
+            outputs_.push_back(0);
+            YNXInferenceContextImpl infer_(outputs_);
+
+
+            infer_.new_input(data_0);
+
+            auto f = query_inference_function("Max");
+            infer_.do_inference(f);
+            infer_.check_output(0, max);
+
+
+            if ( max->onnx_Max(data_0, max) != YNX_OK ) {
+                yannx_panic("API: Max  return error!");
+            }
+
+            put_tensor(stack, max);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+
+            auto data_0 = fetch_tensors(stack);
+
+
+            if ( max->onnx_Max(data_0, max) != YNX_OK ) {
+                yannx_panic("API: Max  return error!");
+            }
+
+            put_tensor(stack, max);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(Max)
+    };
+
+
+    struct Mod : NativeWord<TensorType> {
+        tensor_t C;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            C = TensorFactory::create_undefined_user_tensor();
+
+            auto fmod = fetch_optional_int(stack, 0);
+
+            auto B = fetch_tensor(stack);
+            auto A = fetch_tensor(stack);
+
+
+            std::vector<size_t> outputs_;
+            outputs_.push_back(0);
+            YNXInferenceContextImpl infer_(outputs_);
+
+            infer_.new_attr("fmod", fmod);
+
+            infer_.new_input(A);
+            infer_.new_input(B);
+
+            auto f = query_inference_function("Mod");
+            infer_.do_inference(f);
+            infer_.check_output(0, C);
+
+
+            if ( A->onnx_Mod(A, B, C, fmod) != YNX_OK ) {
+                yannx_panic("API: Mod  return error!");
+            }
+
+            put_tensor(stack, C);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+            auto fmod = fetch_optional_int(stack, 0);
+
+            auto B = fetch_tensor(stack);
+            auto A = fetch_tensor(stack);
+
+
+            if ( A->onnx_Mod(A, B, C, fmod) != YNX_OK ) {
+                yannx_panic("API: Mod  return error!");
+            }
+
+            put_tensor(stack, C);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(Mod)
+    };
+
+
+    struct Log : NativeWord<TensorType> {
+        tensor_t output;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            output = TensorFactory::create_undefined_user_tensor();
+
+
+            auto input = fetch_tensor(stack);
+
+
+            std::vector<size_t> outputs_;
+            outputs_.push_back(0);
+            YNXInferenceContextImpl infer_(outputs_);
+
+
+            infer_.new_input(input);
+
+            auto f = query_inference_function("Log");
+            infer_.do_inference(f);
+            infer_.check_output(0, output);
+
+
+            if ( input->onnx_Log(input, output) != YNX_OK ) {
+                yannx_panic("API: Log  return error!");
+            }
+
+            put_tensor(stack, output);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+
+            auto input = fetch_tensor(stack);
+
+
+            if ( input->onnx_Log(input, output) != YNX_OK ) {
+                yannx_panic("API: Log  return error!");
+            }
+
+            put_tensor(stack, output);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(Log)
+    };
+
+
+    struct Sign : NativeWord<TensorType> {
+        tensor_t output;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            output = TensorFactory::create_undefined_user_tensor();
+
+
+            auto input = fetch_tensor(stack);
+
+
+            std::vector<size_t> outputs_;
+            outputs_.push_back(0);
+            YNXInferenceContextImpl infer_(outputs_);
+
+
+            infer_.new_input(input);
+
+            auto f = query_inference_function("Sign");
+            infer_.do_inference(f);
+            infer_.check_output(0, output);
+
+
+            if ( input->onnx_Sign(input, output) != YNX_OK ) {
+                yannx_panic("API: Sign  return error!");
+            }
+
+            put_tensor(stack, output);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+
+            auto input = fetch_tensor(stack);
+
+
+            if ( input->onnx_Sign(input, output) != YNX_OK ) {
+                yannx_panic("API: Sign  return error!");
+            }
+
+            put_tensor(stack, output);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(Sign)
+    };
+
+
+    struct Min : NativeWord<TensorType> {
+        tensor_t min;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            min = TensorFactory::create_undefined_user_tensor();
+
+
+            auto data_0 = fetch_tensors(stack);
+
+
+            std::vector<size_t> outputs_;
+            outputs_.push_back(0);
+            YNXInferenceContextImpl infer_(outputs_);
+
+
+            infer_.new_input(data_0);
+
+            auto f = query_inference_function("Min");
+            infer_.do_inference(f);
+            infer_.check_output(0, min);
+
+
+            if ( min->onnx_Min(data_0, min) != YNX_OK ) {
+                yannx_panic("API: Min  return error!");
+            }
+
+            put_tensor(stack, min);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+
+            auto data_0 = fetch_tensors(stack);
+
+
+            if ( min->onnx_Min(data_0, min) != YNX_OK ) {
+                yannx_panic("API: Min  return error!");
+            }
+
+            put_tensor(stack, min);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(Min)
+    };
+
+
+    struct PRelu : NativeWord<TensorType> {
+        tensor_t Y;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            Y = TensorFactory::create_undefined_user_tensor();
+
+
+            auto slope = fetch_tensor(stack);
+            auto X = fetch_tensor(stack);
+
+
+            std::vector<size_t> outputs_;
+            outputs_.push_back(0);
+            YNXInferenceContextImpl infer_(outputs_);
+
+
+            infer_.new_input(X);
+            infer_.new_input(slope);
+
+            auto f = query_inference_function("PRelu");
+            infer_.do_inference(f);
+            infer_.check_output(0, Y);
+
+
+            if ( X->onnx_PRelu(X, slope, Y) != YNX_OK ) {
+                yannx_panic("API: PRelu  return error!");
+            }
+
+            put_tensor(stack, Y);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+
+            auto slope = fetch_tensor(stack);
+            auto X = fetch_tensor(stack);
+
+
+            if ( X->onnx_PRelu(X, slope, Y) != YNX_OK ) {
+                yannx_panic("API: PRelu  return error!");
+            }
+
+            put_tensor(stack, Y);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(PRelu)
+    };
+
+
+    struct Ceil : NativeWord<TensorType> {
+        tensor_t Y;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            Y = TensorFactory::create_undefined_user_tensor();
+
+
+            auto X = fetch_tensor(stack);
+
+
+            std::vector<size_t> outputs_;
+            outputs_.push_back(0);
+            YNXInferenceContextImpl infer_(outputs_);
+
+
+            infer_.new_input(X);
+
+            auto f = query_inference_function("Ceil");
+            infer_.do_inference(f);
+            infer_.check_output(0, Y);
+
+
+            if ( X->onnx_Ceil(X, Y) != YNX_OK ) {
+                yannx_panic("API: Ceil  return error!");
+            }
+
+            put_tensor(stack, Y);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+
+            auto X = fetch_tensor(stack);
+
+
+            if ( X->onnx_Ceil(X, Y) != YNX_OK ) {
+                yannx_panic("API: Ceil  return error!");
+            }
+
+            put_tensor(stack, Y);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(Ceil)
+    };
+
+
+    struct Tan : NativeWord<TensorType> {
+        tensor_t output;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            output = TensorFactory::create_undefined_user_tensor();
+
+
+            auto input = fetch_tensor(stack);
+
+
+            std::vector<size_t> outputs_;
+            outputs_.push_back(0);
+            YNXInferenceContextImpl infer_(outputs_);
+
+
+            infer_.new_input(input);
+
+            auto f = query_inference_function("Tan");
+            infer_.do_inference(f);
+            infer_.check_output(0, output);
+
+
+            if ( input->onnx_Tan(input, output) != YNX_OK ) {
+                yannx_panic("API: Tan  return error!");
+            }
+
+            put_tensor(stack, output);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+
+            auto input = fetch_tensor(stack);
+
+
+            if ( input->onnx_Tan(input, output) != YNX_OK ) {
+                yannx_panic("API: Tan  return error!");
+            }
+
+            put_tensor(stack, output);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(Tan)
+    };
+
+
+    struct Clip : NativeWord<TensorType> {
+        tensor_t output;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            output = TensorFactory::create_undefined_user_tensor();
+
+
+            auto max = fetch_optional_tensor(stack);
+            auto min = fetch_optional_tensor(stack);
+            auto input = fetch_tensor(stack);
+
+
+            std::vector<size_t> outputs_;
+            outputs_.push_back(0);
+            YNXInferenceContextImpl infer_(outputs_);
+
+
+            infer_.new_input(input);
+            infer_.new_input(min);
+            infer_.new_input(max);
+
+            auto f = query_inference_function("Clip");
+            infer_.do_inference(f);
+            infer_.check_output(0, output);
+
+
+            if ( input->onnx_Clip(input, min, max, output) != YNX_OK ) {
+                yannx_panic("API: Clip  return error!");
+            }
+
+            put_tensor(stack, output);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+
+            auto max = fetch_optional_tensor(stack);
+            auto min = fetch_optional_tensor(stack);
+            auto input = fetch_tensor(stack);
+
+
+            if ( input->onnx_Clip(input, min, max, output) != YNX_OK ) {
+                yannx_panic("API: Clip  return error!");
+            }
+
+            put_tensor(stack, output);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(Clip)
+    };
+
+
+    struct Neg : NativeWord<TensorType> {
+        tensor_t Y;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            Y = TensorFactory::create_undefined_user_tensor();
+
+
+            auto X = fetch_tensor(stack);
+
+
+            std::vector<size_t> outputs_;
+            outputs_.push_back(0);
+            YNXInferenceContextImpl infer_(outputs_);
+
+
+            infer_.new_input(X);
+
+            auto f = query_inference_function("Neg");
+            infer_.do_inference(f);
+            infer_.check_output(0, Y);
+
+
+            if ( X->onnx_Neg(X, Y) != YNX_OK ) {
+                yannx_panic("API: Neg  return error!");
+            }
+
+            put_tensor(stack, Y);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+
+            auto X = fetch_tensor(stack);
+
+
+            if ( X->onnx_Neg(X, Y) != YNX_OK ) {
+                yannx_panic("API: Neg  return error!");
+            }
+
+            put_tensor(stack, Y);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(Neg)
+    };
+
+
+    struct Abs : NativeWord<TensorType> {
+        tensor_t Y;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            Y = TensorFactory::create_undefined_user_tensor();
+
+
+            auto X = fetch_tensor(stack);
+
+
+            std::vector<size_t> outputs_;
+            outputs_.push_back(0);
+            YNXInferenceContextImpl infer_(outputs_);
+
+
+            infer_.new_input(X);
+
+            auto f = query_inference_function("Abs");
+            infer_.do_inference(f);
+            infer_.check_output(0, Y);
+
+
+            if ( X->onnx_Abs(X, Y) != YNX_OK ) {
+                yannx_panic("API: Abs  return error!");
+            }
+
+            put_tensor(stack, Y);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+
+            auto X = fetch_tensor(stack);
+
+
+            if ( X->onnx_Abs(X, Y) != YNX_OK ) {
+                yannx_panic("API: Abs  return error!");
+            }
+
+            put_tensor(stack, Y);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(Abs)
+    };
+
+
+    struct Softplus : NativeWord<TensorType> {
+        tensor_t Y;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            Y = TensorFactory::create_undefined_user_tensor();
+
+
+            auto X = fetch_tensor(stack);
+
+
+            std::vector<size_t> outputs_;
+            outputs_.push_back(0);
+            YNXInferenceContextImpl infer_(outputs_);
+
+
+            infer_.new_input(X);
+
+            auto f = query_inference_function("Softplus");
+            infer_.do_inference(f);
+            infer_.check_output(0, Y);
+
+
+            if ( X->onnx_Softplus(X, Y) != YNX_OK ) {
+                yannx_panic("API: Softplus  return error!");
+            }
+
+            put_tensor(stack, Y);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+
+            auto X = fetch_tensor(stack);
+
+
+            if ( X->onnx_Softplus(X, Y) != YNX_OK ) {
+                yannx_panic("API: Softplus  return error!");
+            }
+
+            put_tensor(stack, Y);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(Softplus)
+    };
+
+
+    struct Einsum : NativeWord<TensorType> {
+        tensor_t Output;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            Output = TensorFactory::create_undefined_user_tensor();
+
+            auto equation = fetch_string(stack);
+
+            auto Inputs = fetch_tensors(stack);
+
+
+            std::vector<size_t> outputs_;
+            outputs_.push_back(0);
+            YNXInferenceContextImpl infer_(outputs_);
+
+            infer_.new_attr("equation", equation);
+
+            infer_.new_input(Inputs);
+
+            auto f = query_inference_function("Einsum");
+            infer_.do_inference(f);
+            infer_.check_output(0, Output);
+
+
+            if ( Output->onnx_Einsum(Inputs, Output, equation) != YNX_OK ) {
+                yannx_panic("API: Einsum  return error!");
+            }
+
+            put_tensor(stack, Output);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+            auto equation = fetch_string(stack);
+
+            auto Inputs = fetch_tensors(stack);
+
+
+            if ( Output->onnx_Einsum(Inputs, Output, equation) != YNX_OK ) {
+                yannx_panic("API: Einsum  return error!");
+            }
+
+            put_tensor(stack, Output);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(Einsum)
+    };
+
+
+    struct Sub : NativeWord<TensorType> {
+        tensor_t C;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            C = TensorFactory::create_undefined_user_tensor();
+
+
+            auto B = fetch_tensor(stack);
+            auto A = fetch_tensor(stack);
+
+
+            std::vector<size_t> outputs_;
+            outputs_.push_back(0);
+            YNXInferenceContextImpl infer_(outputs_);
+
+
+            infer_.new_input(A);
+            infer_.new_input(B);
+
+            auto f = query_inference_function("Sub");
+            infer_.do_inference(f);
+            infer_.check_output(0, C);
+
+
+            if ( A->onnx_Sub(A, B, C) != YNX_OK ) {
+                yannx_panic("API: Sub  return error!");
+            }
+
+            put_tensor(stack, C);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+
+            auto B = fetch_tensor(stack);
+            auto A = fetch_tensor(stack);
+
+
+            if ( A->onnx_Sub(A, B, C) != YNX_OK ) {
+                yannx_panic("API: Sub  return error!");
+            }
+
+            put_tensor(stack, C);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(Sub)
+    };
+
+
+    struct Floor : NativeWord<TensorType> {
+        tensor_t Y;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            Y = TensorFactory::create_undefined_user_tensor();
+
+
+            auto X = fetch_tensor(stack);
+
+
+            std::vector<size_t> outputs_;
+            outputs_.push_back(0);
+            YNXInferenceContextImpl infer_(outputs_);
+
+
+            infer_.new_input(X);
+
+            auto f = query_inference_function("Floor");
+            infer_.do_inference(f);
+            infer_.check_output(0, Y);
+
+
+            if ( X->onnx_Floor(X, Y) != YNX_OK ) {
+                yannx_panic("API: Floor  return error!");
+            }
+
+            put_tensor(stack, Y);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+
+            auto X = fetch_tensor(stack);
+
+
+            if ( X->onnx_Floor(X, Y) != YNX_OK ) {
+                yannx_panic("API: Floor  return error!");
+            }
+
+            put_tensor(stack, Y);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(Floor)
+    };
+
+
+    struct Sigmoid : NativeWord<TensorType> {
+        tensor_t Y;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            Y = TensorFactory::create_undefined_user_tensor();
+
+
+            auto X = fetch_tensor(stack);
+
+
+            std::vector<size_t> outputs_;
+            outputs_.push_back(0);
+            YNXInferenceContextImpl infer_(outputs_);
+
+
+            infer_.new_input(X);
+
+            auto f = query_inference_function("Sigmoid");
+            infer_.do_inference(f);
+            infer_.check_output(0, Y);
+
+
+            if ( X->onnx_Sigmoid(X, Y) != YNX_OK ) {
+                yannx_panic("API: Sigmoid  return error!");
+            }
+
+            put_tensor(stack, Y);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+
+            auto X = fetch_tensor(stack);
+
+
+            if ( X->onnx_Sigmoid(X, Y) != YNX_OK ) {
+                yannx_panic("API: Sigmoid  return error!");
+            }
+
+            put_tensor(stack, Y);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(Sigmoid)
+    };
+
+
+    struct Softmax : NativeWord<TensorType> {
+        tensor_t output;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            output = TensorFactory::create_undefined_user_tensor();
+
+            auto axis = fetch_optional_int(stack, -1);
+
+            auto input = fetch_tensor(stack);
+
+
+            std::vector<size_t> outputs_;
+            outputs_.push_back(0);
+            YNXInferenceContextImpl infer_(outputs_);
+
+            infer_.new_attr("axis", axis);
+
+            infer_.new_input(input);
+
+            auto f = query_inference_function("Softmax");
+            infer_.do_inference(f);
+            infer_.check_output(0, output);
+
+
+            if ( input->onnx_Softmax(input, output, axis) != YNX_OK ) {
+                yannx_panic("API: Softmax  return error!");
+            }
+
+            put_tensor(stack, output);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+            auto axis = fetch_optional_int(stack, -1);
+
+            auto input = fetch_tensor(stack);
+
+
+            if ( input->onnx_Softmax(input, output, axis) != YNX_OK ) {
+                yannx_panic("API: Softmax  return error!");
+            }
+
+            put_tensor(stack, output);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(Softmax)
+    };
+
+
+    struct Add : NativeWord<TensorType> {
+        tensor_t C;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            C = TensorFactory::create_undefined_user_tensor();
+
+
+            auto B = fetch_tensor(stack);
+            auto A = fetch_tensor(stack);
+
+
+            std::vector<size_t> outputs_;
+            outputs_.push_back(0);
+            YNXInferenceContextImpl infer_(outputs_);
+
+
+            infer_.new_input(A);
+            infer_.new_input(B);
+
+            auto f = query_inference_function("Add");
+            infer_.do_inference(f);
+            infer_.check_output(0, C);
+
+
+            if ( A->onnx_Add(A, B, C) != YNX_OK ) {
+                yannx_panic("API: Add  return error!");
+            }
+
+            put_tensor(stack, C);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+
+            auto B = fetch_tensor(stack);
+            auto A = fetch_tensor(stack);
+
+
+            if ( A->onnx_Add(A, B, C) != YNX_OK ) {
+                yannx_panic("API: Add  return error!");
+            }
+
+            put_tensor(stack, C);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(Add)
+    };
+
+
+    struct Round : NativeWord<TensorType> {
+        tensor_t Y;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            Y = TensorFactory::create_undefined_user_tensor();
+
+
+            auto X = fetch_tensor(stack);
+
+
+            std::vector<size_t> outputs_;
+            outputs_.push_back(0);
+            YNXInferenceContextImpl infer_(outputs_);
+
+
+            infer_.new_input(X);
+
+            auto f = query_inference_function("Round");
+            infer_.do_inference(f);
+            infer_.check_output(0, Y);
+
+
+            if ( X->onnx_Round(X, Y) != YNX_OK ) {
+                yannx_panic("API: Round  return error!");
+            }
+
+            put_tensor(stack, Y);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+
+            auto X = fetch_tensor(stack);
+
+
+            if ( X->onnx_Round(X, Y) != YNX_OK ) {
+                yannx_panic("API: Round  return error!");
+            }
+
+            put_tensor(stack, Y);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(Round)
+    };
+
+
+    struct Exp : NativeWord<TensorType> {
+        tensor_t output;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            output = TensorFactory::create_undefined_user_tensor();
+
+
+            auto input = fetch_tensor(stack);
+
+
+            std::vector<size_t> outputs_;
+            outputs_.push_back(0);
+            YNXInferenceContextImpl infer_(outputs_);
+
+
+            infer_.new_input(input);
+
+            auto f = query_inference_function("Exp");
+            infer_.do_inference(f);
+            infer_.check_output(0, output);
+
+
+            if ( input->onnx_Exp(input, output) != YNX_OK ) {
+                yannx_panic("API: Exp  return error!");
+            }
+
+            put_tensor(stack, output);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+
+            auto input = fetch_tensor(stack);
+
+
+            if ( input->onnx_Exp(input, output) != YNX_OK ) {
+                yannx_panic("API: Exp  return error!");
+            }
+
+            put_tensor(stack, output);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(Exp)
+    };
+
+
+    struct MatMul : NativeWord<TensorType> {
+        tensor_t Y;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            Y = TensorFactory::create_undefined_user_tensor();
+
+
+            auto B = fetch_tensor(stack);
+            auto A = fetch_tensor(stack);
+
+
+            std::vector<size_t> outputs_;
+            outputs_.push_back(0);
+            YNXInferenceContextImpl infer_(outputs_);
+
+
+            infer_.new_input(A);
+            infer_.new_input(B);
+
+            auto f = query_inference_function("MatMul");
+            infer_.do_inference(f);
+            infer_.check_output(0, Y);
+
+
+            if ( A->onnx_MatMul(A, B, Y) != YNX_OK ) {
+                yannx_panic("API: MatMul  return error!");
+            }
+
+            put_tensor(stack, Y);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+
+            auto B = fetch_tensor(stack);
+            auto A = fetch_tensor(stack);
+
+
+            if ( A->onnx_MatMul(A, B, Y) != YNX_OK ) {
+                yannx_panic("API: MatMul  return error!");
+            }
+
+            put_tensor(stack, Y);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(MatMul)
+    };
+
+
+    struct LeakyRelu : NativeWord<TensorType> {
+        tensor_t Y;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            Y = TensorFactory::create_undefined_user_tensor();
+
+            auto alpha = fetch_optional_float(stack, 0.01);
+
+            auto X = fetch_tensor(stack);
+
+
+            std::vector<size_t> outputs_;
+            outputs_.push_back(0);
+            YNXInferenceContextImpl infer_(outputs_);
+
+            infer_.new_attr("alpha", alpha);
+
+            infer_.new_input(X);
+
+            auto f = query_inference_function("LeakyRelu");
+            infer_.do_inference(f);
+            infer_.check_output(0, Y);
+
+
+            if ( X->onnx_LeakyRelu(X, Y, alpha) != YNX_OK ) {
+                yannx_panic("API: LeakyRelu  return error!");
+            }
+
+            put_tensor(stack, Y);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+            auto alpha = fetch_optional_float(stack, 0.01);
+
+            auto X = fetch_tensor(stack);
+
+
+            if ( X->onnx_LeakyRelu(X, Y, alpha) != YNX_OK ) {
+                yannx_panic("API: LeakyRelu  return error!");
+            }
+
+            put_tensor(stack, Y);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(LeakyRelu)
+    };
+
+
+    struct Gemm : NativeWord<TensorType> {
+        tensor_t Y;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            Y = TensorFactory::create_undefined_user_tensor();
+
+            auto transB = fetch_optional_int(stack, 0);
+            auto transA = fetch_optional_int(stack, 0);
+            auto beta = fetch_optional_float(stack, 1);
+            auto alpha = fetch_optional_float(stack, 1);
+
+            auto C = fetch_optional_tensor(stack);
+            auto B = fetch_tensor(stack);
+            auto A = fetch_tensor(stack);
+
+
+            std::vector<size_t> outputs_;
+            outputs_.push_back(0);
+            YNXInferenceContextImpl infer_(outputs_);
+
+            infer_.new_attr("transB", transB);
+            infer_.new_attr("transA", transA);
+            infer_.new_attr("beta", beta);
+            infer_.new_attr("alpha", alpha);
+
+            infer_.new_input(A);
+            infer_.new_input(B);
+            infer_.new_input(C);
+
+            auto f = query_inference_function("Gemm");
+            infer_.do_inference(f);
+            infer_.check_output(0, Y);
+
+
+            if ( A->onnx_Gemm(A, B, C, Y, alpha, beta, transA, transB) != YNX_OK ) {
+                yannx_panic("API: Gemm  return error!");
+            }
+
+            put_tensor(stack, Y);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+            auto transB = fetch_optional_int(stack, 0);
+            auto transA = fetch_optional_int(stack, 0);
+            auto beta = fetch_optional_float(stack, 1);
+            auto alpha = fetch_optional_float(stack, 1);
+
+            auto C = fetch_optional_tensor(stack);
+            auto B = fetch_tensor(stack);
+            auto A = fetch_tensor(stack);
+
+
+            if ( A->onnx_Gemm(A, B, C, Y, alpha, beta, transA, transB) != YNX_OK ) {
+                yannx_panic("API: Gemm  return error!");
+            }
+
+            put_tensor(stack, Y);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(Gemm)
+    };
+
+
+    struct NegativeLogLikelihoodLoss : NativeWord<TensorType> {
+        tensor_t loss;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            loss = TensorFactory::create_undefined_user_tensor();
+
+            auto reduction = fetch_optional_string(stack, "mean");
+            auto ignore_index = fetch_optional_int(stack, 0);
+
+            auto weight = fetch_optional_tensor(stack);
+            auto target = fetch_tensor(stack);
+            auto input = fetch_tensor(stack);
+
+
+            std::vector<size_t> outputs_;
+            outputs_.push_back(0);
+            YNXInferenceContextImpl infer_(outputs_);
+
+            infer_.new_attr("reduction", reduction);
+            infer_.new_attr("ignore_index", ignore_index);
+
+            infer_.new_input(input);
+            infer_.new_input(target);
+            infer_.new_input(weight);
+
+            auto f = query_inference_function("NegativeLogLikelihoodLoss");
+            infer_.do_inference(f);
+            infer_.check_output(0, loss);
+
+
+            if ( input->onnx_NegativeLogLikelihoodLoss(input, target, weight, loss, ignore_index, reduction) != YNX_OK ) {
+                yannx_panic("API: NegativeLogLikelihoodLoss  return error!");
+            }
+
+            put_tensor(stack, loss);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+            auto reduction = fetch_optional_string(stack, "mean");
+            auto ignore_index = fetch_optional_int(stack, 0);
+
+            auto weight = fetch_optional_tensor(stack);
+            auto target = fetch_tensor(stack);
+            auto input = fetch_tensor(stack);
+
+
+            if ( input->onnx_NegativeLogLikelihoodLoss(input, target, weight, loss, ignore_index, reduction) != YNX_OK ) {
+                yannx_panic("API: NegativeLogLikelihoodLoss  return error!");
+            }
+
+            put_tensor(stack, loss);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(NegativeLogLikelihoodLoss)
+    };
+
+
+    struct HardSwish : NativeWord<TensorType> {
+        tensor_t Y;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            Y = TensorFactory::create_undefined_user_tensor();
+
+
+            auto X = fetch_tensor(stack);
+
+
+            std::vector<size_t> outputs_;
+            outputs_.push_back(0);
+            YNXInferenceContextImpl infer_(outputs_);
+
+
+            infer_.new_input(X);
+
+            auto f = query_inference_function("HardSwish");
+            infer_.do_inference(f);
+            infer_.check_output(0, Y);
+
+
+            if ( X->onnx_HardSwish(X, Y) != YNX_OK ) {
+                yannx_panic("API: HardSwish  return error!");
+            }
+
+            put_tensor(stack, Y);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+
+            auto X = fetch_tensor(stack);
+
+
+            if ( X->onnx_HardSwish(X, Y) != YNX_OK ) {
+                yannx_panic("API: HardSwish  return error!");
+            }
+
+            put_tensor(stack, Y);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(HardSwish)
+    };
+
+
+    struct Mean : NativeWord<TensorType> {
+        tensor_t mean;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            mean = TensorFactory::create_undefined_user_tensor();
+
+
+            auto data_0 = fetch_tensors(stack);
+
+
+            std::vector<size_t> outputs_;
+            outputs_.push_back(0);
+            YNXInferenceContextImpl infer_(outputs_);
+
+
+            infer_.new_input(data_0);
+
+            auto f = query_inference_function("Mean");
+            infer_.do_inference(f);
+            infer_.check_output(0, mean);
+
+
+            if ( mean->onnx_Mean(data_0, mean) != YNX_OK ) {
+                yannx_panic("API: Mean  return error!");
+            }
+
+            put_tensor(stack, mean);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+
+            auto data_0 = fetch_tensors(stack);
+
+
+            if ( mean->onnx_Mean(data_0, mean) != YNX_OK ) {
+                yannx_panic("API: Mean  return error!");
+            }
+
+            put_tensor(stack, mean);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(Mean)
+    };
+
+
+    struct Asin : NativeWord<TensorType> {
+        tensor_t output;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            output = TensorFactory::create_undefined_user_tensor();
+
+
+            auto input = fetch_tensor(stack);
+
+
+            std::vector<size_t> outputs_;
+            outputs_.push_back(0);
+            YNXInferenceContextImpl infer_(outputs_);
+
+
+            infer_.new_input(input);
+
+            auto f = query_inference_function("Asin");
+            infer_.do_inference(f);
+            infer_.check_output(0, output);
+
+
+            if ( input->onnx_Asin(input, output) != YNX_OK ) {
+                yannx_panic("API: Asin  return error!");
+            }
+
+            put_tensor(stack, output);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+
+            auto input = fetch_tensor(stack);
+
+
+            if ( input->onnx_Asin(input, output) != YNX_OK ) {
+                yannx_panic("API: Asin  return error!");
+            }
+
+            put_tensor(stack, output);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(Asin)
+    };
+
+
+    struct Div : NativeWord<TensorType> {
+        tensor_t C;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            C = TensorFactory::create_undefined_user_tensor();
+
+
+            auto B = fetch_tensor(stack);
+            auto A = fetch_tensor(stack);
+
+
+            std::vector<size_t> outputs_;
+            outputs_.push_back(0);
+            YNXInferenceContextImpl infer_(outputs_);
+
+
+            infer_.new_input(A);
+            infer_.new_input(B);
+
+            auto f = query_inference_function("Div");
+            infer_.do_inference(f);
+            infer_.check_output(0, C);
+
+
+            if ( A->onnx_Div(A, B, C) != YNX_OK ) {
+                yannx_panic("API: Div  return error!");
+            }
+
+            put_tensor(stack, C);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+
+            auto B = fetch_tensor(stack);
+            auto A = fetch_tensor(stack);
+
+
+            if ( A->onnx_Div(A, B, C) != YNX_OK ) {
+                yannx_panic("API: Div  return error!");
+            }
+
+            put_tensor(stack, C);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(Div)
+    };
+
+
     struct Softsign : NativeWord<TensorType> {
         tensor_t output;
 
@@ -2776,6 +2896,419 @@ namespace math {
     };
 
 
+    struct Reciprocal : NativeWord<TensorType> {
+        tensor_t Y;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            Y = TensorFactory::create_undefined_user_tensor();
+
+
+            auto X = fetch_tensor(stack);
+
+
+            std::vector<size_t> outputs_;
+            outputs_.push_back(0);
+            YNXInferenceContextImpl infer_(outputs_);
+
+
+            infer_.new_input(X);
+
+            auto f = query_inference_function("Reciprocal");
+            infer_.do_inference(f);
+            infer_.check_output(0, Y);
+
+
+            if ( X->onnx_Reciprocal(X, Y) != YNX_OK ) {
+                yannx_panic("API: Reciprocal  return error!");
+            }
+
+            put_tensor(stack, Y);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+
+            auto X = fetch_tensor(stack);
+
+
+            if ( X->onnx_Reciprocal(X, Y) != YNX_OK ) {
+                yannx_panic("API: Reciprocal  return error!");
+            }
+
+            put_tensor(stack, Y);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(Reciprocal)
+    };
+
+
+    struct Relu : NativeWord<TensorType> {
+        tensor_t Y;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            Y = TensorFactory::create_undefined_user_tensor();
+
+
+            auto X = fetch_tensor(stack);
+
+
+            std::vector<size_t> outputs_;
+            outputs_.push_back(0);
+            YNXInferenceContextImpl infer_(outputs_);
+
+
+            infer_.new_input(X);
+
+            auto f = query_inference_function("Relu");
+            infer_.do_inference(f);
+            infer_.check_output(0, Y);
+
+
+            if ( X->onnx_Relu(X, Y) != YNX_OK ) {
+                yannx_panic("API: Relu  return error!");
+            }
+
+            put_tensor(stack, Y);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+
+            auto X = fetch_tensor(stack);
+
+
+            if ( X->onnx_Relu(X, Y) != YNX_OK ) {
+                yannx_panic("API: Relu  return error!");
+            }
+
+            put_tensor(stack, Y);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(Relu)
+    };
+
+
+    struct Elu : NativeWord<TensorType> {
+        tensor_t Y;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            Y = TensorFactory::create_undefined_user_tensor();
+
+            auto alpha = fetch_optional_float(stack, 1);
+
+            auto X = fetch_tensor(stack);
+
+
+            std::vector<size_t> outputs_;
+            outputs_.push_back(0);
+            YNXInferenceContextImpl infer_(outputs_);
+
+            infer_.new_attr("alpha", alpha);
+
+            infer_.new_input(X);
+
+            auto f = query_inference_function("Elu");
+            infer_.do_inference(f);
+            infer_.check_output(0, Y);
+
+
+            if ( X->onnx_Elu(X, Y, alpha) != YNX_OK ) {
+                yannx_panic("API: Elu  return error!");
+            }
+
+            put_tensor(stack, Y);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+            auto alpha = fetch_optional_float(stack, 1);
+
+            auto X = fetch_tensor(stack);
+
+
+            if ( X->onnx_Elu(X, Y, alpha) != YNX_OK ) {
+                yannx_panic("API: Elu  return error!");
+            }
+
+            put_tensor(stack, Y);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(Elu)
+    };
+
+
+    struct Selu : NativeWord<TensorType> {
+        tensor_t Y;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            Y = TensorFactory::create_undefined_user_tensor();
+
+            auto gamma = fetch_optional_float(stack, 1.0507);
+            auto alpha = fetch_optional_float(stack, 1.67326);
+
+            auto X = fetch_tensor(stack);
+
+
+            std::vector<size_t> outputs_;
+            outputs_.push_back(0);
+            YNXInferenceContextImpl infer_(outputs_);
+
+            infer_.new_attr("gamma", gamma);
+            infer_.new_attr("alpha", alpha);
+
+            infer_.new_input(X);
+
+            auto f = query_inference_function("Selu");
+            infer_.do_inference(f);
+            infer_.check_output(0, Y);
+
+
+            if ( X->onnx_Selu(X, Y, alpha, gamma) != YNX_OK ) {
+                yannx_panic("API: Selu  return error!");
+            }
+
+            put_tensor(stack, Y);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+            auto gamma = fetch_optional_float(stack, 1.0507);
+            auto alpha = fetch_optional_float(stack, 1.67326);
+
+            auto X = fetch_tensor(stack);
+
+
+            if ( X->onnx_Selu(X, Y, alpha, gamma) != YNX_OK ) {
+                yannx_panic("API: Selu  return error!");
+            }
+
+            put_tensor(stack, Y);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(Selu)
+    };
+
+
+    struct HardSigmoid : NativeWord<TensorType> {
+        tensor_t Y;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            Y = TensorFactory::create_undefined_user_tensor();
+
+            auto beta = fetch_optional_float(stack, 0.5);
+            auto alpha = fetch_optional_float(stack, 0.2);
+
+            auto X = fetch_tensor(stack);
+
+
+            std::vector<size_t> outputs_;
+            outputs_.push_back(0);
+            YNXInferenceContextImpl infer_(outputs_);
+
+            infer_.new_attr("beta", beta);
+            infer_.new_attr("alpha", alpha);
+
+            infer_.new_input(X);
+
+            auto f = query_inference_function("HardSigmoid");
+            infer_.do_inference(f);
+            infer_.check_output(0, Y);
+
+
+            if ( X->onnx_HardSigmoid(X, Y, alpha, beta) != YNX_OK ) {
+                yannx_panic("API: HardSigmoid  return error!");
+            }
+
+            put_tensor(stack, Y);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+            auto beta = fetch_optional_float(stack, 0.5);
+            auto alpha = fetch_optional_float(stack, 0.2);
+
+            auto X = fetch_tensor(stack);
+
+
+            if ( X->onnx_HardSigmoid(X, Y, alpha, beta) != YNX_OK ) {
+                yannx_panic("API: HardSigmoid  return error!");
+            }
+
+            put_tensor(stack, Y);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(HardSigmoid)
+    };
+
+
+    struct LogSoftmax : NativeWord<TensorType> {
+        tensor_t output;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            output = TensorFactory::create_undefined_user_tensor();
+
+            auto axis = fetch_optional_int(stack, -1);
+
+            auto input = fetch_tensor(stack);
+
+
+            std::vector<size_t> outputs_;
+            outputs_.push_back(0);
+            YNXInferenceContextImpl infer_(outputs_);
+
+            infer_.new_attr("axis", axis);
+
+            infer_.new_input(input);
+
+            auto f = query_inference_function("LogSoftmax");
+            infer_.do_inference(f);
+            infer_.check_output(0, output);
+
+
+            if ( input->onnx_LogSoftmax(input, output, axis) != YNX_OK ) {
+                yannx_panic("API: LogSoftmax  return error!");
+            }
+
+            put_tensor(stack, output);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+            auto axis = fetch_optional_int(stack, -1);
+
+            auto input = fetch_tensor(stack);
+
+
+            if ( input->onnx_LogSoftmax(input, output, axis) != YNX_OK ) {
+                yannx_panic("API: LogSoftmax  return error!");
+            }
+
+            put_tensor(stack, output);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(LogSoftmax)
+    };
+
+
+    struct Sqrt : NativeWord<TensorType> {
+        tensor_t Y;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            Y = TensorFactory::create_undefined_user_tensor();
+
+
+            auto X = fetch_tensor(stack);
+
+
+            std::vector<size_t> outputs_;
+            outputs_.push_back(0);
+            YNXInferenceContextImpl infer_(outputs_);
+
+
+            infer_.new_input(X);
+
+            auto f = query_inference_function("Sqrt");
+            infer_.do_inference(f);
+            infer_.check_output(0, Y);
+
+
+            if ( X->onnx_Sqrt(X, Y) != YNX_OK ) {
+                yannx_panic("API: Sqrt  return error!");
+            }
+
+            put_tensor(stack, Y);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+
+            auto X = fetch_tensor(stack);
+
+
+            if ( X->onnx_Sqrt(X, Y) != YNX_OK ) {
+                yannx_panic("API: Sqrt  return error!");
+            }
+
+            put_tensor(stack, Y);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(Sqrt)
+    };
+
+
+    struct Expand : NativeWord<TensorType> {
+        tensor_t output;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            output = TensorFactory::create_undefined_user_tensor();
+
+
+            auto shape = fetch_tensor(stack);
+            auto input = fetch_tensor(stack);
+
+
+            std::vector<size_t> outputs_;
+            outputs_.push_back(0);
+            YNXInferenceContextImpl infer_(outputs_);
+
+
+            infer_.new_input(input);
+            infer_.new_input(shape);
+
+            auto f = query_inference_function("Expand");
+            infer_.do_inference(f);
+            infer_.check_output(0, output);
+
+
+            if ( input->onnx_Expand(input, shape, output) != YNX_OK ) {
+                yannx_panic("API: Expand  return error!");
+            }
+
+            put_tensor(stack, output);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+
+            auto shape = fetch_tensor(stack);
+            auto input = fetch_tensor(stack);
+
+
+            if ( input->onnx_Expand(input, shape, output) != YNX_OK ) {
+                yannx_panic("API: Expand  return error!");
+            }
+
+            put_tensor(stack, output);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(Expand)
+    };
+
+
     struct Sum : NativeWord<TensorType> {
         tensor_t sum;
 
@@ -2822,55 +3355,6 @@ namespace math {
 
         }
         NWORD_CREATOR_DEFINE_TENSORTYPE(Sum)
-    };
-
-
-    struct Sinh : NativeWord<TensorType> {
-        tensor_t output;
-
-        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            ValueStack<TensorType>& stack = rt;
-
-            output = TensorFactory::create_undefined_user_tensor();
-
-
-            auto input = fetch_tensor(stack);
-
-
-            std::vector<size_t> outputs_;
-            outputs_.push_back(0);
-            YNXInferenceContextImpl infer_(outputs_);
-
-
-            infer_.new_input(input);
-
-            auto f = query_inference_function("Sinh");
-            infer_.do_inference(f);
-            infer_.check_output(0, output);
-
-
-            if ( input->onnx_Sinh(input, output) != YNX_OK ) {
-                yannx_panic("API: Sinh  return error!");
-            }
-
-            put_tensor(stack, output);
-
-        }
-        virtual void run(ValueStack<TensorType>& stack) {
-
-
-
-            auto input = fetch_tensor(stack);
-
-
-            if ( input->onnx_Sinh(input, output) != YNX_OK ) {
-                yannx_panic("API: Sinh  return error!");
-            }
-
-            put_tensor(stack, output);
-
-        }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(Sinh)
     };
 
 
@@ -2990,6 +3474,58 @@ namespace math {
     };
 
 
+    struct ThresholdedRelu : NativeWord<TensorType> {
+        tensor_t Y;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            Y = TensorFactory::create_undefined_user_tensor();
+
+            auto alpha = fetch_optional_float(stack, 1);
+
+            auto X = fetch_tensor(stack);
+
+
+            std::vector<size_t> outputs_;
+            outputs_.push_back(0);
+            YNXInferenceContextImpl infer_(outputs_);
+
+            infer_.new_attr("alpha", alpha);
+
+            infer_.new_input(X);
+
+            auto f = query_inference_function("ThresholdedRelu");
+            infer_.do_inference(f);
+            infer_.check_output(0, Y);
+
+
+            if ( X->onnx_ThresholdedRelu(X, Y, alpha) != YNX_OK ) {
+                yannx_panic("API: ThresholdedRelu  return error!");
+            }
+
+            put_tensor(stack, Y);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+            auto alpha = fetch_optional_float(stack, 1);
+
+            auto X = fetch_tensor(stack);
+
+
+            if ( X->onnx_ThresholdedRelu(X, Y, alpha) != YNX_OK ) {
+                yannx_panic("API: ThresholdedRelu  return error!");
+            }
+
+            put_tensor(stack, Y);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(ThresholdedRelu)
+    };
+
+
     struct Acos : NativeWord<TensorType> {
         tensor_t output;
 
@@ -3039,16 +3575,17 @@ namespace math {
     };
 
 
-    struct Asin : NativeWord<TensorType> {
-        tensor_t output;
+    struct Pow : NativeWord<TensorType> {
+        tensor_t Z;
 
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            output = TensorFactory::create_undefined_user_tensor();
+            Z = TensorFactory::create_undefined_user_tensor();
 
 
-            auto input = fetch_tensor(stack);
+            auto Y = fetch_tensor(stack);
+            auto X = fetch_tensor(stack);
 
 
             std::vector<size_t> outputs_;
@@ -3056,35 +3593,37 @@ namespace math {
             YNXInferenceContextImpl infer_(outputs_);
 
 
-            infer_.new_input(input);
+            infer_.new_input(X);
+            infer_.new_input(Y);
 
-            auto f = query_inference_function("Asin");
+            auto f = query_inference_function("Pow");
             infer_.do_inference(f);
-            infer_.check_output(0, output);
+            infer_.check_output(0, Z);
 
 
-            if ( input->onnx_Asin(input, output) != YNX_OK ) {
-                yannx_panic("API: Asin  return error!");
+            if ( X->onnx_Pow(X, Y, Z) != YNX_OK ) {
+                yannx_panic("API: Pow  return error!");
             }
 
-            put_tensor(stack, output);
+            put_tensor(stack, Z);
 
         }
         virtual void run(ValueStack<TensorType>& stack) {
 
 
 
-            auto input = fetch_tensor(stack);
+            auto Y = fetch_tensor(stack);
+            auto X = fetch_tensor(stack);
 
 
-            if ( input->onnx_Asin(input, output) != YNX_OK ) {
-                yannx_panic("API: Asin  return error!");
+            if ( X->onnx_Pow(X, Y, Z) != YNX_OK ) {
+                yannx_panic("API: Pow  return error!");
             }
 
-            put_tensor(stack, output);
+            put_tensor(stack, Z);
 
         }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(Asin)
+        NWORD_CREATOR_DEFINE_TENSORTYPE(Pow)
     };
 
 
@@ -3137,7 +3676,7 @@ namespace math {
     };
 
 
-    struct Sign : NativeWord<TensorType> {
+    struct Cos : NativeWord<TensorType> {
         tensor_t output;
 
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
@@ -3156,13 +3695,13 @@ namespace math {
 
             infer_.new_input(input);
 
-            auto f = query_inference_function("Sign");
+            auto f = query_inference_function("Cos");
             infer_.do_inference(f);
             infer_.check_output(0, output);
 
 
-            if ( input->onnx_Sign(input, output) != YNX_OK ) {
-                yannx_panic("API: Sign  return error!");
+            if ( input->onnx_Cos(input, output) != YNX_OK ) {
+                yannx_panic("API: Cos  return error!");
             }
 
             put_tensor(stack, output);
@@ -3175,14 +3714,14 @@ namespace math {
             auto input = fetch_tensor(stack);
 
 
-            if ( input->onnx_Sign(input, output) != YNX_OK ) {
-                yannx_panic("API: Sign  return error!");
+            if ( input->onnx_Cos(input, output) != YNX_OK ) {
+                yannx_panic("API: Cos  return error!");
             }
 
             put_tensor(stack, output);
 
         }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(Sign)
+        NWORD_CREATOR_DEFINE_TENSORTYPE(Cos)
     };
 
 
@@ -3235,163 +3774,7 @@ namespace math {
     };
 
 
-    struct MatMul : NativeWord<TensorType> {
-        tensor_t Y;
-
-        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            ValueStack<TensorType>& stack = rt;
-
-            Y = TensorFactory::create_undefined_user_tensor();
-
-
-            auto B = fetch_tensor(stack);
-            auto A = fetch_tensor(stack);
-
-
-            std::vector<size_t> outputs_;
-            outputs_.push_back(0);
-            YNXInferenceContextImpl infer_(outputs_);
-
-
-            infer_.new_input(A);
-            infer_.new_input(B);
-
-            auto f = query_inference_function("MatMul");
-            infer_.do_inference(f);
-            infer_.check_output(0, Y);
-
-
-            if ( A->onnx_MatMul(A, B, Y) != YNX_OK ) {
-                yannx_panic("API: MatMul  return error!");
-            }
-
-            put_tensor(stack, Y);
-
-        }
-        virtual void run(ValueStack<TensorType>& stack) {
-
-
-
-            auto B = fetch_tensor(stack);
-            auto A = fetch_tensor(stack);
-
-
-            if ( A->onnx_MatMul(A, B, Y) != YNX_OK ) {
-                yannx_panic("API: MatMul  return error!");
-            }
-
-            put_tensor(stack, Y);
-
-        }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(MatMul)
-    };
-
-
-    struct Expand : NativeWord<TensorType> {
-        tensor_t output;
-
-        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            ValueStack<TensorType>& stack = rt;
-
-            output = TensorFactory::create_undefined_user_tensor();
-
-
-            auto shape = fetch_tensor(stack);
-            auto input = fetch_tensor(stack);
-
-
-            std::vector<size_t> outputs_;
-            outputs_.push_back(0);
-            YNXInferenceContextImpl infer_(outputs_);
-
-
-            infer_.new_input(input);
-            infer_.new_input(shape);
-
-            auto f = query_inference_function("Expand");
-            infer_.do_inference(f);
-            infer_.check_output(0, output);
-
-
-            if ( input->onnx_Expand(input, shape, output) != YNX_OK ) {
-                yannx_panic("API: Expand  return error!");
-            }
-
-            put_tensor(stack, output);
-
-        }
-        virtual void run(ValueStack<TensorType>& stack) {
-
-
-
-            auto shape = fetch_tensor(stack);
-            auto input = fetch_tensor(stack);
-
-
-            if ( input->onnx_Expand(input, shape, output) != YNX_OK ) {
-                yannx_panic("API: Expand  return error!");
-            }
-
-            put_tensor(stack, output);
-
-        }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(Expand)
-    };
-
-
-    struct Elu : NativeWord<TensorType> {
-        tensor_t Y;
-
-        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            ValueStack<TensorType>& stack = rt;
-
-            Y = TensorFactory::create_undefined_user_tensor();
-
-            auto alpha = fetch_optional_float(stack, 1);
-
-            auto X = fetch_tensor(stack);
-
-
-            std::vector<size_t> outputs_;
-            outputs_.push_back(0);
-            YNXInferenceContextImpl infer_(outputs_);
-
-            infer_.new_attr("alpha", alpha);
-
-            infer_.new_input(X);
-
-            auto f = query_inference_function("Elu");
-            infer_.do_inference(f);
-            infer_.check_output(0, Y);
-
-
-            if ( X->onnx_Elu(X, Y, alpha) != YNX_OK ) {
-                yannx_panic("API: Elu  return error!");
-            }
-
-            put_tensor(stack, Y);
-
-        }
-        virtual void run(ValueStack<TensorType>& stack) {
-
-
-            auto alpha = fetch_optional_float(stack, 1);
-
-            auto X = fetch_tensor(stack);
-
-
-            if ( X->onnx_Elu(X, Y, alpha) != YNX_OK ) {
-                yannx_panic("API: Elu  return error!");
-            }
-
-            put_tensor(stack, Y);
-
-        }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(Elu)
-    };
-
-
-    struct Cosh : NativeWord<TensorType> {
+    struct Sinh : NativeWord<TensorType> {
         tensor_t output;
 
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
@@ -3410,13 +3793,13 @@ namespace math {
 
             infer_.new_input(input);
 
-            auto f = query_inference_function("Cosh");
+            auto f = query_inference_function("Sinh");
             infer_.do_inference(f);
             infer_.check_output(0, output);
 
 
-            if ( input->onnx_Cosh(input, output) != YNX_OK ) {
-                yannx_panic("API: Cosh  return error!");
+            if ( input->onnx_Sinh(input, output) != YNX_OK ) {
+                yannx_panic("API: Sinh  return error!");
             }
 
             put_tensor(stack, output);
@@ -3429,14 +3812,14 @@ namespace math {
             auto input = fetch_tensor(stack);
 
 
-            if ( input->onnx_Cosh(input, output) != YNX_OK ) {
-                yannx_panic("API: Cosh  return error!");
+            if ( input->onnx_Sinh(input, output) != YNX_OK ) {
+                yannx_panic("API: Sinh  return error!");
             }
 
             put_tensor(stack, output);
 
         }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(Cosh)
+        NWORD_CREATOR_DEFINE_TENSORTYPE(Sinh)
     };
 
 
@@ -3538,6 +3921,55 @@ namespace math {
     };
 
 
+    struct Cosh : NativeWord<TensorType> {
+        tensor_t output;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            output = TensorFactory::create_undefined_user_tensor();
+
+
+            auto input = fetch_tensor(stack);
+
+
+            std::vector<size_t> outputs_;
+            outputs_.push_back(0);
+            YNXInferenceContextImpl infer_(outputs_);
+
+
+            infer_.new_input(input);
+
+            auto f = query_inference_function("Cosh");
+            infer_.do_inference(f);
+            infer_.check_output(0, output);
+
+
+            if ( input->onnx_Cosh(input, output) != YNX_OK ) {
+                yannx_panic("API: Cosh  return error!");
+            }
+
+            put_tensor(stack, output);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+
+            auto input = fetch_tensor(stack);
+
+
+            if ( input->onnx_Cosh(input, output) != YNX_OK ) {
+                yannx_panic("API: Cosh  return error!");
+            }
+
+            put_tensor(stack, output);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(Cosh)
+    };
+
+
     struct Atanh : NativeWord<TensorType> {
         tensor_t output;
 
@@ -3584,6 +4016,58 @@ namespace math {
 
         }
         NWORD_CREATOR_DEFINE_TENSORTYPE(Atanh)
+    };
+
+
+    struct Hardmax : NativeWord<TensorType> {
+        tensor_t output;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            output = TensorFactory::create_undefined_user_tensor();
+
+            auto axis = fetch_optional_int(stack, -1);
+
+            auto input = fetch_tensor(stack);
+
+
+            std::vector<size_t> outputs_;
+            outputs_.push_back(0);
+            YNXInferenceContextImpl infer_(outputs_);
+
+            infer_.new_attr("axis", axis);
+
+            infer_.new_input(input);
+
+            auto f = query_inference_function("Hardmax");
+            infer_.do_inference(f);
+            infer_.check_output(0, output);
+
+
+            if ( input->onnx_Hardmax(input, output, axis) != YNX_OK ) {
+                yannx_panic("API: Hardmax  return error!");
+            }
+
+            put_tensor(stack, output);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+            auto axis = fetch_optional_int(stack, -1);
+
+            auto input = fetch_tensor(stack);
+
+
+            if ( input->onnx_Hardmax(input, output, axis) != YNX_OK ) {
+                yannx_panic("API: Hardmax  return error!");
+            }
+
+            put_tensor(stack, output);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(Hardmax)
     };
 
 
@@ -3635,225 +4119,10 @@ namespace math {
         NWORD_CREATOR_DEFINE_TENSORTYPE(Erf)
     };
 
+}
+namespace nn {
 
-    struct Mod : NativeWord<TensorType> {
-        tensor_t C;
-
-        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            ValueStack<TensorType>& stack = rt;
-
-            C = TensorFactory::create_undefined_user_tensor();
-
-            auto fmod = fetch_optional_int(stack, 0);
-
-            auto B = fetch_tensor(stack);
-            auto A = fetch_tensor(stack);
-
-
-            std::vector<size_t> outputs_;
-            outputs_.push_back(0);
-            YNXInferenceContextImpl infer_(outputs_);
-
-            infer_.new_attr("fmod", fmod);
-
-            infer_.new_input(A);
-            infer_.new_input(B);
-
-            auto f = query_inference_function("Mod");
-            infer_.do_inference(f);
-            infer_.check_output(0, C);
-
-
-            if ( A->onnx_Mod(A, B, C, fmod) != YNX_OK ) {
-                yannx_panic("API: Mod  return error!");
-            }
-
-            put_tensor(stack, C);
-
-        }
-        virtual void run(ValueStack<TensorType>& stack) {
-
-
-            auto fmod = fetch_optional_int(stack, 0);
-
-            auto B = fetch_tensor(stack);
-            auto A = fetch_tensor(stack);
-
-
-            if ( A->onnx_Mod(A, B, C, fmod) != YNX_OK ) {
-                yannx_panic("API: Mod  return error!");
-            }
-
-            put_tensor(stack, C);
-
-        }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(Mod)
-    };
-
-
-    struct ThresholdedRelu : NativeWord<TensorType> {
-        tensor_t Y;
-
-        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            ValueStack<TensorType>& stack = rt;
-
-            Y = TensorFactory::create_undefined_user_tensor();
-
-            auto alpha = fetch_optional_float(stack, 1);
-
-            auto X = fetch_tensor(stack);
-
-
-            std::vector<size_t> outputs_;
-            outputs_.push_back(0);
-            YNXInferenceContextImpl infer_(outputs_);
-
-            infer_.new_attr("alpha", alpha);
-
-            infer_.new_input(X);
-
-            auto f = query_inference_function("ThresholdedRelu");
-            infer_.do_inference(f);
-            infer_.check_output(0, Y);
-
-
-            if ( X->onnx_ThresholdedRelu(X, Y, alpha) != YNX_OK ) {
-                yannx_panic("API: ThresholdedRelu  return error!");
-            }
-
-            put_tensor(stack, Y);
-
-        }
-        virtual void run(ValueStack<TensorType>& stack) {
-
-
-            auto alpha = fetch_optional_float(stack, 1);
-
-            auto X = fetch_tensor(stack);
-
-
-            if ( X->onnx_ThresholdedRelu(X, Y, alpha) != YNX_OK ) {
-                yannx_panic("API: ThresholdedRelu  return error!");
-            }
-
-            put_tensor(stack, Y);
-
-        }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(ThresholdedRelu)
-    };
-
-
-    struct MatMulInteger : NativeWord<TensorType> {
-        tensor_t Y;
-
-        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            ValueStack<TensorType>& stack = rt;
-
-            Y = TensorFactory::create_undefined_user_tensor();
-
-
-            auto b_zero_point = fetch_optional_tensor(stack);
-            auto a_zero_point = fetch_optional_tensor(stack);
-            auto B = fetch_tensor(stack);
-            auto A = fetch_tensor(stack);
-
-
-            std::vector<size_t> outputs_;
-            outputs_.push_back(0);
-            YNXInferenceContextImpl infer_(outputs_);
-
-
-            infer_.new_input(A);
-            infer_.new_input(B);
-            infer_.new_input(a_zero_point);
-            infer_.new_input(b_zero_point);
-
-            auto f = query_inference_function("MatMulInteger");
-            infer_.do_inference(f);
-            infer_.check_output(0, Y);
-
-
-            if ( A->onnx_MatMulInteger(A, B, a_zero_point, b_zero_point, Y) != YNX_OK ) {
-                yannx_panic("API: MatMulInteger  return error!");
-            }
-
-            put_tensor(stack, Y);
-
-        }
-        virtual void run(ValueStack<TensorType>& stack) {
-
-
-
-            auto b_zero_point = fetch_optional_tensor(stack);
-            auto a_zero_point = fetch_optional_tensor(stack);
-            auto B = fetch_tensor(stack);
-            auto A = fetch_tensor(stack);
-
-
-            if ( A->onnx_MatMulInteger(A, B, a_zero_point, b_zero_point, Y) != YNX_OK ) {
-                yannx_panic("API: MatMulInteger  return error!");
-            }
-
-            put_tensor(stack, Y);
-
-        }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(MatMulInteger)
-    };
-
-
-    struct Celu : NativeWord<TensorType> {
-        tensor_t Y;
-
-        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            ValueStack<TensorType>& stack = rt;
-
-            Y = TensorFactory::create_undefined_user_tensor();
-
-            auto alpha = fetch_optional_float(stack, 1);
-
-            auto X = fetch_tensor(stack);
-
-
-            std::vector<size_t> outputs_;
-            outputs_.push_back(0);
-            YNXInferenceContextImpl infer_(outputs_);
-
-            infer_.new_attr("alpha", alpha);
-
-            infer_.new_input(X);
-
-            auto f = query_inference_function("Celu");
-            infer_.do_inference(f);
-            infer_.check_output(0, Y);
-
-
-            if ( X->onnx_Celu(X, Y, alpha) != YNX_OK ) {
-                yannx_panic("API: Celu  return error!");
-            }
-
-            put_tensor(stack, Y);
-
-        }
-        virtual void run(ValueStack<TensorType>& stack) {
-
-
-            auto alpha = fetch_optional_float(stack, 1);
-
-            auto X = fetch_tensor(stack);
-
-
-            if ( X->onnx_Celu(X, Y, alpha) != YNX_OK ) {
-                yannx_panic("API: Celu  return error!");
-            }
-
-            put_tensor(stack, Y);
-
-        }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(Celu)
-    };
-
-
-    struct CumSum : NativeWord<TensorType> {
+    struct QLinearConv : NativeWord<TensorType> {
         tensor_t y;
 
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
@@ -3861,342 +4130,22 @@ namespace math {
 
             y = TensorFactory::create_undefined_user_tensor();
 
-            auto reverse = fetch_optional_int(stack, 0);
-            auto exclusive = fetch_optional_int(stack, 0);
-
-            auto axis = fetch_tensor(stack);
-            auto x = fetch_tensor(stack);
-
-
-            std::vector<size_t> outputs_;
-            outputs_.push_back(0);
-            YNXInferenceContextImpl infer_(outputs_);
-
-            infer_.new_attr("reverse", reverse);
-            infer_.new_attr("exclusive", exclusive);
-
-            infer_.new_input(x);
-            infer_.new_input(axis);
-
-            auto f = query_inference_function("CumSum");
-            infer_.do_inference(f);
-            infer_.check_output(0, y);
-
-
-            if ( x->onnx_CumSum(x, axis, y, exclusive, reverse) != YNX_OK ) {
-                yannx_panic("API: CumSum  return error!");
-            }
-
-            put_tensor(stack, y);
-
-        }
-        virtual void run(ValueStack<TensorType>& stack) {
-
-
-            auto reverse = fetch_optional_int(stack, 0);
-            auto exclusive = fetch_optional_int(stack, 0);
-
-            auto axis = fetch_tensor(stack);
-            auto x = fetch_tensor(stack);
-
-
-            if ( x->onnx_CumSum(x, axis, y, exclusive, reverse) != YNX_OK ) {
-                yannx_panic("API: CumSum  return error!");
-            }
-
-            put_tensor(stack, y);
-
-        }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(CumSum)
-    };
-
-
-    struct Softplus : NativeWord<TensorType> {
-        tensor_t Y;
-
-        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            ValueStack<TensorType>& stack = rt;
-
-            Y = TensorFactory::create_undefined_user_tensor();
-
-
-            auto X = fetch_tensor(stack);
-
-
-            std::vector<size_t> outputs_;
-            outputs_.push_back(0);
-            YNXInferenceContextImpl infer_(outputs_);
-
-
-            infer_.new_input(X);
-
-            auto f = query_inference_function("Softplus");
-            infer_.do_inference(f);
-            infer_.check_output(0, Y);
-
-
-            if ( X->onnx_Softplus(X, Y) != YNX_OK ) {
-                yannx_panic("API: Softplus  return error!");
-            }
-
-            put_tensor(stack, Y);
-
-        }
-        virtual void run(ValueStack<TensorType>& stack) {
-
-
-
-            auto X = fetch_tensor(stack);
-
-
-            if ( X->onnx_Softplus(X, Y) != YNX_OK ) {
-                yannx_panic("API: Softplus  return error!");
-            }
-
-            put_tensor(stack, Y);
-
-        }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(Softplus)
-    };
-
-
-    struct NegativeLogLikelihoodLoss : NativeWord<TensorType> {
-        tensor_t loss;
-
-        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            ValueStack<TensorType>& stack = rt;
-
-            loss = TensorFactory::create_undefined_user_tensor();
-
-            auto reduction = fetch_optional_string(stack, "mean");
-            auto ignore_index = fetch_optional_int(stack, 0);
-
-            auto weight = fetch_optional_tensor(stack);
-            auto target = fetch_tensor(stack);
-            auto input = fetch_tensor(stack);
-
-
-            std::vector<size_t> outputs_;
-            outputs_.push_back(0);
-            YNXInferenceContextImpl infer_(outputs_);
-
-            infer_.new_attr("reduction", reduction);
-            infer_.new_attr("ignore_index", ignore_index);
-
-            infer_.new_input(input);
-            infer_.new_input(target);
-            infer_.new_input(weight);
-
-            auto f = query_inference_function("NegativeLogLikelihoodLoss");
-            infer_.do_inference(f);
-            infer_.check_output(0, loss);
-
-
-            if ( input->onnx_NegativeLogLikelihoodLoss(input, target, weight, loss, ignore_index, reduction) != YNX_OK ) {
-                yannx_panic("API: NegativeLogLikelihoodLoss  return error!");
-            }
-
-            put_tensor(stack, loss);
-
-        }
-        virtual void run(ValueStack<TensorType>& stack) {
-
-
-            auto reduction = fetch_optional_string(stack, "mean");
-            auto ignore_index = fetch_optional_int(stack, 0);
-
-            auto weight = fetch_optional_tensor(stack);
-            auto target = fetch_tensor(stack);
-            auto input = fetch_tensor(stack);
-
-
-            if ( input->onnx_NegativeLogLikelihoodLoss(input, target, weight, loss, ignore_index, reduction) != YNX_OK ) {
-                yannx_panic("API: NegativeLogLikelihoodLoss  return error!");
-            }
-
-            put_tensor(stack, loss);
-
-        }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(NegativeLogLikelihoodLoss)
-    };
-
-
-    struct Det : NativeWord<TensorType> {
-        tensor_t Y;
-
-        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            ValueStack<TensorType>& stack = rt;
-
-            Y = TensorFactory::create_undefined_user_tensor();
-
-
-            auto X = fetch_tensor(stack);
-
-
-            std::vector<size_t> outputs_;
-            outputs_.push_back(0);
-            YNXInferenceContextImpl infer_(outputs_);
-
-
-            infer_.new_input(X);
-
-            auto f = query_inference_function("Det");
-            infer_.do_inference(f);
-            infer_.check_output(0, Y);
-
-
-            if ( X->onnx_Det(X, Y) != YNX_OK ) {
-                yannx_panic("API: Det  return error!");
-            }
-
-            put_tensor(stack, Y);
-
-        }
-        virtual void run(ValueStack<TensorType>& stack) {
-
-
-
-            auto X = fetch_tensor(stack);
-
-
-            if ( X->onnx_Det(X, Y) != YNX_OK ) {
-                yannx_panic("API: Det  return error!");
-            }
-
-            put_tensor(stack, Y);
-
-        }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(Det)
-    };
-
-
-    struct HardSwish : NativeWord<TensorType> {
-        tensor_t Y;
-
-        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            ValueStack<TensorType>& stack = rt;
-
-            Y = TensorFactory::create_undefined_user_tensor();
-
-
-            auto X = fetch_tensor(stack);
-
-
-            std::vector<size_t> outputs_;
-            outputs_.push_back(0);
-            YNXInferenceContextImpl infer_(outputs_);
-
-
-            infer_.new_input(X);
-
-            auto f = query_inference_function("HardSwish");
-            infer_.do_inference(f);
-            infer_.check_output(0, Y);
-
-
-            if ( X->onnx_HardSwish(X, Y) != YNX_OK ) {
-                yannx_panic("API: HardSwish  return error!");
-            }
-
-            put_tensor(stack, Y);
-
-        }
-        virtual void run(ValueStack<TensorType>& stack) {
-
-
-
-            auto X = fetch_tensor(stack);
-
-
-            if ( X->onnx_HardSwish(X, Y) != YNX_OK ) {
-                yannx_panic("API: HardSwish  return error!");
-            }
-
-            put_tensor(stack, Y);
-
-        }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(HardSwish)
-    };
-
-}
-namespace nn {
-
-    struct LRN : NativeWord<TensorType> {
-        tensor_t Y;
-
-        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            ValueStack<TensorType>& stack = rt;
-
-            Y = TensorFactory::create_undefined_user_tensor();
-
-            auto size = fetch_int(stack);
-            auto bias = fetch_optional_float(stack, 1);
-            auto beta = fetch_optional_float(stack, 0.75);
-            auto alpha = fetch_optional_float(stack, 0.0001);
-
-            auto X = fetch_tensor(stack);
-
-
-            std::vector<size_t> outputs_;
-            outputs_.push_back(0);
-            YNXInferenceContextImpl infer_(outputs_);
-
-            infer_.new_attr("size", size);
-            infer_.new_attr("bias", bias);
-            infer_.new_attr("beta", beta);
-            infer_.new_attr("alpha", alpha);
-
-            infer_.new_input(X);
-
-            auto f = query_inference_function("LRN");
-            infer_.do_inference(f);
-            infer_.check_output(0, Y);
-
-
-            if ( X->onnx_LRN(X, Y, alpha, beta, bias, size) != YNX_OK ) {
-                yannx_panic("API: LRN  return error!");
-            }
-
-            put_tensor(stack, Y);
-
-        }
-        virtual void run(ValueStack<TensorType>& stack) {
-
-
-            auto size = fetch_int(stack);
-            auto bias = fetch_optional_float(stack, 1);
-            auto beta = fetch_optional_float(stack, 0.75);
-            auto alpha = fetch_optional_float(stack, 0.0001);
-
-            auto X = fetch_tensor(stack);
-
-
-            if ( X->onnx_LRN(X, Y, alpha, beta, bias, size) != YNX_OK ) {
-                yannx_panic("API: LRN  return error!");
-            }
-
-            put_tensor(stack, Y);
-
-        }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(LRN)
-    };
-
-
-    struct LpPool : NativeWord<TensorType> {
-        tensor_t Y;
-
-        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            ValueStack<TensorType>& stack = rt;
-
-            Y = TensorFactory::create_undefined_user_tensor();
-
             auto strides = fetch_optional_ints(stack, {});
             auto pads = fetch_optional_ints(stack, {});
-            auto p = fetch_optional_int(stack, 2);
-            auto kernel_shape = fetch_ints(stack);
+            auto kernel_shape = fetch_optional_ints(stack, {});
+            auto group = fetch_optional_int(stack, 1);
+            auto dilations = fetch_optional_ints(stack, {});
             auto auto_pad = fetch_optional_string(stack, "NOTSET");
 
-            auto X = fetch_tensor(stack);
+            auto B = fetch_optional_tensor(stack);
+            auto y_zero_point = fetch_tensor(stack);
+            auto y_scale = fetch_tensor(stack);
+            auto w_zero_point = fetch_tensor(stack);
+            auto w_scale = fetch_tensor(stack);
+            auto w = fetch_tensor(stack);
+            auto x_zero_point = fetch_tensor(stack);
+            auto x_scale = fetch_tensor(stack);
+            auto x = fetch_tensor(stack);
 
 
             std::vector<size_t> outputs_;
@@ -4205,22 +4154,31 @@ namespace nn {
 
             infer_.new_attr("strides", strides);
             infer_.new_attr("pads", pads);
-            infer_.new_attr("p", p);
             infer_.new_attr("kernel_shape", kernel_shape);
+            infer_.new_attr("group", group);
+            infer_.new_attr("dilations", dilations);
             infer_.new_attr("auto_pad", auto_pad);
 
-            infer_.new_input(X);
+            infer_.new_input(x);
+            infer_.new_input(x_scale);
+            infer_.new_input(x_zero_point);
+            infer_.new_input(w);
+            infer_.new_input(w_scale);
+            infer_.new_input(w_zero_point);
+            infer_.new_input(y_scale);
+            infer_.new_input(y_zero_point);
+            infer_.new_input(B);
 
-            auto f = query_inference_function("LpPool");
+            auto f = query_inference_function("QLinearConv");
             infer_.do_inference(f);
-            infer_.check_output(0, Y);
+            infer_.check_output(0, y);
 
 
-            if ( X->onnx_LpPool(X, Y, auto_pad, kernel_shape, p, pads, strides) != YNX_OK ) {
-                yannx_panic("API: LpPool  return error!");
+            if ( x->onnx_QLinearConv(x, x_scale, x_zero_point, w, w_scale, w_zero_point, y_scale, y_zero_point, B, y, auto_pad, dilations, group, kernel_shape, pads, strides) != YNX_OK ) {
+                yannx_panic("API: QLinearConv  return error!");
             }
 
-            put_tensor(stack, Y);
+            put_tensor(stack, y);
 
         }
         virtual void run(ValueStack<TensorType>& stack) {
@@ -4228,96 +4186,106 @@ namespace nn {
 
             auto strides = fetch_optional_ints(stack, {});
             auto pads = fetch_optional_ints(stack, {});
-            auto p = fetch_optional_int(stack, 2);
-            auto kernel_shape = fetch_ints(stack);
+            auto kernel_shape = fetch_optional_ints(stack, {});
+            auto group = fetch_optional_int(stack, 1);
+            auto dilations = fetch_optional_ints(stack, {});
             auto auto_pad = fetch_optional_string(stack, "NOTSET");
 
-            auto X = fetch_tensor(stack);
+            auto B = fetch_optional_tensor(stack);
+            auto y_zero_point = fetch_tensor(stack);
+            auto y_scale = fetch_tensor(stack);
+            auto w_zero_point = fetch_tensor(stack);
+            auto w_scale = fetch_tensor(stack);
+            auto w = fetch_tensor(stack);
+            auto x_zero_point = fetch_tensor(stack);
+            auto x_scale = fetch_tensor(stack);
+            auto x = fetch_tensor(stack);
 
 
-            if ( X->onnx_LpPool(X, Y, auto_pad, kernel_shape, p, pads, strides) != YNX_OK ) {
-                yannx_panic("API: LpPool  return error!");
+            if ( x->onnx_QLinearConv(x, x_scale, x_zero_point, w, w_scale, w_zero_point, y_scale, y_zero_point, B, y, auto_pad, dilations, group, kernel_shape, pads, strides) != YNX_OK ) {
+                yannx_panic("API: QLinearConv  return error!");
             }
 
-            put_tensor(stack, Y);
+            put_tensor(stack, y);
 
         }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(LpPool)
+        NWORD_CREATOR_DEFINE_TENSORTYPE(QLinearConv)
     };
 
 
-    struct Dropout : NativeWord<TensorType> {
-        std::variant<void *, tensor_t> mask;
-        tensor_t output;
+    struct ConvInteger : NativeWord<TensorType> {
+        tensor_t y;
 
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            if ( fetch_bool(stack) == true) {
-                mask = TensorFactory::create_undefined_user_tensor();
-            }
-            output = TensorFactory::create_undefined_user_tensor();
+            y = TensorFactory::create_undefined_user_tensor();
 
-            auto seed = fetch_optional_int(stack, 0);
+            auto strides = fetch_optional_ints(stack, {});
+            auto pads = fetch_optional_ints(stack, {});
+            auto kernel_shape = fetch_optional_ints(stack, {});
+            auto group = fetch_optional_int(stack, 1);
+            auto dilations = fetch_optional_ints(stack, {});
+            auto auto_pad = fetch_optional_string(stack, "NOTSET");
 
-            auto training_mode = fetch_optional_tensor(stack);
-            auto ratio = fetch_optional_tensor(stack);
-            auto data = fetch_tensor(stack);
+            auto w_zero_point = fetch_optional_tensor(stack);
+            auto x_zero_point = fetch_optional_tensor(stack);
+            auto w = fetch_tensor(stack);
+            auto x = fetch_tensor(stack);
 
 
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
-            if ( mask.index() != 0) {
-                outputs_.push_back(1);
-            }
             YNXInferenceContextImpl infer_(outputs_);
 
-            infer_.new_attr("seed", seed);
+            infer_.new_attr("strides", strides);
+            infer_.new_attr("pads", pads);
+            infer_.new_attr("kernel_shape", kernel_shape);
+            infer_.new_attr("group", group);
+            infer_.new_attr("dilations", dilations);
+            infer_.new_attr("auto_pad", auto_pad);
 
-            infer_.new_input(data);
-            infer_.new_input(ratio);
-            infer_.new_input(training_mode);
+            infer_.new_input(x);
+            infer_.new_input(w);
+            infer_.new_input(x_zero_point);
+            infer_.new_input(w_zero_point);
 
-            auto f = query_inference_function("Dropout");
+            auto f = query_inference_function("ConvInteger");
             infer_.do_inference(f);
-            infer_.check_output(0, output);
-            if ( mask.index() != 0) {
-                infer_.check_output(1, std::get<1>(mask));
-            }
+            infer_.check_output(0, y);
 
 
-            if ( data->onnx_Dropout(data, ratio, training_mode, output, mask, seed) != YNX_OK ) {
-                yannx_panic("API: Dropout  return error!");
+            if ( x->onnx_ConvInteger(x, w, x_zero_point, w_zero_point, y, auto_pad, dilations, group, kernel_shape, pads, strides) != YNX_OK ) {
+                yannx_panic("API: ConvInteger  return error!");
             }
 
-            put_tensor(stack, output);
-            if ( mask.index() != 0) {
-                put_optional_tensor(stack, mask);
-            }
+            put_tensor(stack, y);
 
         }
         virtual void run(ValueStack<TensorType>& stack) {
 
-            fetch_bool(stack);
 
-            auto seed = fetch_optional_int(stack, 0);
+            auto strides = fetch_optional_ints(stack, {});
+            auto pads = fetch_optional_ints(stack, {});
+            auto kernel_shape = fetch_optional_ints(stack, {});
+            auto group = fetch_optional_int(stack, 1);
+            auto dilations = fetch_optional_ints(stack, {});
+            auto auto_pad = fetch_optional_string(stack, "NOTSET");
 
-            auto training_mode = fetch_optional_tensor(stack);
-            auto ratio = fetch_optional_tensor(stack);
-            auto data = fetch_tensor(stack);
+            auto w_zero_point = fetch_optional_tensor(stack);
+            auto x_zero_point = fetch_optional_tensor(stack);
+            auto w = fetch_tensor(stack);
+            auto x = fetch_tensor(stack);
 
 
-            if ( data->onnx_Dropout(data, ratio, training_mode, output, mask, seed) != YNX_OK ) {
-                yannx_panic("API: Dropout  return error!");
+            if ( x->onnx_ConvInteger(x, w, x_zero_point, w_zero_point, y, auto_pad, dilations, group, kernel_shape, pads, strides) != YNX_OK ) {
+                yannx_panic("API: ConvInteger  return error!");
             }
 
-            put_tensor(stack, output);
-            if ( mask.index() != 0) {
-                put_optional_tensor(stack, mask);
-            }
+            put_tensor(stack, y);
 
         }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(Dropout)
+        NWORD_CREATOR_DEFINE_TENSORTYPE(ConvInteger)
     };
 
 
@@ -4408,113 +4376,6 @@ namespace nn {
     };
 
 
-    struct GlobalLpPool : NativeWord<TensorType> {
-        tensor_t Y;
-
-        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            ValueStack<TensorType>& stack = rt;
-
-            Y = TensorFactory::create_undefined_user_tensor();
-
-            auto p = fetch_optional_int(stack, 2);
-
-            auto X = fetch_tensor(stack);
-
-
-            std::vector<size_t> outputs_;
-            outputs_.push_back(0);
-            YNXInferenceContextImpl infer_(outputs_);
-
-            infer_.new_attr("p", p);
-
-            infer_.new_input(X);
-
-            auto f = query_inference_function("GlobalLpPool");
-            infer_.do_inference(f);
-            infer_.check_output(0, Y);
-
-
-            if ( X->onnx_GlobalLpPool(X, Y, p) != YNX_OK ) {
-                yannx_panic("API: GlobalLpPool  return error!");
-            }
-
-            put_tensor(stack, Y);
-
-        }
-        virtual void run(ValueStack<TensorType>& stack) {
-
-
-            auto p = fetch_optional_int(stack, 2);
-
-            auto X = fetch_tensor(stack);
-
-
-            if ( X->onnx_GlobalLpPool(X, Y, p) != YNX_OK ) {
-                yannx_panic("API: GlobalLpPool  return error!");
-            }
-
-            put_tensor(stack, Y);
-
-        }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(GlobalLpPool)
-    };
-
-
-    struct LpNormalization : NativeWord<TensorType> {
-        tensor_t output;
-
-        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            ValueStack<TensorType>& stack = rt;
-
-            output = TensorFactory::create_undefined_user_tensor();
-
-            auto p = fetch_optional_int(stack, 2);
-            auto axis = fetch_optional_int(stack, -1);
-
-            auto input = fetch_tensor(stack);
-
-
-            std::vector<size_t> outputs_;
-            outputs_.push_back(0);
-            YNXInferenceContextImpl infer_(outputs_);
-
-            infer_.new_attr("p", p);
-            infer_.new_attr("axis", axis);
-
-            infer_.new_input(input);
-
-            auto f = query_inference_function("LpNormalization");
-            infer_.do_inference(f);
-            infer_.check_output(0, output);
-
-
-            if ( input->onnx_LpNormalization(input, output, axis, p) != YNX_OK ) {
-                yannx_panic("API: LpNormalization  return error!");
-            }
-
-            put_tensor(stack, output);
-
-        }
-        virtual void run(ValueStack<TensorType>& stack) {
-
-
-            auto p = fetch_optional_int(stack, 2);
-            auto axis = fetch_optional_int(stack, -1);
-
-            auto input = fetch_tensor(stack);
-
-
-            if ( input->onnx_LpNormalization(input, output, axis, p) != YNX_OK ) {
-                yannx_panic("API: LpNormalization  return error!");
-            }
-
-            put_tensor(stack, output);
-
-        }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(LpNormalization)
-    };
-
-
     struct Conv : NativeWord<TensorType> {
         tensor_t Y;
 
@@ -4588,55 +4449,6 @@ namespace nn {
     };
 
 
-    struct GlobalMaxPool : NativeWord<TensorType> {
-        tensor_t Y;
-
-        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            ValueStack<TensorType>& stack = rt;
-
-            Y = TensorFactory::create_undefined_user_tensor();
-
-
-            auto X = fetch_tensor(stack);
-
-
-            std::vector<size_t> outputs_;
-            outputs_.push_back(0);
-            YNXInferenceContextImpl infer_(outputs_);
-
-
-            infer_.new_input(X);
-
-            auto f = query_inference_function("GlobalMaxPool");
-            infer_.do_inference(f);
-            infer_.check_output(0, Y);
-
-
-            if ( X->onnx_GlobalMaxPool(X, Y) != YNX_OK ) {
-                yannx_panic("API: GlobalMaxPool  return error!");
-            }
-
-            put_tensor(stack, Y);
-
-        }
-        virtual void run(ValueStack<TensorType>& stack) {
-
-
-
-            auto X = fetch_tensor(stack);
-
-
-            if ( X->onnx_GlobalMaxPool(X, Y) != YNX_OK ) {
-                yannx_panic("API: GlobalMaxPool  return error!");
-            }
-
-            put_tensor(stack, Y);
-
-        }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(GlobalMaxPool)
-    };
-
-
     struct MaxUnpool : NativeWord<TensorType> {
         tensor_t output;
 
@@ -4698,6 +4510,393 @@ namespace nn {
 
         }
         NWORD_CREATOR_DEFINE_TENSORTYPE(MaxUnpool)
+    };
+
+
+    struct TfIdfVectorizer : NativeWord<TensorType> {
+        tensor_t Y;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            Y = TensorFactory::create_undefined_user_tensor();
+
+            auto weights = fetch_optional_floats(stack, {});
+            auto pool_strings = fetch_optional_strings(stack, {});
+            auto pool_int64s = fetch_optional_ints(stack, {});
+            auto ngram_indexes = fetch_ints(stack);
+            auto ngram_counts = fetch_ints(stack);
+            auto mode = fetch_string(stack);
+            auto min_gram_length = fetch_int(stack);
+            auto max_skip_count = fetch_int(stack);
+            auto max_gram_length = fetch_int(stack);
+
+            auto X = fetch_tensor(stack);
+
+
+            std::vector<size_t> outputs_;
+            outputs_.push_back(0);
+            YNXInferenceContextImpl infer_(outputs_);
+
+            infer_.new_attr("weights", weights);
+            infer_.new_attr("pool_strings", pool_strings);
+            infer_.new_attr("pool_int64s", pool_int64s);
+            infer_.new_attr("ngram_indexes", ngram_indexes);
+            infer_.new_attr("ngram_counts", ngram_counts);
+            infer_.new_attr("mode", mode);
+            infer_.new_attr("min_gram_length", min_gram_length);
+            infer_.new_attr("max_skip_count", max_skip_count);
+            infer_.new_attr("max_gram_length", max_gram_length);
+
+            infer_.new_input(X);
+
+            auto f = query_inference_function("TfIdfVectorizer");
+            infer_.do_inference(f);
+            infer_.check_output(0, Y);
+
+
+            if ( X->onnx_TfIdfVectorizer(X, Y, max_gram_length, max_skip_count, min_gram_length, mode, ngram_counts, ngram_indexes, pool_int64s, pool_strings, weights) != YNX_OK ) {
+                yannx_panic("API: TfIdfVectorizer  return error!");
+            }
+
+            put_tensor(stack, Y);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+            auto weights = fetch_optional_floats(stack, {});
+            auto pool_strings = fetch_optional_strings(stack, {});
+            auto pool_int64s = fetch_optional_ints(stack, {});
+            auto ngram_indexes = fetch_ints(stack);
+            auto ngram_counts = fetch_ints(stack);
+            auto mode = fetch_string(stack);
+            auto min_gram_length = fetch_int(stack);
+            auto max_skip_count = fetch_int(stack);
+            auto max_gram_length = fetch_int(stack);
+
+            auto X = fetch_tensor(stack);
+
+
+            if ( X->onnx_TfIdfVectorizer(X, Y, max_gram_length, max_skip_count, min_gram_length, mode, ngram_counts, ngram_indexes, pool_int64s, pool_strings, weights) != YNX_OK ) {
+                yannx_panic("API: TfIdfVectorizer  return error!");
+            }
+
+            put_tensor(stack, Y);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(TfIdfVectorizer)
+    };
+
+
+    struct ConvTranspose : NativeWord<TensorType> {
+        tensor_t Y;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            Y = TensorFactory::create_undefined_user_tensor();
+
+            auto strides = fetch_optional_ints(stack, {});
+            auto pads = fetch_optional_ints(stack, {});
+            auto output_shape = fetch_optional_ints(stack, {});
+            auto output_padding = fetch_optional_ints(stack, {});
+            auto kernel_shape = fetch_optional_ints(stack, {});
+            auto group = fetch_optional_int(stack, 1);
+            auto dilations = fetch_optional_ints(stack, {});
+            auto auto_pad = fetch_optional_string(stack, "NOTSET");
+
+            auto B = fetch_optional_tensor(stack);
+            auto W = fetch_tensor(stack);
+            auto X = fetch_tensor(stack);
+
+
+            std::vector<size_t> outputs_;
+            outputs_.push_back(0);
+            YNXInferenceContextImpl infer_(outputs_);
+
+            infer_.new_attr("strides", strides);
+            infer_.new_attr("pads", pads);
+            infer_.new_attr("output_shape", output_shape);
+            infer_.new_attr("output_padding", output_padding);
+            infer_.new_attr("kernel_shape", kernel_shape);
+            infer_.new_attr("group", group);
+            infer_.new_attr("dilations", dilations);
+            infer_.new_attr("auto_pad", auto_pad);
+
+            infer_.new_input(X);
+            infer_.new_input(W);
+            infer_.new_input(B);
+
+            auto f = query_inference_function("ConvTranspose");
+            infer_.do_inference(f);
+            infer_.check_output(0, Y);
+
+
+            if ( X->onnx_ConvTranspose(X, W, B, Y, auto_pad, dilations, group, kernel_shape, output_padding, output_shape, pads, strides) != YNX_OK ) {
+                yannx_panic("API: ConvTranspose  return error!");
+            }
+
+            put_tensor(stack, Y);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+            auto strides = fetch_optional_ints(stack, {});
+            auto pads = fetch_optional_ints(stack, {});
+            auto output_shape = fetch_optional_ints(stack, {});
+            auto output_padding = fetch_optional_ints(stack, {});
+            auto kernel_shape = fetch_optional_ints(stack, {});
+            auto group = fetch_optional_int(stack, 1);
+            auto dilations = fetch_optional_ints(stack, {});
+            auto auto_pad = fetch_optional_string(stack, "NOTSET");
+
+            auto B = fetch_optional_tensor(stack);
+            auto W = fetch_tensor(stack);
+            auto X = fetch_tensor(stack);
+
+
+            if ( X->onnx_ConvTranspose(X, W, B, Y, auto_pad, dilations, group, kernel_shape, output_padding, output_shape, pads, strides) != YNX_OK ) {
+                yannx_panic("API: ConvTranspose  return error!");
+            }
+
+            put_tensor(stack, Y);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(ConvTranspose)
+    };
+
+
+    struct Flatten : NativeWord<TensorType> {
+        tensor_t output;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            output = TensorFactory::create_undefined_user_tensor();
+
+            auto axis = fetch_optional_int(stack, 1);
+
+            auto input = fetch_tensor(stack);
+
+
+            std::vector<size_t> outputs_;
+            outputs_.push_back(0);
+            YNXInferenceContextImpl infer_(outputs_);
+
+            infer_.new_attr("axis", axis);
+
+            infer_.new_input(input);
+
+            auto f = query_inference_function("Flatten");
+            infer_.do_inference(f);
+            infer_.check_output(0, output);
+
+
+            if ( input->onnx_Flatten(input, output, axis) != YNX_OK ) {
+                yannx_panic("API: Flatten  return error!");
+            }
+
+            put_tensor(stack, output);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+            auto axis = fetch_optional_int(stack, 1);
+
+            auto input = fetch_tensor(stack);
+
+
+            if ( input->onnx_Flatten(input, output, axis) != YNX_OK ) {
+                yannx_panic("API: Flatten  return error!");
+            }
+
+            put_tensor(stack, output);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(Flatten)
+    };
+
+
+    struct MaxRoiPool : NativeWord<TensorType> {
+        tensor_t Y;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            Y = TensorFactory::create_undefined_user_tensor();
+
+            auto spatial_scale = fetch_optional_float(stack, 1);
+            auto pooled_shape = fetch_ints(stack);
+
+            auto rois = fetch_tensor(stack);
+            auto X = fetch_tensor(stack);
+
+
+            std::vector<size_t> outputs_;
+            outputs_.push_back(0);
+            YNXInferenceContextImpl infer_(outputs_);
+
+            infer_.new_attr("spatial_scale", spatial_scale);
+            infer_.new_attr("pooled_shape", pooled_shape);
+
+            infer_.new_input(X);
+            infer_.new_input(rois);
+
+            auto f = query_inference_function("MaxRoiPool");
+            infer_.do_inference(f);
+            infer_.check_output(0, Y);
+
+
+            if ( X->onnx_MaxRoiPool(X, rois, Y, pooled_shape, spatial_scale) != YNX_OK ) {
+                yannx_panic("API: MaxRoiPool  return error!");
+            }
+
+            put_tensor(stack, Y);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+            auto spatial_scale = fetch_optional_float(stack, 1);
+            auto pooled_shape = fetch_ints(stack);
+
+            auto rois = fetch_tensor(stack);
+            auto X = fetch_tensor(stack);
+
+
+            if ( X->onnx_MaxRoiPool(X, rois, Y, pooled_shape, spatial_scale) != YNX_OK ) {
+                yannx_panic("API: MaxRoiPool  return error!");
+            }
+
+            put_tensor(stack, Y);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(MaxRoiPool)
+    };
+
+
+    struct InstanceNormalization : NativeWord<TensorType> {
+        tensor_t output;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            output = TensorFactory::create_undefined_user_tensor();
+
+            auto epsilon = fetch_optional_float(stack, 1e-05);
+
+            auto B = fetch_tensor(stack);
+            auto scale = fetch_tensor(stack);
+            auto input = fetch_tensor(stack);
+
+
+            std::vector<size_t> outputs_;
+            outputs_.push_back(0);
+            YNXInferenceContextImpl infer_(outputs_);
+
+            infer_.new_attr("epsilon", epsilon);
+
+            infer_.new_input(input);
+            infer_.new_input(scale);
+            infer_.new_input(B);
+
+            auto f = query_inference_function("InstanceNormalization");
+            infer_.do_inference(f);
+            infer_.check_output(0, output);
+
+
+            if ( input->onnx_InstanceNormalization(input, scale, B, output, epsilon) != YNX_OK ) {
+                yannx_panic("API: InstanceNormalization  return error!");
+            }
+
+            put_tensor(stack, output);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+            auto epsilon = fetch_optional_float(stack, 1e-05);
+
+            auto B = fetch_tensor(stack);
+            auto scale = fetch_tensor(stack);
+            auto input = fetch_tensor(stack);
+
+
+            if ( input->onnx_InstanceNormalization(input, scale, B, output, epsilon) != YNX_OK ) {
+                yannx_panic("API: InstanceNormalization  return error!");
+            }
+
+            put_tensor(stack, output);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(InstanceNormalization)
+    };
+
+
+    struct LpPool : NativeWord<TensorType> {
+        tensor_t Y;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            Y = TensorFactory::create_undefined_user_tensor();
+
+            auto strides = fetch_optional_ints(stack, {});
+            auto pads = fetch_optional_ints(stack, {});
+            auto p = fetch_optional_int(stack, 2);
+            auto kernel_shape = fetch_ints(stack);
+            auto auto_pad = fetch_optional_string(stack, "NOTSET");
+
+            auto X = fetch_tensor(stack);
+
+
+            std::vector<size_t> outputs_;
+            outputs_.push_back(0);
+            YNXInferenceContextImpl infer_(outputs_);
+
+            infer_.new_attr("strides", strides);
+            infer_.new_attr("pads", pads);
+            infer_.new_attr("p", p);
+            infer_.new_attr("kernel_shape", kernel_shape);
+            infer_.new_attr("auto_pad", auto_pad);
+
+            infer_.new_input(X);
+
+            auto f = query_inference_function("LpPool");
+            infer_.do_inference(f);
+            infer_.check_output(0, Y);
+
+
+            if ( X->onnx_LpPool(X, Y, auto_pad, kernel_shape, p, pads, strides) != YNX_OK ) {
+                yannx_panic("API: LpPool  return error!");
+            }
+
+            put_tensor(stack, Y);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+            auto strides = fetch_optional_ints(stack, {});
+            auto pads = fetch_optional_ints(stack, {});
+            auto p = fetch_optional_int(stack, 2);
+            auto kernel_shape = fetch_ints(stack);
+            auto auto_pad = fetch_optional_string(stack, "NOTSET");
+
+            auto X = fetch_tensor(stack);
+
+
+            if ( X->onnx_LpPool(X, Y, auto_pad, kernel_shape, p, pads, strides) != YNX_OK ) {
+                yannx_panic("API: LpPool  return error!");
+            }
+
+            put_tensor(stack, Y);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(LpPool)
     };
 
 
@@ -4768,220 +4967,78 @@ namespace nn {
     };
 
 
-    struct InstanceNormalization : NativeWord<TensorType> {
+    struct Dropout : NativeWord<TensorType> {
+        std::variant<void *, tensor_t> mask;
         tensor_t output;
 
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
+            if ( fetch_bool(stack) == true) {
+                mask = TensorFactory::create_undefined_user_tensor();
+            }
             output = TensorFactory::create_undefined_user_tensor();
 
-            auto epsilon = fetch_optional_float(stack, 1e-05);
+            auto seed = fetch_optional_int(stack, 0);
 
-            auto B = fetch_tensor(stack);
-            auto scale = fetch_tensor(stack);
-            auto input = fetch_tensor(stack);
+            auto training_mode = fetch_optional_tensor(stack);
+            auto ratio = fetch_optional_tensor(stack);
+            auto data = fetch_tensor(stack);
 
 
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
+            if ( mask.index() != 0) {
+                outputs_.push_back(1);
+            }
             YNXInferenceContextImpl infer_(outputs_);
 
-            infer_.new_attr("epsilon", epsilon);
+            infer_.new_attr("seed", seed);
 
-            infer_.new_input(input);
-            infer_.new_input(scale);
-            infer_.new_input(B);
+            infer_.new_input(data);
+            infer_.new_input(ratio);
+            infer_.new_input(training_mode);
 
-            auto f = query_inference_function("InstanceNormalization");
+            auto f = query_inference_function("Dropout");
             infer_.do_inference(f);
             infer_.check_output(0, output);
+            if ( mask.index() != 0) {
+                infer_.check_output(1, std::get<1>(mask));
+            }
 
 
-            if ( input->onnx_InstanceNormalization(input, scale, B, output, epsilon) != YNX_OK ) {
-                yannx_panic("API: InstanceNormalization  return error!");
+            if ( data->onnx_Dropout(data, ratio, training_mode, output, mask, seed) != YNX_OK ) {
+                yannx_panic("API: Dropout  return error!");
             }
 
             put_tensor(stack, output);
+            if ( mask.index() != 0) {
+                put_optional_tensor(stack, mask);
+            }
 
         }
         virtual void run(ValueStack<TensorType>& stack) {
 
+            fetch_bool(stack);
 
-            auto epsilon = fetch_optional_float(stack, 1e-05);
+            auto seed = fetch_optional_int(stack, 0);
 
-            auto B = fetch_tensor(stack);
-            auto scale = fetch_tensor(stack);
-            auto input = fetch_tensor(stack);
+            auto training_mode = fetch_optional_tensor(stack);
+            auto ratio = fetch_optional_tensor(stack);
+            auto data = fetch_tensor(stack);
 
 
-            if ( input->onnx_InstanceNormalization(input, scale, B, output, epsilon) != YNX_OK ) {
-                yannx_panic("API: InstanceNormalization  return error!");
+            if ( data->onnx_Dropout(data, ratio, training_mode, output, mask, seed) != YNX_OK ) {
+                yannx_panic("API: Dropout  return error!");
             }
 
             put_tensor(stack, output);
-
-        }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(InstanceNormalization)
-    };
-
-
-    struct Flatten : NativeWord<TensorType> {
-        tensor_t output;
-
-        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            ValueStack<TensorType>& stack = rt;
-
-            output = TensorFactory::create_undefined_user_tensor();
-
-            auto axis = fetch_optional_int(stack, 1);
-
-            auto input = fetch_tensor(stack);
-
-
-            std::vector<size_t> outputs_;
-            outputs_.push_back(0);
-            YNXInferenceContextImpl infer_(outputs_);
-
-            infer_.new_attr("axis", axis);
-
-            infer_.new_input(input);
-
-            auto f = query_inference_function("Flatten");
-            infer_.do_inference(f);
-            infer_.check_output(0, output);
-
-
-            if ( input->onnx_Flatten(input, output, axis) != YNX_OK ) {
-                yannx_panic("API: Flatten  return error!");
+            if ( mask.index() != 0) {
+                put_optional_tensor(stack, mask);
             }
 
-            put_tensor(stack, output);
-
         }
-        virtual void run(ValueStack<TensorType>& stack) {
-
-
-            auto axis = fetch_optional_int(stack, 1);
-
-            auto input = fetch_tensor(stack);
-
-
-            if ( input->onnx_Flatten(input, output, axis) != YNX_OK ) {
-                yannx_panic("API: Flatten  return error!");
-            }
-
-            put_tensor(stack, output);
-
-        }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(Flatten)
-    };
-
-
-    struct GlobalAveragePool : NativeWord<TensorType> {
-        tensor_t Y;
-
-        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            ValueStack<TensorType>& stack = rt;
-
-            Y = TensorFactory::create_undefined_user_tensor();
-
-
-            auto X = fetch_tensor(stack);
-
-
-            std::vector<size_t> outputs_;
-            outputs_.push_back(0);
-            YNXInferenceContextImpl infer_(outputs_);
-
-
-            infer_.new_input(X);
-
-            auto f = query_inference_function("GlobalAveragePool");
-            infer_.do_inference(f);
-            infer_.check_output(0, Y);
-
-
-            if ( X->onnx_GlobalAveragePool(X, Y) != YNX_OK ) {
-                yannx_panic("API: GlobalAveragePool  return error!");
-            }
-
-            put_tensor(stack, Y);
-
-        }
-        virtual void run(ValueStack<TensorType>& stack) {
-
-
-
-            auto X = fetch_tensor(stack);
-
-
-            if ( X->onnx_GlobalAveragePool(X, Y) != YNX_OK ) {
-                yannx_panic("API: GlobalAveragePool  return error!");
-            }
-
-            put_tensor(stack, Y);
-
-        }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(GlobalAveragePool)
-    };
-
-
-    struct MaxRoiPool : NativeWord<TensorType> {
-        tensor_t Y;
-
-        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            ValueStack<TensorType>& stack = rt;
-
-            Y = TensorFactory::create_undefined_user_tensor();
-
-            auto spatial_scale = fetch_optional_float(stack, 1);
-            auto pooled_shape = fetch_ints(stack);
-
-            auto rois = fetch_tensor(stack);
-            auto X = fetch_tensor(stack);
-
-
-            std::vector<size_t> outputs_;
-            outputs_.push_back(0);
-            YNXInferenceContextImpl infer_(outputs_);
-
-            infer_.new_attr("spatial_scale", spatial_scale);
-            infer_.new_attr("pooled_shape", pooled_shape);
-
-            infer_.new_input(X);
-            infer_.new_input(rois);
-
-            auto f = query_inference_function("MaxRoiPool");
-            infer_.do_inference(f);
-            infer_.check_output(0, Y);
-
-
-            if ( X->onnx_MaxRoiPool(X, rois, Y, pooled_shape, spatial_scale) != YNX_OK ) {
-                yannx_panic("API: MaxRoiPool  return error!");
-            }
-
-            put_tensor(stack, Y);
-
-        }
-        virtual void run(ValueStack<TensorType>& stack) {
-
-
-            auto spatial_scale = fetch_optional_float(stack, 1);
-            auto pooled_shape = fetch_ints(stack);
-
-            auto rois = fetch_tensor(stack);
-            auto X = fetch_tensor(stack);
-
-
-            if ( X->onnx_MaxRoiPool(X, rois, Y, pooled_shape, spatial_scale) != YNX_OK ) {
-                yannx_panic("API: MaxRoiPool  return error!");
-            }
-
-            put_tensor(stack, Y);
-
-        }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(MaxRoiPool)
+        NWORD_CREATOR_DEFINE_TENSORTYPE(Dropout)
     };
 
 
@@ -5086,6 +5143,324 @@ namespace nn {
 
         }
         NWORD_CREATOR_DEFINE_TENSORTYPE(BatchNormalization)
+    };
+
+
+    struct LpNormalization : NativeWord<TensorType> {
+        tensor_t output;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            output = TensorFactory::create_undefined_user_tensor();
+
+            auto p = fetch_optional_int(stack, 2);
+            auto axis = fetch_optional_int(stack, -1);
+
+            auto input = fetch_tensor(stack);
+
+
+            std::vector<size_t> outputs_;
+            outputs_.push_back(0);
+            YNXInferenceContextImpl infer_(outputs_);
+
+            infer_.new_attr("p", p);
+            infer_.new_attr("axis", axis);
+
+            infer_.new_input(input);
+
+            auto f = query_inference_function("LpNormalization");
+            infer_.do_inference(f);
+            infer_.check_output(0, output);
+
+
+            if ( input->onnx_LpNormalization(input, output, axis, p) != YNX_OK ) {
+                yannx_panic("API: LpNormalization  return error!");
+            }
+
+            put_tensor(stack, output);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+            auto p = fetch_optional_int(stack, 2);
+            auto axis = fetch_optional_int(stack, -1);
+
+            auto input = fetch_tensor(stack);
+
+
+            if ( input->onnx_LpNormalization(input, output, axis, p) != YNX_OK ) {
+                yannx_panic("API: LpNormalization  return error!");
+            }
+
+            put_tensor(stack, output);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(LpNormalization)
+    };
+
+
+    struct GlobalLpPool : NativeWord<TensorType> {
+        tensor_t Y;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            Y = TensorFactory::create_undefined_user_tensor();
+
+            auto p = fetch_optional_int(stack, 2);
+
+            auto X = fetch_tensor(stack);
+
+
+            std::vector<size_t> outputs_;
+            outputs_.push_back(0);
+            YNXInferenceContextImpl infer_(outputs_);
+
+            infer_.new_attr("p", p);
+
+            infer_.new_input(X);
+
+            auto f = query_inference_function("GlobalLpPool");
+            infer_.do_inference(f);
+            infer_.check_output(0, Y);
+
+
+            if ( X->onnx_GlobalLpPool(X, Y, p) != YNX_OK ) {
+                yannx_panic("API: GlobalLpPool  return error!");
+            }
+
+            put_tensor(stack, Y);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+            auto p = fetch_optional_int(stack, 2);
+
+            auto X = fetch_tensor(stack);
+
+
+            if ( X->onnx_GlobalLpPool(X, Y, p) != YNX_OK ) {
+                yannx_panic("API: GlobalLpPool  return error!");
+            }
+
+            put_tensor(stack, Y);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(GlobalLpPool)
+    };
+
+
+    struct GlobalMaxPool : NativeWord<TensorType> {
+        tensor_t Y;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            Y = TensorFactory::create_undefined_user_tensor();
+
+
+            auto X = fetch_tensor(stack);
+
+
+            std::vector<size_t> outputs_;
+            outputs_.push_back(0);
+            YNXInferenceContextImpl infer_(outputs_);
+
+
+            infer_.new_input(X);
+
+            auto f = query_inference_function("GlobalMaxPool");
+            infer_.do_inference(f);
+            infer_.check_output(0, Y);
+
+
+            if ( X->onnx_GlobalMaxPool(X, Y) != YNX_OK ) {
+                yannx_panic("API: GlobalMaxPool  return error!");
+            }
+
+            put_tensor(stack, Y);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+
+            auto X = fetch_tensor(stack);
+
+
+            if ( X->onnx_GlobalMaxPool(X, Y) != YNX_OK ) {
+                yannx_panic("API: GlobalMaxPool  return error!");
+            }
+
+            put_tensor(stack, Y);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(GlobalMaxPool)
+    };
+
+
+    struct MeanVarianceNormalization : NativeWord<TensorType> {
+        tensor_t Y;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            Y = TensorFactory::create_undefined_user_tensor();
+
+            auto axes = fetch_optional_ints(stack, {0, 2, 3, });
+
+            auto X = fetch_tensor(stack);
+
+
+            std::vector<size_t> outputs_;
+            outputs_.push_back(0);
+            YNXInferenceContextImpl infer_(outputs_);
+
+            infer_.new_attr("axes", axes);
+
+            infer_.new_input(X);
+
+            auto f = query_inference_function("MeanVarianceNormalization");
+            infer_.do_inference(f);
+            infer_.check_output(0, Y);
+
+
+            if ( X->onnx_MeanVarianceNormalization(X, Y, axes) != YNX_OK ) {
+                yannx_panic("API: MeanVarianceNormalization  return error!");
+            }
+
+            put_tensor(stack, Y);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+            auto axes = fetch_optional_ints(stack, {0, 2, 3, });
+
+            auto X = fetch_tensor(stack);
+
+
+            if ( X->onnx_MeanVarianceNormalization(X, Y, axes) != YNX_OK ) {
+                yannx_panic("API: MeanVarianceNormalization  return error!");
+            }
+
+            put_tensor(stack, Y);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(MeanVarianceNormalization)
+    };
+
+
+    struct GlobalAveragePool : NativeWord<TensorType> {
+        tensor_t Y;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            Y = TensorFactory::create_undefined_user_tensor();
+
+
+            auto X = fetch_tensor(stack);
+
+
+            std::vector<size_t> outputs_;
+            outputs_.push_back(0);
+            YNXInferenceContextImpl infer_(outputs_);
+
+
+            infer_.new_input(X);
+
+            auto f = query_inference_function("GlobalAveragePool");
+            infer_.do_inference(f);
+            infer_.check_output(0, Y);
+
+
+            if ( X->onnx_GlobalAveragePool(X, Y) != YNX_OK ) {
+                yannx_panic("API: GlobalAveragePool  return error!");
+            }
+
+            put_tensor(stack, Y);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+
+            auto X = fetch_tensor(stack);
+
+
+            if ( X->onnx_GlobalAveragePool(X, Y) != YNX_OK ) {
+                yannx_panic("API: GlobalAveragePool  return error!");
+            }
+
+            put_tensor(stack, Y);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(GlobalAveragePool)
+    };
+
+
+    struct LRN : NativeWord<TensorType> {
+        tensor_t Y;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            Y = TensorFactory::create_undefined_user_tensor();
+
+            auto size = fetch_int(stack);
+            auto bias = fetch_optional_float(stack, 1);
+            auto beta = fetch_optional_float(stack, 0.75);
+            auto alpha = fetch_optional_float(stack, 0.0001);
+
+            auto X = fetch_tensor(stack);
+
+
+            std::vector<size_t> outputs_;
+            outputs_.push_back(0);
+            YNXInferenceContextImpl infer_(outputs_);
+
+            infer_.new_attr("size", size);
+            infer_.new_attr("bias", bias);
+            infer_.new_attr("beta", beta);
+            infer_.new_attr("alpha", alpha);
+
+            infer_.new_input(X);
+
+            auto f = query_inference_function("LRN");
+            infer_.do_inference(f);
+            infer_.check_output(0, Y);
+
+
+            if ( X->onnx_LRN(X, Y, alpha, beta, bias, size) != YNX_OK ) {
+                yannx_panic("API: LRN  return error!");
+            }
+
+            put_tensor(stack, Y);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+            auto size = fetch_int(stack);
+            auto bias = fetch_optional_float(stack, 1);
+            auto beta = fetch_optional_float(stack, 0.75);
+            auto alpha = fetch_optional_float(stack, 0.0001);
+
+            auto X = fetch_tensor(stack);
+
+
+            if ( X->onnx_LRN(X, Y, alpha, beta, bias, size) != YNX_OK ) {
+                yannx_panic("API: LRN  return error!");
+            }
+
+            put_tensor(stack, Y);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(LRN)
     };
 
 
@@ -5202,380 +5577,6 @@ namespace nn {
 
         }
         NWORD_CREATOR_DEFINE_TENSORTYPE(Shrink)
-    };
-
-
-    struct MeanVarianceNormalization : NativeWord<TensorType> {
-        tensor_t Y;
-
-        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            ValueStack<TensorType>& stack = rt;
-
-            Y = TensorFactory::create_undefined_user_tensor();
-
-            auto axes = fetch_optional_ints(stack, {0, 2, 3, });
-
-            auto X = fetch_tensor(stack);
-
-
-            std::vector<size_t> outputs_;
-            outputs_.push_back(0);
-            YNXInferenceContextImpl infer_(outputs_);
-
-            infer_.new_attr("axes", axes);
-
-            infer_.new_input(X);
-
-            auto f = query_inference_function("MeanVarianceNormalization");
-            infer_.do_inference(f);
-            infer_.check_output(0, Y);
-
-
-            if ( X->onnx_MeanVarianceNormalization(X, Y, axes) != YNX_OK ) {
-                yannx_panic("API: MeanVarianceNormalization  return error!");
-            }
-
-            put_tensor(stack, Y);
-
-        }
-        virtual void run(ValueStack<TensorType>& stack) {
-
-
-            auto axes = fetch_optional_ints(stack, {0, 2, 3, });
-
-            auto X = fetch_tensor(stack);
-
-
-            if ( X->onnx_MeanVarianceNormalization(X, Y, axes) != YNX_OK ) {
-                yannx_panic("API: MeanVarianceNormalization  return error!");
-            }
-
-            put_tensor(stack, Y);
-
-        }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(MeanVarianceNormalization)
-    };
-
-
-    struct ConvInteger : NativeWord<TensorType> {
-        tensor_t y;
-
-        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            ValueStack<TensorType>& stack = rt;
-
-            y = TensorFactory::create_undefined_user_tensor();
-
-            auto strides = fetch_optional_ints(stack, {});
-            auto pads = fetch_optional_ints(stack, {});
-            auto kernel_shape = fetch_optional_ints(stack, {});
-            auto group = fetch_optional_int(stack, 1);
-            auto dilations = fetch_optional_ints(stack, {});
-            auto auto_pad = fetch_optional_string(stack, "NOTSET");
-
-            auto w_zero_point = fetch_optional_tensor(stack);
-            auto x_zero_point = fetch_optional_tensor(stack);
-            auto w = fetch_tensor(stack);
-            auto x = fetch_tensor(stack);
-
-
-            std::vector<size_t> outputs_;
-            outputs_.push_back(0);
-            YNXInferenceContextImpl infer_(outputs_);
-
-            infer_.new_attr("strides", strides);
-            infer_.new_attr("pads", pads);
-            infer_.new_attr("kernel_shape", kernel_shape);
-            infer_.new_attr("group", group);
-            infer_.new_attr("dilations", dilations);
-            infer_.new_attr("auto_pad", auto_pad);
-
-            infer_.new_input(x);
-            infer_.new_input(w);
-            infer_.new_input(x_zero_point);
-            infer_.new_input(w_zero_point);
-
-            auto f = query_inference_function("ConvInteger");
-            infer_.do_inference(f);
-            infer_.check_output(0, y);
-
-
-            if ( x->onnx_ConvInteger(x, w, x_zero_point, w_zero_point, y, auto_pad, dilations, group, kernel_shape, pads, strides) != YNX_OK ) {
-                yannx_panic("API: ConvInteger  return error!");
-            }
-
-            put_tensor(stack, y);
-
-        }
-        virtual void run(ValueStack<TensorType>& stack) {
-
-
-            auto strides = fetch_optional_ints(stack, {});
-            auto pads = fetch_optional_ints(stack, {});
-            auto kernel_shape = fetch_optional_ints(stack, {});
-            auto group = fetch_optional_int(stack, 1);
-            auto dilations = fetch_optional_ints(stack, {});
-            auto auto_pad = fetch_optional_string(stack, "NOTSET");
-
-            auto w_zero_point = fetch_optional_tensor(stack);
-            auto x_zero_point = fetch_optional_tensor(stack);
-            auto w = fetch_tensor(stack);
-            auto x = fetch_tensor(stack);
-
-
-            if ( x->onnx_ConvInteger(x, w, x_zero_point, w_zero_point, y, auto_pad, dilations, group, kernel_shape, pads, strides) != YNX_OK ) {
-                yannx_panic("API: ConvInteger  return error!");
-            }
-
-            put_tensor(stack, y);
-
-        }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(ConvInteger)
-    };
-
-
-    struct QLinearConv : NativeWord<TensorType> {
-        tensor_t y;
-
-        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            ValueStack<TensorType>& stack = rt;
-
-            y = TensorFactory::create_undefined_user_tensor();
-
-            auto strides = fetch_optional_ints(stack, {});
-            auto pads = fetch_optional_ints(stack, {});
-            auto kernel_shape = fetch_optional_ints(stack, {});
-            auto group = fetch_optional_int(stack, 1);
-            auto dilations = fetch_optional_ints(stack, {});
-            auto auto_pad = fetch_optional_string(stack, "NOTSET");
-
-            auto B = fetch_optional_tensor(stack);
-            auto y_zero_point = fetch_tensor(stack);
-            auto y_scale = fetch_tensor(stack);
-            auto w_zero_point = fetch_tensor(stack);
-            auto w_scale = fetch_tensor(stack);
-            auto w = fetch_tensor(stack);
-            auto x_zero_point = fetch_tensor(stack);
-            auto x_scale = fetch_tensor(stack);
-            auto x = fetch_tensor(stack);
-
-
-            std::vector<size_t> outputs_;
-            outputs_.push_back(0);
-            YNXInferenceContextImpl infer_(outputs_);
-
-            infer_.new_attr("strides", strides);
-            infer_.new_attr("pads", pads);
-            infer_.new_attr("kernel_shape", kernel_shape);
-            infer_.new_attr("group", group);
-            infer_.new_attr("dilations", dilations);
-            infer_.new_attr("auto_pad", auto_pad);
-
-            infer_.new_input(x);
-            infer_.new_input(x_scale);
-            infer_.new_input(x_zero_point);
-            infer_.new_input(w);
-            infer_.new_input(w_scale);
-            infer_.new_input(w_zero_point);
-            infer_.new_input(y_scale);
-            infer_.new_input(y_zero_point);
-            infer_.new_input(B);
-
-            auto f = query_inference_function("QLinearConv");
-            infer_.do_inference(f);
-            infer_.check_output(0, y);
-
-
-            if ( x->onnx_QLinearConv(x, x_scale, x_zero_point, w, w_scale, w_zero_point, y_scale, y_zero_point, B, y, auto_pad, dilations, group, kernel_shape, pads, strides) != YNX_OK ) {
-                yannx_panic("API: QLinearConv  return error!");
-            }
-
-            put_tensor(stack, y);
-
-        }
-        virtual void run(ValueStack<TensorType>& stack) {
-
-
-            auto strides = fetch_optional_ints(stack, {});
-            auto pads = fetch_optional_ints(stack, {});
-            auto kernel_shape = fetch_optional_ints(stack, {});
-            auto group = fetch_optional_int(stack, 1);
-            auto dilations = fetch_optional_ints(stack, {});
-            auto auto_pad = fetch_optional_string(stack, "NOTSET");
-
-            auto B = fetch_optional_tensor(stack);
-            auto y_zero_point = fetch_tensor(stack);
-            auto y_scale = fetch_tensor(stack);
-            auto w_zero_point = fetch_tensor(stack);
-            auto w_scale = fetch_tensor(stack);
-            auto w = fetch_tensor(stack);
-            auto x_zero_point = fetch_tensor(stack);
-            auto x_scale = fetch_tensor(stack);
-            auto x = fetch_tensor(stack);
-
-
-            if ( x->onnx_QLinearConv(x, x_scale, x_zero_point, w, w_scale, w_zero_point, y_scale, y_zero_point, B, y, auto_pad, dilations, group, kernel_shape, pads, strides) != YNX_OK ) {
-                yannx_panic("API: QLinearConv  return error!");
-            }
-
-            put_tensor(stack, y);
-
-        }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(QLinearConv)
-    };
-
-
-    struct ConvTranspose : NativeWord<TensorType> {
-        tensor_t Y;
-
-        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            ValueStack<TensorType>& stack = rt;
-
-            Y = TensorFactory::create_undefined_user_tensor();
-
-            auto strides = fetch_optional_ints(stack, {});
-            auto pads = fetch_optional_ints(stack, {});
-            auto output_shape = fetch_optional_ints(stack, {});
-            auto output_padding = fetch_optional_ints(stack, {});
-            auto kernel_shape = fetch_optional_ints(stack, {});
-            auto group = fetch_optional_int(stack, 1);
-            auto dilations = fetch_optional_ints(stack, {});
-            auto auto_pad = fetch_optional_string(stack, "NOTSET");
-
-            auto B = fetch_optional_tensor(stack);
-            auto W = fetch_tensor(stack);
-            auto X = fetch_tensor(stack);
-
-
-            std::vector<size_t> outputs_;
-            outputs_.push_back(0);
-            YNXInferenceContextImpl infer_(outputs_);
-
-            infer_.new_attr("strides", strides);
-            infer_.new_attr("pads", pads);
-            infer_.new_attr("output_shape", output_shape);
-            infer_.new_attr("output_padding", output_padding);
-            infer_.new_attr("kernel_shape", kernel_shape);
-            infer_.new_attr("group", group);
-            infer_.new_attr("dilations", dilations);
-            infer_.new_attr("auto_pad", auto_pad);
-
-            infer_.new_input(X);
-            infer_.new_input(W);
-            infer_.new_input(B);
-
-            auto f = query_inference_function("ConvTranspose");
-            infer_.do_inference(f);
-            infer_.check_output(0, Y);
-
-
-            if ( X->onnx_ConvTranspose(X, W, B, Y, auto_pad, dilations, group, kernel_shape, output_padding, output_shape, pads, strides) != YNX_OK ) {
-                yannx_panic("API: ConvTranspose  return error!");
-            }
-
-            put_tensor(stack, Y);
-
-        }
-        virtual void run(ValueStack<TensorType>& stack) {
-
-
-            auto strides = fetch_optional_ints(stack, {});
-            auto pads = fetch_optional_ints(stack, {});
-            auto output_shape = fetch_optional_ints(stack, {});
-            auto output_padding = fetch_optional_ints(stack, {});
-            auto kernel_shape = fetch_optional_ints(stack, {});
-            auto group = fetch_optional_int(stack, 1);
-            auto dilations = fetch_optional_ints(stack, {});
-            auto auto_pad = fetch_optional_string(stack, "NOTSET");
-
-            auto B = fetch_optional_tensor(stack);
-            auto W = fetch_tensor(stack);
-            auto X = fetch_tensor(stack);
-
-
-            if ( X->onnx_ConvTranspose(X, W, B, Y, auto_pad, dilations, group, kernel_shape, output_padding, output_shape, pads, strides) != YNX_OK ) {
-                yannx_panic("API: ConvTranspose  return error!");
-            }
-
-            put_tensor(stack, Y);
-
-        }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(ConvTranspose)
-    };
-
-
-    struct TfIdfVectorizer : NativeWord<TensorType> {
-        tensor_t Y;
-
-        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            ValueStack<TensorType>& stack = rt;
-
-            Y = TensorFactory::create_undefined_user_tensor();
-
-            auto weights = fetch_optional_floats(stack, {});
-            auto pool_strings = fetch_optional_strings(stack, {});
-            auto pool_int64s = fetch_optional_ints(stack, {});
-            auto ngram_indexes = fetch_ints(stack);
-            auto ngram_counts = fetch_ints(stack);
-            auto mode = fetch_string(stack);
-            auto min_gram_length = fetch_int(stack);
-            auto max_skip_count = fetch_int(stack);
-            auto max_gram_length = fetch_int(stack);
-
-            auto X = fetch_tensor(stack);
-
-
-            std::vector<size_t> outputs_;
-            outputs_.push_back(0);
-            YNXInferenceContextImpl infer_(outputs_);
-
-            infer_.new_attr("weights", weights);
-            infer_.new_attr("pool_strings", pool_strings);
-            infer_.new_attr("pool_int64s", pool_int64s);
-            infer_.new_attr("ngram_indexes", ngram_indexes);
-            infer_.new_attr("ngram_counts", ngram_counts);
-            infer_.new_attr("mode", mode);
-            infer_.new_attr("min_gram_length", min_gram_length);
-            infer_.new_attr("max_skip_count", max_skip_count);
-            infer_.new_attr("max_gram_length", max_gram_length);
-
-            infer_.new_input(X);
-
-            auto f = query_inference_function("TfIdfVectorizer");
-            infer_.do_inference(f);
-            infer_.check_output(0, Y);
-
-
-            if ( X->onnx_TfIdfVectorizer(X, Y, max_gram_length, max_skip_count, min_gram_length, mode, ngram_counts, ngram_indexes, pool_int64s, pool_strings, weights) != YNX_OK ) {
-                yannx_panic("API: TfIdfVectorizer  return error!");
-            }
-
-            put_tensor(stack, Y);
-
-        }
-        virtual void run(ValueStack<TensorType>& stack) {
-
-
-            auto weights = fetch_optional_floats(stack, {});
-            auto pool_strings = fetch_optional_strings(stack, {});
-            auto pool_int64s = fetch_optional_ints(stack, {});
-            auto ngram_indexes = fetch_ints(stack);
-            auto ngram_counts = fetch_ints(stack);
-            auto mode = fetch_string(stack);
-            auto min_gram_length = fetch_int(stack);
-            auto max_skip_count = fetch_int(stack);
-            auto max_gram_length = fetch_int(stack);
-
-            auto X = fetch_tensor(stack);
-
-
-            if ( X->onnx_TfIdfVectorizer(X, Y, max_gram_length, max_skip_count, min_gram_length, mode, ngram_counts, ngram_indexes, pool_int64s, pool_strings, weights) != YNX_OK ) {
-                yannx_panic("API: TfIdfVectorizer  return error!");
-            }
-
-            put_tensor(stack, Y);
-
-        }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(TfIdfVectorizer)
     };
 
 }
@@ -5720,6 +5721,64 @@ namespace object_detection {
 }
 namespace quantization {
 
+    struct DequantizeLinear : NativeWord<TensorType> {
+        tensor_t y;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            y = TensorFactory::create_undefined_user_tensor();
+
+            auto axis = fetch_optional_int(stack, 1);
+
+            auto x_zero_point = fetch_optional_tensor(stack);
+            auto x_scale = fetch_tensor(stack);
+            auto x = fetch_tensor(stack);
+
+
+            std::vector<size_t> outputs_;
+            outputs_.push_back(0);
+            YNXInferenceContextImpl infer_(outputs_);
+
+            infer_.new_attr("axis", axis);
+
+            infer_.new_input(x);
+            infer_.new_input(x_scale);
+            infer_.new_input(x_zero_point);
+
+            auto f = query_inference_function("DequantizeLinear");
+            infer_.do_inference(f);
+            infer_.check_output(0, y);
+
+
+            if ( x->onnx_DequantizeLinear(x, x_scale, x_zero_point, y, axis) != YNX_OK ) {
+                yannx_panic("API: DequantizeLinear  return error!");
+            }
+
+            put_tensor(stack, y);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+            auto axis = fetch_optional_int(stack, 1);
+
+            auto x_zero_point = fetch_optional_tensor(stack);
+            auto x_scale = fetch_tensor(stack);
+            auto x = fetch_tensor(stack);
+
+
+            if ( x->onnx_DequantizeLinear(x, x_scale, x_zero_point, y, axis) != YNX_OK ) {
+                yannx_panic("API: DequantizeLinear  return error!");
+            }
+
+            put_tensor(stack, y);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(DequantizeLinear)
+    };
+
+
     struct QuantizeLinear : NativeWord<TensorType> {
         tensor_t y;
 
@@ -5838,68 +5897,10 @@ namespace quantization {
         NWORD_CREATOR_DEFINE_TENSORTYPE(DynamicQuantizeLinear)
     };
 
-
-    struct DequantizeLinear : NativeWord<TensorType> {
-        tensor_t y;
-
-        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            ValueStack<TensorType>& stack = rt;
-
-            y = TensorFactory::create_undefined_user_tensor();
-
-            auto axis = fetch_optional_int(stack, 1);
-
-            auto x_zero_point = fetch_optional_tensor(stack);
-            auto x_scale = fetch_tensor(stack);
-            auto x = fetch_tensor(stack);
-
-
-            std::vector<size_t> outputs_;
-            outputs_.push_back(0);
-            YNXInferenceContextImpl infer_(outputs_);
-
-            infer_.new_attr("axis", axis);
-
-            infer_.new_input(x);
-            infer_.new_input(x_scale);
-            infer_.new_input(x_zero_point);
-
-            auto f = query_inference_function("DequantizeLinear");
-            infer_.do_inference(f);
-            infer_.check_output(0, y);
-
-
-            if ( x->onnx_DequantizeLinear(x, x_scale, x_zero_point, y, axis) != YNX_OK ) {
-                yannx_panic("API: DequantizeLinear  return error!");
-            }
-
-            put_tensor(stack, y);
-
-        }
-        virtual void run(ValueStack<TensorType>& stack) {
-
-
-            auto axis = fetch_optional_int(stack, 1);
-
-            auto x_zero_point = fetch_optional_tensor(stack);
-            auto x_scale = fetch_tensor(stack);
-            auto x = fetch_tensor(stack);
-
-
-            if ( x->onnx_DequantizeLinear(x, x_scale, x_zero_point, y, axis) != YNX_OK ) {
-                yannx_panic("API: DequantizeLinear  return error!");
-            }
-
-            put_tensor(stack, y);
-
-        }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(DequantizeLinear)
-    };
-
 }
 namespace reduction {
 
-    struct ReduceProd : NativeWord<TensorType> {
+    struct ArgMax : NativeWord<TensorType> {
         tensor_t reduced;
 
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
@@ -5907,8 +5908,9 @@ namespace reduction {
 
             reduced = TensorFactory::create_undefined_user_tensor();
 
+            auto select_last_index = fetch_optional_int(stack, 0);
             auto keepdims = fetch_optional_int(stack, 1);
-            auto axes = fetch_optional_ints(stack, {});
+            auto axis = fetch_optional_int(stack, 0);
 
             auto data = fetch_tensor(stack);
 
@@ -5917,18 +5919,19 @@ namespace reduction {
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
 
+            infer_.new_attr("select_last_index", select_last_index);
             infer_.new_attr("keepdims", keepdims);
-            infer_.new_attr("axes", axes);
+            infer_.new_attr("axis", axis);
 
             infer_.new_input(data);
 
-            auto f = query_inference_function("ReduceProd");
+            auto f = query_inference_function("ArgMax");
             infer_.do_inference(f);
             infer_.check_output(0, reduced);
 
 
-            if ( data->onnx_ReduceProd(data, reduced, axes, keepdims) != YNX_OK ) {
-                yannx_panic("API: ReduceProd  return error!");
+            if ( data->onnx_ArgMax(data, reduced, axis, keepdims, select_last_index) != YNX_OK ) {
+                yannx_panic("API: ArgMax  return error!");
             }
 
             put_tensor(stack, reduced);
@@ -5937,243 +5940,21 @@ namespace reduction {
         virtual void run(ValueStack<TensorType>& stack) {
 
 
+            auto select_last_index = fetch_optional_int(stack, 0);
             auto keepdims = fetch_optional_int(stack, 1);
-            auto axes = fetch_optional_ints(stack, {});
+            auto axis = fetch_optional_int(stack, 0);
 
             auto data = fetch_tensor(stack);
 
 
-            if ( data->onnx_ReduceProd(data, reduced, axes, keepdims) != YNX_OK ) {
-                yannx_panic("API: ReduceProd  return error!");
+            if ( data->onnx_ArgMax(data, reduced, axis, keepdims, select_last_index) != YNX_OK ) {
+                yannx_panic("API: ArgMax  return error!");
             }
 
             put_tensor(stack, reduced);
 
         }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(ReduceProd)
-    };
-
-
-    struct ReduceMin : NativeWord<TensorType> {
-        tensor_t reduced;
-
-        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            ValueStack<TensorType>& stack = rt;
-
-            reduced = TensorFactory::create_undefined_user_tensor();
-
-            auto keepdims = fetch_optional_int(stack, 1);
-            auto axes = fetch_optional_ints(stack, {});
-
-            auto data = fetch_tensor(stack);
-
-
-            std::vector<size_t> outputs_;
-            outputs_.push_back(0);
-            YNXInferenceContextImpl infer_(outputs_);
-
-            infer_.new_attr("keepdims", keepdims);
-            infer_.new_attr("axes", axes);
-
-            infer_.new_input(data);
-
-            auto f = query_inference_function("ReduceMin");
-            infer_.do_inference(f);
-            infer_.check_output(0, reduced);
-
-
-            if ( data->onnx_ReduceMin(data, reduced, axes, keepdims) != YNX_OK ) {
-                yannx_panic("API: ReduceMin  return error!");
-            }
-
-            put_tensor(stack, reduced);
-
-        }
-        virtual void run(ValueStack<TensorType>& stack) {
-
-
-            auto keepdims = fetch_optional_int(stack, 1);
-            auto axes = fetch_optional_ints(stack, {});
-
-            auto data = fetch_tensor(stack);
-
-
-            if ( data->onnx_ReduceMin(data, reduced, axes, keepdims) != YNX_OK ) {
-                yannx_panic("API: ReduceMin  return error!");
-            }
-
-            put_tensor(stack, reduced);
-
-        }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(ReduceMin)
-    };
-
-
-    struct ReduceSumSquare : NativeWord<TensorType> {
-        tensor_t reduced;
-
-        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            ValueStack<TensorType>& stack = rt;
-
-            reduced = TensorFactory::create_undefined_user_tensor();
-
-            auto keepdims = fetch_optional_int(stack, 1);
-            auto axes = fetch_optional_ints(stack, {});
-
-            auto data = fetch_tensor(stack);
-
-
-            std::vector<size_t> outputs_;
-            outputs_.push_back(0);
-            YNXInferenceContextImpl infer_(outputs_);
-
-            infer_.new_attr("keepdims", keepdims);
-            infer_.new_attr("axes", axes);
-
-            infer_.new_input(data);
-
-            auto f = query_inference_function("ReduceSumSquare");
-            infer_.do_inference(f);
-            infer_.check_output(0, reduced);
-
-
-            if ( data->onnx_ReduceSumSquare(data, reduced, axes, keepdims) != YNX_OK ) {
-                yannx_panic("API: ReduceSumSquare  return error!");
-            }
-
-            put_tensor(stack, reduced);
-
-        }
-        virtual void run(ValueStack<TensorType>& stack) {
-
-
-            auto keepdims = fetch_optional_int(stack, 1);
-            auto axes = fetch_optional_ints(stack, {});
-
-            auto data = fetch_tensor(stack);
-
-
-            if ( data->onnx_ReduceSumSquare(data, reduced, axes, keepdims) != YNX_OK ) {
-                yannx_panic("API: ReduceSumSquare  return error!");
-            }
-
-            put_tensor(stack, reduced);
-
-        }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(ReduceSumSquare)
-    };
-
-
-    struct ReduceSum : NativeWord<TensorType> {
-        tensor_t reduced;
-
-        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            ValueStack<TensorType>& stack = rt;
-
-            reduced = TensorFactory::create_undefined_user_tensor();
-
-            auto noop_with_empty_axes = fetch_optional_int(stack, 0);
-            auto keepdims = fetch_optional_int(stack, 1);
-
-            auto axes = fetch_optional_tensor(stack);
-            auto data = fetch_tensor(stack);
-
-
-            std::vector<size_t> outputs_;
-            outputs_.push_back(0);
-            YNXInferenceContextImpl infer_(outputs_);
-
-            infer_.new_attr("noop_with_empty_axes", noop_with_empty_axes);
-            infer_.new_attr("keepdims", keepdims);
-
-            infer_.new_input(data);
-            infer_.new_input(axes);
-
-            auto f = query_inference_function("ReduceSum");
-            infer_.do_inference(f);
-            infer_.check_output(0, reduced);
-
-
-            if ( data->onnx_ReduceSum(data, axes, reduced, keepdims, noop_with_empty_axes) != YNX_OK ) {
-                yannx_panic("API: ReduceSum  return error!");
-            }
-
-            put_tensor(stack, reduced);
-
-        }
-        virtual void run(ValueStack<TensorType>& stack) {
-
-
-            auto noop_with_empty_axes = fetch_optional_int(stack, 0);
-            auto keepdims = fetch_optional_int(stack, 1);
-
-            auto axes = fetch_optional_tensor(stack);
-            auto data = fetch_tensor(stack);
-
-
-            if ( data->onnx_ReduceSum(data, axes, reduced, keepdims, noop_with_empty_axes) != YNX_OK ) {
-                yannx_panic("API: ReduceSum  return error!");
-            }
-
-            put_tensor(stack, reduced);
-
-        }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(ReduceSum)
-    };
-
-
-    struct ReduceLogSumExp : NativeWord<TensorType> {
-        tensor_t reduced;
-
-        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            ValueStack<TensorType>& stack = rt;
-
-            reduced = TensorFactory::create_undefined_user_tensor();
-
-            auto keepdims = fetch_optional_int(stack, 1);
-            auto axes = fetch_optional_ints(stack, {});
-
-            auto data = fetch_tensor(stack);
-
-
-            std::vector<size_t> outputs_;
-            outputs_.push_back(0);
-            YNXInferenceContextImpl infer_(outputs_);
-
-            infer_.new_attr("keepdims", keepdims);
-            infer_.new_attr("axes", axes);
-
-            infer_.new_input(data);
-
-            auto f = query_inference_function("ReduceLogSumExp");
-            infer_.do_inference(f);
-            infer_.check_output(0, reduced);
-
-
-            if ( data->onnx_ReduceLogSumExp(data, reduced, axes, keepdims) != YNX_OK ) {
-                yannx_panic("API: ReduceLogSumExp  return error!");
-            }
-
-            put_tensor(stack, reduced);
-
-        }
-        virtual void run(ValueStack<TensorType>& stack) {
-
-
-            auto keepdims = fetch_optional_int(stack, 1);
-            auto axes = fetch_optional_ints(stack, {});
-
-            auto data = fetch_tensor(stack);
-
-
-            if ( data->onnx_ReduceLogSumExp(data, reduced, axes, keepdims) != YNX_OK ) {
-                yannx_panic("API: ReduceLogSumExp  return error!");
-            }
-
-            put_tensor(stack, reduced);
-
-        }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(ReduceLogSumExp)
+        NWORD_CREATOR_DEFINE_TENSORTYPE(ArgMax)
     };
 
 
@@ -6232,7 +6013,7 @@ namespace reduction {
     };
 
 
-    struct ArgMax : NativeWord<TensorType> {
+    struct ReduceMin : NativeWord<TensorType> {
         tensor_t reduced;
 
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
@@ -6240,9 +6021,8 @@ namespace reduction {
 
             reduced = TensorFactory::create_undefined_user_tensor();
 
-            auto select_last_index = fetch_optional_int(stack, 0);
             auto keepdims = fetch_optional_int(stack, 1);
-            auto axis = fetch_optional_int(stack, 0);
+            auto axes = fetch_optional_ints(stack, {});
 
             auto data = fetch_tensor(stack);
 
@@ -6251,19 +6031,18 @@ namespace reduction {
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
 
-            infer_.new_attr("select_last_index", select_last_index);
             infer_.new_attr("keepdims", keepdims);
-            infer_.new_attr("axis", axis);
+            infer_.new_attr("axes", axes);
 
             infer_.new_input(data);
 
-            auto f = query_inference_function("ArgMax");
+            auto f = query_inference_function("ReduceMin");
             infer_.do_inference(f);
             infer_.check_output(0, reduced);
 
 
-            if ( data->onnx_ArgMax(data, reduced, axis, keepdims, select_last_index) != YNX_OK ) {
-                yannx_panic("API: ArgMax  return error!");
+            if ( data->onnx_ReduceMin(data, reduced, axes, keepdims) != YNX_OK ) {
+                yannx_panic("API: ReduceMin  return error!");
             }
 
             put_tensor(stack, reduced);
@@ -6272,21 +6051,185 @@ namespace reduction {
         virtual void run(ValueStack<TensorType>& stack) {
 
 
-            auto select_last_index = fetch_optional_int(stack, 0);
             auto keepdims = fetch_optional_int(stack, 1);
-            auto axis = fetch_optional_int(stack, 0);
+            auto axes = fetch_optional_ints(stack, {});
 
             auto data = fetch_tensor(stack);
 
 
-            if ( data->onnx_ArgMax(data, reduced, axis, keepdims, select_last_index) != YNX_OK ) {
-                yannx_panic("API: ArgMax  return error!");
+            if ( data->onnx_ReduceMin(data, reduced, axes, keepdims) != YNX_OK ) {
+                yannx_panic("API: ReduceMin  return error!");
             }
 
             put_tensor(stack, reduced);
 
         }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(ArgMax)
+        NWORD_CREATOR_DEFINE_TENSORTYPE(ReduceMin)
+    };
+
+
+    struct ReduceL2 : NativeWord<TensorType> {
+        tensor_t reduced;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            reduced = TensorFactory::create_undefined_user_tensor();
+
+            auto keepdims = fetch_optional_int(stack, 1);
+            auto axes = fetch_optional_ints(stack, {});
+
+            auto data = fetch_tensor(stack);
+
+
+            std::vector<size_t> outputs_;
+            outputs_.push_back(0);
+            YNXInferenceContextImpl infer_(outputs_);
+
+            infer_.new_attr("keepdims", keepdims);
+            infer_.new_attr("axes", axes);
+
+            infer_.new_input(data);
+
+            auto f = query_inference_function("ReduceL2");
+            infer_.do_inference(f);
+            infer_.check_output(0, reduced);
+
+
+            if ( data->onnx_ReduceL2(data, reduced, axes, keepdims) != YNX_OK ) {
+                yannx_panic("API: ReduceL2  return error!");
+            }
+
+            put_tensor(stack, reduced);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+            auto keepdims = fetch_optional_int(stack, 1);
+            auto axes = fetch_optional_ints(stack, {});
+
+            auto data = fetch_tensor(stack);
+
+
+            if ( data->onnx_ReduceL2(data, reduced, axes, keepdims) != YNX_OK ) {
+                yannx_panic("API: ReduceL2  return error!");
+            }
+
+            put_tensor(stack, reduced);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(ReduceL2)
+    };
+
+
+    struct ReduceLogSum : NativeWord<TensorType> {
+        tensor_t reduced;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            reduced = TensorFactory::create_undefined_user_tensor();
+
+            auto keepdims = fetch_optional_int(stack, 1);
+            auto axes = fetch_optional_ints(stack, {});
+
+            auto data = fetch_tensor(stack);
+
+
+            std::vector<size_t> outputs_;
+            outputs_.push_back(0);
+            YNXInferenceContextImpl infer_(outputs_);
+
+            infer_.new_attr("keepdims", keepdims);
+            infer_.new_attr("axes", axes);
+
+            infer_.new_input(data);
+
+            auto f = query_inference_function("ReduceLogSum");
+            infer_.do_inference(f);
+            infer_.check_output(0, reduced);
+
+
+            if ( data->onnx_ReduceLogSum(data, reduced, axes, keepdims) != YNX_OK ) {
+                yannx_panic("API: ReduceLogSum  return error!");
+            }
+
+            put_tensor(stack, reduced);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+            auto keepdims = fetch_optional_int(stack, 1);
+            auto axes = fetch_optional_ints(stack, {});
+
+            auto data = fetch_tensor(stack);
+
+
+            if ( data->onnx_ReduceLogSum(data, reduced, axes, keepdims) != YNX_OK ) {
+                yannx_panic("API: ReduceLogSum  return error!");
+            }
+
+            put_tensor(stack, reduced);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(ReduceLogSum)
+    };
+
+
+    struct ReduceLogSumExp : NativeWord<TensorType> {
+        tensor_t reduced;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            reduced = TensorFactory::create_undefined_user_tensor();
+
+            auto keepdims = fetch_optional_int(stack, 1);
+            auto axes = fetch_optional_ints(stack, {});
+
+            auto data = fetch_tensor(stack);
+
+
+            std::vector<size_t> outputs_;
+            outputs_.push_back(0);
+            YNXInferenceContextImpl infer_(outputs_);
+
+            infer_.new_attr("keepdims", keepdims);
+            infer_.new_attr("axes", axes);
+
+            infer_.new_input(data);
+
+            auto f = query_inference_function("ReduceLogSumExp");
+            infer_.do_inference(f);
+            infer_.check_output(0, reduced);
+
+
+            if ( data->onnx_ReduceLogSumExp(data, reduced, axes, keepdims) != YNX_OK ) {
+                yannx_panic("API: ReduceLogSumExp  return error!");
+            }
+
+            put_tensor(stack, reduced);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+            auto keepdims = fetch_optional_int(stack, 1);
+            auto axes = fetch_optional_ints(stack, {});
+
+            auto data = fetch_tensor(stack);
+
+
+            if ( data->onnx_ReduceLogSumExp(data, reduced, axes, keepdims) != YNX_OK ) {
+                yannx_panic("API: ReduceLogSumExp  return error!");
+            }
+
+            put_tensor(stack, reduced);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(ReduceLogSumExp)
     };
 
 
@@ -6348,61 +6291,6 @@ namespace reduction {
     };
 
 
-    struct ReduceLogSum : NativeWord<TensorType> {
-        tensor_t reduced;
-
-        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            ValueStack<TensorType>& stack = rt;
-
-            reduced = TensorFactory::create_undefined_user_tensor();
-
-            auto keepdims = fetch_optional_int(stack, 1);
-            auto axes = fetch_optional_ints(stack, {});
-
-            auto data = fetch_tensor(stack);
-
-
-            std::vector<size_t> outputs_;
-            outputs_.push_back(0);
-            YNXInferenceContextImpl infer_(outputs_);
-
-            infer_.new_attr("keepdims", keepdims);
-            infer_.new_attr("axes", axes);
-
-            infer_.new_input(data);
-
-            auto f = query_inference_function("ReduceLogSum");
-            infer_.do_inference(f);
-            infer_.check_output(0, reduced);
-
-
-            if ( data->onnx_ReduceLogSum(data, reduced, axes, keepdims) != YNX_OK ) {
-                yannx_panic("API: ReduceLogSum  return error!");
-            }
-
-            put_tensor(stack, reduced);
-
-        }
-        virtual void run(ValueStack<TensorType>& stack) {
-
-
-            auto keepdims = fetch_optional_int(stack, 1);
-            auto axes = fetch_optional_ints(stack, {});
-
-            auto data = fetch_tensor(stack);
-
-
-            if ( data->onnx_ReduceLogSum(data, reduced, axes, keepdims) != YNX_OK ) {
-                yannx_panic("API: ReduceLogSum  return error!");
-            }
-
-            put_tensor(stack, reduced);
-
-        }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(ReduceLogSum)
-    };
-
-
     struct ReduceMean : NativeWord<TensorType> {
         tensor_t reduced;
 
@@ -6455,61 +6343,6 @@ namespace reduction {
 
         }
         NWORD_CREATOR_DEFINE_TENSORTYPE(ReduceMean)
-    };
-
-
-    struct ReduceL2 : NativeWord<TensorType> {
-        tensor_t reduced;
-
-        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            ValueStack<TensorType>& stack = rt;
-
-            reduced = TensorFactory::create_undefined_user_tensor();
-
-            auto keepdims = fetch_optional_int(stack, 1);
-            auto axes = fetch_optional_ints(stack, {});
-
-            auto data = fetch_tensor(stack);
-
-
-            std::vector<size_t> outputs_;
-            outputs_.push_back(0);
-            YNXInferenceContextImpl infer_(outputs_);
-
-            infer_.new_attr("keepdims", keepdims);
-            infer_.new_attr("axes", axes);
-
-            infer_.new_input(data);
-
-            auto f = query_inference_function("ReduceL2");
-            infer_.do_inference(f);
-            infer_.check_output(0, reduced);
-
-
-            if ( data->onnx_ReduceL2(data, reduced, axes, keepdims) != YNX_OK ) {
-                yannx_panic("API: ReduceL2  return error!");
-            }
-
-            put_tensor(stack, reduced);
-
-        }
-        virtual void run(ValueStack<TensorType>& stack) {
-
-
-            auto keepdims = fetch_optional_int(stack, 1);
-            auto axes = fetch_optional_ints(stack, {});
-
-            auto data = fetch_tensor(stack);
-
-
-            if ( data->onnx_ReduceL2(data, reduced, axes, keepdims) != YNX_OK ) {
-                yannx_panic("API: ReduceL2  return error!");
-            }
-
-            put_tensor(stack, reduced);
-
-        }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(ReduceL2)
     };
 
 
@@ -6567,8 +6400,292 @@ namespace reduction {
         NWORD_CREATOR_DEFINE_TENSORTYPE(ReduceL1)
     };
 
+
+    struct ReduceSum : NativeWord<TensorType> {
+        tensor_t reduced;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            reduced = TensorFactory::create_undefined_user_tensor();
+
+            auto noop_with_empty_axes = fetch_optional_int(stack, 0);
+            auto keepdims = fetch_optional_int(stack, 1);
+
+            auto axes = fetch_optional_tensor(stack);
+            auto data = fetch_tensor(stack);
+
+
+            std::vector<size_t> outputs_;
+            outputs_.push_back(0);
+            YNXInferenceContextImpl infer_(outputs_);
+
+            infer_.new_attr("noop_with_empty_axes", noop_with_empty_axes);
+            infer_.new_attr("keepdims", keepdims);
+
+            infer_.new_input(data);
+            infer_.new_input(axes);
+
+            auto f = query_inference_function("ReduceSum");
+            infer_.do_inference(f);
+            infer_.check_output(0, reduced);
+
+
+            if ( data->onnx_ReduceSum(data, axes, reduced, keepdims, noop_with_empty_axes) != YNX_OK ) {
+                yannx_panic("API: ReduceSum  return error!");
+            }
+
+            put_tensor(stack, reduced);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+            auto noop_with_empty_axes = fetch_optional_int(stack, 0);
+            auto keepdims = fetch_optional_int(stack, 1);
+
+            auto axes = fetch_optional_tensor(stack);
+            auto data = fetch_tensor(stack);
+
+
+            if ( data->onnx_ReduceSum(data, axes, reduced, keepdims, noop_with_empty_axes) != YNX_OK ) {
+                yannx_panic("API: ReduceSum  return error!");
+            }
+
+            put_tensor(stack, reduced);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(ReduceSum)
+    };
+
+
+    struct ReduceSumSquare : NativeWord<TensorType> {
+        tensor_t reduced;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            reduced = TensorFactory::create_undefined_user_tensor();
+
+            auto keepdims = fetch_optional_int(stack, 1);
+            auto axes = fetch_optional_ints(stack, {});
+
+            auto data = fetch_tensor(stack);
+
+
+            std::vector<size_t> outputs_;
+            outputs_.push_back(0);
+            YNXInferenceContextImpl infer_(outputs_);
+
+            infer_.new_attr("keepdims", keepdims);
+            infer_.new_attr("axes", axes);
+
+            infer_.new_input(data);
+
+            auto f = query_inference_function("ReduceSumSquare");
+            infer_.do_inference(f);
+            infer_.check_output(0, reduced);
+
+
+            if ( data->onnx_ReduceSumSquare(data, reduced, axes, keepdims) != YNX_OK ) {
+                yannx_panic("API: ReduceSumSquare  return error!");
+            }
+
+            put_tensor(stack, reduced);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+            auto keepdims = fetch_optional_int(stack, 1);
+            auto axes = fetch_optional_ints(stack, {});
+
+            auto data = fetch_tensor(stack);
+
+
+            if ( data->onnx_ReduceSumSquare(data, reduced, axes, keepdims) != YNX_OK ) {
+                yannx_panic("API: ReduceSumSquare  return error!");
+            }
+
+            put_tensor(stack, reduced);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(ReduceSumSquare)
+    };
+
+
+    struct ReduceProd : NativeWord<TensorType> {
+        tensor_t reduced;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            reduced = TensorFactory::create_undefined_user_tensor();
+
+            auto keepdims = fetch_optional_int(stack, 1);
+            auto axes = fetch_optional_ints(stack, {});
+
+            auto data = fetch_tensor(stack);
+
+
+            std::vector<size_t> outputs_;
+            outputs_.push_back(0);
+            YNXInferenceContextImpl infer_(outputs_);
+
+            infer_.new_attr("keepdims", keepdims);
+            infer_.new_attr("axes", axes);
+
+            infer_.new_input(data);
+
+            auto f = query_inference_function("ReduceProd");
+            infer_.do_inference(f);
+            infer_.check_output(0, reduced);
+
+
+            if ( data->onnx_ReduceProd(data, reduced, axes, keepdims) != YNX_OK ) {
+                yannx_panic("API: ReduceProd  return error!");
+            }
+
+            put_tensor(stack, reduced);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+            auto keepdims = fetch_optional_int(stack, 1);
+            auto axes = fetch_optional_ints(stack, {});
+
+            auto data = fetch_tensor(stack);
+
+
+            if ( data->onnx_ReduceProd(data, reduced, axes, keepdims) != YNX_OK ) {
+                yannx_panic("API: ReduceProd  return error!");
+            }
+
+            put_tensor(stack, reduced);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(ReduceProd)
+    };
+
 }
 namespace rnn {
+
+    struct GRU : NativeWord<TensorType> {
+        std::variant<void *, tensor_t> Y_h;
+        std::variant<void *, tensor_t> Y;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            if ( fetch_bool(stack) == true) {
+                Y_h = TensorFactory::create_undefined_user_tensor();
+            }
+            if ( fetch_bool(stack) == true) {
+                Y = TensorFactory::create_undefined_user_tensor();
+            }
+
+            auto linear_before_reset = fetch_optional_int(stack, 0);
+            auto layout = fetch_optional_int(stack, 0);
+            auto hidden_size = fetch_optional_int(stack, 0);
+            auto direction = fetch_optional_string(stack, "forward");
+            auto clip = fetch_optional_float(stack, 0);
+            auto activations = fetch_optional_strings(stack, {});
+            auto activation_beta = fetch_optional_floats(stack, {});
+            auto activation_alpha = fetch_optional_floats(stack, {});
+
+            auto initial_h = fetch_optional_tensor(stack);
+            auto sequence_lens = fetch_optional_tensor(stack);
+            auto B = fetch_optional_tensor(stack);
+            auto R = fetch_tensor(stack);
+            auto W = fetch_tensor(stack);
+            auto X = fetch_tensor(stack);
+
+
+            std::vector<size_t> outputs_;
+            if ( Y.index() != 0) {
+                outputs_.push_back(0);
+            }
+            if ( Y_h.index() != 0) {
+                outputs_.push_back(1);
+            }
+            YNXInferenceContextImpl infer_(outputs_);
+
+            infer_.new_attr("linear_before_reset", linear_before_reset);
+            infer_.new_attr("layout", layout);
+            infer_.new_attr("hidden_size", hidden_size);
+            infer_.new_attr("direction", direction);
+            infer_.new_attr("clip", clip);
+            infer_.new_attr("activations", activations);
+            infer_.new_attr("activation_beta", activation_beta);
+            infer_.new_attr("activation_alpha", activation_alpha);
+
+            infer_.new_input(X);
+            infer_.new_input(W);
+            infer_.new_input(R);
+            infer_.new_input(B);
+            infer_.new_input(sequence_lens);
+            infer_.new_input(initial_h);
+
+            auto f = query_inference_function("GRU");
+            infer_.do_inference(f);
+            if ( Y.index() != 0) {
+                infer_.check_output(0, std::get<1>(Y));
+            }
+            if ( Y_h.index() != 0) {
+                infer_.check_output(1, std::get<1>(Y_h));
+            }
+
+
+            if ( X->onnx_GRU(X, W, R, B, sequence_lens, initial_h, Y, Y_h, activation_alpha, activation_beta, activations, clip, direction, hidden_size, layout, linear_before_reset) != YNX_OK ) {
+                yannx_panic("API: GRU  return error!");
+            }
+
+            if ( Y.index() != 0) {
+                put_optional_tensor(stack, Y);
+            }
+            if ( Y_h.index() != 0) {
+                put_optional_tensor(stack, Y_h);
+            }
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+            fetch_bool(stack);
+            fetch_bool(stack);
+
+            auto linear_before_reset = fetch_optional_int(stack, 0);
+            auto layout = fetch_optional_int(stack, 0);
+            auto hidden_size = fetch_optional_int(stack, 0);
+            auto direction = fetch_optional_string(stack, "forward");
+            auto clip = fetch_optional_float(stack, 0);
+            auto activations = fetch_optional_strings(stack, {});
+            auto activation_beta = fetch_optional_floats(stack, {});
+            auto activation_alpha = fetch_optional_floats(stack, {});
+
+            auto initial_h = fetch_optional_tensor(stack);
+            auto sequence_lens = fetch_optional_tensor(stack);
+            auto B = fetch_optional_tensor(stack);
+            auto R = fetch_tensor(stack);
+            auto W = fetch_tensor(stack);
+            auto X = fetch_tensor(stack);
+
+
+            if ( X->onnx_GRU(X, W, R, B, sequence_lens, initial_h, Y, Y_h, activation_alpha, activation_beta, activations, clip, direction, hidden_size, layout, linear_before_reset) != YNX_OK ) {
+                yannx_panic("API: GRU  return error!");
+            }
+
+            if ( Y.index() != 0) {
+                put_optional_tensor(stack, Y);
+            }
+            if ( Y_h.index() != 0) {
+                put_optional_tensor(stack, Y_h);
+            }
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(GRU)
+    };
+
 
     struct LSTM : NativeWord<TensorType> {
         std::variant<void *, tensor_t> Y_c;
@@ -6709,122 +6826,6 @@ namespace rnn {
     };
 
 
-    struct GRU : NativeWord<TensorType> {
-        std::variant<void *, tensor_t> Y_h;
-        std::variant<void *, tensor_t> Y;
-
-        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            ValueStack<TensorType>& stack = rt;
-
-            if ( fetch_bool(stack) == true) {
-                Y_h = TensorFactory::create_undefined_user_tensor();
-            }
-            if ( fetch_bool(stack) == true) {
-                Y = TensorFactory::create_undefined_user_tensor();
-            }
-
-            auto linear_before_reset = fetch_optional_int(stack, 0);
-            auto layout = fetch_optional_int(stack, 0);
-            auto hidden_size = fetch_optional_int(stack, 0);
-            auto direction = fetch_optional_string(stack, "forward");
-            auto clip = fetch_optional_float(stack, 0);
-            auto activations = fetch_optional_strings(stack, {});
-            auto activation_beta = fetch_optional_floats(stack, {});
-            auto activation_alpha = fetch_optional_floats(stack, {});
-
-            auto initial_h = fetch_optional_tensor(stack);
-            auto sequence_lens = fetch_optional_tensor(stack);
-            auto B = fetch_optional_tensor(stack);
-            auto R = fetch_tensor(stack);
-            auto W = fetch_tensor(stack);
-            auto X = fetch_tensor(stack);
-
-
-            std::vector<size_t> outputs_;
-            if ( Y.index() != 0) {
-                outputs_.push_back(0);
-            }
-            if ( Y_h.index() != 0) {
-                outputs_.push_back(1);
-            }
-            YNXInferenceContextImpl infer_(outputs_);
-
-            infer_.new_attr("linear_before_reset", linear_before_reset);
-            infer_.new_attr("layout", layout);
-            infer_.new_attr("hidden_size", hidden_size);
-            infer_.new_attr("direction", direction);
-            infer_.new_attr("clip", clip);
-            infer_.new_attr("activations", activations);
-            infer_.new_attr("activation_beta", activation_beta);
-            infer_.new_attr("activation_alpha", activation_alpha);
-
-            infer_.new_input(X);
-            infer_.new_input(W);
-            infer_.new_input(R);
-            infer_.new_input(B);
-            infer_.new_input(sequence_lens);
-            infer_.new_input(initial_h);
-
-            auto f = query_inference_function("GRU");
-            infer_.do_inference(f);
-            if ( Y.index() != 0) {
-                infer_.check_output(0, std::get<1>(Y));
-            }
-            if ( Y_h.index() != 0) {
-                infer_.check_output(1, std::get<1>(Y_h));
-            }
-
-
-            if ( X->onnx_GRU(X, W, R, B, sequence_lens, initial_h, Y, Y_h, activation_alpha, activation_beta, activations, clip, direction, hidden_size, layout, linear_before_reset) != YNX_OK ) {
-                yannx_panic("API: GRU  return error!");
-            }
-
-            if ( Y.index() != 0) {
-                put_optional_tensor(stack, Y);
-            }
-            if ( Y_h.index() != 0) {
-                put_optional_tensor(stack, Y_h);
-            }
-
-        }
-        virtual void run(ValueStack<TensorType>& stack) {
-
-            fetch_bool(stack);
-            fetch_bool(stack);
-
-            auto linear_before_reset = fetch_optional_int(stack, 0);
-            auto layout = fetch_optional_int(stack, 0);
-            auto hidden_size = fetch_optional_int(stack, 0);
-            auto direction = fetch_optional_string(stack, "forward");
-            auto clip = fetch_optional_float(stack, 0);
-            auto activations = fetch_optional_strings(stack, {});
-            auto activation_beta = fetch_optional_floats(stack, {});
-            auto activation_alpha = fetch_optional_floats(stack, {});
-
-            auto initial_h = fetch_optional_tensor(stack);
-            auto sequence_lens = fetch_optional_tensor(stack);
-            auto B = fetch_optional_tensor(stack);
-            auto R = fetch_tensor(stack);
-            auto W = fetch_tensor(stack);
-            auto X = fetch_tensor(stack);
-
-
-            if ( X->onnx_GRU(X, W, R, B, sequence_lens, initial_h, Y, Y_h, activation_alpha, activation_beta, activations, clip, direction, hidden_size, layout, linear_before_reset) != YNX_OK ) {
-                yannx_panic("API: GRU  return error!");
-            }
-
-            if ( Y.index() != 0) {
-                put_optional_tensor(stack, Y);
-            }
-            if ( Y_h.index() != 0) {
-                put_optional_tensor(stack, Y_h);
-            }
-
-        }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(GRU)
-    };
-
-
     struct RNN : NativeWord<TensorType> {
         std::variant<void *, tensor_t> Y_h;
         std::variant<void *, tensor_t> Y;
@@ -6940,6 +6941,211 @@ namespace rnn {
 }
 namespace sequence {
 
+    struct SequenceLength : NativeWord<TensorType> {
+        tensor_t length;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            length = TensorFactory::create_undefined_user_tensor();
+
+
+            auto input_sequence = fetch_tensor(stack);
+
+
+            std::vector<size_t> outputs_;
+            outputs_.push_back(0);
+            YNXInferenceContextImpl infer_(outputs_);
+
+
+            infer_.new_input(input_sequence);
+
+            auto f = query_inference_function("SequenceLength");
+            infer_.do_inference(f);
+            infer_.check_output(0, length);
+
+
+            if ( input_sequence->onnx_SequenceLength(input_sequence, length) != YNX_OK ) {
+                yannx_panic("API: SequenceLength  return error!");
+            }
+
+            put_tensor(stack, length);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+
+            auto input_sequence = fetch_tensor(stack);
+
+
+            if ( input_sequence->onnx_SequenceLength(input_sequence, length) != YNX_OK ) {
+                yannx_panic("API: SequenceLength  return error!");
+            }
+
+            put_tensor(stack, length);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(SequenceLength)
+    };
+
+
+    struct SequenceAt : NativeWord<TensorType> {
+        tensor_t tensor;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            tensor = TensorFactory::create_undefined_user_tensor();
+
+
+            auto position = fetch_tensor(stack);
+            auto input_sequence = fetch_tensor(stack);
+
+
+            std::vector<size_t> outputs_;
+            outputs_.push_back(0);
+            YNXInferenceContextImpl infer_(outputs_);
+
+
+            infer_.new_input(input_sequence);
+            infer_.new_input(position);
+
+            auto f = query_inference_function("SequenceAt");
+            infer_.do_inference(f);
+            infer_.check_output(0, tensor);
+
+
+            if ( input_sequence->onnx_SequenceAt(input_sequence, position, tensor) != YNX_OK ) {
+                yannx_panic("API: SequenceAt  return error!");
+            }
+
+            put_tensor(stack, tensor);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+
+            auto position = fetch_tensor(stack);
+            auto input_sequence = fetch_tensor(stack);
+
+
+            if ( input_sequence->onnx_SequenceAt(input_sequence, position, tensor) != YNX_OK ) {
+                yannx_panic("API: SequenceAt  return error!");
+            }
+
+            put_tensor(stack, tensor);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(SequenceAt)
+    };
+
+
+    struct SequenceConstruct : NativeWord<TensorType> {
+        tensor_t output_sequence;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            output_sequence = TensorFactory::create_undefined_user_tensor();
+
+
+            auto inputs = fetch_tensors(stack);
+
+
+            std::vector<size_t> outputs_;
+            outputs_.push_back(0);
+            YNXInferenceContextImpl infer_(outputs_);
+
+
+            infer_.new_input(inputs);
+
+            auto f = query_inference_function("SequenceConstruct");
+            infer_.do_inference(f);
+            infer_.check_output(0, output_sequence);
+
+
+            if ( output_sequence->onnx_SequenceConstruct(inputs, output_sequence) != YNX_OK ) {
+                yannx_panic("API: SequenceConstruct  return error!");
+            }
+
+            put_tensor(stack, output_sequence);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+
+            auto inputs = fetch_tensors(stack);
+
+
+            if ( output_sequence->onnx_SequenceConstruct(inputs, output_sequence) != YNX_OK ) {
+                yannx_panic("API: SequenceConstruct  return error!");
+            }
+
+            put_tensor(stack, output_sequence);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(SequenceConstruct)
+    };
+
+
+    struct ConcatFromSequence : NativeWord<TensorType> {
+        tensor_t concat_result;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            concat_result = TensorFactory::create_undefined_user_tensor();
+
+            auto new_axis = fetch_optional_int(stack, 0);
+            auto axis = fetch_int(stack);
+
+            auto input_sequence = fetch_tensor(stack);
+
+
+            std::vector<size_t> outputs_;
+            outputs_.push_back(0);
+            YNXInferenceContextImpl infer_(outputs_);
+
+            infer_.new_attr("new_axis", new_axis);
+            infer_.new_attr("axis", axis);
+
+            infer_.new_input(input_sequence);
+
+            auto f = query_inference_function("ConcatFromSequence");
+            infer_.do_inference(f);
+            infer_.check_output(0, concat_result);
+
+
+            if ( input_sequence->onnx_ConcatFromSequence(input_sequence, concat_result, axis, new_axis) != YNX_OK ) {
+                yannx_panic("API: ConcatFromSequence  return error!");
+            }
+
+            put_tensor(stack, concat_result);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+            auto new_axis = fetch_optional_int(stack, 0);
+            auto axis = fetch_int(stack);
+
+            auto input_sequence = fetch_tensor(stack);
+
+
+            if ( input_sequence->onnx_ConcatFromSequence(input_sequence, concat_result, axis, new_axis) != YNX_OK ) {
+                yannx_panic("API: ConcatFromSequence  return error!");
+            }
+
+            put_tensor(stack, concat_result);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(ConcatFromSequence)
+    };
+
+
     struct SequenceEmpty : NativeWord<TensorType> {
         tensor_t output;
 
@@ -6986,6 +7192,61 @@ namespace sequence {
 
         }
         NWORD_CREATOR_DEFINE_TENSORTYPE(SequenceEmpty)
+    };
+
+
+    struct SequenceInsert : NativeWord<TensorType> {
+        tensor_t output_sequence;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            output_sequence = TensorFactory::create_undefined_user_tensor();
+
+
+            auto position = fetch_optional_tensor(stack);
+            auto tensor = fetch_tensor(stack);
+            auto input_sequence = fetch_tensor(stack);
+
+
+            std::vector<size_t> outputs_;
+            outputs_.push_back(0);
+            YNXInferenceContextImpl infer_(outputs_);
+
+
+            infer_.new_input(input_sequence);
+            infer_.new_input(tensor);
+            infer_.new_input(position);
+
+            auto f = query_inference_function("SequenceInsert");
+            infer_.do_inference(f);
+            infer_.check_output(0, output_sequence);
+
+
+            if ( input_sequence->onnx_SequenceInsert(input_sequence, tensor, position, output_sequence) != YNX_OK ) {
+                yannx_panic("API: SequenceInsert  return error!");
+            }
+
+            put_tensor(stack, output_sequence);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+
+            auto position = fetch_optional_tensor(stack);
+            auto tensor = fetch_tensor(stack);
+            auto input_sequence = fetch_tensor(stack);
+
+
+            if ( input_sequence->onnx_SequenceInsert(input_sequence, tensor, position, output_sequence) != YNX_OK ) {
+                yannx_panic("API: SequenceInsert  return error!");
+            }
+
+            put_tensor(stack, output_sequence);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(SequenceInsert)
     };
 
 
@@ -7047,211 +7308,6 @@ namespace sequence {
     };
 
 
-    struct SequenceAt : NativeWord<TensorType> {
-        tensor_t tensor;
-
-        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            ValueStack<TensorType>& stack = rt;
-
-            tensor = TensorFactory::create_undefined_user_tensor();
-
-
-            auto position = fetch_tensor(stack);
-            auto input_sequence = fetch_tensor(stack);
-
-
-            std::vector<size_t> outputs_;
-            outputs_.push_back(0);
-            YNXInferenceContextImpl infer_(outputs_);
-
-
-            infer_.new_input(input_sequence);
-            infer_.new_input(position);
-
-            auto f = query_inference_function("SequenceAt");
-            infer_.do_inference(f);
-            infer_.check_output(0, tensor);
-
-
-            if ( input_sequence->onnx_SequenceAt(input_sequence, position, tensor) != YNX_OK ) {
-                yannx_panic("API: SequenceAt  return error!");
-            }
-
-            put_tensor(stack, tensor);
-
-        }
-        virtual void run(ValueStack<TensorType>& stack) {
-
-
-
-            auto position = fetch_tensor(stack);
-            auto input_sequence = fetch_tensor(stack);
-
-
-            if ( input_sequence->onnx_SequenceAt(input_sequence, position, tensor) != YNX_OK ) {
-                yannx_panic("API: SequenceAt  return error!");
-            }
-
-            put_tensor(stack, tensor);
-
-        }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(SequenceAt)
-    };
-
-
-    struct SequenceLength : NativeWord<TensorType> {
-        tensor_t length;
-
-        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            ValueStack<TensorType>& stack = rt;
-
-            length = TensorFactory::create_undefined_user_tensor();
-
-
-            auto input_sequence = fetch_tensor(stack);
-
-
-            std::vector<size_t> outputs_;
-            outputs_.push_back(0);
-            YNXInferenceContextImpl infer_(outputs_);
-
-
-            infer_.new_input(input_sequence);
-
-            auto f = query_inference_function("SequenceLength");
-            infer_.do_inference(f);
-            infer_.check_output(0, length);
-
-
-            if ( input_sequence->onnx_SequenceLength(input_sequence, length) != YNX_OK ) {
-                yannx_panic("API: SequenceLength  return error!");
-            }
-
-            put_tensor(stack, length);
-
-        }
-        virtual void run(ValueStack<TensorType>& stack) {
-
-
-
-            auto input_sequence = fetch_tensor(stack);
-
-
-            if ( input_sequence->onnx_SequenceLength(input_sequence, length) != YNX_OK ) {
-                yannx_panic("API: SequenceLength  return error!");
-            }
-
-            put_tensor(stack, length);
-
-        }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(SequenceLength)
-    };
-
-
-    struct SequenceConstruct : NativeWord<TensorType> {
-        tensor_t output_sequence;
-
-        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            ValueStack<TensorType>& stack = rt;
-
-            output_sequence = TensorFactory::create_undefined_user_tensor();
-
-
-            auto inputs = fetch_tensors(stack);
-
-
-            std::vector<size_t> outputs_;
-            outputs_.push_back(0);
-            YNXInferenceContextImpl infer_(outputs_);
-
-
-            infer_.new_input(inputs);
-
-            auto f = query_inference_function("SequenceConstruct");
-            infer_.do_inference(f);
-            infer_.check_output(0, output_sequence);
-
-
-            if ( output_sequence->onnx_SequenceConstruct(inputs, output_sequence) != YNX_OK ) {
-                yannx_panic("API: SequenceConstruct  return error!");
-            }
-
-            put_tensor(stack, output_sequence);
-
-        }
-        virtual void run(ValueStack<TensorType>& stack) {
-
-
-
-            auto inputs = fetch_tensors(stack);
-
-
-            if ( output_sequence->onnx_SequenceConstruct(inputs, output_sequence) != YNX_OK ) {
-                yannx_panic("API: SequenceConstruct  return error!");
-            }
-
-            put_tensor(stack, output_sequence);
-
-        }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(SequenceConstruct)
-    };
-
-
-    struct SequenceInsert : NativeWord<TensorType> {
-        tensor_t output_sequence;
-
-        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            ValueStack<TensorType>& stack = rt;
-
-            output_sequence = TensorFactory::create_undefined_user_tensor();
-
-
-            auto position = fetch_optional_tensor(stack);
-            auto tensor = fetch_tensor(stack);
-            auto input_sequence = fetch_tensor(stack);
-
-
-            std::vector<size_t> outputs_;
-            outputs_.push_back(0);
-            YNXInferenceContextImpl infer_(outputs_);
-
-
-            infer_.new_input(input_sequence);
-            infer_.new_input(tensor);
-            infer_.new_input(position);
-
-            auto f = query_inference_function("SequenceInsert");
-            infer_.do_inference(f);
-            infer_.check_output(0, output_sequence);
-
-
-            if ( input_sequence->onnx_SequenceInsert(input_sequence, tensor, position, output_sequence) != YNX_OK ) {
-                yannx_panic("API: SequenceInsert  return error!");
-            }
-
-            put_tensor(stack, output_sequence);
-
-        }
-        virtual void run(ValueStack<TensorType>& stack) {
-
-
-
-            auto position = fetch_optional_tensor(stack);
-            auto tensor = fetch_tensor(stack);
-            auto input_sequence = fetch_tensor(stack);
-
-
-            if ( input_sequence->onnx_SequenceInsert(input_sequence, tensor, position, output_sequence) != YNX_OK ) {
-                yannx_panic("API: SequenceInsert  return error!");
-            }
-
-            put_tensor(stack, output_sequence);
-
-        }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(SequenceInsert)
-    };
-
-
     struct SequenceErase : NativeWord<TensorType> {
         tensor_t output_sequence;
 
@@ -7303,63 +7359,69 @@ namespace sequence {
         NWORD_CREATOR_DEFINE_TENSORTYPE(SequenceErase)
     };
 
+}
+namespace tensor {
 
-    struct ConcatFromSequence : NativeWord<TensorType> {
-        tensor_t concat_result;
+    struct GridSample : NativeWord<TensorType> {
+        tensor_t Y;
 
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            concat_result = TensorFactory::create_undefined_user_tensor();
+            Y = TensorFactory::create_undefined_user_tensor();
 
-            auto new_axis = fetch_optional_int(stack, 0);
-            auto axis = fetch_int(stack);
+            auto padding_mode = fetch_optional_string(stack, "zeros");
+            auto mode = fetch_optional_string(stack, "bilinear");
+            auto align_corners = fetch_optional_int(stack, 0);
 
-            auto input_sequence = fetch_tensor(stack);
+            auto grid = fetch_tensor(stack);
+            auto X = fetch_tensor(stack);
 
 
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
 
-            infer_.new_attr("new_axis", new_axis);
-            infer_.new_attr("axis", axis);
+            infer_.new_attr("padding_mode", padding_mode);
+            infer_.new_attr("mode", mode);
+            infer_.new_attr("align_corners", align_corners);
 
-            infer_.new_input(input_sequence);
+            infer_.new_input(X);
+            infer_.new_input(grid);
 
-            auto f = query_inference_function("ConcatFromSequence");
+            auto f = query_inference_function("GridSample");
             infer_.do_inference(f);
-            infer_.check_output(0, concat_result);
+            infer_.check_output(0, Y);
 
 
-            if ( input_sequence->onnx_ConcatFromSequence(input_sequence, concat_result, axis, new_axis) != YNX_OK ) {
-                yannx_panic("API: ConcatFromSequence  return error!");
+            if ( X->onnx_GridSample(X, grid, Y, align_corners, mode, padding_mode) != YNX_OK ) {
+                yannx_panic("API: GridSample  return error!");
             }
 
-            put_tensor(stack, concat_result);
+            put_tensor(stack, Y);
 
         }
         virtual void run(ValueStack<TensorType>& stack) {
 
 
-            auto new_axis = fetch_optional_int(stack, 0);
-            auto axis = fetch_int(stack);
+            auto padding_mode = fetch_optional_string(stack, "zeros");
+            auto mode = fetch_optional_string(stack, "bilinear");
+            auto align_corners = fetch_optional_int(stack, 0);
 
-            auto input_sequence = fetch_tensor(stack);
+            auto grid = fetch_tensor(stack);
+            auto X = fetch_tensor(stack);
 
 
-            if ( input_sequence->onnx_ConcatFromSequence(input_sequence, concat_result, axis, new_axis) != YNX_OK ) {
-                yannx_panic("API: ConcatFromSequence  return error!");
+            if ( X->onnx_GridSample(X, grid, Y, align_corners, mode, padding_mode) != YNX_OK ) {
+                yannx_panic("API: GridSample  return error!");
             }
 
-            put_tensor(stack, concat_result);
+            put_tensor(stack, Y);
 
         }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(ConcatFromSequence)
+        NWORD_CREATOR_DEFINE_TENSORTYPE(GridSample)
     };
 
-}
-namespace tensor {
 
     struct CastLike : NativeWord<TensorType> {
         tensor_t output;
@@ -7413,117 +7475,7 @@ namespace tensor {
     };
 
 
-    struct Shape : NativeWord<TensorType> {
-        tensor_t shape;
-
-        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            ValueStack<TensorType>& stack = rt;
-
-            shape = TensorFactory::create_undefined_user_tensor();
-
-            auto start = fetch_optional_int(stack, 0);
-            auto end = fetch_optional_int(stack, 0);
-
-            auto data = fetch_tensor(stack);
-
-
-            std::vector<size_t> outputs_;
-            outputs_.push_back(0);
-            YNXInferenceContextImpl infer_(outputs_);
-
-            infer_.new_attr("start", start);
-            infer_.new_attr("end", end);
-
-            infer_.new_input(data);
-
-            auto f = query_inference_function("Shape");
-            infer_.do_inference(f);
-            infer_.check_output(0, shape);
-
-
-            if ( data->onnx_Shape(data, shape, end, start) != YNX_OK ) {
-                yannx_panic("API: Shape  return error!");
-            }
-
-            put_tensor(stack, shape);
-
-        }
-        virtual void run(ValueStack<TensorType>& stack) {
-
-
-            auto start = fetch_optional_int(stack, 0);
-            auto end = fetch_optional_int(stack, 0);
-
-            auto data = fetch_tensor(stack);
-
-
-            if ( data->onnx_Shape(data, shape, end, start) != YNX_OK ) {
-                yannx_panic("API: Shape  return error!");
-            }
-
-            put_tensor(stack, shape);
-
-        }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(Shape)
-    };
-
-
-    struct Reshape : NativeWord<TensorType> {
-        tensor_t reshaped;
-
-        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            ValueStack<TensorType>& stack = rt;
-
-            reshaped = TensorFactory::create_undefined_user_tensor();
-
-            auto allowzero = fetch_optional_int(stack, 0);
-
-            auto shape = fetch_tensor(stack);
-            auto data = fetch_tensor(stack);
-
-
-            std::vector<size_t> outputs_;
-            outputs_.push_back(0);
-            YNXInferenceContextImpl infer_(outputs_);
-
-            infer_.new_attr("allowzero", allowzero);
-
-            infer_.new_input(data);
-            infer_.new_input(shape);
-
-            auto f = query_inference_function("Reshape");
-            infer_.do_inference(f);
-            infer_.check_output(0, reshaped);
-
-
-            if ( data->onnx_Reshape(data, shape, reshaped, allowzero) != YNX_OK ) {
-                yannx_panic("API: Reshape  return error!");
-            }
-
-            put_tensor(stack, reshaped);
-
-        }
-        virtual void run(ValueStack<TensorType>& stack) {
-
-
-            auto allowzero = fetch_optional_int(stack, 0);
-
-            auto shape = fetch_tensor(stack);
-            auto data = fetch_tensor(stack);
-
-
-            if ( data->onnx_Reshape(data, shape, reshaped, allowzero) != YNX_OK ) {
-                yannx_panic("API: Reshape  return error!");
-            }
-
-            put_tensor(stack, reshaped);
-
-        }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(Reshape)
-    };
-
-
-    struct DepthToSpace : NativeWord<TensorType> {
+    struct GatherND : NativeWord<TensorType> {
         tensor_t output;
 
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
@@ -7531,28 +7483,28 @@ namespace tensor {
 
             output = TensorFactory::create_undefined_user_tensor();
 
-            auto mode = fetch_optional_string(stack, "DCR");
-            auto blocksize = fetch_int(stack);
+            auto batch_dims = fetch_optional_int(stack, 0);
 
-            auto input = fetch_tensor(stack);
+            auto indices = fetch_tensor(stack);
+            auto data = fetch_tensor(stack);
 
 
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
 
-            infer_.new_attr("mode", mode);
-            infer_.new_attr("blocksize", blocksize);
+            infer_.new_attr("batch_dims", batch_dims);
 
-            infer_.new_input(input);
+            infer_.new_input(data);
+            infer_.new_input(indices);
 
-            auto f = query_inference_function("DepthToSpace");
+            auto f = query_inference_function("GatherND");
             infer_.do_inference(f);
             infer_.check_output(0, output);
 
 
-            if ( input->onnx_DepthToSpace(input, output, blocksize, mode) != YNX_OK ) {
-                yannx_panic("API: DepthToSpace  return error!");
+            if ( data->onnx_GatherND(data, indices, output, batch_dims) != YNX_OK ) {
+                yannx_panic("API: GatherND  return error!");
             }
 
             put_tensor(stack, output);
@@ -7561,76 +7513,82 @@ namespace tensor {
         virtual void run(ValueStack<TensorType>& stack) {
 
 
-            auto mode = fetch_optional_string(stack, "DCR");
-            auto blocksize = fetch_int(stack);
+            auto batch_dims = fetch_optional_int(stack, 0);
 
-            auto input = fetch_tensor(stack);
+            auto indices = fetch_tensor(stack);
+            auto data = fetch_tensor(stack);
 
 
-            if ( input->onnx_DepthToSpace(input, output, blocksize, mode) != YNX_OK ) {
-                yannx_panic("API: DepthToSpace  return error!");
+            if ( data->onnx_GatherND(data, indices, output, batch_dims) != YNX_OK ) {
+                yannx_panic("API: GatherND  return error!");
             }
 
             put_tensor(stack, output);
 
         }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(DepthToSpace)
+        NWORD_CREATOR_DEFINE_TENSORTYPE(GatherND)
     };
 
 
-    struct Concat : NativeWord<TensorType> {
-        tensor_t concat_result;
+    struct ScatterND : NativeWord<TensorType> {
+        tensor_t output;
 
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            concat_result = TensorFactory::create_undefined_user_tensor();
+            output = TensorFactory::create_undefined_user_tensor();
 
-            auto axis = fetch_int(stack);
+            auto reduction = fetch_optional_string(stack, "none");
 
-            auto inputs = fetch_tensors(stack);
+            auto updates = fetch_tensor(stack);
+            auto indices = fetch_tensor(stack);
+            auto data = fetch_tensor(stack);
 
 
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
 
-            infer_.new_attr("axis", axis);
+            infer_.new_attr("reduction", reduction);
 
-            infer_.new_input(inputs);
+            infer_.new_input(data);
+            infer_.new_input(indices);
+            infer_.new_input(updates);
 
-            auto f = query_inference_function("Concat");
+            auto f = query_inference_function("ScatterND");
             infer_.do_inference(f);
-            infer_.check_output(0, concat_result);
+            infer_.check_output(0, output);
 
 
-            if ( concat_result->onnx_Concat(inputs, concat_result, axis) != YNX_OK ) {
-                yannx_panic("API: Concat  return error!");
+            if ( data->onnx_ScatterND(data, indices, updates, output, reduction) != YNX_OK ) {
+                yannx_panic("API: ScatterND  return error!");
             }
 
-            put_tensor(stack, concat_result);
+            put_tensor(stack, output);
 
         }
         virtual void run(ValueStack<TensorType>& stack) {
 
 
-            auto axis = fetch_int(stack);
+            auto reduction = fetch_optional_string(stack, "none");
 
-            auto inputs = fetch_tensors(stack);
+            auto updates = fetch_tensor(stack);
+            auto indices = fetch_tensor(stack);
+            auto data = fetch_tensor(stack);
 
 
-            if ( concat_result->onnx_Concat(inputs, concat_result, axis) != YNX_OK ) {
-                yannx_panic("API: Concat  return error!");
+            if ( data->onnx_ScatterND(data, indices, updates, output, reduction) != YNX_OK ) {
+                yannx_panic("API: ScatterND  return error!");
             }
 
-            put_tensor(stack, concat_result);
+            put_tensor(stack, output);
 
         }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(Concat)
+        NWORD_CREATOR_DEFINE_TENSORTYPE(ScatterND)
     };
 
 
-    struct Gather : NativeWord<TensorType> {
+    struct GatherElements : NativeWord<TensorType> {
         tensor_t output;
 
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
@@ -7653,13 +7611,13 @@ namespace tensor {
             infer_.new_input(data);
             infer_.new_input(indices);
 
-            auto f = query_inference_function("Gather");
+            auto f = query_inference_function("GatherElements");
             infer_.do_inference(f);
             infer_.check_output(0, output);
 
 
-            if ( data->onnx_Gather(data, indices, output, axis) != YNX_OK ) {
-                yannx_panic("API: Gather  return error!");
+            if ( data->onnx_GatherElements(data, indices, output, axis) != YNX_OK ) {
+                yannx_panic("API: GatherElements  return error!");
             }
 
             put_tensor(stack, output);
@@ -7674,115 +7632,69 @@ namespace tensor {
             auto data = fetch_tensor(stack);
 
 
-            if ( data->onnx_Gather(data, indices, output, axis) != YNX_OK ) {
-                yannx_panic("API: Gather  return error!");
+            if ( data->onnx_GatherElements(data, indices, output, axis) != YNX_OK ) {
+                yannx_panic("API: GatherElements  return error!");
             }
 
             put_tensor(stack, output);
 
         }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(Gather)
+        NWORD_CREATOR_DEFINE_TENSORTYPE(GatherElements)
     };
 
 
-    struct Size : NativeWord<TensorType> {
-        tensor_t size;
+    struct IsInf : NativeWord<TensorType> {
+        tensor_t Y;
 
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            size = TensorFactory::create_undefined_user_tensor();
+            Y = TensorFactory::create_undefined_user_tensor();
 
+            auto detect_positive = fetch_optional_int(stack, 1);
+            auto detect_negative = fetch_optional_int(stack, 1);
 
-            auto data = fetch_tensor(stack);
+            auto X = fetch_tensor(stack);
 
 
             std::vector<size_t> outputs_;
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
 
+            infer_.new_attr("detect_positive", detect_positive);
+            infer_.new_attr("detect_negative", detect_negative);
 
-            infer_.new_input(data);
+            infer_.new_input(X);
 
-            auto f = query_inference_function("Size");
+            auto f = query_inference_function("IsInf");
             infer_.do_inference(f);
-            infer_.check_output(0, size);
+            infer_.check_output(0, Y);
 
 
-            if ( data->onnx_Size(data, size) != YNX_OK ) {
-                yannx_panic("API: Size  return error!");
+            if ( X->onnx_IsInf(X, Y, detect_negative, detect_positive) != YNX_OK ) {
+                yannx_panic("API: IsInf  return error!");
             }
 
-            put_tensor(stack, size);
+            put_tensor(stack, Y);
 
         }
         virtual void run(ValueStack<TensorType>& stack) {
 
 
+            auto detect_positive = fetch_optional_int(stack, 1);
+            auto detect_negative = fetch_optional_int(stack, 1);
 
-            auto data = fetch_tensor(stack);
+            auto X = fetch_tensor(stack);
 
 
-            if ( data->onnx_Size(data, size) != YNX_OK ) {
-                yannx_panic("API: Size  return error!");
+            if ( X->onnx_IsInf(X, Y, detect_negative, detect_positive) != YNX_OK ) {
+                yannx_panic("API: IsInf  return error!");
             }
 
-            put_tensor(stack, size);
+            put_tensor(stack, Y);
 
         }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(Size)
-    };
-
-
-    struct Cast : NativeWord<TensorType> {
-        tensor_t output;
-
-        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            ValueStack<TensorType>& stack = rt;
-
-            output = TensorFactory::create_undefined_user_tensor();
-
-            auto to = fetch_int(stack);
-
-            auto input = fetch_tensor(stack);
-
-
-            std::vector<size_t> outputs_;
-            outputs_.push_back(0);
-            YNXInferenceContextImpl infer_(outputs_);
-
-            infer_.new_attr("to", to);
-
-            infer_.new_input(input);
-
-            auto f = query_inference_function("Cast");
-            infer_.do_inference(f);
-            infer_.check_output(0, output);
-
-
-            if ( input->onnx_Cast(input, output, to) != YNX_OK ) {
-                yannx_panic("API: Cast  return error!");
-            }
-
-            put_tensor(stack, output);
-
-        }
-        virtual void run(ValueStack<TensorType>& stack) {
-
-
-            auto to = fetch_int(stack);
-
-            auto input = fetch_tensor(stack);
-
-
-            if ( input->onnx_Cast(input, output, to) != YNX_OK ) {
-                yannx_panic("API: Cast  return error!");
-            }
-
-            put_tensor(stack, output);
-
-        }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(Cast)
+        NWORD_CREATOR_DEFINE_TENSORTYPE(IsInf)
     };
 
 
@@ -7845,7 +7757,7 @@ namespace tensor {
     };
 
 
-    struct Identity : NativeWord<TensorType> {
+    struct Cast : NativeWord<TensorType> {
         tensor_t output;
 
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
@@ -7853,6 +7765,7 @@ namespace tensor {
 
             output = TensorFactory::create_undefined_user_tensor();
 
+            auto to = fetch_int(stack);
 
             auto input = fetch_tensor(stack);
 
@@ -7861,16 +7774,17 @@ namespace tensor {
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
 
+            infer_.new_attr("to", to);
 
             infer_.new_input(input);
 
-            auto f = query_inference_function("Identity");
+            auto f = query_inference_function("Cast");
             infer_.do_inference(f);
             infer_.check_output(0, output);
 
 
-            if ( input->onnx_Identity(input, output) != YNX_OK ) {
-                yannx_panic("API: Identity  return error!");
+            if ( input->onnx_Cast(input, output, to) != YNX_OK ) {
+                yannx_panic("API: Cast  return error!");
             }
 
             put_tensor(stack, output);
@@ -7879,22 +7793,23 @@ namespace tensor {
         virtual void run(ValueStack<TensorType>& stack) {
 
 
+            auto to = fetch_int(stack);
 
             auto input = fetch_tensor(stack);
 
 
-            if ( input->onnx_Identity(input, output) != YNX_OK ) {
-                yannx_panic("API: Identity  return error!");
+            if ( input->onnx_Cast(input, output, to) != YNX_OK ) {
+                yannx_panic("API: Cast  return error!");
             }
 
             put_tensor(stack, output);
 
         }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(Identity)
+        NWORD_CREATOR_DEFINE_TENSORTYPE(Cast)
     };
 
 
-    struct Slice : NativeWord<TensorType> {
+    struct Pad : NativeWord<TensorType> {
         tensor_t output;
 
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
@@ -7902,11 +7817,10 @@ namespace tensor {
 
             output = TensorFactory::create_undefined_user_tensor();
 
+            auto mode = fetch_optional_string(stack, "constant");
 
-            auto steps = fetch_optional_tensor(stack);
-            auto axes = fetch_optional_tensor(stack);
-            auto ends = fetch_tensor(stack);
-            auto starts = fetch_tensor(stack);
+            auto constant_value = fetch_optional_tensor(stack);
+            auto pads = fetch_tensor(stack);
             auto data = fetch_tensor(stack);
 
 
@@ -7914,20 +7828,19 @@ namespace tensor {
             outputs_.push_back(0);
             YNXInferenceContextImpl infer_(outputs_);
 
+            infer_.new_attr("mode", mode);
 
             infer_.new_input(data);
-            infer_.new_input(starts);
-            infer_.new_input(ends);
-            infer_.new_input(axes);
-            infer_.new_input(steps);
+            infer_.new_input(pads);
+            infer_.new_input(constant_value);
 
-            auto f = query_inference_function("Slice");
+            auto f = query_inference_function("Pad");
             infer_.do_inference(f);
             infer_.check_output(0, output);
 
 
-            if ( data->onnx_Slice(data, starts, ends, axes, steps, output) != YNX_OK ) {
-                yannx_panic("API: Slice  return error!");
+            if ( data->onnx_Pad(data, pads, constant_value, output, mode) != YNX_OK ) {
+                yannx_panic("API: Pad  return error!");
             }
 
             put_tensor(stack, output);
@@ -7936,143 +7849,34 @@ namespace tensor {
         virtual void run(ValueStack<TensorType>& stack) {
 
 
+            auto mode = fetch_optional_string(stack, "constant");
 
-            auto steps = fetch_optional_tensor(stack);
-            auto axes = fetch_optional_tensor(stack);
-            auto ends = fetch_tensor(stack);
-            auto starts = fetch_tensor(stack);
+            auto constant_value = fetch_optional_tensor(stack);
+            auto pads = fetch_tensor(stack);
             auto data = fetch_tensor(stack);
 
 
-            if ( data->onnx_Slice(data, starts, ends, axes, steps, output) != YNX_OK ) {
-                yannx_panic("API: Slice  return error!");
+            if ( data->onnx_Pad(data, pads, constant_value, output, mode) != YNX_OK ) {
+                yannx_panic("API: Pad  return error!");
             }
 
             put_tensor(stack, output);
 
         }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(Slice)
+        NWORD_CREATOR_DEFINE_TENSORTYPE(Pad)
     };
 
 
-    struct GatherND : NativeWord<TensorType> {
-        tensor_t output;
+    struct NonZero : NativeWord<TensorType> {
+        tensor_t Y;
 
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
             ValueStack<TensorType>& stack = rt;
 
-            output = TensorFactory::create_undefined_user_tensor();
-
-            auto batch_dims = fetch_optional_int(stack, 0);
-
-            auto indices = fetch_tensor(stack);
-            auto data = fetch_tensor(stack);
+            Y = TensorFactory::create_undefined_user_tensor();
 
 
-            std::vector<size_t> outputs_;
-            outputs_.push_back(0);
-            YNXInferenceContextImpl infer_(outputs_);
-
-            infer_.new_attr("batch_dims", batch_dims);
-
-            infer_.new_input(data);
-            infer_.new_input(indices);
-
-            auto f = query_inference_function("GatherND");
-            infer_.do_inference(f);
-            infer_.check_output(0, output);
-
-
-            if ( data->onnx_GatherND(data, indices, output, batch_dims) != YNX_OK ) {
-                yannx_panic("API: GatherND  return error!");
-            }
-
-            put_tensor(stack, output);
-
-        }
-        virtual void run(ValueStack<TensorType>& stack) {
-
-
-            auto batch_dims = fetch_optional_int(stack, 0);
-
-            auto indices = fetch_tensor(stack);
-            auto data = fetch_tensor(stack);
-
-
-            if ( data->onnx_GatherND(data, indices, output, batch_dims) != YNX_OK ) {
-                yannx_panic("API: GatherND  return error!");
-            }
-
-            put_tensor(stack, output);
-
-        }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(GatherND)
-    };
-
-
-    struct SpaceToDepth : NativeWord<TensorType> {
-        tensor_t output;
-
-        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            ValueStack<TensorType>& stack = rt;
-
-            output = TensorFactory::create_undefined_user_tensor();
-
-            auto blocksize = fetch_int(stack);
-
-            auto input = fetch_tensor(stack);
-
-
-            std::vector<size_t> outputs_;
-            outputs_.push_back(0);
-            YNXInferenceContextImpl infer_(outputs_);
-
-            infer_.new_attr("blocksize", blocksize);
-
-            infer_.new_input(input);
-
-            auto f = query_inference_function("SpaceToDepth");
-            infer_.do_inference(f);
-            infer_.check_output(0, output);
-
-
-            if ( input->onnx_SpaceToDepth(input, output, blocksize) != YNX_OK ) {
-                yannx_panic("API: SpaceToDepth  return error!");
-            }
-
-            put_tensor(stack, output);
-
-        }
-        virtual void run(ValueStack<TensorType>& stack) {
-
-
-            auto blocksize = fetch_int(stack);
-
-            auto input = fetch_tensor(stack);
-
-
-            if ( input->onnx_SpaceToDepth(input, output, blocksize) != YNX_OK ) {
-                yannx_panic("API: SpaceToDepth  return error!");
-            }
-
-            put_tensor(stack, output);
-
-        }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(SpaceToDepth)
-    };
-
-
-    struct Squeeze : NativeWord<TensorType> {
-        tensor_t squeezed;
-
-        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            ValueStack<TensorType>& stack = rt;
-
-            squeezed = TensorFactory::create_undefined_user_tensor();
-
-
-            auto axes = fetch_optional_tensor(stack);
-            auto data = fetch_tensor(stack);
+            auto X = fetch_tensor(stack);
 
 
             std::vector<size_t> outputs_;
@@ -8080,37 +7884,87 @@ namespace tensor {
             YNXInferenceContextImpl infer_(outputs_);
 
 
-            infer_.new_input(data);
-            infer_.new_input(axes);
+            infer_.new_input(X);
 
-            auto f = query_inference_function("Squeeze");
+            auto f = query_inference_function("NonZero");
             infer_.do_inference(f);
-            infer_.check_output(0, squeezed);
+            infer_.check_output(0, Y);
 
 
-            if ( data->onnx_Squeeze(data, axes, squeezed) != YNX_OK ) {
-                yannx_panic("API: Squeeze  return error!");
+            if ( X->onnx_NonZero(X, Y) != YNX_OK ) {
+                yannx_panic("API: NonZero  return error!");
             }
 
-            put_tensor(stack, squeezed);
+            put_tensor(stack, Y);
 
         }
         virtual void run(ValueStack<TensorType>& stack) {
 
 
 
-            auto axes = fetch_optional_tensor(stack);
-            auto data = fetch_tensor(stack);
+            auto X = fetch_tensor(stack);
 
 
-            if ( data->onnx_Squeeze(data, axes, squeezed) != YNX_OK ) {
-                yannx_panic("API: Squeeze  return error!");
+            if ( X->onnx_NonZero(X, Y) != YNX_OK ) {
+                yannx_panic("API: NonZero  return error!");
             }
 
-            put_tensor(stack, squeezed);
+            put_tensor(stack, Y);
 
         }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(Squeeze)
+        NWORD_CREATOR_DEFINE_TENSORTYPE(NonZero)
+    };
+
+
+    struct Concat : NativeWord<TensorType> {
+        tensor_t concat_result;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            concat_result = TensorFactory::create_undefined_user_tensor();
+
+            auto axis = fetch_int(stack);
+
+            auto inputs = fetch_tensors(stack);
+
+
+            std::vector<size_t> outputs_;
+            outputs_.push_back(0);
+            YNXInferenceContextImpl infer_(outputs_);
+
+            infer_.new_attr("axis", axis);
+
+            infer_.new_input(inputs);
+
+            auto f = query_inference_function("Concat");
+            infer_.do_inference(f);
+            infer_.check_output(0, concat_result);
+
+
+            if ( concat_result->onnx_Concat(inputs, concat_result, axis) != YNX_OK ) {
+                yannx_panic("API: Concat  return error!");
+            }
+
+            put_tensor(stack, concat_result);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+            auto axis = fetch_int(stack);
+
+            auto inputs = fetch_tensors(stack);
+
+
+            if ( concat_result->onnx_Concat(inputs, concat_result, axis) != YNX_OK ) {
+                yannx_panic("API: Concat  return error!");
+            }
+
+            put_tensor(stack, concat_result);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(Concat)
     };
 
 
@@ -8220,56 +8074,7 @@ namespace tensor {
     };
 
 
-    struct IsNaN : NativeWord<TensorType> {
-        tensor_t Y;
-
-        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            ValueStack<TensorType>& stack = rt;
-
-            Y = TensorFactory::create_undefined_user_tensor();
-
-
-            auto X = fetch_tensor(stack);
-
-
-            std::vector<size_t> outputs_;
-            outputs_.push_back(0);
-            YNXInferenceContextImpl infer_(outputs_);
-
-
-            infer_.new_input(X);
-
-            auto f = query_inference_function("IsNaN");
-            infer_.do_inference(f);
-            infer_.check_output(0, Y);
-
-
-            if ( X->onnx_IsNaN(X, Y) != YNX_OK ) {
-                yannx_panic("API: IsNaN  return error!");
-            }
-
-            put_tensor(stack, Y);
-
-        }
-        virtual void run(ValueStack<TensorType>& stack) {
-
-
-
-            auto X = fetch_tensor(stack);
-
-
-            if ( X->onnx_IsNaN(X, Y) != YNX_OK ) {
-                yannx_panic("API: IsNaN  return error!");
-            }
-
-            put_tensor(stack, Y);
-
-        }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(IsNaN)
-    };
-
-
-    struct Tile : NativeWord<TensorType> {
+    struct Slice : NativeWord<TensorType> {
         tensor_t output;
 
         virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
@@ -8278,8 +8083,11 @@ namespace tensor {
             output = TensorFactory::create_undefined_user_tensor();
 
 
-            auto repeats = fetch_tensor(stack);
-            auto input = fetch_tensor(stack);
+            auto steps = fetch_optional_tensor(stack);
+            auto axes = fetch_optional_tensor(stack);
+            auto ends = fetch_tensor(stack);
+            auto starts = fetch_tensor(stack);
+            auto data = fetch_tensor(stack);
 
 
             std::vector<size_t> outputs_;
@@ -8287,16 +8095,19 @@ namespace tensor {
             YNXInferenceContextImpl infer_(outputs_);
 
 
-            infer_.new_input(input);
-            infer_.new_input(repeats);
+            infer_.new_input(data);
+            infer_.new_input(starts);
+            infer_.new_input(ends);
+            infer_.new_input(axes);
+            infer_.new_input(steps);
 
-            auto f = query_inference_function("Tile");
+            auto f = query_inference_function("Slice");
             infer_.do_inference(f);
             infer_.check_output(0, output);
 
 
-            if ( input->onnx_Tile(input, repeats, output) != YNX_OK ) {
-                yannx_panic("API: Tile  return error!");
+            if ( data->onnx_Slice(data, starts, ends, axes, steps, output) != YNX_OK ) {
+                yannx_panic("API: Slice  return error!");
             }
 
             put_tensor(stack, output);
@@ -8306,18 +8117,21 @@ namespace tensor {
 
 
 
-            auto repeats = fetch_tensor(stack);
-            auto input = fetch_tensor(stack);
+            auto steps = fetch_optional_tensor(stack);
+            auto axes = fetch_optional_tensor(stack);
+            auto ends = fetch_tensor(stack);
+            auto starts = fetch_tensor(stack);
+            auto data = fetch_tensor(stack);
 
 
-            if ( input->onnx_Tile(input, repeats, output) != YNX_OK ) {
-                yannx_panic("API: Tile  return error!");
+            if ( data->onnx_Slice(data, starts, ends, axes, steps, output) != YNX_OK ) {
+                yannx_panic("API: Slice  return error!");
             }
 
             put_tensor(stack, output);
 
         }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(Tile)
+        NWORD_CREATOR_DEFINE_TENSORTYPE(Slice)
     };
 
 
@@ -8379,6 +8193,700 @@ namespace tensor {
     };
 
 
+    struct OneHot : NativeWord<TensorType> {
+        tensor_t output;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            output = TensorFactory::create_undefined_user_tensor();
+
+            auto axis = fetch_optional_int(stack, -1);
+
+            auto values = fetch_tensor(stack);
+            auto depth = fetch_tensor(stack);
+            auto indices = fetch_tensor(stack);
+
+
+            std::vector<size_t> outputs_;
+            outputs_.push_back(0);
+            YNXInferenceContextImpl infer_(outputs_);
+
+            infer_.new_attr("axis", axis);
+
+            infer_.new_input(indices);
+            infer_.new_input(depth);
+            infer_.new_input(values);
+
+            auto f = query_inference_function("OneHot");
+            infer_.do_inference(f);
+            infer_.check_output(0, output);
+
+
+            if ( indices->onnx_OneHot(indices, depth, values, output, axis) != YNX_OK ) {
+                yannx_panic("API: OneHot  return error!");
+            }
+
+            put_tensor(stack, output);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+            auto axis = fetch_optional_int(stack, -1);
+
+            auto values = fetch_tensor(stack);
+            auto depth = fetch_tensor(stack);
+            auto indices = fetch_tensor(stack);
+
+
+            if ( indices->onnx_OneHot(indices, depth, values, output, axis) != YNX_OK ) {
+                yannx_panic("API: OneHot  return error!");
+            }
+
+            put_tensor(stack, output);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(OneHot)
+    };
+
+
+    struct Gather : NativeWord<TensorType> {
+        tensor_t output;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            output = TensorFactory::create_undefined_user_tensor();
+
+            auto axis = fetch_optional_int(stack, 0);
+
+            auto indices = fetch_tensor(stack);
+            auto data = fetch_tensor(stack);
+
+
+            std::vector<size_t> outputs_;
+            outputs_.push_back(0);
+            YNXInferenceContextImpl infer_(outputs_);
+
+            infer_.new_attr("axis", axis);
+
+            infer_.new_input(data);
+            infer_.new_input(indices);
+
+            auto f = query_inference_function("Gather");
+            infer_.do_inference(f);
+            infer_.check_output(0, output);
+
+
+            if ( data->onnx_Gather(data, indices, output, axis) != YNX_OK ) {
+                yannx_panic("API: Gather  return error!");
+            }
+
+            put_tensor(stack, output);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+            auto axis = fetch_optional_int(stack, 0);
+
+            auto indices = fetch_tensor(stack);
+            auto data = fetch_tensor(stack);
+
+
+            if ( data->onnx_Gather(data, indices, output, axis) != YNX_OK ) {
+                yannx_panic("API: Gather  return error!");
+            }
+
+            put_tensor(stack, output);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(Gather)
+    };
+
+
+    struct IsNaN : NativeWord<TensorType> {
+        tensor_t Y;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            Y = TensorFactory::create_undefined_user_tensor();
+
+
+            auto X = fetch_tensor(stack);
+
+
+            std::vector<size_t> outputs_;
+            outputs_.push_back(0);
+            YNXInferenceContextImpl infer_(outputs_);
+
+
+            infer_.new_input(X);
+
+            auto f = query_inference_function("IsNaN");
+            infer_.do_inference(f);
+            infer_.check_output(0, Y);
+
+
+            if ( X->onnx_IsNaN(X, Y) != YNX_OK ) {
+                yannx_panic("API: IsNaN  return error!");
+            }
+
+            put_tensor(stack, Y);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+
+            auto X = fetch_tensor(stack);
+
+
+            if ( X->onnx_IsNaN(X, Y) != YNX_OK ) {
+                yannx_panic("API: IsNaN  return error!");
+            }
+
+            put_tensor(stack, Y);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(IsNaN)
+    };
+
+
+    struct DepthToSpace : NativeWord<TensorType> {
+        tensor_t output;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            output = TensorFactory::create_undefined_user_tensor();
+
+            auto mode = fetch_optional_string(stack, "DCR");
+            auto blocksize = fetch_int(stack);
+
+            auto input = fetch_tensor(stack);
+
+
+            std::vector<size_t> outputs_;
+            outputs_.push_back(0);
+            YNXInferenceContextImpl infer_(outputs_);
+
+            infer_.new_attr("mode", mode);
+            infer_.new_attr("blocksize", blocksize);
+
+            infer_.new_input(input);
+
+            auto f = query_inference_function("DepthToSpace");
+            infer_.do_inference(f);
+            infer_.check_output(0, output);
+
+
+            if ( input->onnx_DepthToSpace(input, output, blocksize, mode) != YNX_OK ) {
+                yannx_panic("API: DepthToSpace  return error!");
+            }
+
+            put_tensor(stack, output);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+            auto mode = fetch_optional_string(stack, "DCR");
+            auto blocksize = fetch_int(stack);
+
+            auto input = fetch_tensor(stack);
+
+
+            if ( input->onnx_DepthToSpace(input, output, blocksize, mode) != YNX_OK ) {
+                yannx_panic("API: DepthToSpace  return error!");
+            }
+
+            put_tensor(stack, output);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(DepthToSpace)
+    };
+
+
+    struct ScatterElements : NativeWord<TensorType> {
+        tensor_t output;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            output = TensorFactory::create_undefined_user_tensor();
+
+            auto reduction = fetch_optional_string(stack, "none");
+            auto axis = fetch_optional_int(stack, 0);
+
+            auto updates = fetch_tensor(stack);
+            auto indices = fetch_tensor(stack);
+            auto data = fetch_tensor(stack);
+
+
+            std::vector<size_t> outputs_;
+            outputs_.push_back(0);
+            YNXInferenceContextImpl infer_(outputs_);
+
+            infer_.new_attr("reduction", reduction);
+            infer_.new_attr("axis", axis);
+
+            infer_.new_input(data);
+            infer_.new_input(indices);
+            infer_.new_input(updates);
+
+            auto f = query_inference_function("ScatterElements");
+            infer_.do_inference(f);
+            infer_.check_output(0, output);
+
+
+            if ( data->onnx_ScatterElements(data, indices, updates, output, axis, reduction) != YNX_OK ) {
+                yannx_panic("API: ScatterElements  return error!");
+            }
+
+            put_tensor(stack, output);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+            auto reduction = fetch_optional_string(stack, "none");
+            auto axis = fetch_optional_int(stack, 0);
+
+            auto updates = fetch_tensor(stack);
+            auto indices = fetch_tensor(stack);
+            auto data = fetch_tensor(stack);
+
+
+            if ( data->onnx_ScatterElements(data, indices, updates, output, axis, reduction) != YNX_OK ) {
+                yannx_panic("API: ScatterElements  return error!");
+            }
+
+            put_tensor(stack, output);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(ScatterElements)
+    };
+
+
+    struct Reshape : NativeWord<TensorType> {
+        tensor_t reshaped;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            reshaped = TensorFactory::create_undefined_user_tensor();
+
+            auto allowzero = fetch_optional_int(stack, 0);
+
+            auto shape = fetch_tensor(stack);
+            auto data = fetch_tensor(stack);
+
+
+            std::vector<size_t> outputs_;
+            outputs_.push_back(0);
+            YNXInferenceContextImpl infer_(outputs_);
+
+            infer_.new_attr("allowzero", allowzero);
+
+            infer_.new_input(data);
+            infer_.new_input(shape);
+
+            auto f = query_inference_function("Reshape");
+            infer_.do_inference(f);
+            infer_.check_output(0, reshaped);
+
+
+            if ( data->onnx_Reshape(data, shape, reshaped, allowzero) != YNX_OK ) {
+                yannx_panic("API: Reshape  return error!");
+            }
+
+            put_tensor(stack, reshaped);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+            auto allowzero = fetch_optional_int(stack, 0);
+
+            auto shape = fetch_tensor(stack);
+            auto data = fetch_tensor(stack);
+
+
+            if ( data->onnx_Reshape(data, shape, reshaped, allowzero) != YNX_OK ) {
+                yannx_panic("API: Reshape  return error!");
+            }
+
+            put_tensor(stack, reshaped);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(Reshape)
+    };
+
+
+    struct Shape : NativeWord<TensorType> {
+        tensor_t shape;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            shape = TensorFactory::create_undefined_user_tensor();
+
+            auto start = fetch_optional_int(stack, 0);
+            auto end = fetch_optional_int(stack, 0);
+
+            auto data = fetch_tensor(stack);
+
+
+            std::vector<size_t> outputs_;
+            outputs_.push_back(0);
+            YNXInferenceContextImpl infer_(outputs_);
+
+            infer_.new_attr("start", start);
+            infer_.new_attr("end", end);
+
+            infer_.new_input(data);
+
+            auto f = query_inference_function("Shape");
+            infer_.do_inference(f);
+            infer_.check_output(0, shape);
+
+
+            if ( data->onnx_Shape(data, shape, end, start) != YNX_OK ) {
+                yannx_panic("API: Shape  return error!");
+            }
+
+            put_tensor(stack, shape);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+            auto start = fetch_optional_int(stack, 0);
+            auto end = fetch_optional_int(stack, 0);
+
+            auto data = fetch_tensor(stack);
+
+
+            if ( data->onnx_Shape(data, shape, end, start) != YNX_OK ) {
+                yannx_panic("API: Shape  return error!");
+            }
+
+            put_tensor(stack, shape);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(Shape)
+    };
+
+
+    struct Size : NativeWord<TensorType> {
+        tensor_t size;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            size = TensorFactory::create_undefined_user_tensor();
+
+
+            auto data = fetch_tensor(stack);
+
+
+            std::vector<size_t> outputs_;
+            outputs_.push_back(0);
+            YNXInferenceContextImpl infer_(outputs_);
+
+
+            infer_.new_input(data);
+
+            auto f = query_inference_function("Size");
+            infer_.do_inference(f);
+            infer_.check_output(0, size);
+
+
+            if ( data->onnx_Size(data, size) != YNX_OK ) {
+                yannx_panic("API: Size  return error!");
+            }
+
+            put_tensor(stack, size);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+
+            auto data = fetch_tensor(stack);
+
+
+            if ( data->onnx_Size(data, size) != YNX_OK ) {
+                yannx_panic("API: Size  return error!");
+            }
+
+            put_tensor(stack, size);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(Size)
+    };
+
+
+    struct SpaceToDepth : NativeWord<TensorType> {
+        tensor_t output;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            output = TensorFactory::create_undefined_user_tensor();
+
+            auto blocksize = fetch_int(stack);
+
+            auto input = fetch_tensor(stack);
+
+
+            std::vector<size_t> outputs_;
+            outputs_.push_back(0);
+            YNXInferenceContextImpl infer_(outputs_);
+
+            infer_.new_attr("blocksize", blocksize);
+
+            infer_.new_input(input);
+
+            auto f = query_inference_function("SpaceToDepth");
+            infer_.do_inference(f);
+            infer_.check_output(0, output);
+
+
+            if ( input->onnx_SpaceToDepth(input, output, blocksize) != YNX_OK ) {
+                yannx_panic("API: SpaceToDepth  return error!");
+            }
+
+            put_tensor(stack, output);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+            auto blocksize = fetch_int(stack);
+
+            auto input = fetch_tensor(stack);
+
+
+            if ( input->onnx_SpaceToDepth(input, output, blocksize) != YNX_OK ) {
+                yannx_panic("API: SpaceToDepth  return error!");
+            }
+
+            put_tensor(stack, output);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(SpaceToDepth)
+    };
+
+
+    struct Identity : NativeWord<TensorType> {
+        tensor_t output;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            output = TensorFactory::create_undefined_user_tensor();
+
+
+            auto input = fetch_tensor(stack);
+
+
+            std::vector<size_t> outputs_;
+            outputs_.push_back(0);
+            YNXInferenceContextImpl infer_(outputs_);
+
+
+            infer_.new_input(input);
+
+            auto f = query_inference_function("Identity");
+            infer_.do_inference(f);
+            infer_.check_output(0, output);
+
+
+            if ( input->onnx_Identity(input, output) != YNX_OK ) {
+                yannx_panic("API: Identity  return error!");
+            }
+
+            put_tensor(stack, output);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+
+            auto input = fetch_tensor(stack);
+
+
+            if ( input->onnx_Identity(input, output) != YNX_OK ) {
+                yannx_panic("API: Identity  return error!");
+            }
+
+            put_tensor(stack, output);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(Identity)
+    };
+
+
+    struct Squeeze : NativeWord<TensorType> {
+        tensor_t squeezed;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            squeezed = TensorFactory::create_undefined_user_tensor();
+
+
+            auto axes = fetch_optional_tensor(stack);
+            auto data = fetch_tensor(stack);
+
+
+            std::vector<size_t> outputs_;
+            outputs_.push_back(0);
+            YNXInferenceContextImpl infer_(outputs_);
+
+
+            infer_.new_input(data);
+            infer_.new_input(axes);
+
+            auto f = query_inference_function("Squeeze");
+            infer_.do_inference(f);
+            infer_.check_output(0, squeezed);
+
+
+            if ( data->onnx_Squeeze(data, axes, squeezed) != YNX_OK ) {
+                yannx_panic("API: Squeeze  return error!");
+            }
+
+            put_tensor(stack, squeezed);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+
+            auto axes = fetch_optional_tensor(stack);
+            auto data = fetch_tensor(stack);
+
+
+            if ( data->onnx_Squeeze(data, axes, squeezed) != YNX_OK ) {
+                yannx_panic("API: Squeeze  return error!");
+            }
+
+            put_tensor(stack, squeezed);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(Squeeze)
+    };
+
+
+    struct Tile : NativeWord<TensorType> {
+        tensor_t output;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            output = TensorFactory::create_undefined_user_tensor();
+
+
+            auto repeats = fetch_tensor(stack);
+            auto input = fetch_tensor(stack);
+
+
+            std::vector<size_t> outputs_;
+            outputs_.push_back(0);
+            YNXInferenceContextImpl infer_(outputs_);
+
+
+            infer_.new_input(input);
+            infer_.new_input(repeats);
+
+            auto f = query_inference_function("Tile");
+            infer_.do_inference(f);
+            infer_.check_output(0, output);
+
+
+            if ( input->onnx_Tile(input, repeats, output) != YNX_OK ) {
+                yannx_panic("API: Tile  return error!");
+            }
+
+            put_tensor(stack, output);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+
+            auto repeats = fetch_tensor(stack);
+            auto input = fetch_tensor(stack);
+
+
+            if ( input->onnx_Tile(input, repeats, output) != YNX_OK ) {
+                yannx_panic("API: Tile  return error!");
+            }
+
+            put_tensor(stack, output);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(Tile)
+    };
+
+
+    struct Unsqueeze : NativeWord<TensorType> {
+        tensor_t expanded;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            expanded = TensorFactory::create_undefined_user_tensor();
+
+
+            auto axes = fetch_tensor(stack);
+            auto data = fetch_tensor(stack);
+
+
+            std::vector<size_t> outputs_;
+            outputs_.push_back(0);
+            YNXInferenceContextImpl infer_(outputs_);
+
+
+            infer_.new_input(data);
+            infer_.new_input(axes);
+
+            auto f = query_inference_function("Unsqueeze");
+            infer_.do_inference(f);
+            infer_.check_output(0, expanded);
+
+
+            if ( data->onnx_Unsqueeze(data, axes, expanded) != YNX_OK ) {
+                yannx_panic("API: Unsqueeze  return error!");
+            }
+
+            put_tensor(stack, expanded);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+
+            auto axes = fetch_tensor(stack);
+            auto data = fetch_tensor(stack);
+
+
+            if ( data->onnx_Unsqueeze(data, axes, expanded) != YNX_OK ) {
+                yannx_panic("API: Unsqueeze  return error!");
+            }
+
+            put_tensor(stack, expanded);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(Unsqueeze)
+    };
+
+
     struct Transpose : NativeWord<TensorType> {
         tensor_t transposed;
 
@@ -8428,6 +8936,61 @@ namespace tensor {
 
         }
         NWORD_CREATOR_DEFINE_TENSORTYPE(Transpose)
+    };
+
+
+    struct Compress : NativeWord<TensorType> {
+        tensor_t output;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            output = TensorFactory::create_undefined_user_tensor();
+
+            auto axis = fetch_optional_int(stack, 0);
+
+            auto condition = fetch_tensor(stack);
+            auto input = fetch_tensor(stack);
+
+
+            std::vector<size_t> outputs_;
+            outputs_.push_back(0);
+            YNXInferenceContextImpl infer_(outputs_);
+
+            infer_.new_attr("axis", axis);
+
+            infer_.new_input(input);
+            infer_.new_input(condition);
+
+            auto f = query_inference_function("Compress");
+            infer_.do_inference(f);
+            infer_.check_output(0, output);
+
+
+            if ( input->onnx_Compress(input, condition, output, axis) != YNX_OK ) {
+                yannx_panic("API: Compress  return error!");
+            }
+
+            put_tensor(stack, output);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+            auto axis = fetch_optional_int(stack, 0);
+
+            auto condition = fetch_tensor(stack);
+            auto input = fetch_tensor(stack);
+
+
+            if ( input->onnx_Compress(input, condition, output, axis) != YNX_OK ) {
+                yannx_panic("API: Compress  return error!");
+            }
+
+            put_tensor(stack, output);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(Compress)
     };
 
 
@@ -8541,275 +9104,6 @@ namespace tensor {
     };
 
 
-    struct Compress : NativeWord<TensorType> {
-        tensor_t output;
-
-        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            ValueStack<TensorType>& stack = rt;
-
-            output = TensorFactory::create_undefined_user_tensor();
-
-            auto axis = fetch_optional_int(stack, 0);
-
-            auto condition = fetch_tensor(stack);
-            auto input = fetch_tensor(stack);
-
-
-            std::vector<size_t> outputs_;
-            outputs_.push_back(0);
-            YNXInferenceContextImpl infer_(outputs_);
-
-            infer_.new_attr("axis", axis);
-
-            infer_.new_input(input);
-            infer_.new_input(condition);
-
-            auto f = query_inference_function("Compress");
-            infer_.do_inference(f);
-            infer_.check_output(0, output);
-
-
-            if ( input->onnx_Compress(input, condition, output, axis) != YNX_OK ) {
-                yannx_panic("API: Compress  return error!");
-            }
-
-            put_tensor(stack, output);
-
-        }
-        virtual void run(ValueStack<TensorType>& stack) {
-
-
-            auto axis = fetch_optional_int(stack, 0);
-
-            auto condition = fetch_tensor(stack);
-            auto input = fetch_tensor(stack);
-
-
-            if ( input->onnx_Compress(input, condition, output, axis) != YNX_OK ) {
-                yannx_panic("API: Compress  return error!");
-            }
-
-            put_tensor(stack, output);
-
-        }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(Compress)
-    };
-
-
-    struct Unsqueeze : NativeWord<TensorType> {
-        tensor_t expanded;
-
-        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            ValueStack<TensorType>& stack = rt;
-
-            expanded = TensorFactory::create_undefined_user_tensor();
-
-
-            auto axes = fetch_tensor(stack);
-            auto data = fetch_tensor(stack);
-
-
-            std::vector<size_t> outputs_;
-            outputs_.push_back(0);
-            YNXInferenceContextImpl infer_(outputs_);
-
-
-            infer_.new_input(data);
-            infer_.new_input(axes);
-
-            auto f = query_inference_function("Unsqueeze");
-            infer_.do_inference(f);
-            infer_.check_output(0, expanded);
-
-
-            if ( data->onnx_Unsqueeze(data, axes, expanded) != YNX_OK ) {
-                yannx_panic("API: Unsqueeze  return error!");
-            }
-
-            put_tensor(stack, expanded);
-
-        }
-        virtual void run(ValueStack<TensorType>& stack) {
-
-
-
-            auto axes = fetch_tensor(stack);
-            auto data = fetch_tensor(stack);
-
-
-            if ( data->onnx_Unsqueeze(data, axes, expanded) != YNX_OK ) {
-                yannx_panic("API: Unsqueeze  return error!");
-            }
-
-            put_tensor(stack, expanded);
-
-        }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(Unsqueeze)
-    };
-
-
-    struct OneHot : NativeWord<TensorType> {
-        tensor_t output;
-
-        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            ValueStack<TensorType>& stack = rt;
-
-            output = TensorFactory::create_undefined_user_tensor();
-
-            auto axis = fetch_optional_int(stack, -1);
-
-            auto values = fetch_tensor(stack);
-            auto depth = fetch_tensor(stack);
-            auto indices = fetch_tensor(stack);
-
-
-            std::vector<size_t> outputs_;
-            outputs_.push_back(0);
-            YNXInferenceContextImpl infer_(outputs_);
-
-            infer_.new_attr("axis", axis);
-
-            infer_.new_input(indices);
-            infer_.new_input(depth);
-            infer_.new_input(values);
-
-            auto f = query_inference_function("OneHot");
-            infer_.do_inference(f);
-            infer_.check_output(0, output);
-
-
-            if ( indices->onnx_OneHot(indices, depth, values, output, axis) != YNX_OK ) {
-                yannx_panic("API: OneHot  return error!");
-            }
-
-            put_tensor(stack, output);
-
-        }
-        virtual void run(ValueStack<TensorType>& stack) {
-
-
-            auto axis = fetch_optional_int(stack, -1);
-
-            auto values = fetch_tensor(stack);
-            auto depth = fetch_tensor(stack);
-            auto indices = fetch_tensor(stack);
-
-
-            if ( indices->onnx_OneHot(indices, depth, values, output, axis) != YNX_OK ) {
-                yannx_panic("API: OneHot  return error!");
-            }
-
-            put_tensor(stack, output);
-
-        }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(OneHot)
-    };
-
-
-    struct NonZero : NativeWord<TensorType> {
-        tensor_t Y;
-
-        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            ValueStack<TensorType>& stack = rt;
-
-            Y = TensorFactory::create_undefined_user_tensor();
-
-
-            auto X = fetch_tensor(stack);
-
-
-            std::vector<size_t> outputs_;
-            outputs_.push_back(0);
-            YNXInferenceContextImpl infer_(outputs_);
-
-
-            infer_.new_input(X);
-
-            auto f = query_inference_function("NonZero");
-            infer_.do_inference(f);
-            infer_.check_output(0, Y);
-
-
-            if ( X->onnx_NonZero(X, Y) != YNX_OK ) {
-                yannx_panic("API: NonZero  return error!");
-            }
-
-            put_tensor(stack, Y);
-
-        }
-        virtual void run(ValueStack<TensorType>& stack) {
-
-
-
-            auto X = fetch_tensor(stack);
-
-
-            if ( X->onnx_NonZero(X, Y) != YNX_OK ) {
-                yannx_panic("API: NonZero  return error!");
-            }
-
-            put_tensor(stack, Y);
-
-        }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(NonZero)
-    };
-
-
-    struct ScatterND : NativeWord<TensorType> {
-        tensor_t output;
-
-        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            ValueStack<TensorType>& stack = rt;
-
-            output = TensorFactory::create_undefined_user_tensor();
-
-
-            auto updates = fetch_tensor(stack);
-            auto indices = fetch_tensor(stack);
-            auto data = fetch_tensor(stack);
-
-
-            std::vector<size_t> outputs_;
-            outputs_.push_back(0);
-            YNXInferenceContextImpl infer_(outputs_);
-
-
-            infer_.new_input(data);
-            infer_.new_input(indices);
-            infer_.new_input(updates);
-
-            auto f = query_inference_function("ScatterND");
-            infer_.do_inference(f);
-            infer_.check_output(0, output);
-
-
-            if ( data->onnx_ScatterND(data, indices, updates, output) != YNX_OK ) {
-                yannx_panic("API: ScatterND  return error!");
-            }
-
-            put_tensor(stack, output);
-
-        }
-        virtual void run(ValueStack<TensorType>& stack) {
-
-
-
-            auto updates = fetch_tensor(stack);
-            auto indices = fetch_tensor(stack);
-            auto data = fetch_tensor(stack);
-
-
-            if ( data->onnx_ScatterND(data, indices, updates, output) != YNX_OK ) {
-                yannx_panic("API: ScatterND  return error!");
-            }
-
-            put_tensor(stack, output);
-
-        }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(ScatterND)
-    };
-
-
     struct Resize : NativeWord<TensorType> {
         tensor_t Y;
 
@@ -8883,232 +9177,6 @@ namespace tensor {
 
         }
         NWORD_CREATOR_DEFINE_TENSORTYPE(Resize)
-    };
-
-
-    struct Pad : NativeWord<TensorType> {
-        tensor_t output;
-
-        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            ValueStack<TensorType>& stack = rt;
-
-            output = TensorFactory::create_undefined_user_tensor();
-
-            auto mode = fetch_optional_string(stack, "constant");
-
-            auto constant_value = fetch_optional_tensor(stack);
-            auto pads = fetch_tensor(stack);
-            auto data = fetch_tensor(stack);
-
-
-            std::vector<size_t> outputs_;
-            outputs_.push_back(0);
-            YNXInferenceContextImpl infer_(outputs_);
-
-            infer_.new_attr("mode", mode);
-
-            infer_.new_input(data);
-            infer_.new_input(pads);
-            infer_.new_input(constant_value);
-
-            auto f = query_inference_function("Pad");
-            infer_.do_inference(f);
-            infer_.check_output(0, output);
-
-
-            if ( data->onnx_Pad(data, pads, constant_value, output, mode) != YNX_OK ) {
-                yannx_panic("API: Pad  return error!");
-            }
-
-            put_tensor(stack, output);
-
-        }
-        virtual void run(ValueStack<TensorType>& stack) {
-
-
-            auto mode = fetch_optional_string(stack, "constant");
-
-            auto constant_value = fetch_optional_tensor(stack);
-            auto pads = fetch_tensor(stack);
-            auto data = fetch_tensor(stack);
-
-
-            if ( data->onnx_Pad(data, pads, constant_value, output, mode) != YNX_OK ) {
-                yannx_panic("API: Pad  return error!");
-            }
-
-            put_tensor(stack, output);
-
-        }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(Pad)
-    };
-
-
-    struct IsInf : NativeWord<TensorType> {
-        tensor_t Y;
-
-        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            ValueStack<TensorType>& stack = rt;
-
-            Y = TensorFactory::create_undefined_user_tensor();
-
-            auto detect_positive = fetch_optional_int(stack, 1);
-            auto detect_negative = fetch_optional_int(stack, 1);
-
-            auto X = fetch_tensor(stack);
-
-
-            std::vector<size_t> outputs_;
-            outputs_.push_back(0);
-            YNXInferenceContextImpl infer_(outputs_);
-
-            infer_.new_attr("detect_positive", detect_positive);
-            infer_.new_attr("detect_negative", detect_negative);
-
-            infer_.new_input(X);
-
-            auto f = query_inference_function("IsInf");
-            infer_.do_inference(f);
-            infer_.check_output(0, Y);
-
-
-            if ( X->onnx_IsInf(X, Y, detect_negative, detect_positive) != YNX_OK ) {
-                yannx_panic("API: IsInf  return error!");
-            }
-
-            put_tensor(stack, Y);
-
-        }
-        virtual void run(ValueStack<TensorType>& stack) {
-
-
-            auto detect_positive = fetch_optional_int(stack, 1);
-            auto detect_negative = fetch_optional_int(stack, 1);
-
-            auto X = fetch_tensor(stack);
-
-
-            if ( X->onnx_IsInf(X, Y, detect_negative, detect_positive) != YNX_OK ) {
-                yannx_panic("API: IsInf  return error!");
-            }
-
-            put_tensor(stack, Y);
-
-        }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(IsInf)
-    };
-
-
-    struct GatherElements : NativeWord<TensorType> {
-        tensor_t output;
-
-        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            ValueStack<TensorType>& stack = rt;
-
-            output = TensorFactory::create_undefined_user_tensor();
-
-            auto axis = fetch_optional_int(stack, 0);
-
-            auto indices = fetch_tensor(stack);
-            auto data = fetch_tensor(stack);
-
-
-            std::vector<size_t> outputs_;
-            outputs_.push_back(0);
-            YNXInferenceContextImpl infer_(outputs_);
-
-            infer_.new_attr("axis", axis);
-
-            infer_.new_input(data);
-            infer_.new_input(indices);
-
-            auto f = query_inference_function("GatherElements");
-            infer_.do_inference(f);
-            infer_.check_output(0, output);
-
-
-            if ( data->onnx_GatherElements(data, indices, output, axis) != YNX_OK ) {
-                yannx_panic("API: GatherElements  return error!");
-            }
-
-            put_tensor(stack, output);
-
-        }
-        virtual void run(ValueStack<TensorType>& stack) {
-
-
-            auto axis = fetch_optional_int(stack, 0);
-
-            auto indices = fetch_tensor(stack);
-            auto data = fetch_tensor(stack);
-
-
-            if ( data->onnx_GatherElements(data, indices, output, axis) != YNX_OK ) {
-                yannx_panic("API: GatherElements  return error!");
-            }
-
-            put_tensor(stack, output);
-
-        }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(GatherElements)
-    };
-
-
-    struct ScatterElements : NativeWord<TensorType> {
-        tensor_t output;
-
-        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            ValueStack<TensorType>& stack = rt;
-
-            output = TensorFactory::create_undefined_user_tensor();
-
-            auto axis = fetch_optional_int(stack, 0);
-
-            auto updates = fetch_tensor(stack);
-            auto indices = fetch_tensor(stack);
-            auto data = fetch_tensor(stack);
-
-
-            std::vector<size_t> outputs_;
-            outputs_.push_back(0);
-            YNXInferenceContextImpl infer_(outputs_);
-
-            infer_.new_attr("axis", axis);
-
-            infer_.new_input(data);
-            infer_.new_input(indices);
-            infer_.new_input(updates);
-
-            auto f = query_inference_function("ScatterElements");
-            infer_.do_inference(f);
-            infer_.check_output(0, output);
-
-
-            if ( data->onnx_ScatterElements(data, indices, updates, output, axis) != YNX_OK ) {
-                yannx_panic("API: ScatterElements  return error!");
-            }
-
-            put_tensor(stack, output);
-
-        }
-        virtual void run(ValueStack<TensorType>& stack) {
-
-
-            auto axis = fetch_optional_int(stack, 0);
-
-            auto updates = fetch_tensor(stack);
-            auto indices = fetch_tensor(stack);
-            auto data = fetch_tensor(stack);
-
-
-            if ( data->onnx_ScatterElements(data, indices, updates, output, axis) != YNX_OK ) {
-                yannx_panic("API: ScatterElements  return error!");
-            }
-
-            put_tensor(stack, output);
-
-        }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(ScatterElements)
     };
 
 }

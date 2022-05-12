@@ -1,4 +1,4 @@
-//  this file is geneated by autogen
+//  this file is geneated by autogen, don't edit
 OperatorReturnType onnx_Abs(tensor_t X, tensor_t Y) override {
     return impl()->onnx_Abs(X, Y);
 }
@@ -213,6 +213,10 @@ OperatorReturnType onnx_Greater(tensor_t A, tensor_t B, tensor_t C) override {
 
 OperatorReturnType onnx_GreaterOrEqual(tensor_t A, tensor_t B, tensor_t C) override {
     return impl()->onnx_GreaterOrEqual(A, B, C);
+}
+
+OperatorReturnType onnx_GridSample(tensor_t X, tensor_t grid, tensor_t Y, int64_t align_corners, std::string mode, std::string padding_mode) override {
+    return impl()->onnx_GridSample(X, grid, Y, align_corners, mode, padding_mode);
 }
 
 OperatorReturnType onnx_HardSigmoid(tensor_t X, tensor_t Y, float alpha, float beta) override {
@@ -471,12 +475,12 @@ OperatorReturnType onnx_Round(tensor_t X, tensor_t Y) override {
     return impl()->onnx_Round(X, Y);
 }
 
-OperatorReturnType onnx_ScatterElements(tensor_t data, tensor_t indices, tensor_t updates, tensor_t output, int64_t axis) override {
-    return impl()->onnx_ScatterElements(data, indices, updates, output, axis);
+OperatorReturnType onnx_ScatterElements(tensor_t data, tensor_t indices, tensor_t updates, tensor_t output, int64_t axis, std::string reduction) override {
+    return impl()->onnx_ScatterElements(data, indices, updates, output, axis, reduction);
 }
 
-OperatorReturnType onnx_ScatterND(tensor_t data, tensor_t indices, tensor_t updates, tensor_t output) override {
-    return impl()->onnx_ScatterND(data, indices, updates, output);
+OperatorReturnType onnx_ScatterND(tensor_t data, tensor_t indices, tensor_t updates, tensor_t output, std::string reduction) override {
+    return impl()->onnx_ScatterND(data, indices, updates, output, reduction);
 }
 
 OperatorReturnType onnx_Selu(tensor_t X, tensor_t Y, float alpha, float gamma) override {
