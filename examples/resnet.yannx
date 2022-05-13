@@ -83,7 +83,7 @@ def linear
     onnx.MatMul
 
     ; B
-    ["out_size" @] "YNX_FLOAT" ynx.NewTensor~                                      
+    [1 "out_size" @] "YNX_FLOAT" ynx.NewTensor~                                      
     onnx.Add
 end
 
