@@ -7,7 +7,7 @@ def conv1x1
     "in_size" !
 
     ; W
-    ["out_size" @ "in_size" @ 3 3 ] "YNX_FLOAT" ynx.NewTensor~ 
+    ["out_size" @ "in_size" @ 1 1 ] "YNX_FLOAT" ynx.NewTensor~ 
     ; B
     none
 
@@ -57,7 +57,7 @@ end
 def max_pool2d
     "NOTSET" 0 [1 1]            ; auto_pad, ceil_Mode, dilation
     [3 3]                       ; kernel_shape
-    [0 0 0 0]                   ; pads
+    [1 1 1 1]                   ; pads
     0                           ; storage_order
     [2 2]                       ; strides
     false                       ; we don't want Indices

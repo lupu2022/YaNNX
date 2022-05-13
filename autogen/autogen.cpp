@@ -142,7 +142,7 @@ std::string api_generate(const OpSchema& op) {
     oss << "\t    return YNX_TODO_ERROR;" << std::endl;
     oss << "\t}" << std::endl;
     if ( allInputs.size() > 0) {
-        oss << "\tvirtual bool onnx_" << op_name << "_typing() { ";
+        oss << "\tvirtual bool onnx_" << op_name << "_typing() { " << std::endl;
         oss << "\t    return false;" << std::endl;
         oss << "\t}" << std::endl;
     } else {

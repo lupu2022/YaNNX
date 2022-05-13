@@ -7,7 +7,7 @@ tt::OperatorReturnType DNNLTensor<_DTYPE_>::onnx_MaxPool(tt::tensor_t X, tt::ten
         auto src_md = dnnl(X)->dnnl_md();
         auto dst_md = dnnl(Y)->dnnl_md();
 
-        yannx_assert( Indices.index() == 0, "We don't support Indices");
+        yannx_assert( Indices.index() == 0, "We don't support output Indices");
 
         // create prim and pd
         dnnl_pooling_desc_t desc;

@@ -21,6 +21,10 @@ tt::OperatorReturnType DNNLTensor<_DTYPE_>::onnx_Conv(tt::tensor_t X, tt::tensor
             dilations[i] = dilations[i] - 1;
         }
 
+        std::cout << dnnl(X)->to_string() << std::endl;
+        std::cout << dnnl(W)->to_string() << std::endl;
+        std::cout << dnnl(Y)->to_string() << std::endl;
+
         // create prim and pd
         dnnl_convolution_desc_t desc;
         DNNL_CHECK(dnnl_dilated_convolution_forward_desc_init(&desc,
