@@ -85,9 +85,9 @@ namespace generator {
                 YNXInferenceContextImpl infer_(outputs_);
 
 
-               infer_.new_input(start);
-               infer_.new_input(limit);
-               infer_.new_input(delta);
+                infer_.new_input(start);
+                infer_.new_input(limit);
+                infer_.new_input(delta);
 
                 auto f = query_inference_function("Range");
                 infer_.do_inference(f);
@@ -213,7 +213,7 @@ namespace generator {
                 infer_.new_attr("high", high);
                 infer_.new_attr("dtype", dtype);
 
-               infer_.new_input(input);
+                infer_.new_input(input);
 
                 auto f = query_inference_function("RandomUniformLike");
                 infer_.do_inference(f);
@@ -273,7 +273,7 @@ namespace generator {
                 infer_.new_attr("k", k);
                 infer_.new_attr("dtype", dtype);
 
-               infer_.new_input(input);
+                infer_.new_input(input);
 
                 auto f = query_inference_function("EyeLike");
                 infer_.do_inference(f);
@@ -331,7 +331,7 @@ namespace generator {
                 infer_.new_attr("seed", seed);
                 infer_.new_attr("dtype", dtype);
 
-               infer_.new_input(input);
+                infer_.new_input(input);
 
                 auto f = query_inference_function("Bernoulli");
                 infer_.do_inference(f);
@@ -393,7 +393,7 @@ namespace generator {
                 infer_.new_attr("mean", mean);
                 infer_.new_attr("dtype", dtype);
 
-               infer_.new_input(input);
+                infer_.new_input(input);
 
                 auto f = query_inference_function("RandomNormalLike");
                 infer_.do_inference(f);
@@ -455,7 +455,7 @@ namespace generator {
                 infer_.new_attr("sample_size", sample_size);
                 infer_.new_attr("dtype", dtype);
 
-               infer_.new_input(input);
+                infer_.new_input(input);
 
                 auto f = query_inference_function("Multinomial");
                 infer_.do_inference(f);
@@ -513,8 +513,8 @@ namespace logical {
                 YNXInferenceContextImpl infer_(outputs_);
 
 
-               infer_.new_input(A);
-               infer_.new_input(B);
+                infer_.new_input(A);
+                infer_.new_input(B);
 
                 auto f = query_inference_function("GreaterOrEqual");
                 infer_.do_inference(f);
@@ -568,8 +568,8 @@ namespace logical {
                 YNXInferenceContextImpl infer_(outputs_);
 
 
-               infer_.new_input(A);
-               infer_.new_input(B);
+                infer_.new_input(A);
+                infer_.new_input(B);
 
                 auto f = query_inference_function("LessOrEqual");
                 infer_.do_inference(f);
@@ -623,8 +623,8 @@ namespace logical {
                 YNXInferenceContextImpl infer_(outputs_);
 
 
-               infer_.new_input(A);
-               infer_.new_input(B);
+                infer_.new_input(A);
+                infer_.new_input(B);
 
                 auto f = query_inference_function("Or");
                 infer_.do_inference(f);
@@ -677,7 +677,7 @@ namespace logical {
                 YNXInferenceContextImpl infer_(outputs_);
 
 
-               infer_.new_input(X);
+                infer_.new_input(X);
 
                 auto f = query_inference_function("Not");
                 infer_.do_inference(f);
@@ -730,8 +730,8 @@ namespace logical {
                 YNXInferenceContextImpl infer_(outputs_);
 
 
-               infer_.new_input(A);
-               infer_.new_input(B);
+                infer_.new_input(A);
+                infer_.new_input(B);
 
                 auto f = query_inference_function("And");
                 infer_.do_inference(f);
@@ -785,8 +785,8 @@ namespace logical {
                 YNXInferenceContextImpl infer_(outputs_);
 
 
-               infer_.new_input(A);
-               infer_.new_input(B);
+                infer_.new_input(A);
+                infer_.new_input(B);
 
                 auto f = query_inference_function("Less");
                 infer_.do_inference(f);
@@ -840,8 +840,8 @@ namespace logical {
                 YNXInferenceContextImpl infer_(outputs_);
 
 
-               infer_.new_input(A);
-               infer_.new_input(B);
+                infer_.new_input(A);
+                infer_.new_input(B);
 
                 auto f = query_inference_function("Equal");
                 infer_.do_inference(f);
@@ -897,8 +897,8 @@ namespace logical {
 
                 infer_.new_attr("direction", direction);
 
-               infer_.new_input(X);
-               infer_.new_input(Y);
+                infer_.new_input(X);
+                infer_.new_input(Y);
 
                 auto f = query_inference_function("BitShift");
                 infer_.do_inference(f);
@@ -953,8 +953,8 @@ namespace logical {
                 YNXInferenceContextImpl infer_(outputs_);
 
 
-               infer_.new_input(A);
-               infer_.new_input(B);
+                infer_.new_input(A);
+                infer_.new_input(B);
 
                 auto f = query_inference_function("Greater");
                 infer_.do_inference(f);
@@ -1008,8 +1008,8 @@ namespace logical {
                 YNXInferenceContextImpl infer_(outputs_);
 
 
-               infer_.new_input(A);
-               infer_.new_input(B);
+                infer_.new_input(A);
+                infer_.new_input(B);
 
                 auto f = query_inference_function("Xor");
                 infer_.do_inference(f);
@@ -1077,9 +1077,9 @@ namespace math {
                 infer_.new_attr("reduction", reduction);
                 infer_.new_attr("ignore_index", ignore_index);
 
-               infer_.new_input(scores);
-               infer_.new_input(labels);
-               infer_.new_input(weights);
+                infer_.new_input(scores);
+                infer_.new_input(labels);
+                infer_.new_input(weights);
 
                 auto f = query_inference_function("SoftmaxCrossEntropyLoss");
                 infer_.do_inference(f);
@@ -1147,7 +1147,7 @@ namespace math {
 
                 infer_.new_attr("alpha", alpha);
 
-               infer_.new_input(X);
+                infer_.new_input(X);
 
                 auto f = query_inference_function("Celu");
                 infer_.do_inference(f);
@@ -1205,8 +1205,8 @@ namespace math {
                 infer_.new_attr("reverse", reverse);
                 infer_.new_attr("exclusive", exclusive);
 
-               infer_.new_input(x);
-               infer_.new_input(axis);
+                infer_.new_input(x);
+                infer_.new_input(axis);
 
                 auto f = query_inference_function("CumSum");
                 infer_.do_inference(f);
@@ -1261,7 +1261,7 @@ namespace math {
                 YNXInferenceContextImpl infer_(outputs_);
 
 
-               infer_.new_input(X);
+                infer_.new_input(X);
 
                 auto f = query_inference_function("Det");
                 infer_.do_inference(f);
@@ -1320,14 +1320,14 @@ namespace math {
                 YNXInferenceContextImpl infer_(outputs_);
 
 
-               infer_.new_input(a);
-               infer_.new_input(a_scale);
-               infer_.new_input(a_zero_point);
-               infer_.new_input(b);
-               infer_.new_input(b_scale);
-               infer_.new_input(b_zero_point);
-               infer_.new_input(y_scale);
-               infer_.new_input(y_zero_point);
+                infer_.new_input(a);
+                infer_.new_input(a_scale);
+                infer_.new_input(a_zero_point);
+                infer_.new_input(b);
+                infer_.new_input(b_scale);
+                infer_.new_input(b_zero_point);
+                infer_.new_input(y_scale);
+                infer_.new_input(y_zero_point);
 
                 auto f = query_inference_function("QLinearMatMul");
                 infer_.do_inference(f);
@@ -1389,10 +1389,10 @@ namespace math {
                 YNXInferenceContextImpl infer_(outputs_);
 
 
-               infer_.new_input(A);
-               infer_.new_input(B);
-               infer_.new_input(a_zero_point);
-               infer_.new_input(b_zero_point);
+                infer_.new_input(A);
+                infer_.new_input(B);
+                infer_.new_input(a_zero_point);
+                infer_.new_input(b_zero_point);
 
                 auto f = query_inference_function("MatMulInteger");
                 infer_.do_inference(f);
@@ -1448,8 +1448,8 @@ namespace math {
                 YNXInferenceContextImpl infer_(outputs_);
 
 
-               infer_.new_input(A);
-               infer_.new_input(B);
+                infer_.new_input(A);
+                infer_.new_input(B);
 
                 auto f = query_inference_function("Mul");
                 infer_.do_inference(f);
@@ -1502,7 +1502,7 @@ namespace math {
                 YNXInferenceContextImpl infer_(outputs_);
 
 
-               infer_.new_input(data_0);
+                infer_.new_input(data_0);
 
                 auto f = query_inference_function("Max");
                 infer_.do_inference(f);
@@ -1557,8 +1557,8 @@ namespace math {
 
                 infer_.new_attr("fmod", fmod);
 
-               infer_.new_input(A);
-               infer_.new_input(B);
+                infer_.new_input(A);
+                infer_.new_input(B);
 
                 auto f = query_inference_function("Mod");
                 infer_.do_inference(f);
@@ -1612,7 +1612,7 @@ namespace math {
                 YNXInferenceContextImpl infer_(outputs_);
 
 
-               infer_.new_input(input);
+                infer_.new_input(input);
 
                 auto f = query_inference_function("Log");
                 infer_.do_inference(f);
@@ -1664,7 +1664,7 @@ namespace math {
                 YNXInferenceContextImpl infer_(outputs_);
 
 
-               infer_.new_input(input);
+                infer_.new_input(input);
 
                 auto f = query_inference_function("Sign");
                 infer_.do_inference(f);
@@ -1716,7 +1716,7 @@ namespace math {
                 YNXInferenceContextImpl infer_(outputs_);
 
 
-               infer_.new_input(data_0);
+                infer_.new_input(data_0);
 
                 auto f = query_inference_function("Min");
                 infer_.do_inference(f);
@@ -1769,8 +1769,8 @@ namespace math {
                 YNXInferenceContextImpl infer_(outputs_);
 
 
-               infer_.new_input(X);
-               infer_.new_input(slope);
+                infer_.new_input(X);
+                infer_.new_input(slope);
 
                 auto f = query_inference_function("PRelu");
                 infer_.do_inference(f);
@@ -1823,7 +1823,7 @@ namespace math {
                 YNXInferenceContextImpl infer_(outputs_);
 
 
-               infer_.new_input(X);
+                infer_.new_input(X);
 
                 auto f = query_inference_function("Ceil");
                 infer_.do_inference(f);
@@ -1875,7 +1875,7 @@ namespace math {
                 YNXInferenceContextImpl infer_(outputs_);
 
 
-               infer_.new_input(input);
+                infer_.new_input(input);
 
                 auto f = query_inference_function("Tan");
                 infer_.do_inference(f);
@@ -1929,9 +1929,9 @@ namespace math {
                 YNXInferenceContextImpl infer_(outputs_);
 
 
-               infer_.new_input(input);
-               infer_.new_input(min);
-               infer_.new_input(max);
+                infer_.new_input(input);
+                infer_.new_input(min);
+                infer_.new_input(max);
 
                 auto f = query_inference_function("Clip");
                 infer_.do_inference(f);
@@ -1985,7 +1985,7 @@ namespace math {
                 YNXInferenceContextImpl infer_(outputs_);
 
 
-               infer_.new_input(X);
+                infer_.new_input(X);
 
                 auto f = query_inference_function("Neg");
                 infer_.do_inference(f);
@@ -2037,7 +2037,7 @@ namespace math {
                 YNXInferenceContextImpl infer_(outputs_);
 
 
-               infer_.new_input(X);
+                infer_.new_input(X);
 
                 auto f = query_inference_function("Abs");
                 infer_.do_inference(f);
@@ -2089,7 +2089,7 @@ namespace math {
                 YNXInferenceContextImpl infer_(outputs_);
 
 
-               infer_.new_input(X);
+                infer_.new_input(X);
 
                 auto f = query_inference_function("Softplus");
                 infer_.do_inference(f);
@@ -2143,7 +2143,7 @@ namespace math {
 
                 infer_.new_attr("equation", equation);
 
-               infer_.new_input(Inputs);
+                infer_.new_input(Inputs);
 
                 auto f = query_inference_function("Einsum");
                 infer_.do_inference(f);
@@ -2197,8 +2197,8 @@ namespace math {
                 YNXInferenceContextImpl infer_(outputs_);
 
 
-               infer_.new_input(A);
-               infer_.new_input(B);
+                infer_.new_input(A);
+                infer_.new_input(B);
 
                 auto f = query_inference_function("Sub");
                 infer_.do_inference(f);
@@ -2251,7 +2251,7 @@ namespace math {
                 YNXInferenceContextImpl infer_(outputs_);
 
 
-               infer_.new_input(X);
+                infer_.new_input(X);
 
                 auto f = query_inference_function("Floor");
                 infer_.do_inference(f);
@@ -2303,7 +2303,7 @@ namespace math {
                 YNXInferenceContextImpl infer_(outputs_);
 
 
-               infer_.new_input(X);
+                infer_.new_input(X);
 
                 auto f = query_inference_function("Sigmoid");
                 infer_.do_inference(f);
@@ -2357,7 +2357,7 @@ namespace math {
 
                 infer_.new_attr("axis", axis);
 
-               infer_.new_input(input);
+                infer_.new_input(input);
 
                 auto f = query_inference_function("Softmax");
                 infer_.do_inference(f);
@@ -2411,8 +2411,8 @@ namespace math {
                 YNXInferenceContextImpl infer_(outputs_);
 
 
-               infer_.new_input(A);
-               infer_.new_input(B);
+                infer_.new_input(A);
+                infer_.new_input(B);
 
                 auto f = query_inference_function("Add");
                 infer_.do_inference(f);
@@ -2465,7 +2465,7 @@ namespace math {
                 YNXInferenceContextImpl infer_(outputs_);
 
 
-               infer_.new_input(X);
+                infer_.new_input(X);
 
                 auto f = query_inference_function("Round");
                 infer_.do_inference(f);
@@ -2517,7 +2517,7 @@ namespace math {
                 YNXInferenceContextImpl infer_(outputs_);
 
 
-               infer_.new_input(input);
+                infer_.new_input(input);
 
                 auto f = query_inference_function("Exp");
                 infer_.do_inference(f);
@@ -2570,8 +2570,8 @@ namespace math {
                 YNXInferenceContextImpl infer_(outputs_);
 
 
-               infer_.new_input(A);
-               infer_.new_input(B);
+                infer_.new_input(A);
+                infer_.new_input(B);
 
                 auto f = query_inference_function("MatMul");
                 infer_.do_inference(f);
@@ -2626,7 +2626,7 @@ namespace math {
 
                 infer_.new_attr("alpha", alpha);
 
-               infer_.new_input(X);
+                infer_.new_input(X);
 
                 auto f = query_inference_function("LeakyRelu");
                 infer_.do_inference(f);
@@ -2689,9 +2689,9 @@ namespace math {
                 infer_.new_attr("beta", beta);
                 infer_.new_attr("alpha", alpha);
 
-               infer_.new_input(A);
-               infer_.new_input(B);
-               infer_.new_input(C);
+                infer_.new_input(A);
+                infer_.new_input(B);
+                infer_.new_input(C);
 
                 auto f = query_inference_function("Gemm");
                 infer_.do_inference(f);
@@ -2755,9 +2755,9 @@ namespace math {
                 infer_.new_attr("reduction", reduction);
                 infer_.new_attr("ignore_index", ignore_index);
 
-               infer_.new_input(input);
-               infer_.new_input(target);
-               infer_.new_input(weight);
+                infer_.new_input(input);
+                infer_.new_input(target);
+                infer_.new_input(weight);
 
                 auto f = query_inference_function("NegativeLogLikelihoodLoss");
                 infer_.do_inference(f);
@@ -2813,7 +2813,7 @@ namespace math {
                 YNXInferenceContextImpl infer_(outputs_);
 
 
-               infer_.new_input(X);
+                infer_.new_input(X);
 
                 auto f = query_inference_function("HardSwish");
                 infer_.do_inference(f);
@@ -2865,7 +2865,7 @@ namespace math {
                 YNXInferenceContextImpl infer_(outputs_);
 
 
-               infer_.new_input(data_0);
+                infer_.new_input(data_0);
 
                 auto f = query_inference_function("Mean");
                 infer_.do_inference(f);
@@ -2917,7 +2917,7 @@ namespace math {
                 YNXInferenceContextImpl infer_(outputs_);
 
 
-               infer_.new_input(input);
+                infer_.new_input(input);
 
                 auto f = query_inference_function("Asin");
                 infer_.do_inference(f);
@@ -2970,8 +2970,8 @@ namespace math {
                 YNXInferenceContextImpl infer_(outputs_);
 
 
-               infer_.new_input(A);
-               infer_.new_input(B);
+                infer_.new_input(A);
+                infer_.new_input(B);
 
                 auto f = query_inference_function("Div");
                 infer_.do_inference(f);
@@ -3024,7 +3024,7 @@ namespace math {
                 YNXInferenceContextImpl infer_(outputs_);
 
 
-               infer_.new_input(input);
+                infer_.new_input(input);
 
                 auto f = query_inference_function("Softsign");
                 infer_.do_inference(f);
@@ -3076,7 +3076,7 @@ namespace math {
                 YNXInferenceContextImpl infer_(outputs_);
 
 
-               infer_.new_input(X);
+                infer_.new_input(X);
 
                 auto f = query_inference_function("Reciprocal");
                 infer_.do_inference(f);
@@ -3128,7 +3128,7 @@ namespace math {
                 YNXInferenceContextImpl infer_(outputs_);
 
 
-               infer_.new_input(X);
+                infer_.new_input(X);
 
                 auto f = query_inference_function("Relu");
                 infer_.do_inference(f);
@@ -3182,7 +3182,7 @@ namespace math {
 
                 infer_.new_attr("alpha", alpha);
 
-               infer_.new_input(X);
+                infer_.new_input(X);
 
                 auto f = query_inference_function("Elu");
                 infer_.do_inference(f);
@@ -3239,7 +3239,7 @@ namespace math {
                 infer_.new_attr("gamma", gamma);
                 infer_.new_attr("alpha", alpha);
 
-               infer_.new_input(X);
+                infer_.new_input(X);
 
                 auto f = query_inference_function("Selu");
                 infer_.do_inference(f);
@@ -3297,7 +3297,7 @@ namespace math {
                 infer_.new_attr("beta", beta);
                 infer_.new_attr("alpha", alpha);
 
-               infer_.new_input(X);
+                infer_.new_input(X);
 
                 auto f = query_inference_function("HardSigmoid");
                 infer_.do_inference(f);
@@ -3353,7 +3353,7 @@ namespace math {
 
                 infer_.new_attr("axis", axis);
 
-               infer_.new_input(input);
+                infer_.new_input(input);
 
                 auto f = query_inference_function("LogSoftmax");
                 infer_.do_inference(f);
@@ -3406,7 +3406,7 @@ namespace math {
                 YNXInferenceContextImpl infer_(outputs_);
 
 
-               infer_.new_input(X);
+                infer_.new_input(X);
 
                 auto f = query_inference_function("Sqrt");
                 infer_.do_inference(f);
@@ -3459,8 +3459,8 @@ namespace math {
                 YNXInferenceContextImpl infer_(outputs_);
 
 
-               infer_.new_input(input);
-               infer_.new_input(shape);
+                infer_.new_input(input);
+                infer_.new_input(shape);
 
                 auto f = query_inference_function("Expand");
                 infer_.do_inference(f);
@@ -3513,7 +3513,7 @@ namespace math {
                 YNXInferenceContextImpl infer_(outputs_);
 
 
-               infer_.new_input(data_0);
+                infer_.new_input(data_0);
 
                 auto f = query_inference_function("Sum");
                 infer_.do_inference(f);
@@ -3565,7 +3565,7 @@ namespace math {
                 YNXInferenceContextImpl infer_(outputs_);
 
 
-               infer_.new_input(input);
+                infer_.new_input(input);
 
                 auto f = query_inference_function("Tanh");
                 infer_.do_inference(f);
@@ -3627,8 +3627,8 @@ namespace math {
                 infer_.new_attr("largest", largest);
                 infer_.new_attr("axis", axis);
 
-               infer_.new_input(X);
-               infer_.new_input(K);
+                infer_.new_input(X);
+                infer_.new_input(K);
 
                 auto f = query_inference_function("TopK");
                 infer_.do_inference(f);
@@ -3689,7 +3689,7 @@ namespace math {
 
                 infer_.new_attr("alpha", alpha);
 
-               infer_.new_input(X);
+                infer_.new_input(X);
 
                 auto f = query_inference_function("ThresholdedRelu");
                 infer_.do_inference(f);
@@ -3742,7 +3742,7 @@ namespace math {
                 YNXInferenceContextImpl infer_(outputs_);
 
 
-               infer_.new_input(input);
+                infer_.new_input(input);
 
                 auto f = query_inference_function("Acos");
                 infer_.do_inference(f);
@@ -3795,8 +3795,8 @@ namespace math {
                 YNXInferenceContextImpl infer_(outputs_);
 
 
-               infer_.new_input(X);
-               infer_.new_input(Y);
+                infer_.new_input(X);
+                infer_.new_input(Y);
 
                 auto f = query_inference_function("Pow");
                 infer_.do_inference(f);
@@ -3849,7 +3849,7 @@ namespace math {
                 YNXInferenceContextImpl infer_(outputs_);
 
 
-               infer_.new_input(input);
+                infer_.new_input(input);
 
                 auto f = query_inference_function("Atan");
                 infer_.do_inference(f);
@@ -3901,7 +3901,7 @@ namespace math {
                 YNXInferenceContextImpl infer_(outputs_);
 
 
-               infer_.new_input(input);
+                infer_.new_input(input);
 
                 auto f = query_inference_function("Cos");
                 infer_.do_inference(f);
@@ -3953,7 +3953,7 @@ namespace math {
                 YNXInferenceContextImpl infer_(outputs_);
 
 
-               infer_.new_input(input);
+                infer_.new_input(input);
 
                 auto f = query_inference_function("Sin");
                 infer_.do_inference(f);
@@ -4005,7 +4005,7 @@ namespace math {
                 YNXInferenceContextImpl infer_(outputs_);
 
 
-               infer_.new_input(input);
+                infer_.new_input(input);
 
                 auto f = query_inference_function("Sinh");
                 infer_.do_inference(f);
@@ -4057,7 +4057,7 @@ namespace math {
                 YNXInferenceContextImpl infer_(outputs_);
 
 
-               infer_.new_input(input);
+                infer_.new_input(input);
 
                 auto f = query_inference_function("Asinh");
                 infer_.do_inference(f);
@@ -4109,7 +4109,7 @@ namespace math {
                 YNXInferenceContextImpl infer_(outputs_);
 
 
-               infer_.new_input(input);
+                infer_.new_input(input);
 
                 auto f = query_inference_function("Acosh");
                 infer_.do_inference(f);
@@ -4161,7 +4161,7 @@ namespace math {
                 YNXInferenceContextImpl infer_(outputs_);
 
 
-               infer_.new_input(input);
+                infer_.new_input(input);
 
                 auto f = query_inference_function("Cosh");
                 infer_.do_inference(f);
@@ -4213,7 +4213,7 @@ namespace math {
                 YNXInferenceContextImpl infer_(outputs_);
 
 
-               infer_.new_input(input);
+                infer_.new_input(input);
 
                 auto f = query_inference_function("Atanh");
                 infer_.do_inference(f);
@@ -4267,7 +4267,7 @@ namespace math {
 
                 infer_.new_attr("axis", axis);
 
-               infer_.new_input(input);
+                infer_.new_input(input);
 
                 auto f = query_inference_function("Hardmax");
                 infer_.do_inference(f);
@@ -4320,7 +4320,7 @@ namespace math {
                 YNXInferenceContextImpl infer_(outputs_);
 
 
-               infer_.new_input(input);
+                infer_.new_input(input);
 
                 auto f = query_inference_function("Erf");
                 infer_.do_inference(f);
@@ -4396,9 +4396,9 @@ namespace nn {
                 infer_.new_attr("epsilon", epsilon);
                 infer_.new_attr("axis", axis);
 
-               infer_.new_input(X);
-               infer_.new_input(Scale);
-               infer_.new_input(B);
+                infer_.new_input(X);
+                infer_.new_input(Scale);
+                infer_.new_input(B);
 
                 auto f = query_inference_function("LayerNormalization");
                 infer_.do_inference(f);
@@ -4495,15 +4495,15 @@ namespace nn {
                 infer_.new_attr("dilations", dilations);
                 infer_.new_attr("auto_pad", auto_pad);
 
-               infer_.new_input(x);
-               infer_.new_input(x_scale);
-               infer_.new_input(x_zero_point);
-               infer_.new_input(w);
-               infer_.new_input(w_scale);
-               infer_.new_input(w_zero_point);
-               infer_.new_input(y_scale);
-               infer_.new_input(y_zero_point);
-               infer_.new_input(B);
+                infer_.new_input(x);
+                infer_.new_input(x_scale);
+                infer_.new_input(x_zero_point);
+                infer_.new_input(w);
+                infer_.new_input(w_scale);
+                infer_.new_input(w_zero_point);
+                infer_.new_input(y_scale);
+                infer_.new_input(y_zero_point);
+                infer_.new_input(B);
 
                 auto f = query_inference_function("QLinearConv");
                 infer_.do_inference(f);
@@ -4584,10 +4584,10 @@ namespace nn {
                 infer_.new_attr("dilations", dilations);
                 infer_.new_attr("auto_pad", auto_pad);
 
-               infer_.new_input(x);
-               infer_.new_input(w);
-               infer_.new_input(x_zero_point);
-               infer_.new_input(w_zero_point);
+                infer_.new_input(x);
+                infer_.new_input(w);
+                infer_.new_input(x_zero_point);
+                infer_.new_input(w_zero_point);
 
                 auto f = query_inference_function("ConvInteger");
                 infer_.do_inference(f);
@@ -4669,7 +4669,7 @@ namespace nn {
                 infer_.new_attr("ceil_mode", ceil_mode);
                 infer_.new_attr("auto_pad", auto_pad);
 
-               infer_.new_input(X);
+                infer_.new_input(X);
 
                 auto f = query_inference_function("MaxPool");
                 infer_.do_inference(f);
@@ -4752,9 +4752,9 @@ namespace nn {
                 infer_.new_attr("dilations", dilations);
                 infer_.new_attr("auto_pad", auto_pad);
 
-               infer_.new_input(X);
-               infer_.new_input(W);
-               infer_.new_input(B);
+                infer_.new_input(X);
+                infer_.new_input(W);
+                infer_.new_input(B);
 
                 auto f = query_inference_function("Conv");
                 infer_.do_inference(f);
@@ -4822,9 +4822,9 @@ namespace nn {
                 infer_.new_attr("pads", pads);
                 infer_.new_attr("kernel_shape", kernel_shape);
 
-               infer_.new_input(X);
-               infer_.new_input(I);
-               infer_.new_input(output_shape);
+                infer_.new_input(X);
+                infer_.new_input(I);
+                infer_.new_input(output_shape);
 
                 auto f = query_inference_function("MaxUnpool");
                 infer_.do_inference(f);
@@ -4899,7 +4899,7 @@ namespace nn {
                 infer_.new_attr("max_skip_count", max_skip_count);
                 infer_.new_attr("max_gram_length", max_gram_length);
 
-               infer_.new_input(X);
+                infer_.new_input(X);
 
                 auto f = query_inference_function("TfIdfVectorizer");
                 infer_.do_inference(f);
@@ -4978,9 +4978,9 @@ namespace nn {
                 infer_.new_attr("dilations", dilations);
                 infer_.new_attr("auto_pad", auto_pad);
 
-               infer_.new_input(X);
-               infer_.new_input(W);
-               infer_.new_input(B);
+                infer_.new_input(X);
+                infer_.new_input(W);
+                infer_.new_input(B);
 
                 auto f = query_inference_function("ConvTranspose");
                 infer_.do_inference(f);
@@ -5044,7 +5044,7 @@ namespace nn {
 
                 infer_.new_attr("axis", axis);
 
-               infer_.new_input(input);
+                infer_.new_input(input);
 
                 auto f = query_inference_function("Flatten");
                 infer_.do_inference(f);
@@ -5102,8 +5102,8 @@ namespace nn {
                 infer_.new_attr("spatial_scale", spatial_scale);
                 infer_.new_attr("pooled_shape", pooled_shape);
 
-               infer_.new_input(X);
-               infer_.new_input(rois);
+                infer_.new_input(X);
+                infer_.new_input(rois);
 
                 auto f = query_inference_function("MaxRoiPool");
                 infer_.do_inference(f);
@@ -5162,9 +5162,9 @@ namespace nn {
 
                 infer_.new_attr("epsilon", epsilon);
 
-               infer_.new_input(input);
-               infer_.new_input(scale);
-               infer_.new_input(B);
+                infer_.new_input(input);
+                infer_.new_input(scale);
+                infer_.new_input(B);
 
                 auto f = query_inference_function("InstanceNormalization");
                 infer_.do_inference(f);
@@ -5229,7 +5229,7 @@ namespace nn {
                 infer_.new_attr("kernel_shape", kernel_shape);
                 infer_.new_attr("auto_pad", auto_pad);
 
-               infer_.new_input(X);
+                infer_.new_input(X);
 
                 auto f = query_inference_function("LpPool");
                 infer_.do_inference(f);
@@ -5298,7 +5298,7 @@ namespace nn {
                 infer_.new_attr("ceil_mode", ceil_mode);
                 infer_.new_attr("auto_pad", auto_pad);
 
-               infer_.new_input(X);
+                infer_.new_input(X);
 
                 auto f = query_inference_function("AveragePool");
                 infer_.do_inference(f);
@@ -5367,9 +5367,9 @@ namespace nn {
 
                 infer_.new_attr("seed", seed);
 
-               infer_.new_input(data);
-               infer_.new_input(ratio);
-               infer_.new_input(training_mode);
+                infer_.new_input(data);
+                infer_.new_input(ratio);
+                infer_.new_input(training_mode);
 
                 auto f = query_inference_function("Dropout");
                 infer_.do_inference(f);
@@ -5458,11 +5458,11 @@ namespace nn {
                 infer_.new_attr("momentum", momentum);
                 infer_.new_attr("epsilon", epsilon);
 
-               infer_.new_input(X);
-               infer_.new_input(scale);
-               infer_.new_input(B);
-               infer_.new_input(input_mean);
-               infer_.new_input(input_var);
+                infer_.new_input(X);
+                infer_.new_input(scale);
+                infer_.new_input(B);
+                infer_.new_input(input_mean);
+                infer_.new_input(input_var);
 
                 auto f = query_inference_function("BatchNormalization");
                 infer_.do_inference(f);
@@ -5545,7 +5545,7 @@ namespace nn {
                 infer_.new_attr("p", p);
                 infer_.new_attr("axis", axis);
 
-               infer_.new_input(input);
+                infer_.new_input(input);
 
                 auto f = query_inference_function("LpNormalization");
                 infer_.do_inference(f);
@@ -5601,7 +5601,7 @@ namespace nn {
 
                 infer_.new_attr("p", p);
 
-               infer_.new_input(X);
+                infer_.new_input(X);
 
                 auto f = query_inference_function("GlobalLpPool");
                 infer_.do_inference(f);
@@ -5654,7 +5654,7 @@ namespace nn {
                 YNXInferenceContextImpl infer_(outputs_);
 
 
-               infer_.new_input(X);
+                infer_.new_input(X);
 
                 auto f = query_inference_function("GlobalMaxPool");
                 infer_.do_inference(f);
@@ -5708,7 +5708,7 @@ namespace nn {
 
                 infer_.new_attr("axes", axes);
 
-               infer_.new_input(X);
+                infer_.new_input(X);
 
                 auto f = query_inference_function("MeanVarianceNormalization");
                 infer_.do_inference(f);
@@ -5761,7 +5761,7 @@ namespace nn {
                 YNXInferenceContextImpl infer_(outputs_);
 
 
-               infer_.new_input(X);
+                infer_.new_input(X);
 
                 auto f = query_inference_function("GlobalAveragePool");
                 infer_.do_inference(f);
@@ -5821,7 +5821,7 @@ namespace nn {
                 infer_.new_attr("beta", beta);
                 infer_.new_attr("alpha", alpha);
 
-               infer_.new_input(X);
+                infer_.new_input(X);
 
                 auto f = query_inference_function("LRN");
                 infer_.do_inference(f);
@@ -5885,7 +5885,7 @@ namespace nn {
                 infer_.new_attr("is_case_sensitive", is_case_sensitive);
                 infer_.new_attr("case_change_action", case_change_action);
 
-               infer_.new_input(X);
+                infer_.new_input(X);
 
                 auto f = query_inference_function("StringNormalizer");
                 infer_.do_inference(f);
@@ -5945,7 +5945,7 @@ namespace nn {
                 infer_.new_attr("lambd", lambd);
                 infer_.new_attr("bias", bias);
 
-               infer_.new_input(input);
+                infer_.new_input(input);
 
                 auto f = query_inference_function("Shrink");
                 infer_.do_inference(f);
@@ -6015,9 +6015,9 @@ namespace object_detection {
                 infer_.new_attr("mode", mode);
                 infer_.new_attr("coordinate_transformation_mode", coordinate_transformation_mode);
 
-               infer_.new_input(X);
-               infer_.new_input(rois);
-               infer_.new_input(batch_indices);
+                infer_.new_input(X);
+                infer_.new_input(rois);
+                infer_.new_input(batch_indices);
 
                 auto f = query_inference_function("RoiAlign");
                 infer_.do_inference(f);
@@ -6083,11 +6083,11 @@ namespace object_detection {
 
                 infer_.new_attr("center_point_box", center_point_box);
 
-               infer_.new_input(boxes);
-               infer_.new_input(scores);
-               infer_.new_input(max_output_boxes_per_class);
-               infer_.new_input(iou_threshold);
-               infer_.new_input(score_threshold);
+                infer_.new_input(boxes);
+                infer_.new_input(scores);
+                infer_.new_input(max_output_boxes_per_class);
+                infer_.new_input(iou_threshold);
+                infer_.new_input(score_threshold);
 
                 auto f = query_inference_function("NonMaxSuppression");
                 infer_.do_inference(f);
@@ -6150,9 +6150,9 @@ namespace quantization {
 
                 infer_.new_attr("axis", axis);
 
-               infer_.new_input(x);
-               infer_.new_input(x_scale);
-               infer_.new_input(x_zero_point);
+                infer_.new_input(x);
+                infer_.new_input(x_scale);
+                infer_.new_input(x_zero_point);
 
                 auto f = query_inference_function("DequantizeLinear");
                 infer_.do_inference(f);
@@ -6211,9 +6211,9 @@ namespace quantization {
 
                 infer_.new_attr("axis", axis);
 
-               infer_.new_input(x);
-               infer_.new_input(y_scale);
-               infer_.new_input(y_zero_point);
+                infer_.new_input(x);
+                infer_.new_input(y_scale);
+                infer_.new_input(y_zero_point);
 
                 auto f = query_inference_function("QuantizeLinear");
                 infer_.do_inference(f);
@@ -6274,7 +6274,7 @@ namespace quantization {
                 YNXInferenceContextImpl infer_(outputs_);
 
 
-               infer_.new_input(x);
+                infer_.new_input(x);
 
                 auto f = query_inference_function("DynamicQuantizeLinear");
                 infer_.do_inference(f);
@@ -6340,7 +6340,7 @@ namespace reduction {
                 infer_.new_attr("keepdims", keepdims);
                 infer_.new_attr("axis", axis);
 
-               infer_.new_input(data);
+                infer_.new_input(data);
 
                 auto f = query_inference_function("ArgMax");
                 infer_.do_inference(f);
@@ -6399,7 +6399,7 @@ namespace reduction {
                 infer_.new_attr("keepdims", keepdims);
                 infer_.new_attr("axes", axes);
 
-               infer_.new_input(data);
+                infer_.new_input(data);
 
                 auto f = query_inference_function("ReduceMax");
                 infer_.do_inference(f);
@@ -6457,7 +6457,7 @@ namespace reduction {
                 infer_.new_attr("keepdims", keepdims);
                 infer_.new_attr("axes", axes);
 
-               infer_.new_input(data);
+                infer_.new_input(data);
 
                 auto f = query_inference_function("ReduceMin");
                 infer_.do_inference(f);
@@ -6515,7 +6515,7 @@ namespace reduction {
                 infer_.new_attr("keepdims", keepdims);
                 infer_.new_attr("axes", axes);
 
-               infer_.new_input(data);
+                infer_.new_input(data);
 
                 auto f = query_inference_function("ReduceL2");
                 infer_.do_inference(f);
@@ -6573,7 +6573,7 @@ namespace reduction {
                 infer_.new_attr("keepdims", keepdims);
                 infer_.new_attr("axes", axes);
 
-               infer_.new_input(data);
+                infer_.new_input(data);
 
                 auto f = query_inference_function("ReduceLogSum");
                 infer_.do_inference(f);
@@ -6631,7 +6631,7 @@ namespace reduction {
                 infer_.new_attr("keepdims", keepdims);
                 infer_.new_attr("axes", axes);
 
-               infer_.new_input(data);
+                infer_.new_input(data);
 
                 auto f = query_inference_function("ReduceLogSumExp");
                 infer_.do_inference(f);
@@ -6691,7 +6691,7 @@ namespace reduction {
                 infer_.new_attr("keepdims", keepdims);
                 infer_.new_attr("axis", axis);
 
-               infer_.new_input(data);
+                infer_.new_input(data);
 
                 auto f = query_inference_function("ArgMin");
                 infer_.do_inference(f);
@@ -6750,7 +6750,7 @@ namespace reduction {
                 infer_.new_attr("keepdims", keepdims);
                 infer_.new_attr("axes", axes);
 
-               infer_.new_input(data);
+                infer_.new_input(data);
 
                 auto f = query_inference_function("ReduceMean");
                 infer_.do_inference(f);
@@ -6808,7 +6808,7 @@ namespace reduction {
                 infer_.new_attr("keepdims", keepdims);
                 infer_.new_attr("axes", axes);
 
-               infer_.new_input(data);
+                infer_.new_input(data);
 
                 auto f = query_inference_function("ReduceL1");
                 infer_.do_inference(f);
@@ -6867,8 +6867,8 @@ namespace reduction {
                 infer_.new_attr("noop_with_empty_axes", noop_with_empty_axes);
                 infer_.new_attr("keepdims", keepdims);
 
-               infer_.new_input(data);
-               infer_.new_input(axes);
+                infer_.new_input(data);
+                infer_.new_input(axes);
 
                 auto f = query_inference_function("ReduceSum");
                 infer_.do_inference(f);
@@ -6927,7 +6927,7 @@ namespace reduction {
                 infer_.new_attr("keepdims", keepdims);
                 infer_.new_attr("axes", axes);
 
-               infer_.new_input(data);
+                infer_.new_input(data);
 
                 auto f = query_inference_function("ReduceSumSquare");
                 infer_.do_inference(f);
@@ -6985,7 +6985,7 @@ namespace reduction {
                 infer_.new_attr("keepdims", keepdims);
                 infer_.new_attr("axes", axes);
 
-               infer_.new_input(data);
+                infer_.new_input(data);
 
                 auto f = query_inference_function("ReduceProd");
                 infer_.do_inference(f);
@@ -7048,8 +7048,8 @@ namespace tensor {
                 infer_.new_attr("mode", mode);
                 infer_.new_attr("align_corners", align_corners);
 
-               infer_.new_input(X);
-               infer_.new_input(grid);
+                infer_.new_input(X);
+                infer_.new_input(grid);
 
                 auto f = query_inference_function("GridSample");
                 infer_.do_inference(f);
@@ -7106,8 +7106,8 @@ namespace tensor {
                 YNXInferenceContextImpl infer_(outputs_);
 
 
-               infer_.new_input(input);
-               infer_.new_input(target_type);
+                infer_.new_input(input);
+                infer_.new_input(target_type);
 
                 auto f = query_inference_function("CastLike");
                 infer_.do_inference(f);
@@ -7163,8 +7163,8 @@ namespace tensor {
 
                 infer_.new_attr("batch_dims", batch_dims);
 
-               infer_.new_input(data);
-               infer_.new_input(indices);
+                infer_.new_input(data);
+                infer_.new_input(indices);
 
                 auto f = query_inference_function("GatherND");
                 infer_.do_inference(f);
@@ -7222,9 +7222,9 @@ namespace tensor {
 
                 infer_.new_attr("reduction", reduction);
 
-               infer_.new_input(data);
-               infer_.new_input(indices);
-               infer_.new_input(updates);
+                infer_.new_input(data);
+                infer_.new_input(indices);
+                infer_.new_input(updates);
 
                 auto f = query_inference_function("ScatterND");
                 infer_.do_inference(f);
@@ -7282,8 +7282,8 @@ namespace tensor {
 
                 infer_.new_attr("axis", axis);
 
-               infer_.new_input(data);
-               infer_.new_input(indices);
+                infer_.new_input(data);
+                infer_.new_input(indices);
 
                 auto f = query_inference_function("GatherElements");
                 infer_.do_inference(f);
@@ -7341,7 +7341,7 @@ namespace tensor {
                 infer_.new_attr("detect_positive", detect_positive);
                 infer_.new_attr("detect_negative", detect_negative);
 
-               infer_.new_input(X);
+                infer_.new_input(X);
 
                 auto f = query_inference_function("IsInf");
                 infer_.do_inference(f);
@@ -7403,8 +7403,8 @@ namespace tensor {
 
                 infer_.new_attr("axis", axis);
 
-               infer_.new_input(input);
-               infer_.new_input(split);
+                infer_.new_input(input);
+                infer_.new_input(split);
 
                 auto f = query_inference_function("Split");
                 infer_.do_inference(f);
@@ -7462,7 +7462,7 @@ namespace tensor {
 
                 infer_.new_attr("to", to);
 
-               infer_.new_input(input);
+                infer_.new_input(input);
 
                 auto f = query_inference_function("Cast");
                 infer_.do_inference(f);
@@ -7519,9 +7519,9 @@ namespace tensor {
 
                 infer_.new_attr("mode", mode);
 
-               infer_.new_input(data);
-               infer_.new_input(pads);
-               infer_.new_input(constant_value);
+                infer_.new_input(data);
+                infer_.new_input(pads);
+                infer_.new_input(constant_value);
 
                 auto f = query_inference_function("Pad");
                 infer_.do_inference(f);
@@ -7576,7 +7576,7 @@ namespace tensor {
                 YNXInferenceContextImpl infer_(outputs_);
 
 
-               infer_.new_input(X);
+                infer_.new_input(X);
 
                 auto f = query_inference_function("NonZero");
                 infer_.do_inference(f);
@@ -7630,7 +7630,7 @@ namespace tensor {
 
                 infer_.new_attr("axis", axis);
 
-               infer_.new_input(inputs);
+                infer_.new_input(inputs);
 
                 auto f = query_inference_function("Concat");
                 infer_.do_inference(f);
@@ -7708,7 +7708,7 @@ namespace tensor {
                 infer_.new_attr("sorted", sorted);
                 infer_.new_attr("axis", axis);
 
-               infer_.new_input(X);
+                infer_.new_input(X);
 
                 auto f = query_inference_function("Unique");
                 infer_.do_inference(f);
@@ -7796,11 +7796,11 @@ namespace tensor {
                 YNXInferenceContextImpl infer_(outputs_);
 
 
-               infer_.new_input(data);
-               infer_.new_input(starts);
-               infer_.new_input(ends);
-               infer_.new_input(axes);
-               infer_.new_input(steps);
+                infer_.new_input(data);
+                infer_.new_input(starts);
+                infer_.new_input(ends);
+                infer_.new_input(axes);
+                infer_.new_input(steps);
 
                 auto f = query_inference_function("Slice");
                 infer_.do_inference(f);
@@ -7861,8 +7861,8 @@ namespace tensor {
                 infer_.new_attr("time_axis", time_axis);
                 infer_.new_attr("batch_axis", batch_axis);
 
-               infer_.new_input(input);
-               infer_.new_input(sequence_lens);
+                infer_.new_input(input);
+                infer_.new_input(sequence_lens);
 
                 auto f = query_inference_function("ReverseSequence");
                 infer_.do_inference(f);
@@ -7921,9 +7921,9 @@ namespace tensor {
 
                 infer_.new_attr("axis", axis);
 
-               infer_.new_input(indices);
-               infer_.new_input(depth);
-               infer_.new_input(values);
+                infer_.new_input(indices);
+                infer_.new_input(depth);
+                infer_.new_input(values);
 
                 auto f = query_inference_function("OneHot");
                 infer_.do_inference(f);
@@ -7981,8 +7981,8 @@ namespace tensor {
 
                 infer_.new_attr("axis", axis);
 
-               infer_.new_input(data);
-               infer_.new_input(indices);
+                infer_.new_input(data);
+                infer_.new_input(indices);
 
                 auto f = query_inference_function("Gather");
                 infer_.do_inference(f);
@@ -8036,7 +8036,7 @@ namespace tensor {
                 YNXInferenceContextImpl infer_(outputs_);
 
 
-               infer_.new_input(X);
+                infer_.new_input(X);
 
                 auto f = query_inference_function("IsNaN");
                 infer_.do_inference(f);
@@ -8092,7 +8092,7 @@ namespace tensor {
                 infer_.new_attr("mode", mode);
                 infer_.new_attr("blocksize", blocksize);
 
-               infer_.new_input(input);
+                infer_.new_input(input);
 
                 auto f = query_inference_function("DepthToSpace");
                 infer_.do_inference(f);
@@ -8152,9 +8152,9 @@ namespace tensor {
                 infer_.new_attr("reduction", reduction);
                 infer_.new_attr("axis", axis);
 
-               infer_.new_input(data);
-               infer_.new_input(indices);
-               infer_.new_input(updates);
+                infer_.new_input(data);
+                infer_.new_input(indices);
+                infer_.new_input(updates);
 
                 auto f = query_inference_function("ScatterElements");
                 infer_.do_inference(f);
@@ -8213,8 +8213,8 @@ namespace tensor {
 
                 infer_.new_attr("allowzero", allowzero);
 
-               infer_.new_input(data);
-               infer_.new_input(shape);
+                infer_.new_input(data);
+                infer_.new_input(shape);
 
                 auto f = query_inference_function("Reshape");
                 infer_.do_inference(f);
@@ -8272,7 +8272,7 @@ namespace tensor {
                 infer_.new_attr("start", start);
                 infer_.new_attr("end", end);
 
-               infer_.new_input(data);
+                infer_.new_input(data);
 
                 auto f = query_inference_function("Shape");
                 infer_.do_inference(f);
@@ -8326,7 +8326,7 @@ namespace tensor {
                 YNXInferenceContextImpl infer_(outputs_);
 
 
-               infer_.new_input(data);
+                infer_.new_input(data);
 
                 auto f = query_inference_function("Size");
                 infer_.do_inference(f);
@@ -8380,7 +8380,7 @@ namespace tensor {
 
                 infer_.new_attr("blocksize", blocksize);
 
-               infer_.new_input(input);
+                infer_.new_input(input);
 
                 auto f = query_inference_function("SpaceToDepth");
                 infer_.do_inference(f);
@@ -8433,7 +8433,7 @@ namespace tensor {
                 YNXInferenceContextImpl infer_(outputs_);
 
 
-               infer_.new_input(input);
+                infer_.new_input(input);
 
                 auto f = query_inference_function("Identity");
                 infer_.do_inference(f);
@@ -8486,8 +8486,8 @@ namespace tensor {
                 YNXInferenceContextImpl infer_(outputs_);
 
 
-               infer_.new_input(data);
-               infer_.new_input(axes);
+                infer_.new_input(data);
+                infer_.new_input(axes);
 
                 auto f = query_inference_function("Squeeze");
                 infer_.do_inference(f);
@@ -8541,8 +8541,8 @@ namespace tensor {
                 YNXInferenceContextImpl infer_(outputs_);
 
 
-               infer_.new_input(input);
-               infer_.new_input(repeats);
+                infer_.new_input(input);
+                infer_.new_input(repeats);
 
                 auto f = query_inference_function("Tile");
                 infer_.do_inference(f);
@@ -8596,8 +8596,8 @@ namespace tensor {
                 YNXInferenceContextImpl infer_(outputs_);
 
 
-               infer_.new_input(data);
-               infer_.new_input(axes);
+                infer_.new_input(data);
+                infer_.new_input(axes);
 
                 auto f = query_inference_function("Unsqueeze");
                 infer_.do_inference(f);
@@ -8652,7 +8652,7 @@ namespace tensor {
 
                 infer_.new_attr("perm", perm);
 
-               infer_.new_input(data);
+                infer_.new_input(data);
 
                 auto f = query_inference_function("Transpose");
                 infer_.do_inference(f);
@@ -8708,8 +8708,8 @@ namespace tensor {
 
                 infer_.new_attr("axis", axis);
 
-               infer_.new_input(input);
-               infer_.new_input(condition);
+                infer_.new_input(input);
+                infer_.new_input(condition);
 
                 auto f = query_inference_function("Compress");
                 infer_.do_inference(f);
@@ -8766,8 +8766,8 @@ namespace tensor {
 
                 infer_.new_attr("upper", upper);
 
-               infer_.new_input(input);
-               infer_.new_input(k);
+                infer_.new_input(input);
+                infer_.new_input(k);
 
                 auto f = query_inference_function("Trilu");
                 infer_.do_inference(f);
@@ -8823,9 +8823,9 @@ namespace tensor {
                 YNXInferenceContextImpl infer_(outputs_);
 
 
-               infer_.new_input(condition);
-               infer_.new_input(X);
-               infer_.new_input(Y);
+                infer_.new_input(condition);
+                infer_.new_input(X);
+                infer_.new_input(Y);
 
                 auto f = query_inference_function("Where");
                 infer_.do_inference(f);
@@ -8894,10 +8894,10 @@ namespace tensor {
                 infer_.new_attr("cubic_coeff_a", cubic_coeff_a);
                 infer_.new_attr("coordinate_transformation_mode", coordinate_transformation_mode);
 
-               infer_.new_input(X);
-               infer_.new_input(roi);
-               infer_.new_input(scales);
-               infer_.new_input(sizes);
+                infer_.new_input(X);
+                infer_.new_input(roi);
+                infer_.new_input(scales);
+                infer_.new_input(sizes);
 
                 auto f = query_inference_function("Resize");
                 infer_.do_inference(f);

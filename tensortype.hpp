@@ -296,8 +296,7 @@ public:
 
     // reset to a scalar tensor
     void reset(TensorDataType dtype, const void* pvalue) override {
-        yannx_assert(dtype == YNX_UNDEFINED, "Can't reset a typed tensor!");
-        yannx_assert(impl_.index() == UNKNOW_ANY, "Can't reset a setted tensor!");
+        yannx_assert(dtype_ == YNX_UNDEFINED, "Can't reset a typed tensor!");
 
         dtype_ = dtype;
         shape_.clear();

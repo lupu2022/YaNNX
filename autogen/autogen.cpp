@@ -436,7 +436,7 @@ std::string impl_generate(const OpSchema& op) {
             oss << "\tinfer_.new_input(" << iname << ");" << std::endl;
         }
         auto input_code = oss.str();
-        replace_all(input_code, "\t", "               ");
+        replace_all(input_code, "\t", "                ");
         replace_all(code, "#INPUT_ONNX#", input_code);
     }
 

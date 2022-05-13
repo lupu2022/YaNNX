@@ -42,7 +42,7 @@ def linear
     onnx.MatMul
 
     ; B
-    ["out_size" @] "YNX_FLOAT" ynx.NewTensor~ 0 ynx.Register~ 
+    [1 "out_size" @] "YNX_FLOAT" ynx.NewTensor~ 0 ynx.Register~ 
     onnx.Add
 end
 
@@ -65,12 +65,10 @@ def Features
 end
 
 def Classifier
-    0.5 dropout
     1 onnx.Flatten
     9216 4096 linear
     onnx.Relu
 
-    0.5 dropout
     4096 4096 linear
     onnx.Relu
     

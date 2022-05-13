@@ -5,8 +5,8 @@ tt::OperatorReturnType DNNLTensor<_DTYPE_>::onnx_Conv(tt::tensor_t X, tt::tensor
     if ( dtype == tt::YNX_FLOAT ) {
         auto src_mem = dnnl(X)->dnnl_mem();
         auto src_md = dnnl(X)->dnnl_md();
-        auto weight_mem = dnnl(X)->dnnl_mem();
-        auto weight_md = dnnl(X)->dnnl_md();
+        auto weight_mem = dnnl(W)->dnnl_mem();
+        auto weight_md = dnnl(W)->dnnl_md();
         auto dst_md = dnnl(Y)->dnnl_md();
 
         dnnl_memory_desc_t* bias_md = nullptr;
@@ -17,14 +17,17 @@ tt::OperatorReturnType DNNLTensor<_DTYPE_>::onnx_Conv(tt::tensor_t X, tt::tensor
             bias_mem = dnnl(b)->dnnl_mem();
         }
 
+        for (size_t i = 0; i < dilations.size(); i++) {
+            dilations[i] = dilations[i] - 1;
+        }
+
         // create prim and pd
         dnnl_convolution_desc_t desc;
         DNNL_CHECK(dnnl_dilated_convolution_forward_desc_init(&desc,
                                                               dnnl_forward_inference,
                                                               dnnl_convolution_auto,
                                                               src_md, weight_md, bias_md, dst_md,
-                                                              strides.data(),
-                                                              dilations.data(),
+                                                              strides.data(), dilations.data(),
                                                               (const int64_t *)&pads[0], (const int64_t *)&pads[2]));
 
         dnnl_primitive_desc_t conv_pd;

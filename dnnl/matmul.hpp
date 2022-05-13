@@ -27,8 +27,8 @@ tt::OperatorReturnType DNNLTensor<_DTYPE_>::onnx_MatMul(tt::tensor_t A, tt::tens
 
         // prepare arguments and execute
         dnnl_exec_arg_t args[3];
-        dnnl_help::set_arg(args, 0, DNNL_ARG_SRC_0, src0_mem);
-        dnnl_help::set_arg(args, 1, DNNL_ARG_SRC_1, src1_mem);
+        dnnl_help::set_arg(args, 0, DNNL_ARG_SRC, src0_mem);
+        dnnl_help::set_arg(args, 1, DNNL_ARG_WEIGHTS, src1_mem);
         dnnl_help::set_arg(args, 2, DNNL_ARG_DST, dst_mem);
 
         DNNL_CHECK(dnnl_primitive_execute(matmul, dnnl_help::DNNL_STREAM_DEFAULT, sizeof(args)/sizeof(dnnl_exec_arg_t), args));
