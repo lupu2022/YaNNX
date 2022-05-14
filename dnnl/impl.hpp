@@ -183,11 +183,13 @@ public:
     tt::OperatorReturnType onnx_Clip(tt::tensor_t input, std::variant<void *, tt::tensor_t>& min, std::variant<void *, tt::tensor_t>& max, tt::tensor_t output) override;
     tt::OperatorReturnType onnx_Flatten(tt::tensor_t input, tt::tensor_t output, int64_t axis) override;
 
-    // Covolution & Pooling & BatchNorm
+    // Covolution & Pooling & BatchNorm & LaryerNorm
     tt::OperatorReturnType onnx_Conv(tt::tensor_t X, tt::tensor_t W, std::variant<void *, tt::tensor_t>& B, tt::tensor_t Y, std::string auto_pad, std::vector<int64_t> dilations, int64_t group, std::vector<int64_t> kernel_shape, std::vector<int64_t> pads, std::vector<int64_t> strides) override;
     tt::OperatorReturnType onnx_MaxPool(tt::tensor_t X, tt::tensor_t Y, std::variant<void *, tt::tensor_t>& Indices, std::string auto_pad, int64_t ceil_mode, std::vector<int64_t> dilations, std::vector<int64_t> kernel_shape, std::vector<int64_t> pads, int64_t storage_order, std::vector<int64_t> strides) override;
     tt::OperatorReturnType onnx_AveragePool(tt::tensor_t X, tensor_t Y, std::string auto_pad, int64_t ceil_mode, int64_t count_include_pad, std::vector<int64_t> kernel_shape, std::vector<int64_t> pads, std::vector<int64_t> strides) override;
     tt::OperatorReturnType onnx_BatchNormalization(tt::tensor_t X, tt::tensor_t scale, tt::tensor_t B, tt::tensor_t input_mean, tt::tensor_t input_var, tt::tensor_t Y, std::variant<void *, tensor_t>& running_mean, std::variant<void *, tensor_t>& running_var, float epsilon, float momentum, int64_t training_mode) override;
+    tt::OperatorReturnType onnx_LayerNormalization(tt::tensor_t X, tt::tensor_t Scale, std::variant<void *, tt::tensor_t>& B, tt::tensor_t Y, std::variant<void *, tt::tensor_t>& Mean, std::variant<void *, tt::tensor_t>& InvStdDev, int64_t axis, float epsilon, int64_t stash_type) override;
+
 
 private:
     // help functions for computing API
@@ -300,6 +302,7 @@ private:
 #include "dnnl/conv.hpp"
 #include "dnnl/pool.hpp"
 #include "dnnl/batchnorm.hpp"
+#include "dnnl/layernorm.hpp"
 
 }}
 
