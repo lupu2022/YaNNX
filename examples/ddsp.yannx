@@ -1,0 +1,73 @@
+def linear
+    "out_size" !
+    "in_size" !
+
+    ; W
+    ["in_size" @ "out_size" @ ] "YNX_FLOAT" ynx.NewTensor~ 0 ynx.Register~ 
+    onnx.MatMul
+
+    ; B
+    [1 "out_size" @] "YNX_FLOAT" ynx.NewTensor~ 0 ynx.Register~ 
+    onnx.Add
+end
+
+def layer_norm
+    "channel_size" !
+
+    ; Scale
+    ["channel_size" @ ] "YNX_FLOAT" ynx.NewTensor~ 0 ynx.Register~    
+    
+    ; B
+    ["channel_size" @ ] "YNX_FLOAT" ynx.NewTensor~ 0 ynx.Register~    
+
+    none none none false false 
+    onnx.LayerNormalization
+
+end
+
+def two_layer_mlp
+    "hidden_size" !
+    "in_size" !
+    
+    "in_size" @ "hidden_size" @ linear
+    "hidden_size" @ layer_norm
+    0.01 onnx.Leaky
+
+    "hidden_size" @ "hidden_size" @ linear
+    "hidden_size" @ layer_norm
+    0.01 onnx.Leaky
+def
+
+def three_layer_mlp
+    "hidden_size" !
+    "in_size" !
+    
+    "in_size" @ "hidden_size" @ linear
+    "hidden_size" @ layer_norm
+    0.01 onnx.Leaky
+    
+    {
+    "hidden_size" @ "hidden_size" @ linear
+    "hidden_size" @ layer_norm
+    0.01 onnx.Leaky
+    } %2
+def
+
+def ddsp
+    "pitch"         !
+    "loudness'      !
+
+    "pitch" @ 64 256 two_layer_mlp
+    "loudness" @ 64 256 two_layer_mlp
+    2 2 onnx.Concat
+
+    onnx.Tanh
+    256 256 three_layer_mlp
+
+    dup
+    256 100 linear swap
+    256 65 linear
+end
+    
+
+    
