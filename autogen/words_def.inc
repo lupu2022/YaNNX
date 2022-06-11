@@ -17,9 +17,14 @@
 	runtime.new_nword("onnx.BitShift", logical::BitShift::creator);
 	runtime.new_nword("onnx.Greater", logical::Greater::creator);
 	runtime.new_nword("onnx.Xor", logical::Xor::creator);
+	runtime.new_nword("onnx.MelWeightMatrix", math::MelWeightMatrix::creator);
+	runtime.new_nword("onnx.BlackmanWindow", math::BlackmanWindow::creator);
+	runtime.new_nword("onnx.HammingWindow", math::HammingWindow::creator);
+	runtime.new_nword("onnx.HannWindow", math::HannWindow::creator);
 	runtime.new_nword("onnx.SoftmaxCrossEntropyLoss", math::SoftmaxCrossEntropyLoss::creator);
 	runtime.new_nword("onnx.Celu", math::Celu::creator);
 	runtime.new_nword("onnx.CumSum", math::CumSum::creator);
+	runtime.new_nword("onnx.DFT", math::DFT::creator);
 	runtime.new_nword("onnx.Det", math::Det::creator);
 	runtime.new_nword("onnx.QLinearMatMul", math::QLinearMatMul::creator);
 	runtime.new_nword("onnx.MatMulInteger", math::MatMulInteger::creator);
@@ -61,6 +66,7 @@
 	runtime.new_nword("onnx.LogSoftmax", math::LogSoftmax::creator);
 	runtime.new_nword("onnx.Sqrt", math::Sqrt::creator);
 	runtime.new_nword("onnx.Expand", math::Expand::creator);
+	runtime.new_nword("onnx.STFT", math::STFT::creator);
 	runtime.new_nword("onnx.Sum", math::Sum::creator);
 	runtime.new_nword("onnx.Tanh", math::Tanh::creator);
 	runtime.new_nword("onnx.TopK", math::TopK::creator);

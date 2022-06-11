@@ -59,6 +59,10 @@ OperatorReturnType onnx_BitShift(tensor_t X, tensor_t Y, tensor_t Z, std::string
     return impl()->onnx_BitShift(X, Y, Z, direction);
 }
 
+OperatorReturnType onnx_BlackmanWindow(tensor_t size, tensor_t output, int64_t output_datatype, int64_t periodic) override {
+    return impl()->onnx_BlackmanWindow(size, output, output_datatype, periodic);
+}
+
 OperatorReturnType onnx_Cast(tensor_t input, tensor_t output, int64_t to) override {
     return impl()->onnx_Cast(input, output, to);
 }
@@ -109,6 +113,10 @@ OperatorReturnType onnx_Cosh(tensor_t input, tensor_t output) override {
 
 OperatorReturnType onnx_CumSum(tensor_t x, tensor_t axis, tensor_t y, int64_t exclusive, int64_t reverse) override {
     return impl()->onnx_CumSum(x, axis, y, exclusive, reverse);
+}
+
+OperatorReturnType onnx_DFT(tensor_t input, std::variant<void *, tensor_t>& dft_length, tensor_t output, int64_t axis, int64_t inverse, int64_t onesided) override {
+    return impl()->onnx_DFT(input, dft_length, output, axis, inverse, onesided);
 }
 
 OperatorReturnType onnx_DepthToSpace(tensor_t input, tensor_t output, int64_t blocksize, std::string mode) override {
@@ -211,6 +219,14 @@ OperatorReturnType onnx_GridSample(tensor_t X, tensor_t grid, tensor_t Y, int64_
     return impl()->onnx_GridSample(X, grid, Y, align_corners, mode, padding_mode);
 }
 
+OperatorReturnType onnx_HammingWindow(tensor_t size, tensor_t output, int64_t output_datatype, int64_t periodic) override {
+    return impl()->onnx_HammingWindow(size, output, output_datatype, periodic);
+}
+
+OperatorReturnType onnx_HannWindow(tensor_t size, tensor_t output, int64_t output_datatype, int64_t periodic) override {
+    return impl()->onnx_HannWindow(size, output, output_datatype, periodic);
+}
+
 OperatorReturnType onnx_HardSigmoid(tensor_t X, tensor_t Y, float alpha, float beta) override {
     return impl()->onnx_HardSigmoid(X, Y, alpha, beta);
 }
@@ -305,6 +321,10 @@ OperatorReturnType onnx_Mean(std::vector<tensor_t>& data_0, tensor_t mean) overr
 
 OperatorReturnType onnx_MeanVarianceNormalization(tensor_t X, tensor_t Y, std::vector<int64_t> axes) override {
     return impl()->onnx_MeanVarianceNormalization(X, Y, axes);
+}
+
+OperatorReturnType onnx_MelWeightMatrix(tensor_t num_mel_bins, tensor_t dft_length, tensor_t sample_rate, tensor_t lower_edge_hertz, tensor_t upper_edge_hertz, tensor_t output, int64_t output_datatype) override {
+    return impl()->onnx_MelWeightMatrix(num_mel_bins, dft_length, sample_rate, lower_edge_hertz, upper_edge_hertz, output, output_datatype);
 }
 
 OperatorReturnType onnx_Min(std::vector<tensor_t>& data_0, tensor_t min) override {
@@ -461,6 +481,10 @@ OperatorReturnType onnx_RoiAlign(tensor_t X, tensor_t rois, tensor_t batch_indic
 
 OperatorReturnType onnx_Round(tensor_t X, tensor_t Y) override {
     return impl()->onnx_Round(X, Y);
+}
+
+OperatorReturnType onnx_STFT(tensor_t signal, tensor_t frame_step, std::variant<void *, tensor_t>& window, std::variant<void *, tensor_t>& frame_length, tensor_t output, int64_t onesided) override {
+    return impl()->onnx_STFT(signal, frame_step, window, frame_length, output, onesided);
 }
 
 OperatorReturnType onnx_ScatterElements(tensor_t data, tensor_t indices, tensor_t updates, tensor_t output, int64_t axis, std::string reduction) override {

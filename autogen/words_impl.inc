@@ -1046,6 +1046,247 @@ namespace logical {
 }
 namespace math {
 
+    struct MelWeightMatrix : NativeWord<TensorType> {
+        tensor_t output;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            output = TensorFactory::create_undefined_user_tensor();
+
+            auto output_datatype = fetch_optional_int(stack, 1);
+
+            auto upper_edge_hertz = fetch_tensor(stack);
+            auto lower_edge_hertz = fetch_tensor(stack);
+            auto sample_rate = fetch_tensor(stack);
+            auto dft_length = fetch_tensor(stack);
+            auto num_mel_bins = fetch_tensor(stack);
+
+
+            if ( num_mel_bins->onnx_MelWeightMatrix_typing() == false ) {
+                std::vector<size_t> outputs_;
+                outputs_.push_back(0);
+                YNXInferenceContextImpl infer_(outputs_);
+
+                infer_.new_attr("output_datatype", output_datatype);
+
+                infer_.new_input(num_mel_bins);
+                infer_.new_input(dft_length);
+                infer_.new_input(sample_rate);
+                infer_.new_input(lower_edge_hertz);
+                infer_.new_input(upper_edge_hertz);
+
+                auto f = query_inference_function("MelWeightMatrix");
+                infer_.do_inference(f);
+                infer_.check_output(0, output);
+
+
+            }
+
+            if ( num_mel_bins->onnx_MelWeightMatrix(num_mel_bins, dft_length, sample_rate, lower_edge_hertz, upper_edge_hertz, output, output_datatype) != YNX_OK ) {
+                yannx_panic("API: MelWeightMatrix  return error!");
+            }
+
+            put_tensor(stack, output);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+            auto output_datatype = fetch_optional_int(stack, 1);
+
+            auto upper_edge_hertz = fetch_tensor(stack);
+            auto lower_edge_hertz = fetch_tensor(stack);
+            auto sample_rate = fetch_tensor(stack);
+            auto dft_length = fetch_tensor(stack);
+            auto num_mel_bins = fetch_tensor(stack);
+
+
+            if ( num_mel_bins->onnx_MelWeightMatrix(num_mel_bins, dft_length, sample_rate, lower_edge_hertz, upper_edge_hertz, output, output_datatype) != YNX_OK ) {
+                yannx_panic("API: MelWeightMatrix  return error!");
+            }
+
+            put_tensor(stack, output);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(MelWeightMatrix)
+    };
+
+
+    struct BlackmanWindow : NativeWord<TensorType> {
+        tensor_t output;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            output = TensorFactory::create_undefined_user_tensor();
+
+            auto periodic = fetch_optional_int(stack, 1);
+            auto output_datatype = fetch_optional_int(stack, 1);
+
+            auto size = fetch_tensor(stack);
+
+
+            if ( size->onnx_BlackmanWindow_typing() == false ) {
+                std::vector<size_t> outputs_;
+                outputs_.push_back(0);
+                YNXInferenceContextImpl infer_(outputs_);
+
+                infer_.new_attr("periodic", periodic);
+                infer_.new_attr("output_datatype", output_datatype);
+
+                infer_.new_input(size);
+
+                auto f = query_inference_function("BlackmanWindow");
+                infer_.do_inference(f);
+                infer_.check_output(0, output);
+
+
+            }
+
+            if ( size->onnx_BlackmanWindow(size, output, output_datatype, periodic) != YNX_OK ) {
+                yannx_panic("API: BlackmanWindow  return error!");
+            }
+
+            put_tensor(stack, output);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+            auto periodic = fetch_optional_int(stack, 1);
+            auto output_datatype = fetch_optional_int(stack, 1);
+
+            auto size = fetch_tensor(stack);
+
+
+            if ( size->onnx_BlackmanWindow(size, output, output_datatype, periodic) != YNX_OK ) {
+                yannx_panic("API: BlackmanWindow  return error!");
+            }
+
+            put_tensor(stack, output);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(BlackmanWindow)
+    };
+
+
+    struct HammingWindow : NativeWord<TensorType> {
+        tensor_t output;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            output = TensorFactory::create_undefined_user_tensor();
+
+            auto periodic = fetch_optional_int(stack, 1);
+            auto output_datatype = fetch_optional_int(stack, 1);
+
+            auto size = fetch_tensor(stack);
+
+
+            if ( size->onnx_HammingWindow_typing() == false ) {
+                std::vector<size_t> outputs_;
+                outputs_.push_back(0);
+                YNXInferenceContextImpl infer_(outputs_);
+
+                infer_.new_attr("periodic", periodic);
+                infer_.new_attr("output_datatype", output_datatype);
+
+                infer_.new_input(size);
+
+                auto f = query_inference_function("HammingWindow");
+                infer_.do_inference(f);
+                infer_.check_output(0, output);
+
+
+            }
+
+            if ( size->onnx_HammingWindow(size, output, output_datatype, periodic) != YNX_OK ) {
+                yannx_panic("API: HammingWindow  return error!");
+            }
+
+            put_tensor(stack, output);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+            auto periodic = fetch_optional_int(stack, 1);
+            auto output_datatype = fetch_optional_int(stack, 1);
+
+            auto size = fetch_tensor(stack);
+
+
+            if ( size->onnx_HammingWindow(size, output, output_datatype, periodic) != YNX_OK ) {
+                yannx_panic("API: HammingWindow  return error!");
+            }
+
+            put_tensor(stack, output);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(HammingWindow)
+    };
+
+
+    struct HannWindow : NativeWord<TensorType> {
+        tensor_t output;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            output = TensorFactory::create_undefined_user_tensor();
+
+            auto periodic = fetch_optional_int(stack, 1);
+            auto output_datatype = fetch_optional_int(stack, 1);
+
+            auto size = fetch_tensor(stack);
+
+
+            if ( size->onnx_HannWindow_typing() == false ) {
+                std::vector<size_t> outputs_;
+                outputs_.push_back(0);
+                YNXInferenceContextImpl infer_(outputs_);
+
+                infer_.new_attr("periodic", periodic);
+                infer_.new_attr("output_datatype", output_datatype);
+
+                infer_.new_input(size);
+
+                auto f = query_inference_function("HannWindow");
+                infer_.do_inference(f);
+                infer_.check_output(0, output);
+
+
+            }
+
+            if ( size->onnx_HannWindow(size, output, output_datatype, periodic) != YNX_OK ) {
+                yannx_panic("API: HannWindow  return error!");
+            }
+
+            put_tensor(stack, output);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+            auto periodic = fetch_optional_int(stack, 1);
+            auto output_datatype = fetch_optional_int(stack, 1);
+
+            auto size = fetch_tensor(stack);
+
+
+            if ( size->onnx_HannWindow(size, output, output_datatype, periodic) != YNX_OK ) {
+                yannx_panic("API: HannWindow  return error!");
+            }
+
+            put_tensor(stack, output);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(HannWindow)
+    };
+
+
     struct SoftmaxCrossEntropyLoss : NativeWord<TensorType> {
         std::variant<void *, tensor_t> log_prob;
         tensor_t output;
@@ -1240,6 +1481,70 @@ namespace math {
 
         }
         NWORD_CREATOR_DEFINE_TENSORTYPE(CumSum)
+    };
+
+
+    struct DFT : NativeWord<TensorType> {
+        tensor_t output;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            output = TensorFactory::create_undefined_user_tensor();
+
+            auto onesided = fetch_optional_int(stack, 0);
+            auto inverse = fetch_optional_int(stack, 0);
+            auto axis = fetch_optional_int(stack, 1);
+
+            auto dft_length = fetch_optional_tensor(stack);
+            auto input = fetch_tensor(stack);
+
+
+            if ( input->onnx_DFT_typing() == false ) {
+                std::vector<size_t> outputs_;
+                outputs_.push_back(0);
+                YNXInferenceContextImpl infer_(outputs_);
+
+                infer_.new_attr("onesided", onesided);
+                infer_.new_attr("inverse", inverse);
+                infer_.new_attr("axis", axis);
+
+                infer_.new_input(input);
+                infer_.new_input(dft_length);
+
+                auto f = query_inference_function("DFT");
+                infer_.do_inference(f);
+                infer_.check_output(0, output);
+
+
+            }
+
+            if ( input->onnx_DFT(input, dft_length, output, axis, inverse, onesided) != YNX_OK ) {
+                yannx_panic("API: DFT  return error!");
+            }
+
+            put_tensor(stack, output);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+            auto onesided = fetch_optional_int(stack, 0);
+            auto inverse = fetch_optional_int(stack, 0);
+            auto axis = fetch_optional_int(stack, 1);
+
+            auto dft_length = fetch_optional_tensor(stack);
+            auto input = fetch_tensor(stack);
+
+
+            if ( input->onnx_DFT(input, dft_length, output, axis, inverse, onesided) != YNX_OK ) {
+                yannx_panic("API: DFT  return error!");
+            }
+
+            put_tensor(stack, output);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(DFT)
     };
 
 
@@ -3492,6 +3797,70 @@ namespace math {
 
         }
         NWORD_CREATOR_DEFINE_TENSORTYPE(Expand)
+    };
+
+
+    struct STFT : NativeWord<TensorType> {
+        tensor_t output;
+
+        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
+            ValueStack<TensorType>& stack = rt;
+
+            output = TensorFactory::create_undefined_user_tensor();
+
+            auto onesided = fetch_optional_int(stack, 1);
+
+            auto frame_length = fetch_optional_tensor(stack);
+            auto window = fetch_optional_tensor(stack);
+            auto frame_step = fetch_tensor(stack);
+            auto signal = fetch_tensor(stack);
+
+
+            if ( signal->onnx_STFT_typing() == false ) {
+                std::vector<size_t> outputs_;
+                outputs_.push_back(0);
+                YNXInferenceContextImpl infer_(outputs_);
+
+                infer_.new_attr("onesided", onesided);
+
+                infer_.new_input(signal);
+                infer_.new_input(frame_step);
+                infer_.new_input(window);
+                infer_.new_input(frame_length);
+
+                auto f = query_inference_function("STFT");
+                infer_.do_inference(f);
+                infer_.check_output(0, output);
+
+
+            }
+
+            if ( signal->onnx_STFT(signal, frame_step, window, frame_length, output, onesided) != YNX_OK ) {
+                yannx_panic("API: STFT  return error!");
+            }
+
+            put_tensor(stack, output);
+
+        }
+        virtual void run(ValueStack<TensorType>& stack) {
+
+
+            auto onesided = fetch_optional_int(stack, 1);
+
+            auto frame_length = fetch_optional_tensor(stack);
+            auto window = fetch_optional_tensor(stack);
+            auto frame_step = fetch_tensor(stack);
+            auto signal = fetch_tensor(stack);
+
+
+            if ( signal->onnx_STFT(signal, frame_step, window, frame_length, output, onesided) != YNX_OK ) {
+                yannx_panic("API: STFT  return error!");
+            }
+
+            put_tensor(stack, output);
+
+        }
+        NWORD_CREATOR_DEFINE_TENSORTYPE(STFT)
     };
 
 

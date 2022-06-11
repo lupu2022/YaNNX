@@ -119,6 +119,14 @@
 	    return false;
 	}
 
+	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#BlackmanWindow
+	virtual OperatorReturnType onnx_BlackmanWindow(/*inputs:*/ tensor_t size, /*outputs:*/ tensor_t output, /*attributes:*/ int64_t output_datatype, int64_t periodic) {
+	    return YNX_TODO_ERROR;
+	}
+	virtual bool onnx_BlackmanWindow_typing() { 
+	    return false;
+	}
+
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#Cast
 	virtual OperatorReturnType onnx_Cast(/*inputs:*/ tensor_t input, /*outputs:*/ tensor_t output, /*attributes:*/ int64_t to) {
 	    return YNX_TODO_ERROR;
@@ -220,6 +228,14 @@
 	    return YNX_TODO_ERROR;
 	}
 	virtual bool onnx_CumSum_typing() { 
+	    return false;
+	}
+
+	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#DFT
+	virtual OperatorReturnType onnx_DFT(/*inputs:*/ tensor_t input, std::variant<void *, tensor_t>& dft_length, /*outputs:*/ tensor_t output, /*attributes:*/ int64_t axis, int64_t inverse, int64_t onesided) {
+	    return YNX_TODO_ERROR;
+	}
+	virtual bool onnx_DFT_typing() { 
 	    return false;
 	}
 
@@ -423,6 +439,22 @@
 	    return false;
 	}
 
+	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#HammingWindow
+	virtual OperatorReturnType onnx_HammingWindow(/*inputs:*/ tensor_t size, /*outputs:*/ tensor_t output, /*attributes:*/ int64_t output_datatype, int64_t periodic) {
+	    return YNX_TODO_ERROR;
+	}
+	virtual bool onnx_HammingWindow_typing() { 
+	    return false;
+	}
+
+	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#HannWindow
+	virtual OperatorReturnType onnx_HannWindow(/*inputs:*/ tensor_t size, /*outputs:*/ tensor_t output, /*attributes:*/ int64_t output_datatype, int64_t periodic) {
+	    return YNX_TODO_ERROR;
+	}
+	virtual bool onnx_HannWindow_typing() { 
+	    return false;
+	}
+
 	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#HardSigmoid
 	virtual OperatorReturnType onnx_HardSigmoid(/*inputs:*/ tensor_t X, /*outputs:*/ tensor_t Y, /*attributes:*/ float alpha, float beta) {
 	    return YNX_TODO_ERROR;
@@ -612,6 +644,14 @@
 	    return YNX_TODO_ERROR;
 	}
 	virtual bool onnx_MeanVarianceNormalization_typing() { 
+	    return false;
+	}
+
+	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#MelWeightMatrix
+	virtual OperatorReturnType onnx_MelWeightMatrix(/*inputs:*/ tensor_t num_mel_bins, tensor_t dft_length, tensor_t sample_rate, tensor_t lower_edge_hertz, tensor_t upper_edge_hertz, /*outputs:*/ tensor_t output, /*attributes:*/ int64_t output_datatype) {
+	    return YNX_TODO_ERROR;
+	}
+	virtual bool onnx_MelWeightMatrix_typing() { 
 	    return false;
 	}
 
@@ -924,6 +964,14 @@
 	    return YNX_TODO_ERROR;
 	}
 	virtual bool onnx_Round_typing() { 
+	    return false;
+	}
+
+	// https://github.com/onnx/onnx/blob/main/docs/Operators.md#STFT
+	virtual OperatorReturnType onnx_STFT(/*inputs:*/ tensor_t signal, tensor_t frame_step, std::variant<void *, tensor_t>& window, std::variant<void *, tensor_t>& frame_length, /*outputs:*/ tensor_t output, /*attributes:*/ int64_t onesided) {
+	    return YNX_TODO_ERROR;
+	}
+	virtual bool onnx_STFT_typing() { 
 	    return false;
 	}
 
