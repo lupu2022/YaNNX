@@ -59,7 +59,7 @@ def ddsp
 
     "pitch" @ 64 256 two_layer_mlp
     "loudness" @ 64 256 two_layer_mlp
-    2 2 onnx.Concat
+    2 1 onnx.Concat
 
     onnx.Tanh
     256 256 three_layer_mlp

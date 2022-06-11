@@ -155,7 +155,6 @@ def Resnet34
     512 1000 linear   
 end
 
-
 def test
     [4 3 224 224] "YNX_FLOAT" ynx.NewTensor~
     Resnet34
