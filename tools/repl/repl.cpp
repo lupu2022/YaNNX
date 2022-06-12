@@ -3,10 +3,13 @@
 #include <iostream>
 #include <sstream>
 
+#include <msgpack.hpp>
 #include "yannx.hpp"
 #include "tensortype.hpp"
 #include "opwords.hpp"
 #include "dnnl/impl.hpp"
+
+
 
 std::string fileToString(const char* filename) {
     std::ifstream t(filename);
@@ -22,6 +25,34 @@ std::string fileToString(const char* filename) {
     return str;
 }
 
+std::vector<unsigned char> fileToBuffer(const char* filename) {
+    std::ifstream t(filename, std::ios::binary);
+    std::vector<unsigned char> buf;
+
+    t.seekg(0, std::ios::end);
+    buf.reserve(t.tellg());
+    t.seekg(0, std::ios::beg);
+
+    buf.assign((std::istreambuf_iterator<char>(t)),
+        std::istreambuf_iterator<char>());
+
+    return buf;
+}
+
+
+template<typename T>
+void load_data(const char* weights_file, std::vector<T> &allPerform) {
+    auto allWeights = std::move(fileToBuffer(weights_file));
+    try {
+        auto oh = msgpack::unpack((const char*)allWeights.data(), allWeights.size());
+        allPerform = oh.get().as<std::vector<T>>();
+    }
+    catch (...) {
+        std::cout << "Unpack weight error!" << std::endl;
+        assert(false);
+    }
+}
+
 bool readline(const std::string& prop, std::string& code) {
     std::cout << prop << std::flush;
     if (std::getline(std::cin, code)) {
@@ -34,13 +65,32 @@ bool readline(const std::string& prop, std::string& code) {
 // User's factory
 //
 using user_tensor_t = DeviceTensor<yannx::tt::YNX_FLOAT, yannx::dnnl::DNNLTensor<yannx::tt::YNX_FLOAT>>;
+using _ExpressBlob = std::tuple<
+                                std::string,              //0 name
+                                std::string,              //1 type
+                                std::vector<size_t>,      //2 shape of tensor
+                                std::vector<float> >;     //3 data of tensor
 namespace yannx { namespace tt {
+    static std::vector<tensor_t> allWeights;
+
     tensor_t TensorFactory::create_undefined_user_tensor() {
         auto ret = std::make_shared< user_tensor_t>();
         return ret;
     }
     void TensorFactory::register_user_tensor(tensor_t t, int64_t flag) {
+        allWeights.push_back(t);
+    }
 
+    void write_registered_tensors(const char*weights_file) {
+        std::vector<_ExpressBlob> allBlobs;
+        load_data(weights_file, allBlobs);
+
+        if ( allBlobs.size() != allWeights.size() ) {
+            std::cout << "blob's number is not eq register tensors'" << std::endl;
+        }
+
+        for (size_t i = 0; i < allBlobs.size(); i++) {
+        }
     }
 }}
 
@@ -68,7 +118,15 @@ int main(const int argc, const char* argv[] ) {
         if ( code.find("b ") == 0) {
             code = code.substr(2);
             std::cout << "boostrap: " << code << std::endl;
+            yannx::tt::allWeights.clear();
             executor = runtime.boostrap(code);
+        } else if ( code.find("l ") == 0) {
+            std::vector<_ExpressBlob> blobs;
+            auto weight_file = code.substr(2);
+            std::cout << "Writing to registred tensors..." << std::endl;
+            load_data(weight_file.c_str(), blobs);
+            std::cout << "Done" << std::endl;
+
         } else if ( code == "f" ) {
             if ( executor != nullptr) {
                 auto start = std::chrono::high_resolution_clock::now();
