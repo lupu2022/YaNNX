@@ -52,7 +52,7 @@ def three_layer_mlp
     } %2
 end
 
-def ddsp
+def DDSP
     "pitch"         !
     "loudness"      !
 
@@ -68,6 +68,9 @@ def ddsp
     256 65 linear
 end
 
-;[1 64] "YNX_FLOAT" ynx.NewTensor~ 
-;[1 64] "YNX_FLOAT" ynx.NewTensor~
-;ddsp
+def test
+    [1 64] "YNX_FLOAT" ynx.NewTensor~ 
+    [1 64] "YNX_FLOAT" ynx.NewTensor~
+    DDSP
+end
+
