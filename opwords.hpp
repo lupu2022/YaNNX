@@ -185,7 +185,7 @@ struct YNXInferenceContextImpl : public InferenceContext {
     }
     void new_input(std::vector<tensor_t> v) {
         for (size_t i = 0; i < v.size(); i++) {
-            new_input(v);
+            new_input(v[i]);
         }
     }
 

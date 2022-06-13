@@ -61,7 +61,7 @@ def DDSP
     2 1 onnx.Concat
 
     onnx.Tanh
-    256 256 three_layer_mlp
+    512 256 three_layer_mlp
 
     dup
     256 26 linear swap
