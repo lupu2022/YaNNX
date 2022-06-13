@@ -22,7 +22,6 @@ def layer_norm
 
     none none none false false 
     onnx.LayerNormalization
-
 end
 
 def two_layer_mlp
@@ -31,12 +30,12 @@ def two_layer_mlp
     
     "in_size" @ "hidden_size" @ linear
     "hidden_size" @ layer_norm
-    0.01 onnx.Leaky
+    0.01 onnx.LeakyRelu
 
     "hidden_size" @ "hidden_size" @ linear
     "hidden_size" @ layer_norm
-    0.01 onnx.Leaky
-def
+    0.01 onnx.LeakyRelu
+end
 
 def three_layer_mlp
     "hidden_size" !
@@ -44,18 +43,18 @@ def three_layer_mlp
     
     "in_size" @ "hidden_size" @ linear
     "hidden_size" @ layer_norm
-    0.01 onnx.Leaky
+    0.01 onnx.LeakyRelu
     
     {
     "hidden_size" @ "hidden_size" @ linear
     "hidden_size" @ layer_norm
-    0.01 onnx.Leaky
+    0.01 onnx.LeakyRelu
     } %2
-def
+end
 
 def ddsp
     "pitch"         !
-    "loudness'      !
+    "loudness"      !
 
     "pitch" @ 64 256 two_layer_mlp
     "loudness" @ 64 256 two_layer_mlp
@@ -65,9 +64,10 @@ def ddsp
     256 256 three_layer_mlp
 
     dup
-    256 100 linear swap
+    256 26 linear swap
     256 65 linear
 end
-    
 
-    
+;[1 64] "YNX_FLOAT" ynx.NewTensor~ 
+;[1 64] "YNX_FLOAT" ynx.NewTensor~
+;ddsp
