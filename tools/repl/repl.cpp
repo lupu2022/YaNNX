@@ -81,16 +81,25 @@ namespace yannx { namespace tt {
         allWeights.push_back(t);
     }
 
-    void write_registered_tensors(const char*weights_file) {
+    int write_registered_tensors(const char*weights_file) {
         std::vector<_ExpressBlob> allBlobs;
         load_data(weights_file, allBlobs);
 
         if ( allBlobs.size() != allWeights.size() ) {
             std::cout << "blob's number is not eq register tensors'" << std::endl;
+            return -1;
         }
 
         for (size_t i = 0; i < allBlobs.size(); i++) {
+            auto bshape = std::get<2>(allBlobs[i]);
+            auto wshape = allWeights[i]->shape();
+            if ( bshape != wshape ) {
+                std::cout << std::get<0>(allBlobs[i]) << ": shape does not match" << std::endl;
+                return -1;
+            }
+            allWeights[i]->set_data( std::get<3>(allBlobs[i]).data() );
         }
+        return 0;
     }
 }}
 
@@ -120,12 +129,17 @@ int main(const int argc, const char* argv[] ) {
             std::cout << "boostrap: " << code << std::endl;
             yannx::tt::allWeights.clear();
             executor = runtime.boostrap(code);
+            std::cout << "Received registered tensors: " << yannx::tt::allWeights.size() << std::endl;
         } else if ( code.find("l ") == 0) {
             std::vector<_ExpressBlob> blobs;
-            auto weight_file = code.substr(2);
+            auto weights_file = code.substr(2);
             std::cout << "Writing to registred tensors..." << std::endl;
-            load_data(weight_file.c_str(), blobs);
-            std::cout << "Done" << std::endl;
+            auto ret = write_registered_tensors( weights_file.c_str() );
+            if ( ret == 0) {
+                std::cout << "Done" << std::endl;
+            } else {
+                std::cout << "Failed" << std::endl;
+            }
 
         } else if ( code == "f" ) {
             if ( executor != nullptr) {
