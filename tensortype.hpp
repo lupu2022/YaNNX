@@ -265,7 +265,7 @@ public:
 
     // reset to a normal tensor with filled data
     void reset(TensorDataType dtype, const std::vector<size_t>& shape, const void* pdata) override {
-        yannx_assert(dtype == YNX_UNDEFINED, "Can't reset a typed tensor!");
+        yannx_assert(dtype_ == YNX_UNDEFINED, "Can't reset a typed tensor!");
         yannx_assert(shape.size() > 0, "Can't reset a typed tensor with zero shape!");
         yannx_assert(impl_.index() == UNKNOW_ANY, "Can't reset a setted tensor!");
 

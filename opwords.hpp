@@ -449,18 +449,24 @@ namespace common {
                 shape.push_back( shape_[i] );
                 items_ = items_ * shape_[i];
             }
+            yannx_assert(shape_.size() > 0, "Can't create a empty shape(it is scalar)!");
 
             output = TensorFactory::create_undefined_user_tensor();
             if ( dtype == YNX_FLOAT) {
                 auto values = fetch_floats(stack);
-                if ( items_ != values.size() ) {
+                if ( values.size() == 1 ) {
+                    values = std::vector<float>(items_, values[0]);
+                } else if ( items_ != values.size() ) {
                     yannx_panic("Create constant Tensor error, data size not eq shape!");
                 }
+
                 output->reset(dtype, shape, (void *)values.data());
             }
             if ( dtype == YNX_INT64) {
                 auto values = fetch_ints(stack);
-                if ( items_ != values.size() ) {
+                if ( values.size() == 1 ) {
+                    values = std::vector<int64_t>(items_, values[0]);
+                } else if ( items_ != values.size() ) {
                     yannx_panic("Create constant Tensor error, data size not eq shape!");
                 }
                 output->reset(dtype, shape, (void *)values.data());
@@ -533,7 +539,7 @@ void register_all_onnx_defined_words( Runtime<TensorType>& runtime) {
 
     runtime.new_nword("ynx.NewTensor~", common::Tensor::creator);
     runtime.new_nword("ynx.NewScalar~", common::Scalar::creator);
-    runtime.new_nword("ynx.NewConstant~", common::Constant::creator);
+    runtime.new_nword("ynx.NewTensorWith~", common::Constant::creator);
     runtime.new_nword("ynx.Register~", common::Register::creator);
 
 #include "autogen/words_def.inc"

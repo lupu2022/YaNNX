@@ -71,8 +71,8 @@ def DDSP
 end
 
 def test
-    [1 64] "YNX_FLOAT" ynx.NewTensor~ 
-    [1 64] "YNX_FLOAT" ynx.NewTensor~
+    [0.314] [1 64] "YNX_FLOAT" ynx.NewTensorWith~ 
+    [0.314] [1 64] "YNX_FLOAT" ynx.NewTensorWith~
     DDSP
 end
 
