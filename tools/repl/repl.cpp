@@ -135,9 +135,7 @@ int main(const int argc, const char* argv[] ) {
         if ( code.find("b ") == 0) {
             code = code.substr(2);
             std::cout << "boostrap: " << code << std::endl;
-            yannx::tt::allWeights.clear();
             executor = runtime.boostrap(code);
-            std::cout << "Received registered tensors: " << yannx::tt::allWeights.size() << std::endl;
         } else if ( code.find("l ") == 0) {
             std::vector<_ExpressBlob> blobs;
             auto weights_file = code.substr(2);
@@ -158,10 +156,18 @@ int main(const int argc, const char* argv[] ) {
                 auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
                 std::cout << "time: " << duration.count() << std::endl;
             }
+        } else if ( code == "c" ) {
+            yannx::tt::allWeights.clear();
+            std::cout << "Cleaned registered tensors" << std::endl;
+        } else if ( code == "d" ) {
+            std::cout << "Current registered tensor:" << yannx::tt::allWeights.size() << std::endl;
         } else {
             std::cout << "Command error!" << std::endl;
             std::cout << "b [code string]: boostrap followed code" << std::endl;
-            std::cout << "r: just run boostraped code" << std::endl;
+            std::cout << "f: just run boostraped code again" << std::endl;
+            std::cout << "c: clean registered tensors" << std::endl;
+            std::cout << "d: list registered tensors" << std::endl;
+            std::cout << "l [msg file]: load msgpack file to registered tensors" << std::endl;
         }
     }
 }

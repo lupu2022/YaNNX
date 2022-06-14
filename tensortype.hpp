@@ -113,14 +113,46 @@ public:
     std::string to_string() {
         std::ostringstream ss;
         ss << TensorDataTypeString[ dtype() ];
-        ss << ":[";
+        ss << ":(";
         for (size_t i = 0; i < shape().size(); i++) {
             ss << shape()[i];
             if (i != shape().size() - 1) {
                 ss << " ";
             }
         }
+        ss << "):[";
+
+        if ( dtype() == YNX_FLOAT ) {
+            const float* pdata = (const float*)get_data();
+            ss << dump(pdata);
+        }
+        if ( dtype() == YNX_INT64) {
+            const int64_t* pdata = (const int64_t*)get_data();
+            ss << dump(pdata);
+        }
         ss << "]";
+        return ss.str();
+    }
+
+    template<typename T>
+    std::string dump(const T* data) {
+        size_t items = num_items();
+        std::ostringstream ss;
+        if ( items <= 6 ) {
+            for (size_t i = 0; i < items; i++) {
+                ss << data[i] << " ";
+            }
+            return ss.str();
+        }
+
+        for (size_t i = 0; i < 3; i ++) {
+            ss << data[i] << " ";
+        }
+        ss << " ... ";
+
+        for (size_t i = items - 3; i < items; i ++) {
+            ss << data[i] << " ";
+        }
         return ss.str();
     }
 
