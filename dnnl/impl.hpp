@@ -180,6 +180,7 @@ public:
     // Some common operators
     tt::OperatorReturnType onnx_Concat(std::vector<tt::tensor_t>& inputs, tt::tensor_t concat_result, int64_t axis) override;
     tt::OperatorReturnType onnx_MatMul(tt::tensor_t A, tt::tensor_t B, tt::tensor_t Y) override;
+    tt::OperatorReturnType onnx_Gemm(tt::tensor_t A, tt::tensor_t B, std::variant<void *, tt::tensor_t>& C, tensor_t Y, float alpha, float beta, int64_t transA, int64_t transB) override;
     tt::OperatorReturnType onnx_Clip(tt::tensor_t input, std::variant<void *, tt::tensor_t>& min, std::variant<void *, tt::tensor_t>& max, tt::tensor_t output) override;
     tt::OperatorReturnType onnx_Flatten(tt::tensor_t input, tt::tensor_t output, int64_t axis) override;
 

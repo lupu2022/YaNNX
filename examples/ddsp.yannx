@@ -3,12 +3,12 @@ def linear
     "in_size" !
 
     ; W
-    ["in_size" @ "out_size" @ ] "YNX_FLOAT" ynx.NewTensor~ 0 ynx.Register~ 
-    onnx.MatMul
-
+    ["out_size" @ "in_size" @] "YNX_FLOAT" ynx.NewTensor~ 0 ynx.Register~ 
     ; B
-    [1 "out_size" @] "YNX_FLOAT" ynx.NewTensor~ 0 ynx.Register~ 
-    onnx.Add
+    ["out_size" @] "YNX_FLOAT" ynx.NewTensor~ 0 ynx.Register~ 
+    
+    1.0 1.0 0 1     ; alpha beta transA transB 
+    onnx.Gemm
 end
 
 def layer_norm

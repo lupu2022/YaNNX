@@ -93,10 +93,18 @@ namespace yannx { namespace tt {
         for (size_t i = 0; i < allBlobs.size(); i++) {
             auto bshape = std::get<2>(allBlobs[i]);
             auto wshape = allWeights[i]->shape();
+
             if ( bshape != wshape ) {
                 std::cout << std::get<0>(allBlobs[i]) << ": shape does not match" << std::endl;
+
+                for (size_t j = 0; j < bshape.size(); j++) {
+                    std::cout << bshape[j] << " " << wshape[j] << ", " ;
+                }
+                std::cout << std::endl;
+
                 return -1;
             }
+
             allWeights[i]->set_data( std::get<3>(allBlobs[i]).data() );
         }
         return 0;
