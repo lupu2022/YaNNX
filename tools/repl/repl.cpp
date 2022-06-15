@@ -156,18 +156,31 @@ int main(const int argc, const char* argv[] ) {
                 auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
                 std::cout << "time: " << duration.count() << std::endl;
             }
-        } else if ( code == "c" ) {
+        } else if ( code == "cs" ) {
+            runtime.clear();
+            std::cout << "Cleaned stack" << std::endl;
+        } else if ( code == "ls" ) {
+            auto vec = runtime.vec();
+            std::cout << "--- stack top ------" << std::endl;
+            for (size_t i = 0; i < vec.size(); i++) {
+                size_t ri = vec.size() - 1 - i;
+                std::cout << i << ":\t" << vec[ri].to_string() << std::endl;
+            }
+            std::cout << "---- bottom --------" << std::endl;
+
+        } else if ( code == "cr" ) {
             yannx::tt::allWeights.clear();
             std::cout << "Cleaned registered tensors" << std::endl;
-        } else if ( code == "d" ) {
+        } else if ( code == "lr" ) {
             std::cout << "Current registered tensor:" << yannx::tt::allWeights.size() << std::endl;
         } else {
             std::cout << "Command error!" << std::endl;
             std::cout << "b [code string]: boostrap followed code" << std::endl;
             std::cout << "f: just run boostraped code again" << std::endl;
-            std::cout << "c: clean registered tensors" << std::endl;
-            std::cout << "d: list registered tensors" << std::endl;
             std::cout << "l [msg file]: load msgpack file to registered tensors" << std::endl;
+            std::cout << "cr: clean registered tensors" << std::endl;
+            std::cout << "lr: list registered tensors" << std::endl;
+            std::cout << "cs: clean stack" << std::endl;
         }
     }
 }

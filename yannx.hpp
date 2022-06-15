@@ -894,13 +894,7 @@ struct PrintOne : NativeWord<YT> {
 template<class YT>
 struct PrintAll : NativeWord<YT> {
     virtual void boot(Runtime<YT>& stack, WordHash<YT>& hash) {
-        auto vec = stack.vec();
-        std::cout << "--- stack top ------" << std::endl;
-        for (size_t i = 0; i < vec.size(); i++) {
-            size_t ri = vec.size() - 1 - i;
-            std::cout << i << ":\t" << vec[ri].to_string() << std::endl;
-        }
-        std::cout << "---- bottom --------" << std::endl;
+        run(stack);
     }
     virtual void run(ValueStack<YT>& stack) {
         auto vec = stack.vec();
