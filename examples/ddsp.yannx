@@ -64,16 +64,15 @@ def DDSP
     512 256 three_layer_mlp
 
     dup
-    256 26 linear swap
+    256 26 linear onnx.Sigmoid swap
     dup
-    256 26 linear swap
-    256 65 linear
+    256 26 linear onnx.Sigmoid swap
+    256 65 linear [5.0] [1 1] "YNX_FLOAT" ynx.NewTensorWith~ onnx.Sub onnx.Sigmoid
 end
 
 def test
     [0.314] [1 64] "YNX_FLOAT" ynx.NewTensorWith~ 
     [0.314] [1 64] "YNX_FLOAT" ynx.NewTensorWith~
-    DDSP
-    ??
+    DDSP 
 end
 
