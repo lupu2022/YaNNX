@@ -10,7 +10,7 @@ function env {
 }
 
 function install {
-    prefix=/home/teaonly/opt/yannx
+    prefix=/home/teaonly/opt/yannx/include
     export YANNX_PATH=$prefix
     rm -rf $prefix
     
