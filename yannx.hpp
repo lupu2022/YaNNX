@@ -1003,9 +1003,10 @@ struct Archive : NativeWord<YT> {
         int flag = (int)stack.pop_number();
         auto value = stack.pop_tensor();
         stack.archive(value, flag);
+
+        stack.push_tensor(value);
     }
     virtual void run(ValueStack<YT>& stack) {
-        stack.pop();
         stack.pop();
     }
 
@@ -1031,7 +1032,7 @@ void Runtime<YT>::register_builtin_native_words() {
     new_nword("[", builtin::AutoList<YT>::left_creator);
     new_nword("]", builtin::AutoList<YT>::right_creator);
 
-    new_nword("arc~", builtin::Archive<YT>::creator);
+    new_nword("arch~", builtin::Archive<YT>::creator);
 }
 
 }   // namespace yannx
