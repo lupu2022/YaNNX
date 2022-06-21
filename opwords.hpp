@@ -419,7 +419,7 @@ namespace common {
                 shape.push_back( shape_[i] );
             }
 
-            output = TensorFactory::create_undefined_user_tensor();
+            output = rt.create_undefined_user_tensor();
             output->reset(dtype, shape);
 
             put_tensor(stack, output);
@@ -451,7 +451,7 @@ namespace common {
             }
             yannx_assert(shape_.size() > 0, "Can't create a empty shape(it is scalar)!");
 
-            output = TensorFactory::create_undefined_user_tensor();
+            output = rt.create_undefined_user_tensor();
             if ( dtype == YNX_FLOAT) {
                 auto values = fetch_floats(stack);
                 if ( values.size() == 1 ) {
@@ -492,7 +492,7 @@ namespace common {
             std::string dtype_string = fetch_string(stack);
             auto dtype = datatype_from_string(dtype_string);
 
-            output = TensorFactory::create_undefined_user_tensor();
+            output = rt.create_undefined_user_tensor();
 
             if ( dtype == YNX_FLOAT) {
                 auto value = fetch_float(stack);

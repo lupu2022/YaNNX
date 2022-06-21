@@ -380,17 +380,23 @@ private:
 template<class YT>
 struct Runtime : public ValueStack<YT>  {
     using YTensor = std::shared_ptr<YT>;
+    using ntensor_creator_t = YTensor (*) ();
     using nword_t = std::shared_ptr<NativeWord<YT> >;
     using nword_creator_t = nword_t (*) (Runtime<YT>&);
     using UserCode = std::vector<SyntaxElement<YT> >;        // parsed
     using UserBinary = std::vector<SyntaxElement<YT> >;      // linked
+
 public:
-    Runtime() {
+    Runtime(ntensor_creator_t creator) {
+        tensor_creator_ = creator;
         register_builtin_native_words();
     }
     ~Runtime() {
     }
 
+    YTensor create_undefined_user_tensor() {
+        return tensor_creator_();
+    }
     void new_nword(const char* name, nword_creator_t f) {
         if ( ndict_.find(name) != ndict_.end() ) {
             yannx_panic("Can't define native word same name!");
@@ -834,6 +840,9 @@ private:
     void register_builtin_native_words();
 
 private:
+    // User provied factory function
+    ntensor_creator_t tensor_creator_;
+
     // Native and User dictionary
     std::map<std::string, nword_creator_t> ndict_;
     std::map<std::string, UserCode > udict_;

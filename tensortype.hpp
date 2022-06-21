@@ -161,10 +161,6 @@ public:
 
 };
 
-struct TensorFactory {
-    static tensor_t create_undefined_user_tensor();
-};
-
 //
 //  Following is a simple multiple type wrapped tensor
 //

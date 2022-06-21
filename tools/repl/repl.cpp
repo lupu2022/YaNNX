@@ -70,7 +70,7 @@ using _ExpressBlob = std::tuple<
                                 std::vector<size_t>,      //2 shape of tensor
                                 std::vector<float> >;     //3 data of tensor
 namespace yannx { namespace tt {
-    tensor_t TensorFactory::create_undefined_user_tensor() {
+    tensor_t create_undefined_user_tensor() {
         auto ret = std::make_shared< user_tensor_t>();
         return ret;
     }
@@ -106,7 +106,7 @@ namespace yannx { namespace tt {
 }}
 
 int main(const int argc, const char* argv[] ) {
-    yannx::Runtime<yannx::tt::TensorType> runtime;
+    yannx::Runtime<yannx::tt::TensorType> runtime(create_undefined_user_tensor);
     yannx::opw::register_all_onnx_defined_words(runtime);
     yannx::dnnl::dnnl_help::dnnl_begin();
 
