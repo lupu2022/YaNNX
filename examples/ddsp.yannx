@@ -3,9 +3,9 @@ def linear
     "in_size" !
 
     ; W
-    ["out_size" @ "in_size" @] "YNX_FLOAT" ynx.NewTensor~ 0 ynx.Register~ 
+    ["out_size" @ "in_size" @] "YNX_FLOAT" ynx.NewTensor~ 0 arch~ 
     ; B
-    ["out_size" @] "YNX_FLOAT" ynx.NewTensor~ 0 ynx.Register~ 
+    ["out_size" @] "YNX_FLOAT" ynx.NewTensor~ 0 arch~ 
     
     1.0 1.0 0 1     ; alpha beta transA transB 
     onnx.Gemm
@@ -15,10 +15,10 @@ def layer_norm
     "channel_size" !
 
     ; Scale
-    ["channel_size" @ ] "YNX_FLOAT" ynx.NewTensor~ 0 ynx.Register~    
+    ["channel_size" @ ] "YNX_FLOAT" ynx.NewTensor~ 0 arch~    
     
     ; B
-    ["channel_size" @ ] "YNX_FLOAT" ynx.NewTensor~ 0 ynx.Register~    
+    ["channel_size" @ ] "YNX_FLOAT" ynx.NewTensor~ 0 arch~    
 
     none none none false false 
     onnx.LayerNormalization

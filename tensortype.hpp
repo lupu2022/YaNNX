@@ -163,7 +163,6 @@ public:
 
 struct TensorFactory {
     static tensor_t create_undefined_user_tensor();
-    static void register_user_tensor(tensor_t t, int64_t flag);
 };
 
 //

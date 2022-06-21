@@ -9,8 +9,6 @@
 #include "opwords.hpp"
 #include "dnnl/impl.hpp"
 
-
-
 std::string fileToString(const char* filename) {
     std::ifstream t(filename);
     std::string str;
@@ -65,23 +63,19 @@ bool readline(const std::string& prop, std::string& code) {
 // User's factory
 //
 using user_tensor_t = DeviceTensor<yannx::tt::YNX_FLOAT, yannx::dnnl::DNNLTensor<yannx::tt::YNX_FLOAT>>;
+using archived_tensor_t = std::vector< std::tuple<tensor_t, int>>;
 using _ExpressBlob = std::tuple<
                                 std::string,              //0 name
                                 std::string,              //1 type
                                 std::vector<size_t>,      //2 shape of tensor
                                 std::vector<float> >;     //3 data of tensor
 namespace yannx { namespace tt {
-    static std::vector<tensor_t> allWeights;
-
     tensor_t TensorFactory::create_undefined_user_tensor() {
         auto ret = std::make_shared< user_tensor_t>();
         return ret;
     }
-    void TensorFactory::register_user_tensor(tensor_t t, int64_t flag) {
-        allWeights.push_back(t);
-    }
 
-    int write_registered_tensors(const char*weights_file) {
+    int write_registered_tensors(const char*weights_file, archived_tensor_t& allWeights ) {
         std::vector<_ExpressBlob> allBlobs;
         load_data(weights_file, allBlobs);
 
@@ -92,7 +86,7 @@ namespace yannx { namespace tt {
 
         for (size_t i = 0; i < allBlobs.size(); i++) {
             auto bshape = std::get<2>(allBlobs[i]);
-            auto wshape = allWeights[i]->shape();
+            auto wshape = std::get<0>(allWeights[i])->shape();
 
             if ( bshape != wshape ) {
                 std::cout << std::get<0>(allBlobs[i]) << ": shape does not match" << std::endl;
@@ -105,7 +99,7 @@ namespace yannx { namespace tt {
                 return -1;
             }
 
-            allWeights[i]->set_data( std::get<3>(allBlobs[i]).data() );
+            std::get<0>(allWeights[i])->set_data( std::get<3>(allBlobs[i]).data() );
         }
         return 0;
     }
@@ -140,7 +134,7 @@ int main(const int argc, const char* argv[] ) {
             std::vector<_ExpressBlob> blobs;
             auto weights_file = code.substr(2);
             std::cout << "Writing to registred tensors..." << std::endl;
-            auto ret = write_registered_tensors( weights_file.c_str() );
+            auto ret = write_registered_tensors( weights_file.c_str(), runtime.archived() );
             if ( ret == 0) {
                 std::cout << "Done" << std::endl;
             } else {
@@ -169,10 +163,10 @@ int main(const int argc, const char* argv[] ) {
             std::cout << "---- bottom --------" << std::endl;
 
         } else if ( code == "cr" ) {
-            yannx::tt::allWeights.clear();
+            runtime.archived().clear();
             std::cout << "Cleaned registered tensors" << std::endl;
         } else if ( code == "lr" ) {
-            std::cout << "Current registered tensor:" << yannx::tt::allWeights.size() << std::endl;
+            std::cout << "Current registered tensor:" << runtime.archived().size() << std::endl;
         } else {
             std::cout << "Command error!" << std::endl;
             std::cout << "b [code string]: boostrap followed code" << std::endl;

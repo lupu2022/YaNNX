@@ -7,7 +7,7 @@ def conv1x1
     "in_size" !
 
     ; W
-    ["out_size" @ "in_size" @ 1 1 ] "YNX_FLOAT" ynx.NewTensor~ 0 ynx.Register~ 
+    ["out_size" @ "in_size" @ 1 1 ] "YNX_FLOAT" ynx.NewTensor~ 0 arch~ 
     ; B
     none
 
@@ -22,7 +22,7 @@ def conv3x3
     "in_size" !
 
     ; W
-    ["out_size" @ "in_size" @ 3 3 ] "YNX_FLOAT" ynx.NewTensor~ 0 ynx.Register~
+    ["out_size" @ "in_size" @ 3 3 ] "YNX_FLOAT" ynx.NewTensor~ 0 arch~
     ; B
     none
 
@@ -46,13 +46,13 @@ def batch_norm
     "out_feature" !
 
     ["out_feature" @] "YNX_FLOAT" ynx.NewTensor~     ; scale
-    0 ynx.Register~
+    0 arch~
     ["out_feature" @] "YNX_FLOAT" ynx.NewTensor~     ; B
-    0 ynx.Register~
+    0 arch~
     ["out_feature" @] "YNX_FLOAT" ynx.NewTensor~     ; input_mean
-    0 ynx.Register~
+    0 arch~
     ["out_feature" @] "YNX_FLOAT" ynx.NewTensor~     ; input_var
-    0 ynx.Register~
+    0 arch~
     none none none false false
     
     onnx.BatchNormalization
@@ -83,7 +83,7 @@ def linear
     "in_size" !
     
     ; W
-    ["in_size" @ "out_size" @ ] "YNX_FLOAT" ynx.NewTensor~ 0 ynx.Register~ 
+    ["in_size" @ "out_size" @ ] "YNX_FLOAT" ynx.NewTensor~ 0 arch~ 
     onnx.MatMul
 
     ; B

@@ -118,6 +118,9 @@ struct ValueStack {
     virtual void clear() = 0;
     virtual const std::vector<Value<YT> >& vec() = 0;
 
+    virtual void archive(YTensor tensor, int flags) = 0;
+    virtual std::vector<std::tuple<YTensor, int>>& archived() = 0;
+
     // main control
     void drop() {
         pop();
@@ -376,11 +379,11 @@ private:
 
 template<class YT>
 struct Runtime : public ValueStack<YT>  {
+    using YTensor = std::shared_ptr<YT>;
     using nword_t = std::shared_ptr<NativeWord<YT> >;
     using nword_creator_t = nword_t (*) (Runtime<YT>&);
     using UserCode = std::vector<SyntaxElement<YT> >;        // parsed
     using UserBinary = std::vector<SyntaxElement<YT> >;      // linked
-
 public:
     Runtime() {
         register_builtin_native_words();
@@ -433,6 +436,13 @@ public:
     }
     virtual const std::vector<Value<YT> >& vec() {
         return stack_;
+    }
+
+    virtual void archive(YTensor t, int flag) {
+        archive_.push_back( {t, flag} );
+    }
+    virtual std::vector<std::tuple<YTensor, int>>& archived() {
+        return archive_;
     }
 
 private:
@@ -830,9 +840,10 @@ private:
 
     // runtime stuff
     std::vector<Value<YT> > stack_;
+    std::vector<std::tuple<YTensor, int> > archive_;
 };
 
-#define NWORD_CREATOR_DEFINE(CLS)                                                           \
+#define NWORD_CREATOR_DEFINE_YANNX(CLS)                                                           \
     static std::shared_ptr<NativeWord<YT> >   creator(Runtime<YT>& rt ) {   \
         std::shared_ptr<NativeWord<YT> > wd(new CLS<YT> ());                        \
         return wd;                                                                          \
@@ -860,7 +871,7 @@ struct Get : NativeWord<YT> {
         stack.pop();
         stack.push( *pvalue );
     }
-    NWORD_CREATOR_DEFINE(Get)
+    NWORD_CREATOR_DEFINE_YANNX(Get)
 };
 
 template<class YT>
@@ -874,7 +885,7 @@ struct Set : NativeWord<YT> {
         stack.pop();
         stack.pop();
     }
-    NWORD_CREATOR_DEFINE(Set)
+    NWORD_CREATOR_DEFINE_YANNX(Set)
 };
 
 template<class YT>
@@ -887,7 +898,7 @@ struct PrintOne : NativeWord<YT> {
         auto v = stack.top();
         std::cout << v.to_string() << std::endl;
     }
-    NWORD_CREATOR_DEFINE(PrintOne)
+    NWORD_CREATOR_DEFINE_YANNX(PrintOne)
 };
 
 template<class YT>
@@ -904,7 +915,7 @@ struct PrintAll : NativeWord<YT> {
         }
         std::cout << "---- bottom --------" << std::endl;
     }
-    NWORD_CREATOR_DEFINE(PrintAll)
+    NWORD_CREATOR_DEFINE_YANNX(PrintAll)
 };
 
 template<class YT>
@@ -913,7 +924,7 @@ struct Drop : NativeWord<YT> {
         stack.drop();
     }
 
-    NWORD_CREATOR_DEFINE(Drop)
+    NWORD_CREATOR_DEFINE_YANNX(Drop)
 };
 
 template<class YT>
@@ -922,7 +933,7 @@ struct Rot : NativeWord<YT> {
         stack.rot();
     }
 
-    NWORD_CREATOR_DEFINE(Rot)
+    NWORD_CREATOR_DEFINE_YANNX(Rot)
 };
 
 template<class YT>
@@ -931,7 +942,7 @@ struct Dup : NativeWord<YT> {
         stack.dup();
     }
 
-    NWORD_CREATOR_DEFINE(Dup)
+    NWORD_CREATOR_DEFINE_YANNX(Dup)
 };
 
 template<class YT>
@@ -940,7 +951,7 @@ struct Dup2 : NativeWord<YT> {
         stack.dup2();
     }
 
-    NWORD_CREATOR_DEFINE(Dup2)
+    NWORD_CREATOR_DEFINE_YANNX(Dup2)
 };
 
 template<class YT>
@@ -949,7 +960,7 @@ struct Swap : NativeWord<YT> {
         stack.swap();
     }
 
-    NWORD_CREATOR_DEFINE(Swap)
+    NWORD_CREATOR_DEFINE_YANNX(Swap)
 };
 
 template<class YT>
@@ -986,6 +997,20 @@ private:
     }
 };
 
+template<class YT>
+struct Archive : NativeWord<YT> {
+    virtual void boot(Runtime<YT>& stack, WordHash<YT>& hash) {
+        int flag = (int)stack.pop_number();
+        auto value = stack.pop_tensor();
+        stack.archive(value, flag);
+    }
+    virtual void run(ValueStack<YT>& stack) {
+        stack.pop();
+        stack.pop();
+    }
+
+    NWORD_CREATOR_DEFINE_YANNX(Archive)
+};
 
 }   // namespace builtin
 
@@ -1005,6 +1030,8 @@ void Runtime<YT>::register_builtin_native_words() {
 
     new_nword("[", builtin::AutoList<YT>::left_creator);
     new_nword("]", builtin::AutoList<YT>::right_creator);
+
+    new_nword("arc~", builtin::Archive<YT>::creator);
 }
 
 }   // namespace yannx

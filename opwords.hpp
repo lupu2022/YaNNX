@@ -511,24 +511,7 @@ namespace common {
         }
         NWORD_CREATOR_DEFINE_TENSORTYPE(Scalar)
     };
-
-    struct Register : NativeWord<TensorType> {
-        virtual void boot(Runtime<TensorType>& rt, WordHash<TensorType>& hash) {
-            auto flag = fetch_int(rt);
-            auto t = fetch_tensor(rt);
-            TensorFactory::register_user_tensor(t, flag);
-            rt.push_tensor(t);
-        }
-        virtual void run(ValueStack<TensorType>& stack) {
-            fetch_int(stack);
-            auto t = fetch_tensor(stack);
-            stack.push_tensor(t);
-        }
-        NWORD_CREATOR_DEFINE_TENSORTYPE(Register)
-    };
-
 }
-
 
 #include "autogen/words_impl.inc"
 
@@ -540,7 +523,6 @@ void register_all_onnx_defined_words( Runtime<TensorType>& runtime) {
     runtime.new_nword("ynx.NewTensor~", common::Tensor::creator);
     runtime.new_nword("ynx.NewScalar~", common::Scalar::creator);
     runtime.new_nword("ynx.NewTensorWith~", common::Constant::creator);
-    runtime.new_nword("ynx.Register~", common::Register::creator);
 
 #include "autogen/words_def.inc"
 

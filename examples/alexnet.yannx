@@ -7,10 +7,10 @@ def conv2d
     
     ; W
     ["out_size" @ "in_size" @ "kernel_size" @ dup ] 
-    "YNX_FLOAT" ynx.NewTensor~ 0 ynx.Register~
+    "YNX_FLOAT" ynx.NewTensor~ 0 arch~
 
     ; B
-    ["out_size" @] "YNX_FLOAT" ynx.NewTensor~ 0 ynx.Register~                                      
+    ["out_size" @] "YNX_FLOAT" ynx.NewTensor~ 0 arch~                                      
     
     ; auto_pad, dilation, group, kernel, pads, strides
     none [1 1] 1 ["kernel_size" @ dup] ["padding" @ dup dup dup] ["stride_size" @ dup]             
@@ -38,11 +38,11 @@ def linear
     "in_size" !
 
     ; W
-    ["in_size" @ "out_size" @ ] "YNX_FLOAT" ynx.NewTensor~ 0 ynx.Register~ 
+    ["in_size" @ "out_size" @ ] "YNX_FLOAT" ynx.NewTensor~ 0 arch~ 
     onnx.MatMul
 
     ; B
-    [1 "out_size" @] "YNX_FLOAT" ynx.NewTensor~ 0 ynx.Register~ 
+    [1 "out_size" @] "YNX_FLOAT" ynx.NewTensor~ 0 arch~ 
     onnx.Add
 end
 
