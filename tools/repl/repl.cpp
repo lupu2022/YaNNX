@@ -69,41 +69,39 @@ using _ExpressBlob = std::tuple<
                                 std::string,              //1 type
                                 std::vector<size_t>,      //2 shape of tensor
                                 std::vector<float> >;     //3 data of tensor
-namespace yannx { namespace tt {
-    tensor_t create_undefined_user_tensor() {
-        auto ret = std::make_shared< user_tensor_t>();
-        return ret;
+tensor_t create_undefined_user_tensor() {
+    auto ret = std::make_shared< user_tensor_t>();
+    return ret;
+}
+
+int write_registered_tensors(const char*weights_file, archived_tensor_t& allWeights ) {
+    std::vector<_ExpressBlob> allBlobs;
+    load_data(weights_file, allBlobs);
+
+    if ( allBlobs.size() != allWeights.size() ) {
+        std::cout << "blob's number is not eq register tensors'" << std::endl;
+        return -1;
     }
 
-    int write_registered_tensors(const char*weights_file, archived_tensor_t& allWeights ) {
-        std::vector<_ExpressBlob> allBlobs;
-        load_data(weights_file, allBlobs);
+    for (size_t i = 0; i < allBlobs.size(); i++) {
+        auto bshape = std::get<2>(allBlobs[i]);
+        auto wshape = std::get<0>(allWeights[i])->shape();
 
-        if ( allBlobs.size() != allWeights.size() ) {
-            std::cout << "blob's number is not eq register tensors'" << std::endl;
+        if ( bshape != wshape ) {
+            std::cout << std::get<0>(allBlobs[i]) << ": shape does not match" << std::endl;
+
+            for (size_t j = 0; j < bshape.size(); j++) {
+                std::cout << bshape[j] << " " << wshape[j] << ", " ;
+            }
+            std::cout << std::endl;
+
             return -1;
         }
 
-        for (size_t i = 0; i < allBlobs.size(); i++) {
-            auto bshape = std::get<2>(allBlobs[i]);
-            auto wshape = std::get<0>(allWeights[i])->shape();
-
-            if ( bshape != wshape ) {
-                std::cout << std::get<0>(allBlobs[i]) << ": shape does not match" << std::endl;
-
-                for (size_t j = 0; j < bshape.size(); j++) {
-                    std::cout << bshape[j] << " " << wshape[j] << ", " ;
-                }
-                std::cout << std::endl;
-
-                return -1;
-            }
-
-            std::get<0>(allWeights[i])->set_data( std::get<3>(allBlobs[i]).data() );
-        }
-        return 0;
+        std::get<0>(allWeights[i])->set_data( std::get<3>(allBlobs[i]).data() );
     }
-}}
+    return 0;
+}
 
 int main(const int argc, const char* argv[] ) {
     yannx::Runtime<yannx::tt::TensorType> runtime(create_undefined_user_tensor);
