@@ -12,11 +12,13 @@
 #include <math.h>
 
 #define yannx_assert(Expr, Msg) \
-    __M_Assert(#Expr, Expr, __FILE__, __LINE__, Msg)
+    yannx::__M_Assert(#Expr, Expr, __FILE__, __LINE__, Msg)
 
 #define yannx_panic(Msg) \
-    __M_Panic(__FILE__, __LINE__, Msg)
+    yannx::__M_Panic(__FILE__, __LINE__, Msg)
 
+
+namespace yannx {
 
 inline void __M_Assert(const char* expr_str, bool expr, const char* file, int line, const char* msg) {
     if (!expr) {
@@ -32,9 +34,6 @@ inline void __M_Panic(const char* file, int line, const char* msg) {
         << "Source:\t\t" << file << ", line " << line << "\n";
     abort();
 }
-
-namespace yannx {
-
 using YNumber = float;
 
 template<class YT>
