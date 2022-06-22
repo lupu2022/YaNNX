@@ -28,13 +28,19 @@ namespace yannx { namespace dnnl { namespace dnnl_help {
     dnnl_stream_t DNNL_STREAM_DEFAULT = nullptr;
 
     inline void dnnl_begin(uint64_t seed = 0) {
-        DNNL_CHECK(dnnl_engine_create(&dnnl_help::DNNL_ENGINE_DEFAULT, dnnl_cpu, 0));
-        DNNL_CHECK(dnnl_stream_create(&dnnl_help::DNNL_STREAM_DEFAULT, dnnl_help::DNNL_ENGINE_DEFAULT, 1));
+        if ( DNNL_ENGINE_DEFAULT == nullptr) {
+            DNNL_CHECK(dnnl_engine_create(&dnnl_help::DNNL_ENGINE_DEFAULT, dnnl_cpu, 0));
+            DNNL_CHECK(dnnl_stream_create(&dnnl_help::DNNL_STREAM_DEFAULT, dnnl_help::DNNL_ENGINE_DEFAULT, 1));
+        }
     }
 
     inline void dnnl_end() {
-        DNNL_CHECK(dnnl_stream_destroy(dnnl_help::DNNL_STREAM_DEFAULT));
-        DNNL_CHECK(dnnl_engine_destroy(dnnl_help::DNNL_ENGINE_DEFAULT));
+        if ( DNNL_ENGINE_DEFAULT != nullptr) {
+            DNNL_CHECK(dnnl_stream_destroy(dnnl_help::DNNL_STREAM_DEFAULT));
+            DNNL_CHECK(dnnl_engine_destroy(dnnl_help::DNNL_ENGINE_DEFAULT));
+        }
+        DNNL_ENGINE_DEFAULT = nullptr;
+        DNNL_STREAM_DEFAULT = nullptr;
     }
 
     inline dnnl_data_type_t tt_type_to_dnnl_type(yannx::tt::TensorDataType dtype) {
