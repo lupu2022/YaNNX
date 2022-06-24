@@ -116,7 +116,7 @@ struct ValueStack {
     virtual Value<YT> pop() = 0;
     virtual void push(Value<YT> v) = 0;
     virtual void clear() = 0;
-    virtual const std::vector<Value<YT> >& vec() = 0;
+    virtual std::vector<Value<YT> >& vec() = 0;
 
     virtual void archive(YTensor tensor, int flags) = 0;
     virtual std::vector<std::tuple<YTensor, int>>& archived() = 0;
@@ -313,7 +313,7 @@ struct UserWord {
 
     UserWord(){}
 
-    const std::map<std::string, Value<YT>>& hash() {
+    std::map<std::string, Value<YT>>& hash() {
         return local_hash_;
     }
 
@@ -440,7 +440,7 @@ public:
     virtual void clear() {
         stack_.clear();
     }
-    virtual const std::vector<Value<YT> >& vec() {
+    virtual std::vector<Value<YT> >& vec() {
         return stack_;
     }
 
